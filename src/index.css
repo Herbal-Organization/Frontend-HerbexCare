@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #059669; /* Emerald 600 */
+  --color-primary-hover: #047857; /* Emerald 700 */
+  --color-primary-light: #d1fae5; /* Emerald 100 */
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: var(--font-sans);
+    background-color: #fafafa;
+    color: #1e293b;
+    -webkit-font-smoothing: antialiased;
+  }
+}
