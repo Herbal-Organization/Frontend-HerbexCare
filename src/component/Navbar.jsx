@@ -9,7 +9,7 @@ function Navbar() {
           <span className="material-symbols-outlined text-2xl">eco</span>
         </div>
         <h2 className="text-slate-900 text-xl font-bold leading-tight tracking-tight">
-          Herbal Care AI
+          Herbal Care
         </h2>
       </Link>
       <div className="hidden md:flex flex-1 justify-end items-center gap-8">

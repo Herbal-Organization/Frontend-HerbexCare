@@ -12,7 +12,7 @@ function Footer() {
                 <span className="material-symbols-outlined text-2xl">eco</span>
               </div>
               <h2 className="text-slate-900 text-xl font-bold leading-tight tracking-tight">
-                Herbal Care AI
+                Herbal Care
               </h2>
             </div>
             <p className="text-slate-500 text-sm leading-relaxed mb-6 max-w-sm">
@@ -61,7 +61,7 @@ function Footer() {
 
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-slate-100">
           <p className="text-slate-400 text-xs mb-4 md:mb-0">
-            &copy; {new Date().getFullYear()} Herbal Care AI. All rights reserved.
+            &copy; {new Date().getFullYear()} Karim Safan. All rights reserved.
           </p>
           <div className="flex items-center text-slate-400 text-xs gap-1 cursor-pointer hover:text-slate-600 transition-colors">
             <span className="material-symbols-outlined text-[14px]">language</span>
