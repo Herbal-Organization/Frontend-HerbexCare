@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
+import {IoIosMail} from "react-icons/io";
+import {TiPhone} from "react-icons/ti";
+import {FaPerson} from "react-icons/fa6";
+import {MdError, MdLocalLibrary} from "react-icons/md";
 
 const API_BASE_URL = "https://unmonotonous-unregainable-ronnie.ngrok-free.dev";
 
 function Register({ setIsLogin, setSuccessMsg }) {
+
   const [role, setRole] = useState("Patient");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -129,7 +134,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
     <div>
       {error && (
         <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3 text-red-700">
-          <span className="material-symbols-outlined text-red-500">error</span>
+          <MdError className="text-red-600" />
           <p className="text-sm font-medium">{error}</p>
         </div>
       )}
@@ -177,9 +182,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
           </label>
           <div className="relative rounded-xl shadow-sm">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-              <span className="material-symbols-outlined text-slate-400 text-[20px]">
-                mail
-              </span>
+              <IoIosMail className="text-slate-400 text-[20px]"/>
             </div>
             <input
               required
@@ -204,9 +207,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
           </label>
           <div className="relative rounded-xl shadow-sm">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-              <span className="material-symbols-outlined text-slate-400 text-[20px]">
-                call
-              </span>
+              <TiPhone className="text-slate-400 text-[20px]" />
             </div>
             <input
               required
@@ -241,11 +242,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
                 checked={role === "Patient"}
                 onChange={() => setRole("Patient")}
               />
-              <span
-                className={`material-symbols-outlined ${role === "Patient" ? "text-primary" : "text-slate-400"}`}
-              >
-                person
-              </span>
+              <FaPerson className={`${role === "Patient" ? "text-primary" : "text-slate-400"}`} />
               <span
                 className={`text-sm font-bold ${role === "Patient" ? "text-primary" : "text-slate-600"}`}
               >
@@ -263,11 +260,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
                 checked={role === "Herbalist"}
                 onChange={() => setRole("Herbalist")}
               />
-              <span
-                className={`material-symbols-outlined ${role === "Herbalist" ? "text-primary" : "text-slate-400"}`}
-              >
-                local_library
-              </span>
+              <MdLocalLibrary className={` ${role === "Herbalist" ? "text-primary" : "text-slate-400"}`} />
               <span
                 className={`text-sm font-bold ${role === "Herbalist" ? "text-primary" : "text-slate-600"}`}
               >

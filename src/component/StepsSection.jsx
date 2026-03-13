@@ -1,18 +1,20 @@
+import {IoChatbubbleEllipses, IoReceiptSharp} from "react-icons/io5";
+import {FaBrain} from "react-icons/fa";
 
 function StepsSection() {
   const steps = [
     {
-      icon: "chat_bubble",
+      icon: <IoChatbubbleEllipses className="text-3xl"/>,
       title: "Share Your Needs",
       description: "Tell us about your wellness goals, symptoms, or dietary preferences through our intuitive chat interface."
     },
     {
-      icon: "auto_awesome",
+      icon: <FaBrain className="text-3xl" />,
       title: "AI Analysis",
       description: "Our advanced algorithms cross-reference clinical herbal databases and safety protocols in seconds."
     },
     {
-      icon: "receipt_long",
+      icon: <IoReceiptSharp className="text-3xl" />,
       title: "Get Recipes",
       description: "Receive custom-tailored herbal tea blends, tinctures, and wellness plans specific to your body's needs."
     }
@@ -34,7 +36,7 @@ function StepsSection() {
           {steps.map((step, idx) => (
             <div key={idx} className="bg-white rounded-3xl p-8 shadow-sm flex flex-col items-center text-center transition-transform hover:-translate-y-1">
               <div className="w-14 h-14 bg-primary-light rounded-2xl flex items-center justify-center text-primary mb-6">
-                <span className="material-symbols-outlined text-3xl">{step.icon}</span>
+                {step.icon}
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-3 tracking-tight">{step.title}</h3>
               <p className="text-slate-500 leading-relaxed text-sm">

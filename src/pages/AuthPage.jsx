@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Login from "../component/auth/Login";
 import Register from "../component/auth/Register";
+import {MdEnergySavingsLeaf} from "react-icons/md";
 
 function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -19,9 +20,7 @@ function AuthPage() {
         <div className="relative z-10 flex flex-col items-center text-center">
           <Link to="/">
             <div className="w-16 h-16 bg-primary-light rounded-full flex items-center justify-center text-primary mb-6 shadow-sm hover:scale-110 transition-transform">
-              <span className="material-symbols-outlined text-3xl">
-                energy_savings_leaf
-              </span>
+              <MdEnergySavingsLeaf className="text-3xl" />
             </div>
           </Link>
           <h1 className="text-3xl font-bold text-slate-900 mb-4 tracking-tight">

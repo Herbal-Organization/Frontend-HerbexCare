@@ -1,4 +1,7 @@
 import React from "react";
+import {MdPhotoCamera} from "react-icons/md";
+import {FaShareAltSquare} from "react-icons/fa";
+import {GrLanguage} from "react-icons/gr";
 
 function Footer() {
   return (
@@ -9,7 +12,11 @@ function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2 mb-6">
               <div className="flex items-center justify-center bg-primary rounded-lg p-1.5 text-white">
-                <span className="material-symbols-outlined text-2xl">eco</span>
+                <img
+                  src="https://www.svgrepo.com/show/312326/herb.svg"
+                  alt="Herb Logo"
+                  className="w-6 h-6"
+                />
               </div>
               <h2 className="text-slate-900 text-xl font-bold leading-tight tracking-tight">
                 Herbal Care
@@ -20,10 +27,10 @@ function Footer() {
             </p>
             <div className="flex gap-3">
               <a href="#" className="w-10 h-10 rounded-full bg-primary-light/50 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors">
-                <span className="material-symbols-outlined text-sm">share</span>
+                <FaShareAltSquare className="text-sm" />
               </a>
               <a href="#" className="w-10 h-10 rounded-full bg-primary-light/50 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors">
-                <span className="material-symbols-outlined text-sm">photo_camera</span>
+                <MdPhotoCamera  className="text-sm"/>
               </a>
             </div>
           </div>
@@ -64,7 +71,7 @@ function Footer() {
             &copy; {new Date().getFullYear()} Karim Safan. All rights reserved.
           </p>
           <div className="flex items-center text-slate-400 text-xs gap-1 cursor-pointer hover:text-slate-600 transition-colors">
-            <span className="material-symbols-outlined text-[14px]">language</span>
+            <GrLanguage className="text-lg" />
             English (US)
           </div>
         </div>

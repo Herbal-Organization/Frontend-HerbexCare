@@ -6,6 +6,7 @@ import RecipesSection from "./component/RecipesSection";
 import NewsletterSection from "./component/NewsletterSection";
 import Footer from "./component/Footer";
 import AuthPage from "./pages/AuthPage";
+import ForgetPassword from "./component/auth/ForgetPassword";
 
 function LandingPage() {
   return (
@@ -32,6 +33,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/forget" element={<ForgetPassword />} />
       </Routes>
     </div>
   );

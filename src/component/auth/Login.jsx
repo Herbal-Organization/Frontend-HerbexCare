@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+import { Link } from "react-router-dom";
+import { IoIosMail } from "react-icons/io";
+import { FaArrowRight, FaLock } from "react-icons/fa";
 const API_BASE_URL = "https://unmonotonous-unregainable-ronnie.ngrok-free.dev";
 
 function Login({ setSuccessMsg }) {
@@ -30,7 +32,6 @@ function Login({ setSuccessMsg }) {
       const response = await axios.post(
         `${API_BASE_URL}/api/Accounts/login`,
         payload,
-        
       );
 
       if (response.status === 200 && response.data) {
@@ -80,9 +81,7 @@ function Login({ setSuccessMsg }) {
           </label>
           <div className="relative rounded-xl shadow-sm">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-              <span className="material-symbols-outlined text-slate-400 text-[20px]">
-                mail
-              </span>
+              <IoIosMail className="text-slate-400 text-[20px]"/>
             </div>
             <input
               required
@@ -101,18 +100,16 @@ function Login({ setSuccessMsg }) {
             <label className="block text-sm font-bold text-slate-700">
               Password
             </label>
-            <a
-              href="#"
+            <Link
+              to="/forget"
               className="text-xs font-bold text-primary hover:text-primary-hover"
             >
               Forgot password?
-            </a>
+            </Link>
           </div>
           <div className="relative rounded-xl shadow-sm">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-              <span className="material-symbols-outlined text-slate-400 text-[20px]">
-                lock
-              </span>
+              <FaLock className="text-slate-400 text-[20px]" />
             </div>
             <input
               required
@@ -130,7 +127,7 @@ function Login({ setSuccessMsg }) {
           <button
             disabled={loading}
             type="submit"
-            className="flex w-full justify-center items-center gap-2 rounded-xl bg-primary px-3 py-3.5 text-sm font-bold text-white shadow-sm hover:-translate-y-0.5 shadow-primary/30 hover:shadow-primary/50 transition-all disabled:opacity-70 disabled:hover:translate-y-0"
+            className="flex w-full justify-center items-center gap-2 rounded-xl bg-primary px-3 py-3.5 text-sm font-bold text-white shadow-sm hover:-translate-y-0.5 shadow-primary/30 hover:shadow-primary/50 transition-all disabled:opacity-70 disabled:hover:translate-y-0 cursor-pointer"
           >
             {loading ? (
               <span className="material-symbols-outlined animate-spin">
@@ -141,7 +138,7 @@ function Login({ setSuccessMsg }) {
             )}
             {!loading && (
               <span className="material-symbols-outlined text-[18px]">
-                arrow_forward
+                <FaArrowRight />
               </span>
             )}
           </button>

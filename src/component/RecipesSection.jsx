@@ -1,3 +1,5 @@
+import {FaArrowRightLong} from "react-icons/fa6";
+import {MdSchedule} from "react-icons/md";
 
 function RecipesSection() {
   const recipes = [
@@ -40,7 +42,7 @@ function RecipesSection() {
         </div>
         <a href="#" className="flex items-center text-primary font-bold text-sm hover:underline group">
           View All 
-          <span className="material-symbols-outlined text-base ml-1 transition-transform group-hover:translate-x-1">arrow_forward</span>
+          <FaArrowRightLong className="text-base ml-1 transition-transform group-hover:translate-x-1" />
         </a>
       </div>
 
@@ -52,9 +54,6 @@ function RecipesSection() {
                 src={recipe.image} 
                 alt={recipe.title} 
                 className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                onError={(e) => {
-                  e.target.src = "https://images.unsplash.com/photo-1576092762791-dd9e2220afa1?w=600&q=80";
-                }}
               />
             </div>
             
@@ -64,7 +63,7 @@ function RecipesSection() {
                   {recipe.tag}
                 </span>
                 <div className="flex items-center text-slate-400 text-xs font-medium">
-                  <span className="material-symbols-outlined text-sm mr-1">schedule</span>
+                  <MdSchedule className="text-sm mr-1" />
                   {recipe.time}
                 </div>
               </div>

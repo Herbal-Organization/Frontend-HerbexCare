@@ -1,12 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import {IoMenu} from "react-icons/io5";
 
 function Navbar() {
   return (
     <>
       <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
         <div className="flex items-center justify-center bg-primary rounded-lg p-1.5 text-white">
-          <span className="material-symbols-outlined text-2xl">eco</span>
+          <img
+            src="https://www.svgrepo.com/show/312326/herb.svg"
+            alt="Herb Logo"
+            className="w-6 h-6"
+          />
         </div>
         <h2 className="text-slate-900 text-xl font-bold leading-tight tracking-tight">
           Herbal Care
@@ -26,7 +31,9 @@ function Navbar() {
         </Link>
       </div>
       <button className="md:hidden flex items-center justify-center text-slate-900">
-        <span className="material-symbols-outlined">menu</span>
+        <span className="text-3xl">
+          <IoMenu />
+        </span>
       </button>
     </>
   );

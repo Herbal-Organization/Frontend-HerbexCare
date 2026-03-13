@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 function HeroSection() {
   return (
@@ -15,9 +16,9 @@ function HeroSection() {
             Discover personalized herbal recipes and natural remedies tailored to your health goals using our advanced botanical AI technology.
           </p>
           <div className="flex flex-wrap items-center gap-4 pt-2">
-            <button className="rounded-full bg-primary px-7 py-3.5 text-sm font-bold text-white shadow-xl shadow-primary/30 transition-transform hover:scale-105">
+            <Link to="/auth" className="rounded-full bg-primary px-7 py-3.5 text-sm font-bold text-white shadow-xl shadow-primary/30 transition-transform hover:scale-105">
               Start Your Journey
-            </button>
+            </Link>
             <button className="rounded-full bg-white border border-slate-200 px-7 py-3.5 text-sm font-bold text-slate-700 shadow-sm transition-colors hover:bg-slate-50">
               How It Works
             </button>
@@ -31,9 +32,6 @@ function HeroSection() {
               src="/hero_herbal_wellness_1772812658981.png" 
               alt="Herbs and spices in wooden bowls" 
               className="absolute inset-0 w-full h-full object-cover"
-              onError={(e) => {
-                e.target.src = "https://images.unsplash.com/photo-1596541223130-5d31a73fb6c6?w=800&q=80"; // Fallback image if local path fails to load
-              }}
             />
           </div>
         </div>
