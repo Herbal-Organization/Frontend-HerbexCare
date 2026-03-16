@@ -48,7 +48,7 @@ function Login({ setSuccessMsg }) {
 
         setTimeout(() => {
           // Redirect or update app state here
-          // window.location.href = "/dashboard";
+          window.location.href = "/patient/dashboard/profile";
         }, 1000);
       }
     } catch (err) {
