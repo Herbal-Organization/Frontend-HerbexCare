@@ -3,8 +3,9 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { IoIosMail } from "react-icons/io";
 import { FaArrowRight, FaLock } from "react-icons/fa";
+import { MdEnergySavingsLeaf, MdError } from "react-icons/md";
 
-const API_BASE_URL = "https://unmonotonous-unregainable-ronnie.ngrok-free.dev";
+const API_BASE_URL = "http://localhost:5189";
 
 function ForgetPassword() {
   const [loading, setLoading] = useState(false);
@@ -70,7 +71,7 @@ function ForgetPassword() {
         <div className="relative z-10 flex flex-col items-center text-center">
           <Link to="/">
             <div className="w-16 h-16 bg-primary-light rounded-full flex items-center justify-center text-primary mb-6 shadow-sm hover:scale-110 transition-transform">
-              <span className="text-3xl">🌿</span>
+              <MdEnergySavingsLeaf className="text-3xl" />
             </div>
           </Link>
           <h1 className="text-3xl font-bold text-slate-900 mb-4 tracking-tight">
@@ -96,7 +97,7 @@ function ForgetPassword() {
           <div className="mt-8">
             {error && (
               <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3 text-red-700">
-                <span className="material-symbols-outlined text-red-500">error</span>
+                <MdError className="text-red-500" />
                 <p className="text-sm font-medium">{error}</p>
               </div>
             )}

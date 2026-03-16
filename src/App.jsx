@@ -7,6 +7,9 @@ import NewsletterSection from "./component/NewsletterSection";
 import Footer from "./component/Footer";
 import AuthPage from "./pages/AuthPage";
 import ForgetPassword from "./component/auth/ForgetPassword";
+import PatientDashboard from "./pages/dashboard/patient/PatientDashboard";
+import HerbalistDashboard from "./pages/dashboard/herbalist/HerbalistDashboard";
+import BrowseRecipe from "./pages/BrowseRecipe";
 
 function LandingPage() {
   return (
@@ -33,7 +36,10 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
-        <Route path="/forget" element={<ForgetPassword />} />
+        <Route path="/patient/home" element={<BrowseRecipe />} />
+        <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/patient/dashboard/*" element={<PatientDashboard />} />
+        <Route path="/herbalist/dashboard/*" element={<HerbalistDashboard />} />
       </Routes>
     </div>
   );

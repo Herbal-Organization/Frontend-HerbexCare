@@ -3,7 +3,10 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { IoIosMail } from "react-icons/io";
 import { FaArrowRight, FaLock } from "react-icons/fa";
-const API_BASE_URL = "https://unmonotonous-unregainable-ronnie.ngrok-free.dev";
+import { MdError } from "react-icons/md";
+import { HiRefresh } from "react-icons/hi";
+const API_BASE_URL =
+  "https://herbal-api-v1-geg9dub2brgee4ag.austriaeast-01.azurewebsites.net";
 
 function Login({ setSuccessMsg }) {
   const [loading, setLoading] = useState(false);
@@ -69,7 +72,7 @@ function Login({ setSuccessMsg }) {
     <div>
       {error && (
         <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3 text-red-700">
-          <span className="material-symbols-outlined text-red-500">error</span>
+          <MdError className="text-red-600" />
           <p className="text-sm font-medium">{error}</p>
         </div>
       )}
@@ -81,7 +84,7 @@ function Login({ setSuccessMsg }) {
           </label>
           <div className="relative rounded-xl shadow-sm">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-              <IoIosMail className="text-slate-400 text-[20px]"/>
+              <IoIosMail className="text-slate-400 text-[20px]" />
             </div>
             <input
               required
@@ -130,16 +133,12 @@ function Login({ setSuccessMsg }) {
             className="flex w-full justify-center items-center gap-2 rounded-xl bg-primary px-3 py-3.5 text-sm font-bold text-white shadow-sm hover:-translate-y-0.5 shadow-primary/30 hover:shadow-primary/50 transition-all disabled:opacity-70 disabled:hover:translate-y-0 cursor-pointer"
           >
             {loading ? (
-              <span className="material-symbols-outlined animate-spin">
-                refresh
-              </span>
+              <HiRefresh className="animate-spin" />
             ) : (
               "Sign In"
             )}
             {!loading && (
-              <span className="material-symbols-outlined text-[18px]">
-                <FaArrowRight />
-              </span>
+              <FaArrowRight className="text-[18px]"/>
             )}
           </button>
         </div>

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Login from "../component/auth/Login";
 import Register from "../component/auth/Register";
 import {MdEnergySavingsLeaf} from "react-icons/md";
+import { FaCircleCheck } from "react-icons/fa6";
 
 function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -34,7 +35,7 @@ function AuthPage() {
       </div>
 
       <div className="flex-1 flex flex-col justify-center px-4 py-8 sm:px-6 lg:flex-none lg:px-20 xl:px-24 bg-white shadow-[-20px_0_40px_-15px_rgba(0,0,0,0.05)] relative z-20 w-full lg:w-7/12 overflow-y-auto">
-        <div className="mx-auto w-full max-w-md lg:w-[28rem]">
+        <div className="mx-auto w-full max-w-md lg:w-md">
           <div>
             <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
               {isLogin ? "Welcome back" : "Create an account"}
@@ -72,9 +73,7 @@ function AuthPage() {
 
             {successMsg && (
               <div className="mb-6 p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3 text-primary">
-                <span className="material-symbols-outlined text-primary">
-                  check_circle
-                </span>
+                <FaCircleCheck className="text-primary" />
                 <p className="text-sm font-medium">{successMsg}</p>
               </div>
             )}

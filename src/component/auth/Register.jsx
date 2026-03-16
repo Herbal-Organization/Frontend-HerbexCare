@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
-import {IoIosMail} from "react-icons/io";
-import {TiPhone} from "react-icons/ti";
-import {FaPerson} from "react-icons/fa6";
-import {MdError, MdLocalLibrary} from "react-icons/md";
+import { IoIosMail } from "react-icons/io";
+import { TiPhone } from "react-icons/ti";
+import { FaPerson } from "react-icons/fa6";
+import { MdError, MdLocalLibrary } from "react-icons/md";
+import { HiRefresh } from "react-icons/hi";
 
-const API_BASE_URL = "https://unmonotonous-unregainable-ronnie.ngrok-free.dev";
+const API_BASE_URL =
+  "https://herbal-api-v1-geg9dub2brgee4ag.austriaeast-01.azurewebsites.net";
 
 function Register({ setIsLogin, setSuccessMsg }) {
-
   const [role, setRole] = useState("Patient");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -125,7 +126,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
       } else {
         setError("Network error. Please ensure the backend server is running.");
       }
-      console.error(err);
+      console.error(err.response);
     }
     setLoading(false);
   };
@@ -182,7 +183,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
           </label>
           <div className="relative rounded-xl shadow-sm">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-              <IoIosMail className="text-slate-400 text-[20px]"/>
+              <IoIosMail className="text-slate-400 text-[20px]" />
             </div>
             <input
               required
@@ -242,7 +243,9 @@ function Register({ setIsLogin, setSuccessMsg }) {
                 checked={role === "Patient"}
                 onChange={() => setRole("Patient")}
               />
-              <FaPerson className={`${role === "Patient" ? "text-primary" : "text-slate-400"}`} />
+              <FaPerson
+                className={`${role === "Patient" ? "text-primary" : "text-slate-400"}`}
+              />
               <span
                 className={`text-sm font-bold ${role === "Patient" ? "text-primary" : "text-slate-600"}`}
               >
@@ -260,7 +263,9 @@ function Register({ setIsLogin, setSuccessMsg }) {
                 checked={role === "Herbalist"}
                 onChange={() => setRole("Herbalist")}
               />
-              <MdLocalLibrary className={` ${role === "Herbalist" ? "text-primary" : "text-slate-400"}`} />
+              <MdLocalLibrary
+                className={` ${role === "Herbalist" ? "text-primary" : "text-slate-400"}`}
+              />
               <span
                 className={`text-sm font-bold ${role === "Herbalist" ? "text-primary" : "text-slate-600"}`}
               >
@@ -318,9 +323,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
             className="flex w-full justify-center items-center gap-2 rounded-xl bg-primary px-3 py-3.5 text-sm font-bold text-white shadow-sm hover:-translate-y-0.5 shadow-primary/30 hover:shadow-primary/50 transition-all disabled:opacity-70 disabled:hover:translate-y-0"
           >
             {loading ? (
-              <span className="material-symbols-outlined animate-spin">
-                refresh
-              </span>
+              <HiRefresh className="animate-spin" />
             ) : (
               "Create Account"
             )}
