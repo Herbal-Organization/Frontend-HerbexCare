@@ -41,9 +41,8 @@ function HerbalistDashboard() {
     setUser({ name: "Karim Safan", role: "herbalist" });
   }, [navigate]);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/auth");
+  const handleLogout = async () => {
+    await logout();
   };
 
   if (!user) {

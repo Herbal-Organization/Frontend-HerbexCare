@@ -1,3 +1,5 @@
+import { endAuthSession, getAccessToken } from "../services/authSession";
+
 // Auth utility functions
 export const decodeJWT = (token) => {
   try {
@@ -15,7 +17,7 @@ export const decodeJWT = (token) => {
 };
 
 export const getUserFromToken = () => {
-  const token = localStorage.getItem('accessToken');
+  const token = getAccessToken();
   if (!token) return null;
 
   const decoded = decodeJWT(token);
@@ -38,7 +40,7 @@ export const getUserRole = () => {
 };
 
 export const isAuthenticated = () => {
-  const token = localStorage.getItem('accessToken');
+  const token = getAccessToken();
   if (!token) return false;
 
   try {
@@ -50,8 +52,7 @@ export const isAuthenticated = () => {
   }
 };
 
-export const logout = () => {
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
+export const logout = async () => {
+  await endAuthSession();
   window.location.href = '/auth';
 };

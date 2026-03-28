@@ -1,110 +1,75 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import { IoIosMail } from "react-icons/io";
-import { FaArrowRight, FaLock } from "react-icons/fa";
-import { MdError } from "react-icons/md";
-import { HiRefresh } from "react-icons/hi";
+import { FaLock } from "react-icons/fa";
+import { loginAccount } from "../../api/accounts";
+import AuthAlert from "../../components/auth/AuthAlert";
+import AuthInput from "../../components/auth/AuthInput";
+import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
+import useAsyncAction from "../../hooks/useAsyncAction";
+import { getPostLoginRoute, storeAuthTokens } from "../../services/authSession";
 import { getUserRole } from "../../utils/auth";
-const API_BASE_URL =
-  "https://herbal-api-v1-geg9dub2brgee4ag.austriaeast-01.azurewebsites.net";
 
 function Login({ setSuccessMsg }) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  const {
+    error,
+    isLoading,
+    execute: submitLogin,
+    clearError,
+  } = useAsyncAction(loginAccount, {
+    defaultErrorMessage: "Login failed. Please check your credentials.",
+    onSuccess: (data) => {
+      storeAuthTokens(data ?? {});
+      setSuccessMsg("Login successful!");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
+      window.setTimeout(() => {
+        const role = getUserRole();
+        navigate(getPostLoginRoute(role));
+      }, 1000);
+    },
+  });
 
+  const onSubmit = async (values) => {
+    clearError();
     try {
-      const payload = {
-        email: formData.email,
-        password: formData.password,
-      };
-      const response = await axios.post(
-        `${API_BASE_URL}/api/Accounts/login`,
-        payload,
-      );
-
-      if (response.status === 200 && response.data) {
-        console.log(response.data);
-        const { accessToken, refreshToken } = response.data;
-
-        if (accessToken) localStorage.setItem("accessToken", accessToken);
-        if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
-
-        setSuccessMsg("Login successful!");
-
-        setTimeout(() => {
-          const role = getUserRole();
-          
-          if (role === 'Patient') {
-            window.location.href = "/patient/dashboard/profile";
-          } else if (role === 'Herbalist') {
-            window.location.href = "/herbalist/dashboard";
-          } else {
-            window.location.href = "/";
-          }
-        }, 1000);
-      }
-    } catch (err) {
-      if (err.response) {
-        const data = err.response.data || {};
-        setError(
-          data.message ||
-            data.title ||
-            "Login failed. Please check your credentials.",
-        );
-      } else {
-        setError("Network error. Please ensure the backend server is running.");
-      }
-      console.error(err);
+      await submitLogin(values);
+    } catch {
+      return;
     }
-
-    setLoading(false);
   };
 
   return (
     <div>
-      {error && (
-        <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3 text-red-700">
-          <MdError className="text-red-600" />
-          <p className="text-sm font-medium">{error}</p>
-        </div>
-      )}
+      <AuthAlert message={error} type="error" />
 
-      <form className="space-y-5" onSubmit={handleSubmit}>
-        <div>
-          <label className="block text-sm font-bold text-slate-700 mb-2">
-            Email Address
-          </label>
-          <div className="relative rounded-xl shadow-sm">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-              <IoIosMail className="text-slate-400 text-[20px]" />
-            </div>
-            <input
-              required
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="name@example.com"
-              className="block w-full rounded-xl border-slate-200 py-3 pl-11 outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 text-sm border font-medium"
-            />
-          </div>
-        </div>
+      <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+        <AuthInput
+          label="Email Address"
+          type="email"
+          placeholder="name@example.com"
+          autoComplete="email"
+          icon={<IoIosMail />}
+          error={errors.email?.message}
+          {...register("email", {
+            required: "Email is required",
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "Enter a valid email address",
+            },
+          })}
+        />
 
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -118,37 +83,27 @@ function Login({ setSuccessMsg }) {
               Forgot password?
             </Link>
           </div>
-          <div className="relative rounded-xl shadow-sm">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-              <FaLock className="text-slate-400 text-[20px]" />
-            </div>
-            <input
-              required
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              className="block w-full rounded-xl border-slate-200 py-3 pl-11 outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 text-sm border font-medium font-sans"
-            />
-          </div>
+          <AuthInput
+            label=""
+            type="password"
+            placeholder="••••••••"
+            autoComplete="current-password"
+            icon={<FaLock />}
+            inputClassName="font-sans"
+            error={errors.password?.message}
+            {...register("password", {
+              required: "Password is required",
+            })}
+          />
         </div>
 
         <div className="pt-2">
-          <button
-            disabled={loading}
-            type="submit"
-            className="flex w-full justify-center items-center gap-2 rounded-xl bg-primary px-3 py-3.5 text-sm font-bold text-white shadow-sm hover:-translate-y-0.5 shadow-primary/30 hover:shadow-primary/50 transition-all disabled:opacity-70 disabled:hover:translate-y-0 cursor-pointer"
-          >
-            {loading ? (
-              <HiRefresh className="animate-spin" />
-            ) : (
-              "Sign In"
-            )}
-            {!loading && (
-              <FaArrowRight className="text-[18px]"/>
-            )}
-          </button>
+          <AuthSubmitButton
+            isLoading={isLoading}
+            label="Sign In"
+            loadingLabel="Signing In"
+            className="cursor-pointer"
+          />
         </div>
       </form>
 

@@ -36,8 +36,8 @@ function PatientDashboard() {
     checkAuth();
   }, [navigate]);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
   };
 
   if (!user) {
