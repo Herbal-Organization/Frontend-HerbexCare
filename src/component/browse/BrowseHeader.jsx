@@ -20,12 +20,6 @@ function BrowseHeader() {
               </h1>
             </Link>
             <nav className="hidden md:flex items-center gap-6">
-              <Link
-                className="text-slate-600 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors"
-                to="/"
-              >
-                Home
-              </Link>
               <span className="text-primary text-sm font-semibold">
                 Recipes
               </span>

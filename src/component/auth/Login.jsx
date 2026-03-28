@@ -5,6 +5,7 @@ import { IoIosMail } from "react-icons/io";
 import { FaArrowRight, FaLock } from "react-icons/fa";
 import { MdError } from "react-icons/md";
 import { HiRefresh } from "react-icons/hi";
+import { getUserRole } from "../../utils/auth";
 const API_BASE_URL =
   "https://herbal-api-v1-geg9dub2brgee4ag.austriaeast-01.azurewebsites.net";
 
@@ -47,8 +48,15 @@ function Login({ setSuccessMsg }) {
         setSuccessMsg("Login successful!");
 
         setTimeout(() => {
-          // Redirect or update app state here
-          window.location.href = "/patient/dashboard/profile";
+          const role = getUserRole();
+          
+          if (role === 'Patient') {
+            window.location.href = "/patient/dashboard/profile";
+          } else if (role === 'Herbalist') {
+            window.location.href = "/herbalist/dashboard";
+          } else {
+            window.location.href = "/";
+          }
         }, 1000);
       }
     } catch (err) {

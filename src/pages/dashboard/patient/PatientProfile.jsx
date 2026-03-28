@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaUser, FaMapMarkerAlt, FaCity, FaHeartbeat, FaStreetView } from "react-icons/fa";
+import { toast } from "react-hot-toast";
 import ProfileLayout from "../ProfileLayout";
 
 const API_BASE_URL =
@@ -9,62 +10,77 @@ const API_BASE_URL =
 function PatientProfile({ user }) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
   const [profileData, setProfileData] = useState({
     governorate: "",
     city: "",
     street: "",
-    photoUrl: "",
-    bio: "",
-    wellnessInterests: "",
-    hasDiabetes: false,
-    hasHypertension: false,
-    hasAsthma: false,
-    hasHeartDisease: false,
-    isSmoker: false,
-    hasOtherCondition: false,
-    otherCondition: "",
+    diabetes: false,
+    hypertension: false,
+    asthma: false,
+    heartDisease: false,
+    kidneyDisease: false,
+    liverDisease: false,
+    smoker: false,
+    pregnancy: false,
+    otherNotes: "",
   });
 
   const loadProfileData = async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await axios.put(
-        `${API_BASE_URL}/api/Users/update-my-address`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
+      const headers = { Authorization: `Bearer ${token}` };
+
+      // Make sure we have a user ID to fetch user data
+      const fetchDataPromises = [];
+      
+      if (user?.userId || user?.id) {
+        const idToFetch = user.userId || user.id;
+        fetchDataPromises.push(
+          axios.get(`${API_BASE_URL}/api/Users/get/${idToFetch}`, { headers }).catch(e => ({ error: true, data: null }))
+        );
+      } else {
+        fetchDataPromises.push(Promise.resolve({ error: true, data: null })); // Dummy for user
+      }
+
+      // Fetch medical history
+      fetchDataPromises.push(
+        axios.get(`${API_BASE_URL}/api/MedicalHistories/me`, { headers }).catch(e => ({ error: true, data: null }))
       );
 
-      if (response.data) {
-        setProfileData((prev) => ({
-          ...prev,
-          governorate: response.data.governorate || "",
-          city: response.data.city || "",
-          street: response.data.street,
-          photoUrl: response.data.photoUrl || response.data.photo || "",
-          bio: response.data.bio || "",
-          wellnessInterests:
-            response.data.wellnessInterests || response.data.interests || "",
-          hasDiabetes: response.data.hasDiabetes ?? prev.hasDiabetes,
-          hasHypertension:
-            response.data.hasHypertension ?? prev.hasHypertension,
-          hasAsthma: response.data.hasAsthma ?? prev.hasAsthma,
-          hasHeartDisease:
-            response.data.hasHeartDisease ?? prev.hasHeartDisease,
-          isSmoker: response.data.isSmoker ?? prev.isSmoker,
-          hasOtherCondition:
-            response.data.hasOtherCondition ?? prev.hasOtherCondition,
-          otherCondition: response.data.otherCondition || prev.otherCondition,
-        }));
-      }
+      const [userResponse, medicalResponse] = await Promise.all(fetchDataPromises);
+
+      setProfileData((prev) => {
+        let newData = { ...prev };
+        
+        if (!userResponse.error && userResponse.data) {
+          newData = {
+            ...newData,
+            governorate: userResponse.data.governorate || "",
+            city: userResponse.data.city || "",
+            street: userResponse.data.street || "",
+          };
+        }
+
+        if (!medicalResponse.error && medicalResponse.data) {
+          newData = {
+            ...newData,
+            diabetes: medicalResponse.data.diabetes || false,
+            hypertension: medicalResponse.data.hypertension || false,
+            asthma: medicalResponse.data.asthma || false,
+            heartDisease: medicalResponse.data.heartDisease || false,
+            kidneyDisease: medicalResponse.data.kidneyDisease || false,
+            liverDisease: medicalResponse.data.liverDisease || false,
+            smoker: medicalResponse.data.smoker || false,
+            pregnancy: medicalResponse.data.pregnancy || false,
+            otherNotes: medicalResponse.data.otherNotes || "",
+          };
+        }
+
+        return newData;
+      });
     } catch (err) {
-      console.log("No existing profile data or error loading:", err);
-      // It's okay if there's no existing data
+      console.log("Error loading profile data:", err);
     }
     setLoading(false);
   };
@@ -87,28 +103,33 @@ function PatientProfile({ user }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-    setSuccess(null);
     setSaving(true);
 
     try {
       const token = localStorage.getItem("accessToken");
-      const payload = {
+      
+      const addressPayload = {
         governorate: profileData.governorate,
         city: profileData.city,
-        photoUrl: profileData.photoUrl,
-        hasDiabetes: profileData.hasDiabetes,
-        hasHypertension: profileData.hasHypertension,
-        hasAsthma: profileData.hasAsthma,
-        hasHeartDisease: profileData.hasHeartDisease,
-        isSmoker: profileData.isSmoker,
-        hasOtherCondition: profileData.hasOtherCondition,
-        otherCondition: profileData.otherCondition,
+        street: profileData.street,
       };
 
-      const response = await axios.post(
-        `${API_BASE_URL}/api/Patient/profile`,
-        payload,
+      const medicalHistoryPayload = {
+        diabetes: profileData.diabetes,
+        hypertension: profileData.hypertension,
+        asthma: profileData.asthma,
+        heartDisease: profileData.heartDisease,
+        kidneyDisease: profileData.kidneyDisease,
+        liverDisease: profileData.liverDisease,
+        smoker: profileData.smoker,
+        pregnancy: profileData.pregnancy,
+        otherNotes: profileData.otherNotes,
+      };
+
+      // Update address
+      await axios.patch(
+        `${API_BASE_URL}/api/Users/update-my-address`,
+        addressPayload,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -116,19 +137,28 @@ function PatientProfile({ user }) {
         },
       );
 
-      if (response.status === 200 || response.status === 201) {
-        setSuccess("Profile updated successfully!");
-      }
+      // Add/Update medical history
+      await axios.post(
+        `${API_BASE_URL}/api/MedicalHistories/me`,
+        medicalHistoryPayload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      toast.success("Profile updated successfully!");
     } catch (err) {
       if (err.response) {
         const data = err.response.data || {};
-        setError(
+        toast.error(
           data.message ||
             data.title ||
             "Failed to update profile. Please try again.",
         );
       } else {
-        setError("Network error. Please ensure the backend server is running.");
+        toast.error("Network error. Please ensure the backend server is running.");
       }
       console.error(err);
     }
@@ -148,8 +178,6 @@ function PatientProfile({ user }) {
     <ProfileLayout
       title="Patient Profile"
       subtitle="Manage your personal information and wellness preferences"
-      error={error}
-      success={success}
       saving={saving}
       onSubmit={handleSubmit}
     >
@@ -158,7 +186,6 @@ function PatientProfile({ user }) {
         <div className="flex items-center justify-center">
           <div className="h-24 w-24 rounded-full bg-emerald-100 overflow-hidden flex items-center justify-center text-emerald-500 text-3xl font-semibold shadow-sm">
             {profileData.photoUrl ? (
-              // eslint-disable-next-line jsx-a11y/img-redundant-alt
               <img
                 src={profileData.photoUrl}
                 alt="Profile photo"
@@ -321,84 +348,42 @@ function PatientProfile({ user }) {
           <FaHeartbeat className="text-primary" />
           Medical History
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label className="inline-flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 cursor-pointer hover:bg-slate-100">
-            <input
-              type="checkbox"
-              name="hasDiabetes"
-              checked={profileData.hasDiabetes}
-              onChange={handleChange}
-              className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
-            />
-            <span className="text-sm font-medium text-slate-800">Diabetes</span>
-          </label>
-          <label className="inline-flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 cursor-pointer hover:bg-slate-100">
-            <input
-              type="checkbox"
-              name="hasHypertension"
-              checked={profileData.hasHypertension}
-              onChange={handleChange}
-              className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
-            />
-            <span className="text-sm font-medium text-slate-800">
-              Hypertension
-            </span>
-          </label>
-          <label className="inline-flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 cursor-pointer hover:bg-slate-100">
-            <input
-              type="checkbox"
-              name="hasAsthma"
-              checked={profileData.hasAsthma}
-              onChange={handleChange}
-              className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
-            />
-            <span className="text-sm font-medium text-slate-800">Asthma</span>
-          </label>
-          <label className="inline-flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 cursor-pointer hover:bg-slate-100">
-            <input
-              type="checkbox"
-              name="hasHeartDisease"
-              checked={profileData.hasHeartDisease}
-              onChange={handleChange}
-              className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
-            />
-            <span className="text-sm font-medium text-slate-800">
-              Heart Disease
-            </span>
-          </label>
-          <label className="inline-flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 cursor-pointer hover:bg-slate-100">
-            <input
-              type="checkbox"
-              name="isSmoker"
-              checked={profileData.isSmoker}
-              onChange={handleChange}
-              className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
-            />
-            <span className="text-sm font-medium text-slate-800">Smoker</span>
-          </label>
-          <div className="space-y-3">
-            <label className="inline-flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 cursor-pointer hover:bg-slate-100 w-full">
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { name: "diabetes", label: "Diabetes" },
+            { name: "hypertension", label: "Hypertension" },
+            { name: "asthma", label: "Asthma" },
+            { name: "heartDisease", label: "Heart Disease" },
+            { name: "kidneyDisease", label: "Kidney Disease" },
+            { name: "liverDisease", label: "Liver Disease" },
+            { name: "smoker", label: "Smoker" },
+            { name: "pregnancy", label: "Pregnancy" },
+          ].map((condition) => (
+            <label key={condition.name} className="inline-flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 cursor-pointer hover:bg-slate-100">
               <input
                 type="checkbox"
-                name="hasOtherCondition"
-                checked={profileData.hasOtherCondition}
+                name={condition.name}
+                checked={profileData[condition.name]}
                 onChange={handleChange}
                 className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
               />
-              <span className="text-sm font-medium text-slate-800">
-                Other condition
-              </span>
+              <span className="text-sm font-medium text-slate-800">{condition.label}</span>
             </label>
-            {profileData.hasOtherCondition && (
-              <input
-                type="text"
-                name="otherCondition"
-                value={profileData.otherCondition}
-                onChange={handleChange}
-                placeholder="Describe other condition"
-                className="block w-full rounded-xl border-slate-200 px-4 py-3 outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 text-sm border font-medium"
-              />
-            )}
+          ))}
+          
+          <div className="col-span-1 md:col-span-2 lg:col-span-3 mt-2">
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Other Notes
+            </label>
+            <textarea
+              name="otherNotes"
+              value={profileData.otherNotes}
+              onChange={handleChange}
+              placeholder="Describe any other medical conditions or notes"
+              className="block w-full rounded-xl border-slate-200 px-4 py-3 outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 text-sm border font-medium"
+              rows="3"
+            />
           </div>
         </div>
       </div>

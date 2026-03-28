@@ -19,12 +19,22 @@ export const getUserFromToken = () => {
   if (!token) return null;
 
   const decoded = decodeJWT(token);
-  return decoded;
+  if (!decoded) return null;
+
+  // Map common Microsoft identity claims to simple properties
+  return {
+    ...decoded,
+    name: decoded.name || decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
+    email: decoded.email || decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
+    role: decoded.role || decoded.Role || decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
+    phone: decoded.phone || decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/mobilephone'],
+    userId: decoded.nameid || decoded.sub || decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+  };
 };
 
 export const getUserRole = () => {
   const user = getUserFromToken();
-  return user?.role || user?.Role || null;
+  return user?.role || null;
 };
 
 export const isAuthenticated = () => {

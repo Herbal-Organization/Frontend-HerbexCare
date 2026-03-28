@@ -5,7 +5,7 @@ import { IoIosMail } from "react-icons/io";
 import { FaArrowRight, FaLock } from "react-icons/fa";
 import { MdEnergySavingsLeaf, MdError } from "react-icons/md";
 
-const API_BASE_URL = "http://localhost:5189";
+const API_BASE_URL = "https://herbal-api-v1-geg9dub2brgee4ag.austriaeast-01.azurewebsites.net/api/Accounts/forgot-password";
 
 function ForgetPassword() {
   const [loading, setLoading] = useState(false);

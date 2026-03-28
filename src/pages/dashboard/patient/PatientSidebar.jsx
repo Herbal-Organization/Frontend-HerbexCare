@@ -60,7 +60,7 @@ function PatientSidebar({ user }) {
               <p className="text-sm font-semibold truncate">{user.name || "Patient"}</p>
               <p className="text-xs text-slate-500 truncate">{user.role || "Member"}</p>
             </div>
-            <FaCog className="text-slate-400 text-lg" />
+            
           </div>
         </div>
       )}

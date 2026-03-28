@@ -10,6 +10,7 @@ import ForgetPassword from "./component/auth/ForgetPassword";
 import PatientDashboard from "./pages/dashboard/patient/PatientDashboard";
 import HerbalistDashboard from "./pages/dashboard/herbalist/HerbalistDashboard";
 import BrowseRecipe from "./pages/BrowseRecipe";
+import { Toaster } from 'react-hot-toast';
 
 function LandingPage() {
   return (
@@ -37,10 +38,11 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/patient/home" element={<BrowseRecipe />} />
-        <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/forget" element={<ForgetPassword />} />
         <Route path="/patient/dashboard/*" element={<PatientDashboard />} />
         <Route path="/herbalist/dashboard/*" element={<HerbalistDashboard />} />
       </Routes>
+      <Toaster position="top-right" />
     </div>
   );
 }

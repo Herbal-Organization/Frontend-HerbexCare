@@ -4,38 +4,36 @@ import {
   Route,
   Navigate,
   useNavigate,
-  useLocation,
 } from "react-router-dom";
 import { FaSignOutAlt } from "react-icons/fa";
-import { isAuthenticated, getUserFromToken, logout } from "../../../utils/auth";
+import { isAuthenticated, getUserFromToken, logout, getUserRole } from "../../../utils/auth";
 import PatientProfile from "./PatientProfile";
 import PatientSidebar from "./PatientSidebar";
-import PatientTopBar from "./PatientTopBar";
 import PatientDashboardOverview from "./PatientDashboardOverview";
 
 function PatientDashboard() {
   const navigate = useNavigate();
-  const location = useLocation();
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // const checkAuth = () => {
-    //   if (!isAuthenticated()) {
-    //     navigate("/auth");
-    //     return;
-    //   }
+    const checkAuth = () => {
+      if (!isAuthenticated()) {
+        navigate("/auth");
+        return;
+      }
 
-    //   const userData = getUserFromToken();
-    //   if (userData?.role !== "Patient" && userData?.Role !== "Patient") {
-    //     navigate("/");
-    //     return;
-    //   }
+      const userData = getUserFromToken();
+      const role = getUserRole();
+      
+      if (role !== "Patient") {
+        navigate("/");
+        return;
+      }
 
-    //   setUser(userData);
-    // };
+      setUser(userData);
+    };
 
-    // checkAuth();
-    setUser({ name: "Test Patient", role: "Patient" });
+    checkAuth();
   }, [navigate]);
 
   const handleLogout = () => {
@@ -55,8 +53,7 @@ function PatientDashboard() {
       <PatientSidebar user={user} />
 
       <div className="flex-1 ml-72 flex flex-col min-h-screen">
-        <PatientTopBar />
-
+        
         <main className="flex-1 bg-slate-50">
           <Routes>
             <Route
@@ -82,7 +79,7 @@ function PatientDashboard() {
         className="fixed bottom-6 left-80 flex items-center gap-2 px-4 py-2 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-full shadow-sm hover:bg-slate-50"
       >
         <FaSignOutAlt className="h-4 w-4" />
-        Logout
+        
       </button>
     </div>
   );
