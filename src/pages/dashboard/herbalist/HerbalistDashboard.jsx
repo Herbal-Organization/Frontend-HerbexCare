@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Routes,
   Route,
@@ -6,14 +6,19 @@ import {
   useNavigate,
   useLocation,
 } from "react-router-dom";
-import { isAuthenticated, getUserFromToken, logout } from "../../../utils/auth";
+import {
+  isAuthenticated,
+  getUserFromToken,
+  getUserRole,
+  logout,
+} from "../../../utils/auth";
+import HerbalistManageHerbs from "./HerbalistManageHerbs";
+import HerbalistManageRecipes from "./HerbalistManageRecipes";
 import HerbalistProfile from "./HerbalistProfile";
 import Sidebar from "../../../components/herbalist/Sidebar";
 import TopBar from "../../../components/herbalist/TopBar";
-import StatsGrid from "../../../components/herbalist/StatsGrid";
-import RecentActivity from "../../../components/herbalist/RecentActivity";
-import QuickActions from "../../../components/herbalist/QuickActions";
-import UpcomingConsultations from "../../../components/herbalist/UpcomingConsultations";
+import useHerbalistDashboardData from "../../../hooks/useHerbalistDashboardData";
+import { normalizeHerbalistUser } from "../../../services/herbalistProfile";
 
 function HerbalistDashboard() {
   const navigate = useNavigate();
@@ -21,30 +26,49 @@ function HerbalistDashboard() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // const checkAuth = () => {
-    //   if (!isAuthenticated()) {
-    //     navigate("/auth");
-    //     return;
-    //   }
+    const checkAuth = () => {
+      if (!isAuthenticated()) {
+        navigate("/auth");
+        return;
+      }
 
-    //   const userData = getUserFromToken();
-    //   if (userData?.role !== "Herbalist" && userData?.Role !== "Herbalist") {
-    //     navigate("/");
-    //     return;
-    //   }
+      const userData = getUserFromToken();
+      const role = getUserRole();
 
-    //   setUser(userData);
-    // };
+      if (role !== "Herbalist") {
+        navigate("/");
+        return;
+      }
 
-    // checkAuth();
+      setUser(normalizeHerbalistUser(userData || {}));
+    };
 
-    setUser({ name: "Karim Safan", role: "herbalist" });
+    checkAuth();
   }, [navigate]);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/auth");
+  const handleLogout = async () => {
+    await logout();
   };
+
+  const {
+    data: dashboardData,
+    isLoading: isDashboardLoading,
+    error: dashboardError,
+    reload: reloadDashboard,
+  } = useHerbalistDashboardData(user?.userId || user?.id);
+
+  useEffect(() => {
+    if (!dashboardData?.userDetails) {
+      return;
+    }
+
+    setUser((currentUser) =>
+      normalizeHerbalistUser({
+        ...(currentUser || {}),
+        ...dashboardData.userDetails,
+      }),
+    );
+  }, [dashboardData?.userDetails]);
 
   if (!user) {
     return (
@@ -69,37 +93,34 @@ function HerbalistDashboard() {
       <main className="flex-1 overflow-y-auto">
         <TopBar />
         <div className="p-8 max-w-7xl mx-auto">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-slate-900">
-              Welcome back, {user.name}
-            </h2>
-            <p className="text-slate-500 mt-1">
-              Here&apos;s what&apos;s happening with your practice today.
-            </p>
-          </div>
-
-          <StatsGrid />
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <RecentActivity />
-            <div className="space-y-6">
-              <QuickActions />
-              <UpcomingConsultations />
+          {dashboardError ? (
+            <div className="mb-6 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+              {dashboardError}
             </div>
-          </div>
+          ) : null}
 
-          <div className="mt-10">
-            <Routes>
-              <Route
-                path="/"
-                element={<Navigate to="/herbalist/dashboard/profile" replace />}
-              />
-              <Route
-                path="/profile"
-                element={<HerbalistProfile user={user} />}
-              />
-            </Routes>
-          </div>
+          <Routes>
+            <Route
+              path="/"
+              element={<Navigate to="/herbalist/dashboard/profile" replace />}
+            />
+            <Route
+              path="/profile"
+              element={
+                <HerbalistProfile
+                  user={user}
+                  dashboardData={dashboardData}
+                  isLoading={isDashboardLoading}
+                  onProfileUpdated={reloadDashboard}
+                />
+              }
+            />
+            <Route
+              path="/herbs"
+              element={<HerbalistManageHerbs user={user} />}
+            />
+            <Route path="/recipes" element={<HerbalistManageRecipes />} />
+          </Routes>
         </div>
       </main>
     </div>

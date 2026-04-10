@@ -1,12 +1,12 @@
-import RecipeCard from "./RecipeCard";
+import HerbCard from "./HerbCard";
 
-function RecipesGrid({ recipes, isLoading, error, onRetry }) {
+function HerbsGrid({ herbs, isLoading, error, onRetry }) {
   if (isLoading) {
     return (
       <div className="rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-sm">
         <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-primary" />
         <p className="mt-4 text-sm font-medium text-slate-500">
-          Loading recipes from the API...
+          Loading herbs...
         </p>
       </div>
     );
@@ -15,12 +15,12 @@ function RecipesGrid({ recipes, isLoading, error, onRetry }) {
   if (error) {
     return (
       <div className="rounded-3xl border border-red-100 bg-red-50 p-12 text-center shadow-sm">
-        <h3 className="text-lg font-bold text-red-800">Unable to load recipes</h3>
+        <h2 className="text-xl font-bold text-red-800">Unable to load herbs</h2>
         <p className="mt-2 text-sm text-red-600">{error}</p>
         <button
           type="button"
           onClick={onRetry}
-          className="mt-5 rounded-xl bg-red-600 px-4 py-2 text-sm font-bold text-white"
+          className="mt-5 rounded-xl bg-red-600 px-4 py-2 text-sm font-bold text-white hover:bg-red-700 transition-colors"
         >
           Retry
         </button>
@@ -28,24 +28,23 @@ function RecipesGrid({ recipes, isLoading, error, onRetry }) {
     );
   }
 
-  if (!recipes.length) {
+  if (!herbs || herbs.length === 0) {
     return (
       <div className="rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-sm">
-        <h3 className="text-lg font-bold text-slate-900">No recipes found</h3>
-        <p className="mt-2 text-sm text-slate-500">
-          Try a different search term or check back later for new herbal recipes.
+        <p className="text-lg font-semibold text-slate-600">
+          No herbs found
         </p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {recipes.map((recipe) => (
-        <RecipeCard key={recipe.id} {...recipe} />
+    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      {herbs.map((herb) => (
+        <HerbCard key={herb.id || herb.herbId} herb={herb} />
       ))}
     </div>
   );
 }
 
-export default RecipesGrid;
+export default HerbsGrid;

@@ -1,10 +1,10 @@
-import React from "react";
-import { FaSpa, FaShoppingBag, FaBookOpen, FaUser, FaCog } from "react-icons/fa";
+import { FaSpa, FaShoppingBag, FaBookOpen, FaUser, FaLeaf, FaSignOutAlt } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 
-function PatientSidebar({ user }) {
+function PatientSidebar({ user, onLogout }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const displayName = user?.fullName || user?.name || user?.userName || "Patient";
 
   const navigation = [
     { name: "Dashboard", href: "/patient/dashboard", icon: FaSpa },
@@ -15,7 +15,7 @@ function PatientSidebar({ user }) {
 
   return (
     <aside className="w-72 bg-white border-r border-slate-200 flex flex-col fixed h-full">
-      <div className="p-6 flex items-center gap-3">
+      <div className="p-6 flex items-center gap-3"> 
         <div className="bg-primary rounded-lg p-2 text-white flex items-center justify-center">
           <FaSpa className="text-2xl" />
         </div>
@@ -52,15 +52,34 @@ function PatientSidebar({ user }) {
 
       {user && (
         <div className="p-4 border-t border-slate-200">
+          <div className="mb-4 space-y-2">
+            <button
+              type="button"
+              onClick={() => navigate("/patient/home")}
+              className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50"
+            >
+              <FaLeaf className="text-primary" />
+              <span>Browse Recipes</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={onLogout}
+              className="flex w-full items-center gap-3 rounded-xl bg-slate-900 px-4 py-3 text-left text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-800"
+            >
+              <FaSignOutAlt className="text-xs" />
+              <span>Sign Out</span>
+            </button>
+          </div>
+
           <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-50">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-              {user.name ? user.name.charAt(0).toUpperCase() : "P"}
+              {displayName.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold truncate">{user.name || "Patient"}</p>
+              <p className="text-sm font-semibold truncate">{displayName}</p>
               <p className="text-xs text-slate-500 truncate">{user.role || "Member"}</p>
             </div>
-            
           </div>
         </div>
       )}
@@ -69,4 +88,3 @@ function PatientSidebar({ user }) {
 }
 
 export default PatientSidebar;
-
