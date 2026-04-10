@@ -4,11 +4,14 @@ import { IoIosMail } from "react-icons/io";
 import { TiPhone } from "react-icons/ti";
 import { FaPerson } from "react-icons/fa6";
 import { MdLocalLibrary } from "react-icons/md";
-import { registerAccount } from "../../api/accounts";
+import { loginAccount, registerAccount } from "../../api/accounts";
+import { updateMyPatientProfile } from "../../api/patients";
 import useAsyncAction from "../../hooks/useAsyncAction";
 import AuthAlert from "../../components/auth/AuthAlert";
 import AuthInput from "../../components/auth/AuthInput";
 import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
+import { saveHerbalistProfile } from "../../services/herbalistProfile";
+import { clearAuthTokens, storeAuthTokens } from "../../services/authSession";
 
 function Register({ setIsLogin, setSuccessMsg }) {
   const [role, setRole] = useState("Patient");
@@ -26,12 +29,22 @@ function Register({ setIsLogin, setSuccessMsg }) {
       phone: "",
       password: "",
       confirmPassword: "",
+      birthDate: "",
+      gender: "",
+      bio: "",
+      availableFrom: "",
+      availableTo: "",
     },
   });
 
   const password = useWatch({
     control,
     name: "password",
+    defaultValue: "",
+  });
+  const availableFrom = useWatch({
+    control,
+    name: "availableFrom",
     defaultValue: "",
   });
   const {
@@ -41,25 +54,64 @@ function Register({ setIsLogin, setSuccessMsg }) {
     clearError,
   } = useAsyncAction(registerAccount, {
     defaultErrorMessage: "Registration failed. Please check your details.",
-    onSuccess: () => {
-      reset();
-      setRole("Patient");
-      setSuccessMsg("Registration successful! Please log in.");
-      window.setTimeout(() => {
-        setIsLogin(true);
-        setSuccessMsg(null);
-      }, 2000);
-    },
   });
+
+  const submitRoleDetails = async (values) => {
+    const loginData = await loginAccount({
+      email: values.email,
+      password: values.password,
+    });
+    storeAuthTokens(loginData ?? {});
+
+    try {
+      if (role === "Patient") {
+        await updateMyPatientProfile({
+          birthDate: values.birthDate || null,
+          gender: values.gender || null,
+        });
+        return;
+      }
+
+      await saveHerbalistProfile({
+        bio: values.bio,
+        availableFrom: values.availableFrom,
+        availableTo: values.availableTo,
+      });
+    } finally {
+      clearAuthTokens();
+    }
+  };
 
   const onSubmit = async (values) => {
     clearError();
 
     try {
       await submitRegistration({
-        ...values,
+        fullName: values.fullName,
+        userName: values.userName,
+        email: values.email,
+        phone: values.phone,
+        password: values.password,
+        confirmPassword: values.confirmPassword,
         role,
       });
+
+      let successMessage = "Registration successful! Please log in.";
+
+      try {
+        await submitRoleDetails(values);
+      } catch {
+        successMessage =
+          "Registration successful, but profile details could not be saved now. You can complete them later.";
+      }
+
+      reset();
+      setRole("Patient");
+      setSuccessMsg(successMessage);
+      window.setTimeout(() => {
+        setIsLogin(true);
+        setSuccessMsg(null);
+      }, 2500);
     } catch {
       return;
     }
@@ -192,6 +244,94 @@ function Register({ setIsLogin, setSuccessMsg }) {
             </label>
           </div>
         </div>
+
+        {role === "Patient" ? (
+          <div className="grid grid-cols-2 gap-4">
+            <AuthInput
+              label="Birth Date"
+              type="date"
+              autoComplete="bday"
+              error={errors.birthDate?.message}
+              {...register("birthDate", {
+                required: "Birth date is required for patient accounts",
+              })}
+            />
+            <div>
+              <label className="mb-2 block text-sm font-bold text-slate-700">
+                Gender
+              </label>
+              <select
+                className="block w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                {...register("gender", {
+                  required: "Gender is required for patient accounts",
+                })}
+              >
+                <option value="">Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+              {errors.gender?.message ? (
+                <p className="mt-2 text-xs font-semibold text-red-500">
+                  {errors.gender.message}
+                </p>
+              ) : null}
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div>
+              <label className="mb-2 block text-sm font-bold text-slate-700">
+                Professional Bio
+              </label>
+              <textarea
+                rows={4}
+                placeholder="Tell patients about your herbal practice and expertise"
+                className="block w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-900 outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                {...register("bio", {
+                  required: "Bio is required for herbalist accounts",
+                  minLength: {
+                    value: 20,
+                    message: "Bio should be at least 20 characters",
+                  },
+                })}
+              />
+              {errors.bio?.message ? (
+                <p className="mt-2 text-xs font-semibold text-red-500">
+                  {errors.bio.message}
+                </p>
+              ) : null}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <AuthInput
+                label="Available From"
+                type="time"
+                error={errors.availableFrom?.message}
+                {...register("availableFrom", {
+                  required: "Start time is required",
+                })}
+              />
+              <AuthInput
+                label="Available To"
+                type="time"
+                error={errors.availableTo?.message}
+                {...register("availableTo", {
+                  required: "End time is required",
+                  validate: (value) => {
+                    if (!value || !availableFrom) {
+                      return true;
+                    }
+
+                    return (
+                      value > availableFrom ||
+                      "Available to time must be after available from time"
+                    );
+                  },
+                })}
+              />
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-4">
           <AuthInput

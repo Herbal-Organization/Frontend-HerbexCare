@@ -54,7 +54,7 @@ export const endAuthSession = async () => {
 
 export const getPostLoginRoute = (role) => {
   if (role === "Patient") {
-    return "/patient/dashboard/profile";
+    return "/patient/dashboard";
   }
 
   if (role === "Herbalist") {

@@ -9,20 +9,20 @@ import { filterRecipes } from "../services/recipes";
 
 const RECIPES_PER_PAGE = 8;
 
-function BrowseRecipe() {
+function RecipesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const { recipes, isLoading, error, reload } = useRecipes();
 
   const filteredRecipes = useMemo(
     () => filterRecipes(recipes, searchTerm),
-    [recipes, searchTerm],
+    [recipes, searchTerm]
   );
 
   const totalPages = Math.max(1, Math.ceil(filteredRecipes.length / RECIPES_PER_PAGE));
   const paginatedRecipes = filteredRecipes.slice(
     (currentPage - 1) * RECIPES_PER_PAGE,
-    currentPage * RECIPES_PER_PAGE,
+    currentPage * RECIPES_PER_PAGE
   );
 
   const handleSearchChange = (value) => {
@@ -35,8 +35,8 @@ function BrowseRecipe() {
       <PatientNavbar />
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <BrowseFilters
-          title="Discover Natural Remedies"
-          description="Browse all herbal recipes from the database and search by recipe text, herb names, or conditions."
+          title="Recipe Library"
+          description="Browse every recipe returned by the recipes endpoint and search instantly."
           searchTerm={searchTerm}
           onSearchChange={handleSearchChange}
           resultCount={filteredRecipes.length}
@@ -60,4 +60,4 @@ function BrowseRecipe() {
   );
 }
 
-export default BrowseRecipe;
+export default RecipesPage;

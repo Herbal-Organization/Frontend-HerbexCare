@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-import {
-  Routes,
-  Route,
-  Navigate,
-  useNavigate,
-} from "react-router-dom";
-import { FaSignOutAlt } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { isAuthenticated, getUserFromToken, logout, getUserRole } from "../../../utils/auth";
 import PatientProfile from "./PatientProfile";
 import PatientSidebar from "./PatientSidebar";
 import PatientDashboardOverview from "./PatientDashboardOverview";
+import PatientTopBar from "./PatientTopBar";
+import usePatientDashboardData from "../../../hooks/usePatientDashboardData";
+import {
+  buildPatientDashboardUser,
+  getPersistedPatientUser,
+} from "../../../services/patientProfile";
 
 function PatientDashboard() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => getPersistedPatientUser());
 
   useEffect(() => {
     const checkAuth = () => {
@@ -30,7 +30,14 @@ function PatientDashboard() {
         return;
       }
 
-      setUser(userData);
+      setUser((currentUser) =>
+        buildPatientDashboardUser({
+          authUser: {
+            ...currentUser,
+            ...userData,
+          },
+        }),
+      );
     };
 
     checkAuth();
@@ -39,6 +46,26 @@ function PatientDashboard() {
   const handleLogout = async () => {
     await logout();
   };
+
+  const {
+    data: dashboardData,
+    isLoading: isDashboardLoading,
+    error: dashboardError,
+    reload: reloadDashboard,
+  } = usePatientDashboardData(user?.userId || user?.id);
+
+  useEffect(() => {
+    if (!dashboardData?.userDetails) {
+      return;
+    }
+
+    setUser((currentUser) =>
+      buildPatientDashboardUser({
+        authUser: currentUser,
+        userDetails: dashboardData.userDetails,
+      }),
+    );
+  }, [dashboardData?.userDetails]);
 
   if (!user) {
     return (
@@ -50,17 +77,37 @@ function PatientDashboard() {
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-900">
-      <PatientSidebar user={user} />
+      <PatientSidebar user={user} onLogout={handleLogout} />
+      
 
       <div className="flex-1 ml-72 flex flex-col min-h-screen">
-        
+        {/* <PatientTopBar /> */}
+
         <main className="flex-1 bg-slate-50">
           <Routes>
             <Route
               path="/"
-              element={<PatientDashboardOverview user={user} />}
+              element={
+                <PatientDashboardOverview
+                  user={user}
+                  dashboardData={dashboardData}
+                  isLoading={isDashboardLoading}
+                  error={dashboardError}
+                  onRetry={reloadDashboard}
+                />
+              }
             />
-            <Route path="/profile" element={<PatientProfile user={user} />} />
+            <Route
+              path="/profile"
+              element={
+                <PatientProfile
+                  user={user}
+                  dashboardData={dashboardData}
+                  isLoading={isDashboardLoading}
+                  onProfileUpdated={reloadDashboard}
+                />
+              }
+            />
             <Route
               path="*"
               element={<Navigate to="/patient/dashboard" replace />}
@@ -72,15 +119,6 @@ function PatientDashboard() {
           </div>
         </main>
       </div>
-
-      <button
-        type="button"
-        onClick={handleLogout}
-        className="fixed bottom-6 left-80 flex items-center gap-2 px-4 py-2 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-full shadow-sm hover:bg-slate-50"
-      >
-        <FaSignOutAlt className="h-4 w-4" />
-        
-      </button>
     </div>
   );
 }

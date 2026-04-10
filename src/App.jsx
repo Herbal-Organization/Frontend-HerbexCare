@@ -1,50 +1,43 @@
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./component/Navbar";
-import HeroSection from "./component/HeroSection";
-import StepsSection from "./component/StepsSection";
-import RecipesSection from "./component/RecipesSection";
-import NewsletterSection from "./component/NewsletterSection";
-import Footer from "./component/Footer";
 import AuthPage from "./pages/AuthPage";
 import ForgetPassword from "./component/auth/ForgetPassword";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import PatientDashboard from "./pages/dashboard/patient/PatientDashboard";
 import HerbalistDashboard from "./pages/dashboard/herbalist/HerbalistDashboard";
 import BrowseRecipe from "./pages/BrowseRecipe";
+import RecipesPage from "./pages/RecipesPage";
+import HerbsPage from "./pages/HerbsPage";
+import RecipeDetailsPage from "./pages/RecipeDetailsPage";
+import HerbDetailsPage from "./pages/HerbDetailsPage";
+import LandingPage from "./pages/LandingPage";
 import { Toaster } from 'react-hot-toast';
 
-function LandingPage() {
-  return (
-    <>
-      <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-slate-100">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <Navbar />
-        </div>
-      </header>
-      <main className="flex-1">
-        <HeroSection />
-        <StepsSection />
-        <RecipesSection />
-        <NewsletterSection />
-      </main>
-      <Footer />
-    </>
-  );
-}
+
 
 function App() {
   return (
     <div className="min-h-screen flex flex-col font-sans">
+      <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
-        <Route path="/patient/home" element={<BrowseRecipe />} />
         <Route path="/forget" element={<ForgetPassword />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/patient/dashboard/*" element={<PatientDashboard />} />
-        <Route path="/herbalist/dashboard/*" element={<HerbalistDashboard />} />
+
+        <Route element={<ProtectedRoute allowedRoles={["Patient"]} />}>
+          <Route path="/patient/home" element={<BrowseRecipe />} />
+          <Route path="/patient/home/herbs" element={<HerbsPage />} />
+          <Route path="/patient/home/herbs/:herbId" element={<HerbDetailsPage />} />
+          <Route path="/patient/home/recipes" element={<RecipesPage />} />
+          <Route path="/patient/home/recipes/:recipeId" element={<RecipeDetailsPage />} />
+          <Route path="/patient/dashboard/*" element={<PatientDashboard />} />
+        </Route>
+
+        <Route element={<ProtectedRoute allowedRoles={["Herbalist"]} />}>
+          <Route path="/herbalist/dashboard/*" element={<HerbalistDashboard />} />
+        </Route>
       </Routes>
-      <Toaster position="top-right" />
     </div>
   );
 }

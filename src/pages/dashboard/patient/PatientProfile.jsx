@@ -1,175 +1,69 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { FaUser, FaMapMarkerAlt, FaCity, FaHeartbeat, FaStreetView } from "react-icons/fa";
+import { useEffect, useMemo } from "react";
+import { FaUser, FaMapMarkerAlt, FaCity, FaHeartbeat, FaStreetView, FaVenusMars, FaBirthdayCake } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import ProfileLayout from "../ProfileLayout";
+import PatientDashboardState from "../../../components/patient/PatientDashboardState";
+import usePatientProfileForm from "../../../hooks/usePatientProfileForm";
+import {
+  DEFAULT_ADDRESS,
+  DEFAULT_MEDICAL_HISTORY,
+  DEFAULT_PATIENT_INFO,
+  MEDICAL_CONDITIONS,
+} from "../../../services/patientProfile";
 
-const API_BASE_URL =
-  "https://herbal-api-v1-geg9dub2brgee4ag.austriaeast-01.azurewebsites.net";
+function PatientProfile({ user, dashboardData, isLoading, onProfileUpdated }) {
+  const initialProfile = useMemo(
+    () =>
+      dashboardData?.profile ?? {
+        ...DEFAULT_PATIENT_INFO,
+        ...DEFAULT_ADDRESS,
+        ...DEFAULT_MEDICAL_HISTORY,
+      },
+    [dashboardData?.profile],
+  );
 
-function PatientProfile({ user }) {
-  const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [profileData, setProfileData] = useState({
-    governorate: "",
-    city: "",
-    street: "",
-    diabetes: false,
-    hypertension: false,
-    asthma: false,
-    heartDisease: false,
-    kidneyDisease: false,
-    liverDisease: false,
-    smoker: false,
-    pregnancy: false,
-    otherNotes: "",
+  const {
+    profile,
+    isSaving,
+    saveError,
+    setProfile,
+    updateField,
+    save,
+  } = usePatientProfileForm(initialProfile, {
+    onSaved: onProfileUpdated,
   });
 
-  const loadProfileData = async () => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("accessToken");
-      const headers = { Authorization: `Bearer ${token}` };
-
-      // Make sure we have a user ID to fetch user data
-      const fetchDataPromises = [];
-      
-      if (user?.userId || user?.id) {
-        const idToFetch = user.userId || user.id;
-        fetchDataPromises.push(
-          axios.get(`${API_BASE_URL}/api/Users/get/${idToFetch}`, { headers }).catch(e => ({ error: true, data: null }))
-        );
-      } else {
-        fetchDataPromises.push(Promise.resolve({ error: true, data: null })); // Dummy for user
-      }
-
-      // Fetch medical history
-      fetchDataPromises.push(
-        axios.get(`${API_BASE_URL}/api/MedicalHistories/me`, { headers }).catch(e => ({ error: true, data: null }))
-      );
-
-      const [userResponse, medicalResponse] = await Promise.all(fetchDataPromises);
-
-      setProfileData((prev) => {
-        let newData = { ...prev };
-        
-        if (!userResponse.error && userResponse.data) {
-          newData = {
-            ...newData,
-            governorate: userResponse.data.governorate || "",
-            city: userResponse.data.city || "",
-            street: userResponse.data.street || "",
-          };
-        }
-
-        if (!medicalResponse.error && medicalResponse.data) {
-          newData = {
-            ...newData,
-            diabetes: medicalResponse.data.diabetes || false,
-            hypertension: medicalResponse.data.hypertension || false,
-            asthma: medicalResponse.data.asthma || false,
-            heartDisease: medicalResponse.data.heartDisease || false,
-            kidneyDisease: medicalResponse.data.kidneyDisease || false,
-            liverDisease: medicalResponse.data.liverDisease || false,
-            smoker: medicalResponse.data.smoker || false,
-            pregnancy: medicalResponse.data.pregnancy || false,
-            otherNotes: medicalResponse.data.otherNotes || "",
-          };
-        }
-
-        return newData;
-      });
-    } catch (err) {
-      console.log("Error loading profile data:", err);
-    }
-    setLoading(false);
-  };
-
   useEffect(() => {
-    const fetchProfileData = async () => {
-      await loadProfileData();
-    };
+    setProfile(initialProfile);
+  }, [initialProfile, setProfile]);
 
-    fetchProfileData();
-  }, []);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const didSave = await save();
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setProfileData({
-      ...profileData,
-      [name]: type === "checkbox" ? checked : value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSaving(true);
-
-    try {
-      const token = localStorage.getItem("accessToken");
-      
-      const addressPayload = {
-        governorate: profileData.governorate,
-        city: profileData.city,
-        street: profileData.street,
-      };
-
-      const medicalHistoryPayload = {
-        diabetes: profileData.diabetes,
-        hypertension: profileData.hypertension,
-        asthma: profileData.asthma,
-        heartDisease: profileData.heartDisease,
-        kidneyDisease: profileData.kidneyDisease,
-        liverDisease: profileData.liverDisease,
-        smoker: profileData.smoker,
-        pregnancy: profileData.pregnancy,
-        otherNotes: profileData.otherNotes,
-      };
-
-      // Update address
-      await axios.patch(
-        `${API_BASE_URL}/api/Users/update-my-address`,
-        addressPayload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      // Add/Update medical history
-      await axios.post(
-        `${API_BASE_URL}/api/MedicalHistories/me`,
-        medicalHistoryPayload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
+    if (didSave) {
       toast.success("Profile updated successfully!");
-    } catch (err) {
-      if (err.response) {
-        const data = err.response.data || {};
-        toast.error(
-          data.message ||
-            data.title ||
-            "Failed to update profile. Please try again.",
-        );
-      } else {
-        toast.error("Network error. Please ensure the backend server is running.");
-      }
-      console.error(err);
+      return;
     }
 
-    setSaving(false);
+    toast.error(saveError || "Failed to update profile. Please try again.");
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-96">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!dashboardData?.profile) {
+    return (
+      <div className="p-6">
+        <PatientDashboardState
+          title="Profile data is unavailable"
+          description="We couldn't load your address and medical history yet."
+        />
       </div>
     );
   }
@@ -178,16 +72,22 @@ function PatientProfile({ user }) {
     <ProfileLayout
       title="Patient Profile"
       subtitle="Manage your personal information and wellness preferences"
-      saving={saving}
+      saving={isSaving}
       onSubmit={handleSubmit}
     >
+      {saveError ? (
+        <div className="mb-6 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+          {saveError}
+        </div>
+      ) : null}
+
       {/* Profile photo */}
       <div className="mb-8 rounded-xl border border-slate-200 bg-slate-50 px-6 py-5 flex flex-col md:flex-row items-center md:items-stretch gap-6">
         <div className="flex items-center justify-center">
           <div className="h-24 w-24 rounded-full bg-emerald-100 overflow-hidden flex items-center justify-center text-emerald-500 text-3xl font-semibold shadow-sm">
-            {profileData.photoUrl ? (
+            {profile.photoUrl ? (
               <img
-                src={profileData.photoUrl}
+                src={profile.photoUrl}
                 alt="Profile photo"
                 className="h-full w-full object-cover"
               />
@@ -216,16 +116,14 @@ function PatientProfile({ user }) {
                   const file = e.target.files?.[0];
                   if (!file) return;
                   const url = URL.createObjectURL(file);
-                  setProfileData((prev) => ({ ...prev, photoUrl: url }));
+                  setProfile((prev) => ({ ...prev, photoUrl: url }));
                 }}
               />
             </label>
-            {profileData.photoUrl && (
+            {profile.photoUrl && (
               <button
                 type="button"
-                onClick={() =>
-                  setProfileData((prev) => ({ ...prev, photoUrl: "" }))
-                }
+                onClick={() => setProfile((prev) => ({ ...prev, photoUrl: "" }))}
                 className="text-sm font-semibold text-slate-500 hover:text-slate-700"
               >
                 Remove
@@ -277,6 +175,53 @@ function PatientProfile({ user }) {
         </div>
       </div>
 
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+          <FaVenusMars className="text-primary" />
+          Patient Information
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Birth Date
+            </label>
+            <div className="relative">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                <FaBirthdayCake className="text-slate-400 text-lg" />
+              </div>
+              <input
+                type="date"
+                name="birthDate"
+                value={profile.birthDate}
+                onChange={updateField}
+                className="block w-full rounded-xl border-slate-200 py-3 pl-12 pr-4 outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 text-sm border font-medium"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Gender
+            </label>
+            <div className="relative">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                <FaVenusMars className="text-slate-400 text-lg" />
+              </div>
+              <select
+                name="gender"
+                value={profile.gender}
+                onChange={updateField}
+                className="block w-full appearance-none rounded-xl border-slate-200 bg-white py-3 pl-12 pr-4 outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 text-sm border font-medium"
+              >
+                <option value="">Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Additional Information (Editable) */}
       <div className="mb-8">
         <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
@@ -295,8 +240,8 @@ function PatientProfile({ user }) {
               <input
                 type="text"
                 name="governorate"
-                value={profileData.governorate}
-                onChange={handleChange}
+                value={profile.governorate}
+                onChange={updateField}
                 placeholder="Enter your address"
                 className="block w-full rounded-xl border-slate-200 py-3 pl-12 pr-4 outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 text-sm border font-medium"
               />
@@ -313,8 +258,8 @@ function PatientProfile({ user }) {
               <input
                 type="text"
                 name="city"
-                value={profileData.city}
-                onChange={handleChange}
+                value={profile.city}
+                onChange={updateField}
                 placeholder="Enter your city"
                 className="block w-full rounded-xl border-slate-200 py-3 pl-12 pr-4 outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 text-sm border font-medium"
               />
@@ -332,8 +277,8 @@ function PatientProfile({ user }) {
               <input
                 type="text"
                 name="street"
-                value={profileData.street}
-                onChange={handleChange}
+                value={profile.street}
+                onChange={updateField}
                 placeholder="Enter your street"
                 className="block w-full rounded-xl border-slate-200 py-3 pl-12 pr-4 outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 text-sm border font-medium"  
               />
@@ -350,22 +295,13 @@ function PatientProfile({ user }) {
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[
-            { name: "diabetes", label: "Diabetes" },
-            { name: "hypertension", label: "Hypertension" },
-            { name: "asthma", label: "Asthma" },
-            { name: "heartDisease", label: "Heart Disease" },
-            { name: "kidneyDisease", label: "Kidney Disease" },
-            { name: "liverDisease", label: "Liver Disease" },
-            { name: "smoker", label: "Smoker" },
-            { name: "pregnancy", label: "Pregnancy" },
-          ].map((condition) => (
+          {MEDICAL_CONDITIONS.map((condition) => (
             <label key={condition.name} className="inline-flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 bg-slate-50 cursor-pointer hover:bg-slate-100">
               <input
                 type="checkbox"
                 name={condition.name}
-                checked={profileData[condition.name]}
-                onChange={handleChange}
+                checked={profile[condition.name]}
+                onChange={updateField}
                 className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
               />
               <span className="text-sm font-medium text-slate-800">{condition.label}</span>
@@ -378,8 +314,8 @@ function PatientProfile({ user }) {
             </label>
             <textarea
               name="otherNotes"
-              value={profileData.otherNotes}
-              onChange={handleChange}
+              value={profile.otherNotes}
+              onChange={updateField}
               placeholder="Describe any other medical conditions or notes"
               className="block w-full rounded-xl border-slate-200 px-4 py-3 outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 text-sm border font-medium"
               rows="3"
