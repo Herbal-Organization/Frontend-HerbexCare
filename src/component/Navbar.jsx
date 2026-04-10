@@ -1,11 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {IoMenu} from "react-icons/io5";
+import { motion } from "motion/react";
+
+const MotionDiv = motion.div;
 
 function Navbar() {
   return (
-    <>
-      <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+    <MotionDiv
+      className="flex w-full items-center justify-between"
+      initial={{ opacity: 0, y: -16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, ease: "easeOut" }}
+    >
+      <Link to="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
         <div className="flex items-center justify-center bg-primary rounded-lg p-1.5 text-white">
           <img
             src="https://www.svgrepo.com/show/312326/herb.svg"
@@ -17,25 +24,17 @@ function Navbar() {
           Herbal Care
         </h2>
       </Link>
-      <div className="hidden md:flex flex-1 justify-end items-center gap-8">
-        <nav className="flex items-center gap-8">
-          <Link
-            className="text-slate-600 hover:text-primary transition-colors text-sm font-bold"
-            to="/auth"
-          >
-            Login/Register
-          </Link>
-        </nav>
-        <Link to="/auth" className="flex min-w-[120px] cursor-pointer items-center justify-center rounded-xl h-11 px-5 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20 hover:-translate-y-0.5 hover:shadow-primary/40 transition-all">
-          <span>Get Started</span>
+
+      <div className="flex items-center gap-3">
+
+        <Link
+          to="/auth"
+          className="inline-flex h-10 items-center justify-center rounded-xl bg-primary px-4 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 hover:shadow-primary/40"
+        >
+          Get Started
         </Link>
       </div>
-      <button className="md:hidden flex items-center justify-center text-slate-900">
-        <span className="text-3xl">
-          <IoMenu />
-        </span>
-      </button>
-    </>
+    </MotionDiv>
   );
 }
 

@@ -9,7 +9,6 @@ import AuthPage from "./pages/AuthPage";
 import ForgetPassword from "./component/auth/ForgetPassword";
 import PatientDashboard from "./pages/dashboard/patient/PatientDashboard";
 import HerbalistDashboard from "./pages/dashboard/herbalist/HerbalistDashboard";
-import BrowseRecipe from "./pages/BrowseRecipe";
 import { Toaster } from 'react-hot-toast';
 
 function LandingPage() {
@@ -33,11 +32,10 @@ function LandingPage() {
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col font-sans">
+    <div className="min-h-screen flex flex-col font-sans scroll-smooth">
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
-        <Route path="/patient/home" element={<BrowseRecipe />} />
         <Route path="/forget" element={<ForgetPassword />} />
         <Route path="/patient/dashboard/*" element={<PatientDashboard />} />
         <Route path="/herbalist/dashboard/*" element={<HerbalistDashboard />} />

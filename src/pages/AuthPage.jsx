@@ -37,6 +37,13 @@ function AuthPage() {
       <div className="flex-1 flex flex-col justify-center px-4 py-8 sm:px-6 lg:flex-none lg:px-20 xl:px-24 bg-white shadow-[-20px_0_40px_-15px_rgba(0,0,0,0.05)] relative z-20 w-full lg:w-7/12 overflow-y-auto">
         <div className="mx-auto w-full max-w-md lg:w-md">
           <div>
+            <Link
+              to="/"
+              className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition-colors hover:text-primary"
+            >
+              <span aria-hidden="true">←</span>
+              Back to Home
+            </Link>
             <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
               {isLogin ? "Welcome back" : "Create an account"}
             </h2>

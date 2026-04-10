@@ -1,5 +1,9 @@
 import {FaArrowRightLong} from "react-icons/fa6";
 import {MdSchedule} from "react-icons/md";
+import { motion } from "motion/react";
+import { Link } from "react-router-dom";
+
+const MotionDiv = motion.div;
 
 function RecipesSection() {
   const recipes = [
@@ -35,20 +39,30 @@ function RecipesSection() {
 
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-        <div>
+      <MotionDiv
+        className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4"
+        initial={{ opacity: 0, y: 18 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ duration: 0.45 }}
+      >
+        <div className="max-w-xl">
           <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Featured AI Recipes</h2>
-          <p className="text-slate-600">Discover what our community is brewing this week.</p>
+          <p className="text-slate-600">Discover what our community is brewing this week, then explore full collections tailored to your goals.</p>
         </div>
-        <a href="#" className="flex items-center text-primary font-bold text-sm hover:underline group">
-          View All 
-          <FaArrowRightLong className="text-base ml-1 transition-transform group-hover:translate-x-1" />
-        </a>
-      </div>
+        
+      </MotionDiv>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {recipes.map((recipe, idx) => (
-          <div key={idx} className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 flex flex-col transition-shadow hover:shadow-md">
+          <MotionDiv
+            key={idx}
+            className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 flex flex-col transition-shadow hover:shadow-md"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.22 }}
+            transition={{ duration: 0.4, delay: idx * 0.08 }}
+          >
             <div className="h-48 w-full overflow-hidden">
               <img 
                 src={recipe.image} 
@@ -73,11 +87,14 @@ function RecipesSection() {
                 {recipe.description}
               </p>
               
-              <button className="w-full py-2.5 bg-primary-light/50 hover:bg-primary-light text-primary font-bold text-sm rounded-xl transition-colors">
+              <Link
+                to="/auth"
+                className="inline-flex w-full items-center justify-center py-2.5 bg-primary-light/50 hover:bg-primary-light text-primary font-bold text-sm rounded-xl transition-colors"
+              >
                 View Recipe
-              </button>
+              </Link>
             </div>
-          </div>
+          </MotionDiv>
         ))}
       </div>
     </section>
