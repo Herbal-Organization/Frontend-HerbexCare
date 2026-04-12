@@ -1,6 +1,6 @@
 import React from "react";
 import { MdPhotoCamera } from "react-icons/md";
-import { FaShareAltSquare } from "react-icons/fa";
+import { FaLeaf, FaShareAltSquare } from "react-icons/fa";
 import { GrLanguage } from "react-icons/gr";
 import { motion } from "motion/react";
 
@@ -21,11 +21,7 @@ function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-6">
               <div className="flex items-center justify-center bg-primary rounded-xl p-2 text-white shadow-md">
-                <img
-                  src="https://www.svgrepo.com/show/312326/herb.svg"
-                  alt="Herb Logo"
-                  className="w-6 h-6"
-                />
+                <FaLeaf className="text-xl" />
               </div>
               <h2 className="text-slate-900 text-2xl font-bold tracking-tight">
                 Herbal Care

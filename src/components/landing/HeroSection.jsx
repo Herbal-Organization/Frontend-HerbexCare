@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
+import heroImg from "../../assets/hero_herbal_wellness.png";
 
 const MotionDiv = motion.div;
 const MotionH1 = motion.h1;
@@ -89,7 +90,7 @@ function HeroSection() {
         >
           <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-tr from-primary-light to-white overflow-hidden shadow-2xl">
             <img
-              src="/hero_herbal_wellness_1772812658981.png"
+              src={heroImg}
               alt="Herbs and spices in wooden bowls"
               className="absolute inset-0 w-full h-full object-cover"
             />

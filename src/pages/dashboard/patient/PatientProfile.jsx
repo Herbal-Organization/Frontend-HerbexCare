@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react";
 import { FaUser, FaMapMarkerAlt, FaCity, FaHeartbeat, FaStreetView, FaVenusMars, FaBirthdayCake, FaCamera } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { motion } from "motion/react";
-import ProfileLayout from "../ProfileLayout";
+import ProfileLayout from "../../../components/shared/ProfileLayout";
 import PatientDashboardState from "../../../components/patient/PatientDashboardState";
 import usePatientProfileForm from "../../../hooks/usePatientProfileForm";
 import {

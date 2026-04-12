@@ -3,12 +3,12 @@ import { useForm, useWatch } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosMail } from "react-icons/io";
 import { FaLock } from "react-icons/fa";
-import { resetPasswordAccount } from "../api/accounts";
-import AuthAlert from "../components/auth/AuthAlert";
-import AuthInput from "../components/auth/AuthInput";
-import AuthPageLayout from "../components/auth/AuthPageLayout";
-import AuthSubmitButton from "../components/auth/AuthSubmitButton";
-import useAsyncAction from "../hooks/useAsyncAction";
+import { resetPasswordAccount } from "../../api/accounts";
+import AuthAlert from "../../components/auth/AuthAlert";
+import AuthInput from "../../components/auth/AuthInput";
+import AuthPageLayout from "../../components/auth/AuthPageLayout";
+import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
+import useAsyncAction from "../../hooks/useAsyncAction";
 
 function ResetPasswordPage() {
   const navigate = useNavigate();

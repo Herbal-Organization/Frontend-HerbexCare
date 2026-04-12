@@ -24,34 +24,15 @@ const formatNumber = (value, digits = 1) => {
   return Number(value).toFixed(digits);
 };
 
-const buildRecipeTitle = (recipe) => {
-  const firstDisease = recipe.targetedDiseases?.[0]?.diseaseName;
-  const firstHerb = recipe.herbs?.[0]?.herbName;
-
-  if (firstDisease && firstHerb) {
-    return `${firstHerb} blend for ${firstDisease}`;
-  }
-
-  if (firstDisease) {
-    return `${firstDisease} support recipe`;
-  }
-
-  if (firstHerb) {
-    return `${firstHerb} herbal recipe`;
-  }
-
-  return `Herbal Recipe #${recipe.recipeId}`;
-};
-
 export const normalizeRecipe = (recipe) => ({
   id: recipe.recipeId,
   herbalistId: recipe.herbalistId ?? null,
-  title: buildRecipeTitle(recipe),
+  title: recipe.description || "Untitled Recipe",
   description:
-    recipe.description ||
     recipe.instructions ||
-    "No recipe description is available yet.",
+    "No preparation instructions available.",
   instructions: recipe.instructions || "No preparation instructions available.",
+  price: recipe.price ?? 0,
   herbs: recipe.herbs ?? [],
   targetedDiseases: recipe.targetedDiseases ?? [],
   createdByAI: Boolean(recipe.createdByAI),

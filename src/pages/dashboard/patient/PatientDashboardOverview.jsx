@@ -14,7 +14,13 @@ const containerVariants = {
   },
 };
 
-function PatientDashboardOverview({ user, dashboardData, isLoading, error, onRetry }) {
+function PatientDashboardOverview({
+  user,
+  dashboardData,
+  isLoading,
+  error,
+  onRetry,
+}) {
   if (isLoading) {
     return (
       <div className="p-8">
@@ -63,7 +69,7 @@ function PatientDashboardOverview({ user, dashboardData, isLoading, error, onRet
   const { profile } = dashboardData;
 
   return (
-    <motion.div 
+    <motion.div
       variants={containerVariants}
       initial="hidden"
       animate="visible"

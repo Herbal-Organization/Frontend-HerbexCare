@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FaLeaf, FaBell, FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
+import {
+  FaLeaf,
+  FaBell,
+  FaUserCircle,
+  FaBars,
+  FaTimes,
+  FaSignOutAlt,
+} from "react-icons/fa";
 import { getUserFromToken, logout } from "../../utils/auth";
 
 function PatientNavbar() {
@@ -78,7 +85,9 @@ function PatientNavbar() {
                 <p className="text-sm font-medium text-slate-900">
                   {user?.name || "User"}
                 </p>
-                <p className="text-xs text-slate-500">{user?.email || "Patient"}</p>
+                <p className="text-xs text-slate-500">
+                  {user?.email || "Patient"}
+                </p>
               </div>
               <Link
                 to="/patient/dashboard/profile"
@@ -91,9 +100,10 @@ function PatientNavbar() {
             {/* Logout Button */}
             <button
               onClick={handleLogout}
-              className="hidden sm:flex px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-primary hover:bg-slate-50 transition-colors"
+              className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-colors"
             >
-              Logout
+              <FaSignOutAlt className="text-lg" />
+              <span>Logout</span>
             </button>
 
             {/* Mobile Menu Toggle */}
@@ -133,9 +143,10 @@ function PatientNavbar() {
                   setIsMobileMenuOpen(false);
                   handleLogout();
                 }}
-                className="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-primary hover:bg-slate-50 transition-colors text-left"
+                className="flex items-center gap-2 w-full px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-colors text-left"
               >
-                Logout
+                <FaSignOutAlt className="text-lg" />
+                <span>Logout</span>
               </button>
             </nav>
           </div>

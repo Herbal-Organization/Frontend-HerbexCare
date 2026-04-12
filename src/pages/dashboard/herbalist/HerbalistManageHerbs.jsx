@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { FaLeaf, FaUpload, FaPen, FaTrash } from "react-icons/fa";
 import { toast } from "react-hot-toast";
-import ProfileLayout from "../ProfileLayout";
+import ProfileLayout from "../../../components/shared/ProfileLayout";
 import {
   createHerb,
   getAllHerbs,
@@ -20,7 +20,7 @@ const INITIAL_FORM = {
   image: null,
 };
 
-function HerbalistManageHerbs({ user }) {
+function HerbalistManageHerbs({ user, dashboardData }) {
   const [form, setForm] = useState(INITIAL_FORM);
   const [editingHerbId, setEditingHerbId] = useState(null);
   const [existingHerbs, setExistingHerbs] = useState([]);
@@ -29,13 +29,26 @@ function HerbalistManageHerbs({ user }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState("");
 
+  const herbalistId = useMemo(() => {
+    return dashboardData?.herbalistProfile?.id || user?.id;
+  }, [dashboardData?.herbalistProfile?.id, user?.id]);
+
   const imageName = useMemo(() => form.image?.name || "", [form.image]);
 
   const loadHerbs = async () => {
+    if (!herbalistId) return;
+    
     setIsLoading(true);
     try {
       const data = await getAllHerbs();
-      setExistingHerbs(Array.isArray(data) ? data.map(normalizeHerb) : []);
+      const allHerbs = Array.isArray(data) ? data.map(normalizeHerb) : [];
+      
+      // Filter herbs added by this herbalist
+      const myHerbs = allHerbs.filter(
+        (herb) => Number(herb.herbalistId) === Number(herbalistId)
+      );
+      
+      setExistingHerbs(myHerbs);
     } catch (err) {
       const message =
         err.response?.data?.message ||
@@ -49,7 +62,7 @@ function HerbalistManageHerbs({ user }) {
 
   useEffect(() => {
     loadHerbs();
-  }, []);
+  }, [herbalistId]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;

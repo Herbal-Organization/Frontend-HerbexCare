@@ -1,6 +1,6 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
+import logo from "../../assets/herbal_logo.svg";
 
 const MotionDiv = motion.div;
 
@@ -14,11 +14,7 @@ function Navbar() {
     >
       <Link to="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
         <div className="flex items-center justify-center bg-primary rounded-lg p-1.5 text-white">
-          <img
-            src="https://www.svgrepo.com/show/312326/herb.svg"
-            alt="Herb Logo"
-            className="w-6 h-6"
-          />
+          <img src={logo} alt="Herbal Care Logo" className="h-6 w-6 brightness-0 invert" />
         </div>
         <h2 className="text-slate-900 text-xl font-bold leading-tight tracking-tight">
           Herbal Care

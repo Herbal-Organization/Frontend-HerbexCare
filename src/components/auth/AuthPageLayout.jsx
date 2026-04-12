@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { MdEnergySavingsLeaf } from "react-icons/md";
+import leafBg from "../../assets/auth_leaf_bg.png";
 
 function AuthPageLayout({
   title,
@@ -11,7 +12,7 @@ function AuthPageLayout({
     <div className="min-h-screen flex bg-slate-50">
       <div className="hidden lg:flex flex-col justify-center items-center w-5/12 bg-primary-light/50 relative overflow-hidden p-12">
         <img
-          src="/auth_leaf_bg.png"
+          src={leafBg}
           className="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-multiply"
           alt="Leaf Background"
         />

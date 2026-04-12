@@ -5,6 +5,11 @@ export const getAllRecipes = async () => {
   return data;
 };
 
+export const getRecipesByHerbalist = async (herbalistId) => {
+  const { data } = await httpClient.get(`/api/Recipes/herbalist/${herbalistId}`);
+  return data;
+};
+
 export const createRecipe = async (payload) => {
   const { data } = await httpClient.post("/api/Recipes/add", payload);
   return data;
@@ -15,6 +20,11 @@ export const updateRecipe = async (recipeId, payload) => {
     `/api/Recipes/${recipeId}/update`,
     payload,
   );
+  return data;
+};
+
+export const deactivateRecipe = async (recipeId) => {
+  const { data } = await httpClient.put(`/api/Recipes/${recipeId}/deactivate`);
   return data;
 };
 

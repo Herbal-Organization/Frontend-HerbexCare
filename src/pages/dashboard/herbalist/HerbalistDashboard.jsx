@@ -16,7 +16,6 @@ import HerbalistManageHerbs from "./HerbalistManageHerbs";
 import HerbalistManageRecipes from "./HerbalistManageRecipes";
 import HerbalistProfile from "./HerbalistProfile";
 import Sidebar from "../../../components/herbalist/Sidebar";
-import TopBar from "../../../components/herbalist/TopBar";
 import useHerbalistDashboardData from "../../../hooks/useHerbalistDashboardData";
 import { normalizeHerbalistUser } from "../../../services/herbalistProfile";
 
@@ -91,7 +90,6 @@ function HerbalistDashboard() {
         onLogout={handleLogout}
       />
       <main className="flex-1 overflow-y-auto">
-        <TopBar />
         <div className="p-8 max-w-7xl mx-auto">
           {dashboardError ? (
             <div className="mb-6 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
@@ -117,9 +115,22 @@ function HerbalistDashboard() {
             />
             <Route
               path="/herbs"
-              element={<HerbalistManageHerbs user={user} />}
+              element={
+                <HerbalistManageHerbs
+                  user={user}
+                  dashboardData={dashboardData}
+                />
+              }
             />
-            <Route path="/recipes" element={<HerbalistManageRecipes />} />
+            <Route
+              path="/recipes"
+              element={
+                <HerbalistManageRecipes
+                  user={user}
+                  dashboardData={dashboardData}
+                />
+              }
+            />
           </Routes>
         </div>
       </main>

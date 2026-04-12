@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
-import PatientNavbar from "../component/browse/PatientNavbar";
-import BrowseFilters from "../component/browse/BrowseFilters";
-import HerbsGrid from "../component/browse/HerbsGrid";
-import Footer from "../component/Footer";
-import useHerbs from "../hooks/useHerbs";
+import PatientNavbar from "../../components/browse/PatientNavbar";
+import BrowseFilters from "../../components/browse/BrowseFilters";
+import HerbsGrid from "../../components/browse/HerbsGrid";
+import Footer from "../../components/landing/Footer";
+import useHerbs from "../../hooks/useHerbs";
 
 function HerbsPage() {
   const { herbs, isLoading, error, reload } = useHerbs();

@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
-import PatientNavbar from "../component/browse/PatientNavbar";
-import BrowseFilters from "../component/browse/BrowseFilters";
-import RecipesGrid from "../component/browse/RecipesGrid";
-import RecipesPagination from "../component/browse/RecipesPagination";
-import Footer from "../component/Footer";
-import useRecipes from "../hooks/useRecipes";
-import { filterRecipes } from "../services/recipes";
+import PatientNavbar from "../../components/browse/PatientNavbar";
+import BrowseFilters from "../../components/browse/BrowseFilters";
+import RecipesGrid from "../../components/browse/RecipesGrid";
+import RecipesPagination from "../../components/browse/RecipesPagination";
+import Footer from "../../components/landing/Footer";
+import useRecipes from "../../hooks/useRecipes";
+import { filterRecipes } from "../../services/recipes";
 
 const RECIPES_PER_PAGE = 8;
 

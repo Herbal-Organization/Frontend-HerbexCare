@@ -4,7 +4,6 @@ import { isAuthenticated, getUserFromToken, logout, getUserRole } from "../../..
 import PatientProfile from "./PatientProfile";
 import PatientSidebar from "./PatientSidebar";
 import PatientDashboardOverview from "./PatientDashboardOverview";
-import PatientTopBar from "./PatientTopBar";
 import usePatientDashboardData from "../../../hooks/usePatientDashboardData";
 import {
   buildPatientDashboardUser,
@@ -81,7 +80,6 @@ function PatientDashboard() {
       
 
       <div className="flex-1 ml-72 flex flex-col min-h-screen">
-        {/* <PatientTopBar /> */}
 
         <main className="flex-1 bg-slate-50">
           <Routes>

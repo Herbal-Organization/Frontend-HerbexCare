@@ -8,9 +8,9 @@ import {
 } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "motion/react";
-import PatientNavbar from "../component/browse/PatientNavbar";
-import Footer from "../component/Footer";
-import useHerbDetails from "../hooks/useHerbDetails";
+import PatientNavbar from "../../components/browse/PatientNavbar";
+import Footer from "../../components/landing/Footer";
+import useHerbDetails from "../../hooks/useHerbDetails";
 
 const containerVariants = {
   hidden: { opacity: 0 },

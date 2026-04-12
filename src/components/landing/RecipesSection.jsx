@@ -2,34 +2,38 @@ import {FaArrowRightLong} from "react-icons/fa6";
 import {MdSchedule} from "react-icons/md";
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
+import elderberryImg from "../../assets/recipe_elderberry.png";
+import lavenderImg from "../../assets/recipe_lavender.png";
+import mintImg from "../../assets/recipe_mint.png";
+import gingerImg from "../../assets/recipe_ginger.png";
 
 const MotionDiv = motion.div;
 
 function RecipesSection() {
   const recipes = [
     {
-      image: "/recipe_elderberry_1772812850880.png",
+      image: elderberryImg,
       tag: "IMMUNITY",
       time: "10m",
       title: "Golden Elderberry Infusion",
       description: "A potent blend designed to strengthen your natural defenses."
     },
     {
-      image: "/recipe_lavender_1772813202167.png",
+      image: lavenderImg,
       tag: "SLEEP",
       time: "15m",
       title: "Midnight Lavender Mist",
       description: "Calming aromas and herbs to prepare your body for deep rest."
     },
     {
-      image: "/recipe_mint_1772813548450.png",
+      image: mintImg,
       tag: "ENERGY",
       time: "5m",
       title: "Revitalizing Mint Tonic",
       description: "A refreshing kick to start your day without the caffeine crash."
     },
     {
-      image: "/recipe_ginger_1772813587696.png",
+      image: gingerImg,
       tag: "DIGESTION",
       time: "12m",
       title: "Ginger Root Soother",

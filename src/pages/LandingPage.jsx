@@ -1,9 +1,9 @@
-import Navbar from "../component/Navbar.jsx";
-import HeroSection from "../component/HeroSection.jsx";
-import StepsSection from "../component/StepsSection.jsx";
-import RecipesSection from "../component/RecipesSection.jsx";
-import NewsletterSection from "../component/NewsletterSection.jsx";
-import Footer from "../component/Footer.jsx";
+import Navbar from "../components/landing/Navbar.jsx";
+import HeroSection from "../components/landing/HeroSection.jsx";
+import StepsSection from "../components/landing/StepsSection.jsx";
+import RecipesSection from "../components/landing/RecipesSection.jsx";
+import NewsletterSection from "../components/landing/NewsletterSection.jsx";
+import Footer from "../components/landing/Footer.jsx";
 
 function LandingPage() {
   return (

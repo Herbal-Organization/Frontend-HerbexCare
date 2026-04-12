@@ -22,11 +22,11 @@ const formatTimeForApi = (value) => {
   const normalizedValue = String(value).trim();
 
   if (/^\d{2}:\d{2}:\d{2}$/.test(normalizedValue)) {
-    return normalizedValue;
+    return normalizedValue.substring(0, 5);
   }
 
   if (/^\d{2}:\d{2}$/.test(normalizedValue)) {
-    return `${normalizedValue}:00`;
+    return normalizedValue;
   }
 
   return normalizedValue;
@@ -80,6 +80,7 @@ export const normalizeHerbalistProfile = (profile = {}) => {
   };
 
   return {
+    id: pickFirstDefined(resolvedProfile.id, resolvedProfile.herbalistId),
     userId: pickFirstDefined(resolvedProfile.userId, resolvedProfile.userID),
     licenseNumber: pickFirstDefined(resolvedProfile.licenseNumber),
     averageRating: pickFirstDefined(resolvedProfile.averageRating),
@@ -108,19 +109,11 @@ export const getHerbalistDashboardData = async (userId) => {
 };
 
 export const saveHerbalistProfile = async (profile) => {
-  const payload = {};
-
-  if (profile.bio !== undefined) {
-    payload.bio = profile.bio?.trim() || "";
-  }
-
-  if (profile.availableFrom) {
-    payload.availableFrom = formatTimeForApi(profile.availableFrom);
-  }
-
-  if (profile.availableTo) {
-    payload.availableTo = formatTimeForApi(profile.availableTo);
-  }
+  const payload = {
+    bio: profile.bio?.trim() || "",
+    availableFrom: formatTimeForApi(profile.availableFrom),
+    availableTo: formatTimeForApi(profile.availableTo),
+  };
 
   await updateMyHerbalistProfile(payload);
   storeHerbalistProfile({

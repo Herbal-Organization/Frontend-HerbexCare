@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import Login from "../component/auth/Login";
-import Register from "../component/auth/Register";
+import Login from "../../components/auth/Login";
+import Register from "../../components/auth/Register";
 import { FaCircleCheck } from "react-icons/fa6";
-import AuthPageLayout from "../components/auth/AuthPageLayout";
+import AuthPageLayout from "../../components/auth/AuthPageLayout";
 
 function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);

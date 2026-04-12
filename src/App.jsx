@@ -1,16 +1,16 @@
 import { Routes, Route } from "react-router-dom";
-import AuthPage from "./pages/AuthPage";
-import ForgetPassword from "./component/auth/ForgetPassword";
+import AuthPage from "./pages/auth/AuthPage";
+import ForgetPassword from "./components/auth/ForgetPassword";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import PatientDashboard from "./pages/dashboard/patient/PatientDashboard";
 import HerbalistDashboard from "./pages/dashboard/herbalist/HerbalistDashboard";
 
-import BrowseRecipe from "./pages/BrowseRecipe";
-import RecipesPage from "./pages/RecipesPage";
-import HerbsPage from "./pages/HerbsPage";
-import RecipeDetailsPage from "./pages/RecipeDetailsPage";
-import HerbDetailsPage from "./pages/HerbDetailsPage";
+import BrowseRecipe from "./pages/browse/BrowseRecipe";
+import RecipesPage from "./pages/browse/RecipesPage";
+import HerbsPage from "./pages/browse/HerbsPage";
+import RecipeDetailsPage from "./pages/browse/RecipeDetailsPage";
+import HerbDetailsPage from "./pages/browse/HerbDetailsPage";
 import LandingPage from "./pages/LandingPage";
 
 import { Toaster } from "react-hot-toast";
