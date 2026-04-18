@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
-import logo from "../../assets/herbal_logo.svg";
+import { FaLeaf } from "react-icons/fa";
 
 const MotionDiv = motion.div;
 
@@ -12,9 +12,12 @@ function Navbar() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: "easeOut" }}
     >
-      <Link to="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
+      <Link
+        to="/"
+        className="flex items-center gap-2 transition-opacity hover:opacity-80"
+      >
         <div className="flex items-center justify-center bg-primary rounded-lg p-1.5 text-white">
-          <img src={logo} alt="Herbal Care Logo" className="h-6 w-6 brightness-0 invert" />
+          <FaLeaf className="text-xl" />
         </div>
         <h2 className="text-slate-900 text-xl font-bold leading-tight tracking-tight">
           Herbal Care
@@ -22,7 +25,6 @@ function Navbar() {
       </Link>
 
       <div className="flex items-center gap-3">
-
         <Link
           to="/auth"
           className="inline-flex h-10 items-center justify-center rounded-xl bg-primary px-4 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 hover:shadow-primary/40"

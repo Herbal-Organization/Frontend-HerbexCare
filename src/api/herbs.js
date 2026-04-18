@@ -77,3 +77,8 @@ export const getHerbWithHerbalist = async (herbId) => {
   const { data } = await httpClient.get(`/api/Herbs/${herbId}/with-herbalist`);
   return data;
 };
+
+export const getHerbalistsForHerb = async (herbId) => {
+  const { data } = await httpClient.get(`/api/Herbs/${herbId}/herbalists`);
+  return data;
+};

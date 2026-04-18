@@ -6,7 +6,7 @@ import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import PatientDashboard from "./pages/dashboard/patient/PatientDashboard";
 import HerbalistDashboard from "./pages/dashboard/herbalist/HerbalistDashboard";
 
-import BrowseRecipe from "./pages/browse/BrowseRecipe";
+import PatientHome from "./pages/browse/BrowseRecipe";
 import RecipesPage from "./pages/browse/RecipesPage";
 import HerbsPage from "./pages/browse/HerbsPage";
 import RecipeDetailsPage from "./pages/browse/RecipeDetailsPage";
@@ -27,16 +27,25 @@ function App() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         <Route element={<ProtectedRoute allowedRoles={["Patient"]} />}>
-          <Route path="/patient/home" element={<BrowseRecipe />} />
+          <Route path="/patient/home" element={<PatientHome />} />
           <Route path="/patient/home/herbs" element={<HerbsPage />} />
-          <Route path="/patient/home/herbs/:herbId" element={<HerbDetailsPage />} />
+          <Route
+            path="/patient/home/herbs/:herbId"
+            element={<HerbDetailsPage />}
+          />
           <Route path="/patient/home/recipes" element={<RecipesPage />} />
-          <Route path="/patient/home/recipes/:recipeId" element={<RecipeDetailsPage />} />
+          <Route
+            path="/patient/home/recipes/:recipeId"
+            element={<RecipeDetailsPage />}
+          />
           <Route path="/patient/dashboard/*" element={<PatientDashboard />} />
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={["Herbalist"]} />}>
-          <Route path="/herbalist/dashboard/*" element={<HerbalistDashboard />} />
+          <Route
+            path="/herbalist/dashboard/*"
+            element={<HerbalistDashboard />}
+          />
         </Route>
       </Routes>
     </div>

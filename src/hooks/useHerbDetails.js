@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { getHerbById, getHerbWithHerbalist } from "../api/herbs";
+import { getHerbById, getHerbWithHerbalist, getHerbalistsForHerb } from "../api/herbs";
 import { normalizeHerb } from "../services/herbs";
 
 function useHerbDetails(herbId) {
   const [herb, setHerb] = useState(null);
+  const [providers, setProviders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -18,9 +19,10 @@ function useHerbDetails(herbId) {
     setError("");
 
     try {
-      const [herbData, herbalistData] = await Promise.all([
+      const [herbData, herbalistData, providersData] = await Promise.all([
         getHerbById(herbId),
         getHerbWithHerbalist(herbId).catch(() => null),
+        getHerbalistsForHerb(herbId).catch(() => []),
       ]);
       setHerb(
         normalizeHerb({
@@ -28,6 +30,7 @@ function useHerbDetails(herbId) {
           ...(herbalistData || {}),
         }),
       );
+      setProviders(Array.isArray(providersData) ? providersData : (providersData?.herbalists || providersData?.items || []));
     } catch (err) {
       const message =
         err.response?.data?.message ||
@@ -45,6 +48,7 @@ function useHerbDetails(herbId) {
 
   return {
     herb,
+    providers,
     isLoading,
     error,
     reload: loadHerbDetails,

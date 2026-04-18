@@ -22,10 +22,10 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { type: "spring", stiffness: 300, damping: 24 } 
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 300, damping: 24 },
   },
 };
 
@@ -38,12 +38,14 @@ function HerbInfoCard({ title, icon, children, tone = "slate" }) {
 
   const iconTones = {
     slate: "text-slate-500 bg-slate-100 group-hover:bg-slate-200",
-    emerald: "text-emerald-600 bg-emerald-100 group-hover:bg-emerald-200 group-hover:text-emerald-700",
-    amber: "text-amber-600 bg-amber-100 group-hover:bg-amber-200 group-hover:text-amber-700",
+    emerald:
+      "text-emerald-600 bg-emerald-100 group-hover:bg-emerald-200 group-hover:text-emerald-700",
+    amber:
+      "text-amber-600 bg-amber-100 group-hover:bg-amber-200 group-hover:text-amber-700",
   };
 
   return (
-    <motion.article 
+    <motion.article
       variants={itemVariants}
       whileHover={{ y: -6, transition: { duration: 0.2 } }}
       className={`group rounded-[2rem] border p-8 shadow-sm hover:shadow-lg transition-all duration-300 ${toneClasses[tone]}`}
@@ -61,7 +63,7 @@ function HerbInfoCard({ title, icon, children, tone = "slate" }) {
 
 function HerbDetailsPage() {
   const { herbId } = useParams();
-  const { herb, isLoading, error, reload } = useHerbDetails(herbId);
+  const { herb, providers, isLoading, error, reload } = useHerbDetails(herbId);
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -86,7 +88,9 @@ function HerbDetailsPage() {
 
         {!isLoading && error ? (
           <div className="mt-12 rounded-[2rem] border border-red-100 bg-red-50 p-16 text-center shadow-sm">
-            <h2 className="text-xl font-extrabold text-red-800">Unable to load herb details</h2>
+            <h2 className="text-xl font-extrabold text-red-800">
+              Unable to load herb details
+            </h2>
             <p className="mt-3 text-sm font-medium text-red-600">{error}</p>
             <button
               type="button"
@@ -99,13 +103,13 @@ function HerbDetailsPage() {
         ) : null}
 
         {!isLoading && !error && herb ? (
-          <motion.div 
+          <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
             className="mt-10 space-y-10"
           >
-            <motion.section 
+            <motion.section
               variants={itemVariants}
               className="overflow-hidden rounded-[2.5rem] border border-emerald-100 bg-white shadow-md relative"
             >
@@ -138,7 +142,9 @@ function HerbDetailsPage() {
                           : "bg-amber-100 text-amber-800 border-amber-200"
                       }`}
                     >
-                      {herb.isApproved === true ? "Approved by Medical Board" : "Approval pending"}
+                      {herb.isApproved === true
+                        ? "Approved by Medical Board"
+                        : "Approval pending"}
                     </span>
                   </div>
 
@@ -148,7 +154,7 @@ function HerbDetailsPage() {
                   <p className="mt-3 text-xl italic font-medium text-slate-500">
                     {herb.scientificName}
                   </p>
-                  
+
                   <div className="mt-8 mb-4">
                     <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">
                       Description
@@ -163,7 +169,11 @@ function HerbDetailsPage() {
 
             <section className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
               <div className="space-y-8">
-                <HerbInfoCard title="Primary Benefits" icon={<FaCheckCircle className="text-xl" />} tone="emerald">
+                <HerbInfoCard
+                  title="Primary Benefits"
+                  icon={<FaCheckCircle className="text-xl" />}
+                  tone="emerald"
+                >
                   <div className="rounded-2xl bg-white p-5 border border-emerald-100 shadow-sm">
                     <p className="text-sm leading-relaxed font-medium text-slate-700">
                       {herb.benefits || "No specific benefits noted."}
@@ -171,7 +181,9 @@ function HerbDetailsPage() {
                   </div>
                   {herb.benefitList?.length ? (
                     <div className="mt-6">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-600/70 mb-3">Key Highlights</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-600/70 mb-3">
+                        Key Highlights
+                      </p>
                       <div className="flex flex-wrap gap-2.5">
                         {herb.benefitList.map((benefit) => (
                           <span
@@ -186,10 +198,14 @@ function HerbDetailsPage() {
                   ) : null}
                 </HerbInfoCard>
 
-                <HerbInfoCard title="Dosage Guidance" icon={<FaLeaf className="text-xl" />}>
+                <HerbInfoCard
+                  title="Dosage Guidance"
+                  icon={<FaLeaf className="text-xl" />}
+                >
                   <div className="rounded-2xl bg-slate-50 p-6 border border-slate-100">
                     <p className="text-sm leading-relaxed font-medium text-slate-700">
-                      {herb.dosage || "Consult your herbalist for proper dosage instructions before proceeding."}
+                      {herb.dosage ||
+                        "Consult your herbalist for proper dosage instructions before proceeding."}
                     </p>
                   </div>
                 </HerbInfoCard>
@@ -203,12 +219,45 @@ function HerbDetailsPage() {
                 >
                   <div className="rounded-2xl bg-white p-6 border border-amber-100 shadow-sm">
                     <p className="text-sm leading-relaxed font-bold text-slate-800">
-                      {herb.warnings || "No explicit warnings listed. Always exercise caution and consult a professional."}
+                      {herb.warnings ||
+                        "No explicit warnings listed. Always exercise caution and consult a professional."}
                     </p>
                   </div>
                 </HerbInfoCard>
 
-                <HerbInfoCard title="Record Curation" icon={<FaStamp className="text-xl" />}>
+                <HerbInfoCard
+                  title="Available Providers"
+                  icon={<FaUserMd className="text-xl" />}
+                >
+                  {providers && providers.length > 0 ? (
+                    <div className="space-y-3">
+                      {providers.map((p, index) => (
+                        <div key={index} className="rounded-2xl border border-slate-100 bg-slate-50 p-4 hover:bg-white hover:shadow-sm transition-all flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-bold text-slate-900">{p.fullName || p.name || p.userName || "Professional Herbalist"}</p>
+                            <p className="mt-1 text-[10px] uppercase font-bold text-slate-400 tracking-wider">Licensed Supplier</p>
+                          </div>
+                          {p.averageRating && (
+                             <span className="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg">
+                               {Number(p.averageRating).toFixed(1)} ★
+                             </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="rounded-2xl bg-slate-50 p-6 border border-slate-100 text-center">
+                      <p className="text-sm leading-relaxed font-medium text-slate-500">
+                        Currently, no herbalists have specifically listed this herb in their active inventory.
+                      </p>
+                    </div>
+                  )}
+                </HerbInfoCard>
+
+                <HerbInfoCard
+                  title="Record Curation"
+                  icon={<FaStamp className="text-xl" />}
+                >
                   <div className="grid gap-5">
                     <div className="group rounded-2xl border border-slate-100 bg-slate-50 p-5 hover:bg-white hover:shadow-sm transition-all">
                       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 group-hover:text-primary transition-colors">
@@ -220,17 +269,6 @@ function HerbDetailsPage() {
                           : herb.isApproved
                             ? "Officially Approved"
                             : "Pending Approval"}
-                      </p>
-                    </div>
-                    <div className="group rounded-2xl border border-slate-100 bg-slate-50 p-5 hover:bg-white hover:shadow-sm transition-all">
-                      <div className="flex items-center gap-2 text-slate-400 group-hover:text-primary transition-colors mb-2">
-                        <FaUserMd />
-                        <p className="text-[10px] font-bold uppercase tracking-widest">
-                          Curating Herbalist
-                        </p>
-                      </div>
-                      <p className="text-sm font-bold text-slate-900">
-                        {herb.herbalistName || "Herbal Care Professional"}
                       </p>
                     </div>
                   </div>

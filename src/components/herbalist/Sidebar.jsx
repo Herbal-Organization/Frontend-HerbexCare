@@ -4,6 +4,7 @@ import {
   MdDashboard,
   MdLocalFlorist,
   MdMenuBook,
+  MdInventory,
   MdShoppingCart,
   MdPerson,
 } from "react-icons/md";
@@ -13,6 +14,7 @@ function Sidebar({ currentPath, onNavigate, user, onLogout }) {
     { name: "Dashboard", href: "/herbalist/dashboard" },
     { name: "Manage Herbs", href: "/herbalist/dashboard/herbs" },
     { name: "Manage Recipes", href: "/herbalist/dashboard/recipes" },
+    { name: "Inventory", href: "/herbalist/dashboard/inventory" },
     { name: "Orders", href: "/herbalist/dashboard/orders", badge: "12" },
     { name: "Profile", href: "/herbalist/dashboard/profile" },
   ];
@@ -56,18 +58,15 @@ function Sidebar({ currentPath, onNavigate, user, onLogout }) {
                   : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
               }`}
             >
-              {item.name === "Dashboard" && (
-                <MdDashboard className="w-5 h-5" />
-              )}
+              {item.name === "Dashboard" && <MdDashboard className="w-5 h-5" />}
               {item.name === "Manage Herbs" && (
                 <MdLocalFlorist className="w-5 h-5" />
               )}
               {item.name === "Manage Recipes" && (
                 <MdMenuBook className="w-5 h-5" />
               )}
-              {item.name === "Orders" && (
-                <MdShoppingCart className="w-5 h-5" />
-              )}
+              {item.name === "Inventory" && <MdInventory className="w-5 h-5" />}
+              {item.name === "Orders" && <MdShoppingCart className="w-5 h-5" />}
               {item.name === "Profile" && <MdPerson className="w-5 h-5" />}
               <span>{item.name}</span>
               {item.badge && (
@@ -106,4 +105,3 @@ function Sidebar({ currentPath, onNavigate, user, onLogout }) {
 }
 
 export default Sidebar;
-

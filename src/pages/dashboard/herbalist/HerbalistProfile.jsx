@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { FaUser, FaIdCard, FaStar, FaClock } from "react-icons/fa";
 import { toast } from "react-hot-toast";
-import { motion } from "motion/react";
 import ProfileLayout from "../../../components/shared/ProfileLayout";
 import { saveHerbalistProfile } from "../../../services/herbalistProfile";
+
+import { motion } from "motion/react";
 
 const DEFAULT_PROFILE = {
   userId: "",
@@ -27,10 +28,10 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 300, damping: 24 }
+    transition: { type: "spring", stiffness: 300, damping: 24 },
   },
 };
 
@@ -87,7 +88,7 @@ function HerbalistProfile({
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center min-h-100">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
@@ -101,33 +102,40 @@ function HerbalistProfile({
       onSubmit={handleSubmit}
     >
       {saveError && (
-        <motion.div 
-          initial={{ opacity: 0, height: 0 }} 
-          animate={{ opacity: 1, height: 'auto' }} 
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
           className="mb-6 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
         >
           {saveError}
         </motion.div>
       )}
 
-      <motion.div 
+      <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
         className="space-y-8"
       >
         {/* Personal Information (Read-only) */}
-        <motion.div variants={itemVariants} className="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <motion.div
+          variants={itemVariants}
+          className="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
+        >
           <div className="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4">
             <div className="p-2.5 bg-blue-50 text-blue-500 rounded-xl">
               <FaUser className="text-lg" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Personal Information</h2>
-              <p className="text-xs text-slate-500 font-medium">Your primary account details</p>
+              <h2 className="text-lg font-bold text-slate-900">
+                Personal Information
+              </h2>
+              <p className="text-xs text-slate-500 font-medium">
+                Your primary account details
+              </p>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             <div className="group md:col-span-2">
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 group-hover:text-primary transition-colors">
@@ -165,14 +173,21 @@ function HerbalistProfile({
         </motion.div>
 
         {/* Herbalist Record */}
-        <motion.div variants={itemVariants} className="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <motion.div
+          variants={itemVariants}
+          className="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
+        >
           <div className="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4">
             <div className="p-2.5 bg-orange-50 text-orange-500 rounded-xl">
               <FaIdCard className="text-lg" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Herbalist Record</h2>
-              <p className="text-xs text-slate-500 font-medium">Professional identification</p>
+              <h2 className="text-lg font-bold text-slate-900">
+                Herbalist Record
+              </h2>
+              <p className="text-xs text-slate-500 font-medium">
+                Professional identification
+              </p>
             </div>
           </div>
 
@@ -199,14 +214,21 @@ function HerbalistProfile({
         </motion.div>
 
         {/* Bio */}
-        <motion.div variants={itemVariants} className="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <motion.div
+          variants={itemVariants}
+          className="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
+        >
           <div className="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4">
             <div className="p-2.5 bg-emerald-50 text-emerald-500 rounded-xl">
               <FaStar className="text-lg" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Professional Bio</h2>
-              <p className="text-xs text-slate-500 font-medium">Introduce your practice</p>
+              <h2 className="text-lg font-bold text-slate-900">
+                Professional Bio
+              </h2>
+              <p className="text-xs text-slate-500 font-medium">
+                Introduce your practice
+              </p>
             </div>
           </div>
 
@@ -226,14 +248,21 @@ function HerbalistProfile({
         </motion.div>
 
         {/* Availability */}
-        <motion.div variants={itemVariants} className="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <motion.div
+          variants={itemVariants}
+          className="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
+        >
           <div className="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4">
             <div className="p-2.5 bg-purple-50 text-purple-500 rounded-xl">
               <FaClock className="text-lg" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Availability Schedule</h2>
-              <p className="text-xs text-slate-500 font-medium">Manage your daily consultation times</p>
+              <h2 className="text-lg font-bold text-slate-900">
+                Availability Schedule
+              </h2>
+              <p className="text-xs text-slate-500 font-medium">
+                Manage your daily consultation times
+              </p>
             </div>
           </div>
 

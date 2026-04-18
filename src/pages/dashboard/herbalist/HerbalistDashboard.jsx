@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Routes,
-  Route,
-  Navigate,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import {
   isAuthenticated,
   getUserFromToken,
@@ -14,6 +8,8 @@ import {
 } from "../../../utils/auth";
 import HerbalistManageHerbs from "./HerbalistManageHerbs";
 import HerbalistManageRecipes from "./HerbalistManageRecipes";
+import HerbalistInventory from "./HerbalistInventory";
+import HerbalistDashboardHome from "./HerbalistDashboardHome";
 import HerbalistProfile from "./HerbalistProfile";
 import Sidebar from "../../../components/herbalist/Sidebar";
 import useHerbalistDashboardData from "../../../hooks/useHerbalistDashboardData";
@@ -100,7 +96,14 @@ function HerbalistDashboard() {
           <Routes>
             <Route
               path="/"
-              element={<Navigate to="/herbalist/dashboard/profile" replace />}
+              element={
+                <HerbalistDashboardHome
+                  user={user}
+                  dashboardData={dashboardData}
+                  isLoadingDashboard={isDashboardLoading}
+                  onRetryDashboard={reloadDashboard}
+                />
+              }
             />
             <Route
               path="/profile"
@@ -128,6 +131,18 @@ function HerbalistDashboard() {
                 <HerbalistManageRecipes
                   user={user}
                   dashboardData={dashboardData}
+                />
+              }
+            />
+            <Route path="/inventory" element={<HerbalistInventory />} />
+            <Route
+              path="*"
+              element={
+                <HerbalistDashboardHome
+                  user={user}
+                  dashboardData={dashboardData}
+                  isLoadingDashboard={isDashboardLoading}
+                  onRetryDashboard={reloadDashboard}
                 />
               }
             />
