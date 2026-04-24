@@ -37,10 +37,14 @@ function PatientCart() {
     e.preventDefault();
     if (isSubmitting) return;
 
-    // Validate that all herbs have a valid herbalistId
-    const missingHerbalists = cart.herbs.some((herb) => !herb.herbalistId);
-    if (missingHerbalists) {
-      setError("Please ensure all herbs have a valid herbalist selected.");
+    // Validate that all herbs have selected herbalist + valid price
+    const invalidHerbSelections = cart.herbs.some(
+      (herb) => !herb.herbalistId || Number(herb.pricePerKilo) <= 0,
+    );
+    if (invalidHerbSelections) {
+      setError(
+        "Please select a valid herbalist and price for each herb before placing the order.",
+      );
       return;
     }
 

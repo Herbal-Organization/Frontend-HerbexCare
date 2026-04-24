@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   FaArrowLeft,
   FaCheckCircle,
@@ -16,18 +16,42 @@ import PatientNavbar from "../../components/browse/PatientNavbar";
 import Footer from "../../components/landing/Footer";
 import useHerbDetails from "../../hooks/useHerbDetails";
 import { useCart } from "../../context/CartContext";
+import { getHerbalistById } from "../../api/herbalists";
 
 /* ── Add to cart form ── */
 function AddToCartForm({ providers, herb }) {
   const { addHerbToCart } = useCart();
   const [selectedProviderId, setSelectedProviderId] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [selectedHerbalistProfile, setSelectedHerbalistProfile] =
+    useState(null);
+
+  const getProviderId = (provider) =>
+    String(provider?.herbalistId ?? provider?.userId ?? provider?.id ?? "");
+
+  const getProviderName = (provider) =>
+    provider?.herbalistName ||
+    provider?.fullName ||
+    provider?.name ||
+    provider?.userName ||
+    provider?.username ||
+    "Licensed Herbalist";
+
+  const getProviderPricePerKilo = (provider) => {
+    const value =
+      provider?.pricePerKilo ??
+      provider?.price ??
+      provider?.inventoryPricePerKilo ??
+      provider?.inventoryPrice;
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+  };
 
   // Sort providers by price (ascending - best price first)
   const sortedProviders = useMemo(() => {
     return [...(providers || [])].sort((a, b) => {
-      const priceA = a.pricePerKilo || Infinity;
-      const priceB = b.pricePerKilo || Infinity;
+      const priceA = getProviderPricePerKilo(a) || Infinity;
+      const priceB = getProviderPricePerKilo(b) || Infinity;
       return priceA - priceB;
     });
   }, [providers]);
@@ -36,11 +60,34 @@ function AddToCartForm({ providers, herb }) {
   const selectedProvider = useMemo(
     () =>
       sortedProviders.find(
-        (p) =>
-          (p.id ?? p.herbalistId ?? p.userId) === parseInt(selectedProviderId),
+        (p) => getProviderId(p) === String(selectedProviderId),
       ),
     [selectedProviderId, sortedProviders],
   );
+
+  useEffect(() => {
+    const loadSelectedHerbalist = async () => {
+      if (!selectedProviderId) {
+        setSelectedHerbalistProfile(null);
+        return;
+      }
+
+      try {
+        const profile = await getHerbalistById(selectedProviderId);
+        setSelectedHerbalistProfile(profile || null);
+      } catch (_error) {
+        setSelectedHerbalistProfile(null);
+      }
+    };
+
+    loadSelectedHerbalist();
+  }, [selectedProviderId]);
+
+  const resolvedProviderName =
+    selectedHerbalistProfile?.fullName ||
+    selectedHerbalistProfile?.name ||
+    selectedHerbalistProfile?.userName ||
+    getProviderName(selectedProvider);
 
   const handleAdd = () => {
     if (!selectedProviderId) {
@@ -56,23 +103,16 @@ function AddToCartForm({ providers, herb }) {
 
     if (!selectedProvider) return;
 
-    const pricePerKilo = selectedProvider.pricePerKilo || 0;
+    const pricePerKilo = getProviderPricePerKilo(selectedProvider);
 
     addHerbToCart({
       herbId: herb.herbId || herb.id,
-      herbalistId:
-        selectedProvider.id ||
-        selectedProvider.herbalistId ||
-        selectedProvider.userId,
+      herbalistId: getProviderId(selectedProvider),
       quantityPerGram: qty,
       pricePerKilo: pricePerKilo,
       totalPrice: (pricePerKilo * qty) / 1000,
       _previewName: herb.herbName,
-      _providerName:
-        selectedProvider.fullName ||
-        selectedProvider.name ||
-        selectedProvider.userName ||
-        "Licensed Herbalist",
+      _providerName: resolvedProviderName,
     });
 
     toast.success("Added to cart!");
@@ -111,11 +151,11 @@ function AddToCartForm({ providers, herb }) {
                 : "No herbalists available"}
             </option>
             {sortedProviders.map((p) => {
-              const providerId = p.id ?? p.herbalistId ?? p.userId;
-              const providerName =
-                p.fullName || p.name || p.userName || "Licensed Herbalist";
-              const price = p.pricePerKilo
-                ? `${p.pricePerKilo} EGP/kg`
+              const providerId = getProviderId(p);
+              const providerName = getProviderName(p);
+              const providerPricePerKilo = getProviderPricePerKilo(p);
+              const price = providerPricePerKilo
+                ? `${providerPricePerKilo} EGP/kg`
                 : "Price N/A";
               const rating = p.averageRating
                 ? ` (${Number(p.averageRating).toFixed(1)} ★)`
@@ -145,13 +185,11 @@ function AddToCartForm({ providers, herb }) {
               )}
             </div>
             <p className="text-sm font-semibold text-[#27500A] mb-1">
-              {selectedProvider.fullName ||
-                selectedProvider.name ||
-                selectedProvider.userName}
+              {resolvedProviderName}
             </p>
             <p className="text-sm font-bold text-[#3B6D11]">
-              {selectedProvider.pricePerKilo
-                ? `${selectedProvider.pricePerKilo} EGP/kg`
+              {getProviderPricePerKilo(selectedProvider)
+                ? `${getProviderPricePerKilo(selectedProvider)} EGP/kg`
                 : "Price N/A"}
             </p>
           </div>
@@ -181,7 +219,7 @@ function AddToCartForm({ providers, herb }) {
                 Unit price:
               </span>
               <span className="text-sm font-semibold text-slate-900">
-                {selectedProvider.pricePerKilo} EGP/kg
+                {getProviderPricePerKilo(selectedProvider)} EGP/kg
               </span>
             </div>
             <div className="flex justify-between items-center mb-2">
@@ -210,7 +248,7 @@ function AddToCartForm({ providers, herb }) {
             !selectedProviderId ||
             !quantity ||
             Number(quantity) <= 0 ||
-            !selectedProvider?.pricePerKilo
+            !getProviderPricePerKilo(selectedProvider)
           }
           onClick={handleAdd}
           className="w-full rounded-lg bg-[#3B6D11] text-white px-4 py-3 text-sm font-semibold transition hover:bg-[#2d5209] disabled:opacity-40 disabled:pointer-events-none uppercase tracking-wider"
@@ -259,7 +297,7 @@ function HerbDetailsPage() {
   const uniqueProviders = useMemo(() => {
     const seen = new Set();
     return (providers || []).filter((p) => {
-      const id = p?.id ?? p?.herbalistId ?? p?.userId;
+      const id = p?.herbalistId ?? p?.userId ?? p?.id;
       if (!id) return false;
       if (seen.has(id)) return false;
       seen.add(id);
