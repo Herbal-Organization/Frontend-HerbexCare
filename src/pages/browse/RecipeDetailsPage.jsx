@@ -4,76 +4,184 @@ import {
   FaCheckCircle,
   FaExclamationTriangle,
   FaLeaf,
-  FaRobot,
   FaStar,
   FaUserMd,
   FaCalendarAlt,
   FaToggleOn,
+  FaRobot,
 } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { motion } from "motion/react";
+import Skeleton from "react-loading-skeleton";
 import PatientNavbar from "../../components/browse/PatientNavbar";
 import Footer from "../../components/landing/Footer";
 import useRecipeDetails from "../../hooks/useRecipeDetails";
 import useRecipeReviews from "../../hooks/useRecipeReviews";
 import { isAuthenticated } from "../../utils/auth";
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.15 },
-  },
-};
+import { useCart } from "../../context/CartContext";
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { type: "spring", stiffness: 300, damping: 24 } 
-  },
-};
-
-function RecipeMetaCard({ label, value, hint, icon, tone = "slate" }) {
-  const toneClasses = {
-    slate: "border-slate-200 bg-white text-slate-900 group-hover:border-slate-300",
-    emerald: "border-emerald-200 bg-emerald-50/50 text-emerald-900 group-hover:border-emerald-300",
-    amber: "border-amber-200 bg-amber-50/50 text-amber-900 group-hover:border-amber-300",
-  };
-
-  const iconTones = {
-    slate: "text-slate-500 bg-slate-100 group-hover:bg-slate-200",
-    emerald: "text-emerald-600 bg-emerald-100 group-hover:bg-emerald-200",
-    amber: "text-amber-600 bg-amber-100 group-hover:bg-amber-200",
-  };
-
+/* ── Shared section card ── */
+function SectionCard({
+  title,
+  icon,
+  iconBg = "bg-slate-100",
+  children,
+  className = "",
+}) {
   return (
-    <motion.div 
-      variants={itemVariants}
-      whileHover={{ y: -4 }}
-      className={`group rounded-[2rem] border p-6 shadow-sm transition-all duration-300 ${toneClasses[tone]}`}
+    <div
+      className={`rounded-2xl border border-slate-100 bg-white p-6 ${className}`}
     >
-      <div className="flex items-start gap-4">
-        <div className={`rounded-xl p-3.5 transition-colors ${iconTones[tone]}`}>
+      <div className="flex items-center gap-3 pb-4 mb-5 border-b border-slate-100">
+        <div
+          className={`w-8 h-8 rounded-lg ${iconBg} flex items-center justify-center shrink-0`}
+        >
           {icon}
         </div>
-        <div>
-          <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-slate-400 group-hover:text-slate-500 transition-colors">
-            {label}
-          </p>
-          <p className="mt-1 text-2xl font-extrabold">{value}</p>
-          {hint ? <p className="mt-1.5 text-xs font-semibold text-slate-500/80">{hint}</p> : null}
-        </div>
+        <h2 className="text-sm font-medium text-slate-900">{title}</h2>
       </div>
-    </motion.div>
+      {children}
+    </div>
   );
 }
 
+/* ── Stat card ── */
+function StatCard({ label, value, hint, accent }) {
+  const accentMap = {
+    amber: "bg-[#FAEEDA] border-[#EF9F27]",
+    green: "bg-[#EAF3DE] border-[#97C459]",
+    default: "bg-white border-slate-100",
+  };
+  const valueColor = {
+    amber: "text-[#633806]",
+    green: "text-[#27500A]",
+    default: "text-slate-900",
+  };
+  return (
+    <div
+      className={`rounded-xl border p-4 ${accentMap[accent] ?? accentMap.default}`}
+    >
+      <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400 mb-1.5">
+        {label}
+      </p>
+      <p
+        className={`font-['Instrument_Serif',serif] text-2xl leading-none mb-1 ${valueColor[accent] ?? valueColor.default}`}
+      >
+        {value}
+      </p>
+      {hint && <p className="text-[11px] text-slate-400">{hint}</p>}
+    </div>
+  );
+}
+
+/* ── Herb item ── */
+function HerbItem({ herb }) {
+  return (
+    <div className="border border-slate-100 rounded-xl p-4 mb-3 last:mb-0 transition-colors hover:bg-slate-50">
+      <div className="flex items-start justify-between gap-3 mb-2">
+        <div>
+          <p
+            style={{ fontFamily: "'Instrument Serif', serif" }}
+            className="text-base text-slate-900"
+          >
+            {herb.herbName}
+          </p>
+          <p
+            style={{ fontFamily: "'Instrument Serif', serif" }}
+            className="text-xs italic text-slate-400 mt-0.5"
+          >
+            {herb.scientificName}
+          </p>
+        </div>
+        <span className="text-[11px] font-medium bg-[#EAF3DE] text-[#27500A] border border-[#97C459] rounded-full px-3 py-1 shrink-0">
+          {herb.quantity}g
+        </span>
+      </div>
+      <p className="text-xs leading-relaxed text-slate-500 mb-3">
+        {herb.description}
+      </p>
+      <div className="grid grid-cols-2 gap-2">
+        <div className="bg-slate-50 border border-slate-100 rounded-lg p-2.5">
+          <p className="text-[10px] uppercase tracking-wider text-slate-400 font-medium mb-1">
+            Benefits
+          </p>
+          <p className="text-xs font-medium text-slate-700">
+            {herb.benefits || "—"}
+          </p>
+        </div>
+        <div className="bg-slate-50 border border-slate-100 rounded-lg p-2.5">
+          <p className="text-[10px] uppercase tracking-wider text-slate-400 font-medium mb-1">
+            Dosage
+          </p>
+          <p className="text-xs font-medium text-slate-700">
+            {herb.dosage || "—"}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Review card ── */
+function ReviewCard({ review }) {
+  return (
+    <div className="border border-slate-100 rounded-xl p-4 bg-white mb-3 last:mb-0">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-full bg-[#EAF3DE] flex items-center justify-center text-[#27500A] text-sm font-medium shrink-0">
+            {review.userName?.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <p className="text-sm font-medium text-slate-900">
+              {review.userName}
+            </p>
+            <p className="text-[11px] text-slate-400">
+              {review.createdDate
+                ? new Date(review.createdDate).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })
+                : "Patient"}
+            </p>
+          </div>
+        </div>
+        <div className="flex gap-0.5">
+          {[...Array(5)].map((_, i) => (
+            <FaStar
+              key={i}
+              className={`text-[10px] ${i < review.ratingValue ? "text-[#BA7517]" : "text-slate-200"}`}
+            />
+          ))}
+        </div>
+      </div>
+      <p className="text-xs leading-relaxed text-slate-500 bg-slate-50 rounded-lg p-3">
+        {review.comment || "No comment provided."}
+      </p>
+    </div>
+  );
+}
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
+};
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 300, damping: 28 },
+  },
+};
+
 function RecipeDetailsPage() {
   const { recipeId } = useParams();
-  const { recipe, herbs, isLoading, error, reload } = useRecipeDetails(recipeId);
+  const { addRecipeToCart } = useCart();
+  const { recipe, herbs, isLoading, error, reload } =
+    useRecipeDetails(recipeId);
   const {
     reviews,
     myReview,
@@ -84,18 +192,14 @@ function RecipeDetailsPage() {
     submitReview,
     removeMyReview,
   } = useRecipeReviews(recipeId);
-  
-  const [reviewForm, setReviewForm] = useState({
-    ratingValue: 5,
-    comment: "",
-  });
-  
+
+  const [reviewForm, setReviewForm] = useState({ ratingValue: 5, comment: "" });
   const canReview = isAuthenticated();
 
+  const [recipeQuantity, setRecipeQuantity] = useState(1);
+
   useEffect(() => {
-    if (!myReview) {
-      return;
-    }
+    if (!myReview) return;
     setReviewForm({
       ratingValue: myReview.ratingValue || 5,
       comment: myReview.comment || "",
@@ -104,154 +208,214 @@ function RecipeDetailsPage() {
 
   const averageFromReviews = useMemo(() => {
     if (!reviews.length) return null;
-    const total = reviews.reduce((sum, review) => sum + review.ratingValue, 0);
-    return (total / reviews.length).toFixed(1);
+    return (
+      reviews.reduce((s, r) => s + r.ratingValue, 0) / reviews.length
+    ).toFixed(1);
   }, [reviews]);
 
-  const handleReviewSubmit = async (event) => {
-    event.preventDefault();
-    const didSubmit = await submitReview({
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    const ok = await submitReview({
       ratingValue: Number(reviewForm.ratingValue),
       comment: reviewForm.comment.trim(),
     });
-
-    if (!didSubmit) {
+    if (!ok) {
       toast.error("Unable to save your review.");
       return;
     }
-    toast.success(myReview ? "Your review was updated." : "Your review was added.");
+    toast.success(myReview ? "Review updated." : "Review added.");
   };
 
-  const handleDeleteReview = async () => {
-    const didDelete = await removeMyReview();
-    if (!didDelete) {
+  const handleDelete = async () => {
+    const ok = await removeMyReview();
+    if (!ok) {
       toast.error("Unable to delete your review.");
       return;
     }
     setReviewForm({ ratingValue: 5, comment: "" });
-    toast.success("Your review was deleted.");
+    toast.success("Review deleted.");
   };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <PatientNavbar />
-      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8 flex-1 w-full">
+
+      <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8 flex-1 w-full">
         <Link
           to="/patient/home/recipes"
-          className="inline-flex items-center gap-3 rounded-full bg-white px-5 py-2.5 text-sm font-bold text-slate-600 shadow-sm transition-all hover:text-emerald-600 hover:shadow-md hover:-translate-y-0.5"
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 bg-white border border-slate-200 rounded-full px-4 py-2 mb-8 hover:text-[#3B6D11] transition-colors"
         >
-          <FaArrowLeft className="text-xs" />
-          Back to recipes
+          <FaArrowLeft className="text-xs" /> Back to recipes
         </Link>
 
-        {isLoading ? (
-          <div className="mt-10 rounded-[2rem] border border-slate-200 bg-white p-16 text-center shadow-sm">
-            <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-emerald-500" />
-            <p className="mt-6 text-sm font-bold text-slate-500 uppercase tracking-widest">
-              Loading recipe...
-            </p>
-          </div>
-        ) : null}
+        {/* Loading */}
+        {isLoading && (
+          <div className="space-y-5">
+            <div className="rounded-2xl border border-slate-100 bg-white p-8 lg:p-10">
+              <div className="flex flex-wrap gap-2 mb-5">
+                <Skeleton width={110} height={24} borderRadius={9999} />
+                <Skeleton width={92} height={24} borderRadius={9999} />
+              </div>
+              <Skeleton height={58} width="72%" className="mb-4" />
+              <Skeleton count={2} className="mb-6" />
+              <div className="flex flex-wrap gap-2">
+                <Skeleton width={90} height={28} borderRadius={9999} />
+                <Skeleton width={120} height={28} borderRadius={9999} />
+                <Skeleton width={100} height={28} borderRadius={9999} />
+              </div>
+            </div>
 
-        {!isLoading && error ? (
-          <div className="mt-10 rounded-[2rem] border border-red-100 bg-red-50 p-16 text-center shadow-sm">
-            <h2 className="text-xl font-extrabold text-red-800">Unable to load recipe details</h2>
-            <p className="mt-2 text-sm font-medium text-red-600">{error}</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div
+                  key={`recipe-detail-stat-${index}`}
+                  className="rounded-xl border border-slate-100 bg-white p-4"
+                >
+                  <Skeleton width="55%" height={10} />
+                  <Skeleton width="70%" height={24} className="mt-3" />
+                  <Skeleton width="45%" height={12} className="mt-2" />
+                </div>
+              ))}
+            </div>
+
+            <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] items-start">
+              <div className="space-y-5">
+                <div className="rounded-2xl border border-slate-100 bg-white p-6">
+                  <Skeleton width="35%" height={18} className="mb-5" />
+                  <Skeleton count={4} className="mb-3" />
+                </div>
+                <div className="rounded-2xl border border-slate-100 bg-white p-6">
+                  <Skeleton width="30%" height={18} className="mb-5" />
+                  <Skeleton count={3} className="mb-3" />
+                </div>
+                <div className="rounded-2xl border border-slate-100 bg-white p-6">
+                  <Skeleton width="32%" height={18} className="mb-5" />
+                  <Skeleton count={3} className="mb-3" />
+                </div>
+              </div>
+
+              <div className="space-y-5">
+                <div className="rounded-2xl border border-slate-100 bg-white p-6">
+                  <Skeleton width="28%" height={18} className="mb-5" />
+                  <Skeleton height={52} className="mb-4" />
+                  <Skeleton height={52} className="mb-4" />
+                  <Skeleton height={52} />
+                </div>
+                <div className="rounded-2xl border border-slate-100 bg-white p-6">
+                  <Skeleton width="28%" height={18} className="mb-5" />
+                  <Skeleton count={4} className="mb-3" />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Error */}
+        {!isLoading && error && (
+          <div className="rounded-2xl border border-red-100 bg-red-50 p-14 text-center">
+            <h2 className="text-lg font-medium text-red-800 mb-2">
+              Unable to load recipe
+            </h2>
+            <p className="text-sm text-red-500 mb-7">{error}</p>
             <button
-              type="button"
               onClick={reload}
-              className="mt-6 rounded-full bg-red-600 px-8 py-3 text-sm font-bold text-white hover:bg-red-700 hover:shadow-lg transition-all"
+              className="rounded-full bg-red-600 text-white text-sm font-medium px-6 py-2.5 hover:bg-red-700 transition-colors"
             >
-              Retry
+              Try again
             </button>
           </div>
-        ) : null}
+        )}
 
-        {!isLoading && !error && recipe ? (
-          <motion.div 
+        {!isLoading && !error && recipe && (
+          <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="mt-10 space-y-10"
+            className="space-y-5"
           >
-            <motion.section 
+            {/* Hero */}
+            <motion.div
               variants={itemVariants}
-              className="relative overflow-hidden rounded-[2.5rem] border border-emerald-100 bg-white p-10 lg:p-14 shadow-md bg-[radial-gradient(circle_at_top_right,_rgba(16,185,129,0.15),_transparent_40%),linear-gradient(135deg,_#f1fdf6_0%,_#ffffff_60%,_#f8fafc_100%)]"
+              className="rounded-2xl border border-slate-100 bg-white p-8 lg:p-10"
             >
-              <div className="relative z-10 flex flex-wrap items-center gap-3">
-                <span className="rounded-full bg-slate-900 border border-slate-700 px-4 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.2em] text-white shadow-sm">
+              <div className="flex flex-wrap gap-2 mb-5">
+                <span className="text-[10px] font-medium uppercase tracking-wider bg-[#1a2e1a] text-[#a8d878] border border-[#3B6D11] rounded-full px-3 py-1">
                   {recipe.createdDate}
                 </span>
-                {recipe.createdByAI ? (
-                  <span className="rounded-full bg-emerald-100 border border-emerald-200 px-4 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.2em] text-emerald-700 shadow-sm flex flex-row items-center gap-1">
-                    <MdVerified className="text-sm" /> AI Curation
-                  </span>
-                ) : null}
-              </div>
-
-              <h1 className="relative z-10 mt-8 text-4xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight max-w-4xl">
-                {recipe.title}
-              </h1>
-              <p className="relative z-10 mt-6 max-w-3xl text-lg leading-relaxed font-medium text-slate-600">
-                {recipe.description}
-              </p>
-
-              <div className="relative z-10 mt-10 flex flex-wrap gap-3">
-                {recipe.targetedDiseases.length ? (
-                  recipe.targetedDiseases.map((disease) => (
-                    <span
-                      key={disease.diseaseId}
-                      className="rounded-full bg-white px-5 py-2.5 text-sm font-bold text-emerald-800 shadow-sm border border-emerald-100"
-                    >
-                      {disease.diseaseName}
-                    </span>
-                  ))
-                ) : (
-                  <span className="rounded-full bg-white px-5 py-2.5 text-sm font-bold text-slate-700 shadow-sm border border-slate-200">
-                    General Wellness Support
+                {recipe.createdByAI && (
+                  <span className="text-[10px] font-medium uppercase tracking-wider bg-[#EAF3DE] text-[#27500A] border border-[#97C459] rounded-full px-3 py-1 flex items-center gap-1">
+                    <FaRobot className="text-[9px]" /> AI curation
                   </span>
                 )}
               </div>
-            </motion.section>
 
-            <motion.section variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <RecipeMetaCard
-                label="Recipe Rating"
+              <h1
+                style={{ fontFamily: "'Instrument Serif', serif" }}
+                className="text-4xl lg:text-5xl text-slate-900 leading-tight mb-4"
+              >
+                {recipe.title}
+              </h1>
+              <p className="text-sm leading-relaxed text-slate-500 max-w-2xl mb-6">
+                {recipe.description}
+              </p>
+
+              <div className="flex flex-wrap gap-2">
+                {recipe.targetedDiseases?.length ? (
+                  recipe.targetedDiseases.map((d) => (
+                    <span
+                      key={d.diseaseId}
+                      className="text-xs font-medium bg-slate-50 border border-slate-200 rounded-full px-4 py-1.5 text-slate-700"
+                    >
+                      {d.diseaseName}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-xs font-medium bg-slate-50 border border-slate-200 rounded-full px-4 py-1.5 text-slate-700">
+                    General wellness
+                  </span>
+                )}
+              </div>
+            </motion.div>
+
+            {/* Stats */}
+            <motion.div
+              variants={itemVariants}
+              className="grid grid-cols-2 md:grid-cols-4 gap-3"
+            >
+              <StatCard
+                label="Patient rating"
                 value={
                   recipe.averageRatingLabel
-                    ? `${recipe.averageRatingLabel}`
+                    ? `${recipe.averageRatingLabel} ★`
                     : "New"
                 }
                 hint={
                   recipe.totalRatings != null
-                    ? `${recipe.totalRatings} Patient Reviews`
-                    : "No ratings returned"
+                    ? `${recipe.totalRatings} reviews`
+                    : undefined
                 }
-                icon={<FaStar className="text-2xl" />}
-                tone="amber"
+                accent="amber"
               />
-              <RecipeMetaCard
-                label="Herbalist Rating"
+              <StatCard
+                label="Herbalist rating"
                 value={
                   recipe.herbalistAverageRatingLabel
-                    ? `${recipe.herbalistAverageRatingLabel}`
+                    ? `${recipe.herbalistAverageRatingLabel} ★`
                     : "N/A"
                 }
                 hint={
                   recipe.herbalistTotalRatings != null
-                    ? `${recipe.herbalistTotalRatings} Pro Reviews`
-                    : "Review data not returned"
+                    ? `${recipe.herbalistTotalRatings} pro reviews`
+                    : undefined
                 }
-                icon={<FaUserMd className="text-2xl" />}
-                tone="emerald"
+                accent="green"
               />
-              <RecipeMetaCard
-                label="Created Date"
+              <StatCard
+                label="Created"
                 value={recipe.createdDate}
-                hint="Original publication date"
-                icon={<FaCalendarAlt className="text-2xl" />}
+                hint="Publication date"
               />
-              <RecipeMetaCard
+              <StatCard
                 label="Status"
                 value={
                   recipe.isActive == null
@@ -260,258 +424,307 @@ function RecipeDetailsPage() {
                       ? "Active"
                       : "Inactive"
                 }
-                hint="Current availability"
-                icon={<FaToggleOn className="text-2xl" />}
+                hint="Availability"
               />
-            </motion.section>
+            </motion.div>
 
-            <section className="grid gap-8 lg:grid-cols-[1fr] xl:grid-cols-[1.1fr_0.9fr]">
-              <div className="space-y-8">
-                <motion.article variants={itemVariants} className="rounded-[2.5rem] border border-slate-200 bg-white p-8 lg:p-10 shadow-sm">
-                  <h2 className="text-2xl font-extrabold text-slate-900">Preparation & Usage</h2>
-                  <div className="mt-8 rounded-3xl bg-slate-50 border border-slate-100 p-8">
-                    <p className="whitespace-pre-line text-base leading-relaxed font-medium text-slate-700">
-                      {recipe.instructions || "No specific instructions provided. Consult an expert."}
-                    </p>
-                  </div>
-                </motion.article>
+            {/* Body */}
+            <motion.div
+              variants={itemVariants}
+              className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr] items-start"
+            >
+              {/* Left */}
+              <div className="space-y-5">
+                <SectionCard
+                  title="Preparation & usage"
+                  icon={
+                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                      <rect
+                        x="1"
+                        y="2"
+                        width="13"
+                        height="11"
+                        rx="2"
+                        stroke="#185FA5"
+                        strokeWidth="1.2"
+                      />
+                      <line
+                        x1="4"
+                        y1="6"
+                        x2="11"
+                        y2="6"
+                        stroke="#185FA5"
+                        strokeWidth="1"
+                      />
+                      <line
+                        x1="4"
+                        y1="9"
+                        x2="9"
+                        y2="9"
+                        stroke="#185FA5"
+                        strokeWidth="1"
+                      />
+                    </svg>
+                  }
+                  iconBg="bg-[#E6F1FB]"
+                >
+                  <pre className="whitespace-pre-line text-xs leading-relaxed text-slate-600 bg-slate-50 border border-slate-100 rounded-xl p-4 font-sans">
+                    {recipe.instructions ||
+                      "No specific instructions provided. Consult an expert."}
+                  </pre>
+                </SectionCard>
 
-                <motion.article variants={itemVariants} className="rounded-[2.5rem] border border-slate-200 bg-white p-8 lg:p-10 shadow-sm">
-                  <h2 className="text-2xl font-extrabold text-slate-900">Herb Composition</h2>
-                  <div className="mt-8 space-y-6">
-                    {herbs.map((herb) => (
-                      <div
-                        key={herb.herbId}
-                        className="group rounded-3xl border border-slate-100 bg-slate-50 p-6 lg:p-8 hover:bg-white hover:shadow-md transition-all duration-300"
-                      >
-                        <div className="flex flex-wrap items-center justify-between gap-4">
-                          <div>
-                            <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-emerald-700 transition-colors">
-                              {herb.herbName}
-                            </h3>
-                            <p className="mt-1 text-sm italic font-medium text-slate-500">
-                              {herb.scientificName}
-                            </p>
-                          </div>
-                          <span className="rounded-full bg-emerald-100 border border-emerald-200 px-4 py-1.5 text-xs font-bold text-emerald-800 shadow-sm">
-                            Quantity: {herb.quantity}
-                          </span>
-                        </div>
-
-                        <p className="mt-5 text-sm leading-relaxed font-medium text-slate-600">
-                          {herb.description}
-                        </p>
-
-                        <div className="mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2">
-                          <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
-                              Benefits
-                            </p>
-                            <p className="mt-2 text-sm font-bold text-slate-700">
-                              {herb.benefits || "No benefits listed"}
-                            </p>
-                          </div>
-                          <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
-                              Dosage
-                            </p>
-                            <p className="mt-2 text-sm font-bold text-slate-700">
-                              {herb.dosage || "No guidance listed"}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </motion.article>
+                <SectionCard
+                  title="Herb composition"
+                  icon={
+                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                      <path
+                        d="M7.5 1.5C10.5 4.5 11.5 9.5 7.5 14C3.5 9.5 4.5 4.5 7.5 1.5Z"
+                        fill="#3B6D11"
+                      />
+                    </svg>
+                  }
+                  iconBg="bg-[#EAF3DE]"
+                >
+                  {herbs.map((h) => (
+                    <HerbItem key={h.herbId} herb={h} />
+                  ))}
+                </SectionCard>
               </div>
 
-              <div className="space-y-8">
-                <motion.div variants={itemVariants} className="space-y-6">
-                   <article className="rounded-[2.5rem] border border-emerald-200 bg-emerald-50/50 p-8 shadow-sm">
-                    <div className="flex items-center gap-4">
-                      <div className="rounded-xl bg-emerald-100 p-3 text-emerald-600">
-                         <FaCheckCircle className="text-xl" />
-                      </div>
-                      <h2 className="text-2xl font-extrabold text-slate-900">Advantages</h2>
-                    </div>
-                    <ul className="mt-6 space-y-4 text-sm leading-relaxed font-medium text-slate-700 bg-white rounded-3xl border border-emerald-100 p-6 shadow-sm">
-                      {recipe.advantages.map((item) => (
-                        <li key={item} className="flex gap-4">
-                          <FaLeaf className="mt-1 shrink-0 text-emerald-500" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                      {recipe.advantages.length === 0 && (
-                        <li className="text-slate-400 italic font-semibold">No noted advantages.</li>
-                      )}
-                    </ul>
-                  </article>
+              {/* Right */}
+              <div className="space-y-5">
+                {/* Order Recipe Section */}
+                <SectionCard
+                  title="Order Recipe"
+                  icon={
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M4 2C4 2 5 12 12 12C19 12 20 2 20 2"
+                        stroke="#3B6D11"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M12 12V22M12 22L8 18M12 22L16 18"
+                        stroke="#3B6D11"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  }
+                  iconBg="bg-[#EAF3DE]"
+                >
+                  <p className="text-xs text-slate-500 mb-4">
+                    Get a freshly customized package of this recipe's herbs,
+                    properly measured out.
+                  </p>
 
-                  <article className="rounded-[2.5rem] border border-amber-200 bg-amber-50/50 p-8 shadow-sm">
-                    <div className="flex items-center gap-4">
-                      <div className="rounded-xl bg-amber-100 p-3 text-amber-600">
-                         <FaExclamationTriangle className="text-xl" />
-                      </div>
-                      <h2 className="text-2xl font-extrabold text-slate-900">Disadvantages</h2>
-                    </div>
-                    <ul className="mt-6 space-y-4 text-sm leading-relaxed font-medium text-slate-700 bg-white rounded-3xl border border-amber-100 p-6 shadow-sm">
-                      {recipe.disadvantages.map((item) => (
-                        <li key={item} className="flex gap-4">
-                          <FaExclamationTriangle className="mt-1.5 shrink-0 text-amber-500 text-xs" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                       {recipe.disadvantages.length === 0 && (
-                        <li className="text-slate-400 italic font-semibold">No noted disadvantages.</li>
-                      )}
-                    </ul>
-                  </article>
-                </motion.div>
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      min="1"
+                      value={recipeQuantity}
+                      onChange={(e) => setRecipeQuantity(e.target.value)}
+                      placeholder="Orders"
+                      className="w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800 placeholder-slate-400 outline-none focus:border-[#3B6D11] focus:ring-2 focus:ring-[#3B6D11]/10 transition"
+                    />
+                    <button
+                      disabled={!recipeQuantity || Number(recipeQuantity) <= 0}
+                      onClick={() => {
+                        const qty = parseInt(recipeQuantity, 10);
+                        if (!qty || qty <= 0) return;
+                        const unitPrice = Number(recipe.price || 0);
+                        addRecipeToCart({
+                          recipeId: recipe.recipeId || recipe.id,
+                          quantity: qty,
+                          unitPrice,
+                          price: unitPrice,
+                          totalPrice: unitPrice * qty,
+                          _previewName: recipe.title,
+                        });
+                        setRecipeQuantity(1); // reset after adding
+                      }}
+                      className="flex-1 rounded-lg bg-[#1a2e1a] text-[#a8d878] px-4 py-2.5 text-xs font-bold transition hover:bg-[#3B6D11] disabled:opacity-50 disabled:pointer-events-none"
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                </SectionCard>
 
-                <motion.article variants={itemVariants} className="rounded-[2.5rem] border border-slate-200 bg-white p-8 lg:p-10 shadow-sm flex flex-col gap-8">
-                  <div className="flex flex-col sm:flex-row items-start justify-between gap-6 pb-6 border-b border-slate-100">
+                <SectionCard
+                  title="Advantages"
+                  icon={<FaCheckCircle className="text-[#3B6D11] text-xs" />}
+                  iconBg="bg-[#EAF3DE]"
+                >
+                  <div className="bg-[#EAF3DE] border border-[#C0DD97] rounded-xl p-4 space-y-3">
+                    {recipe.advantages?.length ? (
+                      recipe.advantages.map((item) => (
+                        <div key={item} className="flex items-start gap-2.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#3B6D11] shrink-0 mt-1.5" />
+                          <span className="text-xs leading-relaxed text-[#27500A]">
+                            {item}
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs text-[#3B6D11] italic">
+                        No noted advantages.
+                      </p>
+                    )}
+                  </div>
+                </SectionCard>
+
+                <SectionCard
+                  title="Disadvantages"
+                  icon={
+                    <FaExclamationTriangle className="text-[#854F0B] text-xs" />
+                  }
+                  iconBg="bg-[#FAEEDA]"
+                >
+                  <div className="bg-[#FAEEDA] border border-[#FAC775] rounded-xl p-4 space-y-3">
+                    {recipe.disadvantages?.length ? (
+                      recipe.disadvantages.map((item) => (
+                        <div key={item} className="flex items-start gap-2.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#854F0B] shrink-0 mt-1.5" />
+                          <span className="text-xs leading-relaxed text-[#412402]">
+                            {item}
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs text-[#412402] italic">
+                        No noted disadvantages.
+                      </p>
+                    )}
+                  </div>
+                </SectionCard>
+
+                {/* Reviews */}
+                <div className="rounded-2xl border border-slate-100 bg-white p-6">
+                  <div className="flex items-start justify-between mb-5 pb-4 border-b border-slate-100">
                     <div>
-                      <h2 className="text-2xl font-extrabold text-slate-900">Community Feedback</h2>
-                      <p className="mt-2 text-sm font-medium text-slate-500 max-w-sm">
-                        Share your experience with this recipe and see what others think.
+                      <p className="text-sm font-medium text-slate-900 mb-0.5">
+                        Community feedback
+                      </p>
+                      <p className="text-[11px] text-slate-400">
+                        Share your experience
                       </p>
                     </div>
-                    <div className="rounded-2xl bg-slate-50 border border-slate-100 px-6 py-4 text-right w-full sm:w-auto">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
-                        Overall Average
+                    <div className="text-right bg-slate-50 border border-slate-100 rounded-xl px-4 py-3">
+                      <p
+                        style={{ fontFamily: "'Instrument Serif', serif" }}
+                        className="text-2xl text-slate-900 leading-none"
+                      >
+                        {averageFromReviews ? `${averageFromReviews} ★` : "—"}
                       </p>
-                      <p className="mt-1 text-3xl font-extrabold text-slate-900 flex items-center justify-end gap-2">
-                        {averageFromReviews ? `${averageFromReviews}` : "—"}
-                        <FaStar className="text-amber-400 text-xl" />
-                      </p>
-                      <p className="text-xs font-semibold text-slate-500 mt-1">
-                        {reviews.length} Patient Review{reviews.length === 1 ? "" : "s"}
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        {reviews.length} review{reviews.length !== 1 ? "s" : ""}
                       </p>
                     </div>
                   </div>
 
-                  {reviewsError ? (
-                    <div className="rounded-2xl border border-red-100 bg-red-50 p-4 text-sm text-red-700 font-bold">
+                  {reviewsError && (
+                    <div className="rounded-xl border border-red-100 bg-red-50 p-3 text-xs text-red-600 mb-4">
                       {reviewsError}
-                    </div>
-                  ) : null}
-
-                  {canReview ? (
-                    <form onSubmit={handleReviewSubmit} className="rounded-3xl border border-slate-100 bg-slate-50 p-6 sm:p-8">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                        <div>
-                          <h3 className="text-lg font-bold text-slate-900">
-                            {myReview ? "Update your feedback" : "Write a review"}
-                          </h3>
-                        </div>
-                        <div className="flex gap-2">
-                          {[1, 2, 3, 4, 5].map((value) => (
-                            <button
-                              key={value}
-                              type="button"
-                              onClick={() => setReviewForm((c) => ({ ...c, ratingValue: value }))}
-                              className={`rounded-xl w-10 h-10 flex items-center justify-center text-sm font-bold shadow-sm transition-all hover:scale-105 active:scale-95 ${
-                                Number(reviewForm.ratingValue) >= value
-                                  ? "bg-amber-400 text-amber-900 border border-amber-500"
-                                  : "bg-white text-slate-400 border border-slate-200"
-                              }`}
-                            >
-                              <FaStar />
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <textarea
-                        value={reviewForm.comment}
-                        onChange={(e) => setReviewForm((c) => ({ ...c, comment: e.target.value }))}
-                        rows={3}
-                        placeholder="Detail your experience with this curation..."
-                        className="w-full rounded-2xl border border-slate-200 bg-white p-4 text-sm font-medium text-slate-700 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 shadow-inner"
-                      />
-
-                      <div className="mt-5 flex flex-wrap gap-3">
-                        <button
-                          type="submit"
-                          disabled={isSubmitting}
-                          className="rounded-full bg-emerald-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-emerald-700 hover:shadow-md transition-all disabled:opacity-50 disabled:hover:scale-100"
-                        >
-                          {isSubmitting ? "Sumbitting..." : myReview ? "Update Review" : "Publish Feedback"}
-                        </button>
-                        {myReview ? (
-                          <button
-                            type="button"
-                            onClick={handleDeleteReview}
-                            disabled={isDeleting}
-                            className="rounded-full bg-red-50 text-red-600 px-6 py-2.5 text-sm font-bold shadow-sm hover:bg-red-100 transition-all disabled:opacity-50"
-                          >
-                            {isDeleting ? "Deleting..." : "Erase"}
-                          </button>
-                        ) : null}
-                      </div>
-                    </form>
-                  ) : (
-                    <div className="rounded-2xl border border-slate-200 bg-white p-6 text-center text-sm font-bold text-slate-500 shadow-sm">
-                      Please log in as a patient to leave your feedback.
                     </div>
                   )}
 
-                  <div className="space-y-5">
-                    {areReviewsLoading ? (
-                      <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm flex items-center justify-center gap-3">
-                        <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-emerald-500" />
-                        <p className="text-sm font-bold text-slate-400">Loading reviews...</p>
+                  {canReview ? (
+                    <form
+                      onSubmit={handleReviewSubmit}
+                      className="bg-slate-50 border border-slate-100 rounded-xl p-4 mb-5"
+                    >
+                      <p className="text-xs font-medium text-slate-500 mb-2.5">
+                        Your rating
+                      </p>
+                      <div className="flex gap-1.5 mb-3">
+                        {[1, 2, 3, 4, 5].map((v) => (
+                          <button
+                            key={v}
+                            type="button"
+                            onClick={() =>
+                              setReviewForm((c) => ({ ...c, ratingValue: v }))
+                            }
+                            className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-colors ${
+                              Number(reviewForm.ratingValue) >= v
+                                ? "bg-[#FAEEDA] border-[#EF9F27]"
+                                : "bg-white border-slate-200"
+                            }`}
+                          >
+                            <FaStar
+                              className={`text-xs ${Number(reviewForm.ratingValue) >= v ? "text-[#BA7517]" : "text-slate-300"}`}
+                            />
+                          </button>
+                        ))}
                       </div>
-                    ) : null}
-
-                    {!areReviewsLoading && !reviews.length ? (
-                      <div className="rounded-2xl border border-slate-100 bg-slate-50 p-8 text-center shadow-sm">
-                         <p className="text-sm font-bold text-slate-500">Waitlist is empty! Be the first to share feedback.</p>
-                      </div>
-                    ) : null}
-
-                    {!areReviewsLoading &&
-                      reviews.map((review) => (
-                        <div
-                          key={review.id}
-                          className="rounded-3xl border border-slate-100 bg-white p-6 sm:p-8 shadow-sm transition-shadow hover:shadow-md"
+                      <textarea
+                        value={reviewForm.comment}
+                        onChange={(e) =>
+                          setReviewForm((c) => ({
+                            ...c,
+                            comment: e.target.value,
+                          }))
+                        }
+                        rows={3}
+                        placeholder="Share your experience..."
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs text-slate-700 placeholder-slate-400 outline-none focus:border-[#3B6D11] focus:ring-2 focus:ring-[#3B6D11]/10 resize-none transition"
+                      />
+                      <div className="mt-3 flex gap-2">
+                        <button
+                          type="submit"
+                          disabled={isSubmitting}
+                          className="bg-[#1a2e1a] text-[#a8d878] text-xs font-medium rounded-lg px-4 py-2 hover:bg-[#3B6D11] transition-colors disabled:opacity-50"
                         >
-                          <div className="flex flex-wrap items-center justify-between gap-4">
-                            <div className="flex items-center gap-3">
-                              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-extrabold shadow-inner">
-                                {review.userName?.charAt(0).toUpperCase()}
-                              </div>
-                              <div>
-                                <p className="text-sm font-extrabold text-slate-900">
-                                  {review.userName}
-                                </p>
-                                <p className="mt-0.5 text-xs font-semibold text-slate-400">
-                                  {review.createdDate
-                                    ? new Date(review.createdDate).toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric'})
-                                    : "Past Patient"}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex gap-1 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-100">
-                              {[...Array(5)].map((_, i) => (
-                                <FaStar key={i} className={`text-[10px] ${i < review.ratingValue ? "text-amber-500" : "text-amber-200"}`} />
-                              ))}
-                            </div>
-                          </div>
+                          {isSubmitting
+                            ? "Submitting..."
+                            : myReview
+                              ? "Update review"
+                              : "Publish feedback"}
+                        </button>
+                        {myReview && (
+                          <button
+                            type="button"
+                            onClick={handleDelete}
+                            disabled={isDeleting}
+                            className="text-xs font-medium text-red-500 bg-red-50 border border-red-100 rounded-lg px-4 py-2 hover:bg-red-100 transition-colors disabled:opacity-50"
+                          >
+                            {isDeleting ? "Deleting..." : "Delete"}
+                          </button>
+                        )}
+                      </div>
+                    </form>
+                  ) : (
+                    <div className="text-xs text-center text-slate-400 bg-slate-50 border border-slate-100 rounded-xl p-4 mb-5">
+                      Log in as a patient to leave feedback.
+                    </div>
+                  )}
 
-                          <p className="mt-5 text-sm leading-relaxed font-medium text-slate-600 bg-slate-50 p-4 rounded-2xl">
-                            {review.comment || "No written statement provided."}
-                          </p>
-                        </div>
-                      ))}
-                  </div>
-                </motion.article>
+                  {areReviewsLoading && (
+                    <div className="flex items-center justify-center gap-2 py-6">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-200 border-t-[#3B6D11]" />
+                      <p className="text-xs text-slate-400">
+                        Loading reviews...
+                      </p>
+                    </div>
+                  )}
+
+                  {!areReviewsLoading && reviews.length === 0 && (
+                    <p className="text-xs text-center text-slate-400 py-6">
+                      Be the first to share your experience.
+                    </p>
+                  )}
+
+                  {!areReviewsLoading &&
+                    reviews.map((r) => <ReviewCard key={r.id} review={r} />)}
+                </div>
               </div>
-            </section>
+            </motion.div>
           </motion.div>
-        ) : null}
+        )}
       </main>
+
       <Footer />
     </div>
   );

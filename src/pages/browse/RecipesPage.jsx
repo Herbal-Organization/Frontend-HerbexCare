@@ -16,13 +16,16 @@ function RecipesPage() {
 
   const filteredRecipes = useMemo(
     () => filterRecipes(recipes, searchTerm),
-    [recipes, searchTerm]
+    [recipes, searchTerm],
   );
 
-  const totalPages = Math.max(1, Math.ceil(filteredRecipes.length / RECIPES_PER_PAGE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredRecipes.length / RECIPES_PER_PAGE),
+  );
   const paginatedRecipes = filteredRecipes.slice(
     (currentPage - 1) * RECIPES_PER_PAGE,
-    currentPage * RECIPES_PER_PAGE
+    currentPage * RECIPES_PER_PAGE,
   );
 
   const handleSearchChange = (value) => {
@@ -52,6 +55,7 @@ function RecipesPage() {
         <RecipesPagination
           currentPage={currentPage}
           totalPages={totalPages}
+          itemCount={filteredRecipes.length}
           onPageChange={setCurrentPage}
         />
       </main>

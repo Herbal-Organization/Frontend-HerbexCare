@@ -1,14 +1,23 @@
 import { FaHeart, FaStar } from "react-icons/fa";
-import { MdVerified } from "react-icons/md";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 
+const HERO_THEMES = [
+  {
+    bg: "#1a2e1a",
+    orb: "rgba(100,160,60,0.22)",
+    accentText: "#a8d878",
+    accentBg: "rgba(130,200,80,0.12)",
+    accentBorder: "rgba(130,200,80,0.25)",
+  },
+];
+
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { type: "spring", stiffness: 300, damping: 24 } 
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 300, damping: 24 },
   },
 };
 
@@ -25,95 +34,156 @@ function RecipeCard({
   price,
 }) {
   const navigate = useNavigate();
-  const navigationId = id || recipeId;
+  const theme = HERO_THEMES[0];
 
   return (
     <motion.button
       variants={itemVariants}
-      whileHover={{ y: -8 }}
+      whileHover={{ y: -6 }}
       type="button"
-      onClick={() => navigate(`/patient/home/recipes/${navigationId}`)}
-      className="group flex flex-col overflow-hidden rounded-[2.5rem] border border-slate-100 bg-white text-left shadow-sm hover:shadow-xl transition-shadow duration-300 h-full w-full"
+      onClick={() => navigate(`/patient/home/recipes/${id || recipeId}`)}
+      className="group flex flex-col overflow-hidden rounded-[20px] border border-black/8 bg-[#faf9f6] text-left h-full w-full transition-shadow duration-300 hover:shadow-2xl"
     >
-      <div className="relative flex min-h-[160px] flex-col justify-between overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.2),_transparent_40%),linear-gradient(135deg,_#f1fdf6_0%,_#ffffff_60%,_#f8fafc_100%)] p-6">
-        <div className="flex items-start justify-between gap-3 relative z-10">
-          <div className="flex flex-wrap gap-2">
-            <div className="rounded-full bg-slate-900/90 backdrop-blur-md px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-widest text-white shadow-sm border border-slate-700">
-              {createdDate || "Recent"}
-            </div>
-          </div>
+      {/* Hero */}
+      <div
+        className="relative flex min-h-4 flex-col justify-between overflow-hidden p-6 "
+        style={{ background: theme.bg }}
+      >
+        {/* Ambient orb */}
+        <div
+          className="absolute -right-5 -bottom-8 w-32.5 h-32.5 rounded-full pointer-events-none"
+          style={{
+            background: `radial-gradient(circle, ${theme.orb}, transparent 70%)`,
+          }}
+        />
+        {/* Leaf decoration */}
+        <svg
+          className="absolute top-4 right-14 opacity-[0.07] pointer-events-none"
+          width="60"
+          height="80"
+          viewBox="0 0 60 80"
+          fill="none"
+        >
+          <path d="M30 2 C50 20 55 50 30 78 C5 50 10 20 30 2Z" fill="#a0d060" />
+          <line
+            x1="30"
+            y1="2"
+            x2="30"
+            y2="78"
+            stroke="#a0d060"
+            strokeWidth="1.5"
+          />
+        </svg>
 
+        {/* Top row */}
+        <div className="relative z-10 flex items-start justify-between">
           <span
-            type="button"
-            className="rounded-full bg-white/80 backdrop-blur p-2.5 text-slate-400 shadow-sm transition-colors hover:text-red-500 hover:bg-white"
+            className="rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-[0.15em] border"
+            style={{
+              color: "rgba(200,230,180,0.65)",
+              borderColor: "rgba(150,200,100,0.25)",
+              background: "rgba(255,255,255,0.04)",
+            }}
           >
-            <FaHeart className="text-sm" />
+            {createdDate || "Recent"}
+          </span>
+          <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/6 text-white/40 text-sm transition-colors hover:bg-red-500/20 hover:text-red-400 cursor-pointer">
+            <FaHeart />
           </span>
         </div>
 
-        <div className="mt-8 relative z-10">
-           {createdByAI ? (
-            <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.2em] text-emerald-700">
-              <MdVerified className="text-sm" />
-              <span>AI Curation</span>
+        {/* Bottom */}
+        <div className="relative z-10 mt-5">
+          {createdByAI && (
+            <div
+              className="mb-2.5 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.18em] border"
+              style={{
+                color: theme.accentText,
+                background: theme.accentBg,
+                borderColor: theme.accentBorder,
+              }}
+            >
+              <span
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ background: theme.accentText }}
+              />
+              AI Curated
             </div>
-           ) : null}
-          <h3 className="text-2xl font-extrabold text-slate-900 transition-colors group-hover:text-emerald-700 leading-tight">
+          )}
+          <h3
+            className="text-[22px] leading-tight tracking-[-0.01em] transition-colors"
+            style={{
+              fontWeight: 600,
+              color: "#f0ece4",
+            }}
+          >
             {title}
           </h3>
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col p-6 w-full">
-        <p className="line-clamp-2 text-sm leading-relaxed font-medium text-slate-600 mb-5">
+      {/* Body */}
+      <div className="flex flex-1 flex-col p-5 bg-[#faf9f6]">
+        <p className="mb-4 line-clamp-2 text-[12.5px] leading-relaxed text-[#6b7a62]">
           {description}
         </p>
 
-        <div className="flex flex-wrap gap-2 mb-5">
+        <div className="mb-4 flex flex-wrap gap-1.5">
           {herbs?.length ? (
-            herbs.slice(0, 3).map((herb) => (
-              <span
-                key={`${herb.herbId}-${herb.herbName}`}
-                className="rounded-full bg-emerald-50 border border-emerald-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-700 shadow-sm"
-              >
-                {herb.herbName}
-              </span>
-            ))
+            <>
+              {herbs.slice(0, 3).map((herb) => (
+                <span
+                  key={`${herb.herbId}-${herb.herbName}`}
+                  className="rounded-full border border-[rgba(70,130,50,0.18)] bg-[#edf5e6] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.12em] text-[#3d6634]"
+                >
+                  {herb.herbName}
+                </span>
+              ))}
+              {herbs.length > 3 && (
+                <span className="rounded-full border border-black/[0.07] bg-[#f1f0ec] px-2.5 py-1 text-[10px] font-medium text-[#9aaa90]">
+                  +{herbs.length - 3}
+                </span>
+              )}
+            </>
           ) : (
-             <span className="rounded-full bg-slate-50 border border-slate-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-500 shadow-sm">
-                Custom Blend
-             </span>
-          )}
-          {herbs?.length > 3 && (
-            <span className="rounded-full bg-slate-50 border border-slate-100 px-2 py-1 text-[11px] font-bold text-slate-500">
-              +{herbs.length - 3}
+            <span className="rounded-full border border-black/[0.07] bg-[#f1f0ec] px-2.5 py-1 text-[10px] font-medium text-[#9aaa90]">
+              Custom Blend
             </span>
           )}
         </div>
 
-        <div className="mt-auto pt-5 border-t border-slate-100 flex items-center justify-between gap-4">
-          <div className="flex-1 min-w-0">
-             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-1">
-               Targets
-             </p>
-             <p className="text-xs font-bold text-slate-800 truncate">
-                {targetedDiseases?.length
-                  ? targetedDiseases.map((d) => d.diseaseName).join(", ")
-                  : "General Wellness"}
-             </p>
+        {/* Divider */}
+        <div
+          className="mb-4 h-px"
+          style={{
+            background:
+              "linear-gradient(to right, transparent, rgba(80,120,60,0.15), transparent)",
+          }}
+        />
+
+        {/* Footer */}
+        <div className="mt-auto flex items-end justify-between gap-3">
+          <div className="min-w-0">
+            <p className="mb-1 text-[9px] font-medium uppercase tracking-[0.18em] text-[#b0b8a8]">
+              Targets
+            </p>
+            <p className="truncate text-xs font-medium text-[#3a4a34]">
+              {targetedDiseases?.length
+                ? targetedDiseases.map((d) => d.diseaseName).join(", ")
+                : "General Wellness"}
+            </p>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 border border-emerald-100 shadow-sm">
-               <span className="text-xs font-extrabold text-emerald-700">
-                 {price ? `$${Number(price).toFixed(2)}` : "Free"}
-               </span>
-            </div>
-            <div className="flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5">
-               <FaStar className="text-amber-500 text-xs" />
-               <span className="text-xs font-extrabold text-amber-700">
-                 {averageRating != null ? Number(averageRating).toFixed(1) : "New"}
-               </span>
-            </div>
+          <div className="flex shrink-0 gap-1.5">
+            <span
+              className="flex items-center rounded-full px-2.5 py-1 text-[11px] font-medium"
+              style={{ background: theme.bg, color: theme.accentText }}
+            >
+              {price ? `$${Number(price).toFixed(2)}` : "Free"}
+            </span>
+            <span className="flex items-center gap-1 rounded-full border border-[rgba(180,140,20,0.18)] bg-[#fef9ec] px-2.5 py-1 text-[11px] font-medium text-[#8a6a10]">
+              <FaStar className="text-[#d4a820] text-[10px]" />
+              {averageRating != null ? Number(averageRating).toFixed(1) : "New"}
+            </span>
           </div>
         </div>
       </div>

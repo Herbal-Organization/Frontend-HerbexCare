@@ -10,10 +10,10 @@ import {
   FaNotesMedical,
   FaUserMd,
 } from "react-icons/fa";
-import PatientNavbar from "../../components/browse/PatientNavbar";
-import RecipesGrid from "../../components/browse/RecipesGrid";
-import Footer from "../../components/landing/Footer";
-import useRecipes from "../../hooks/useRecipes";
+import PatientNavbar from "../../../components/browse/PatientNavbar";
+import RecipesGrid from "../../../components/browse/RecipesGrid";
+import Footer from "../../../components/landing/Footer";
+import useRecipes from "../../../hooks/useRecipes";
 
 const HERO_BACKGROUND_IMAGE =
   "https://plus.unsplash.com/premium_photo-1663036948705-7dee4d33c07a?w=1600&auto=format&fit=crop&q=80";
@@ -90,7 +90,7 @@ function PatientHome() {
         <section
           className="relative overflow-hidden border-b border-slate-200 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `linear-gradient(to right, rgba(248, 250, 252, 0.94), rgba(248, 250, 252, 0.76), rgba(236, 253, 245, 0.72)), url(${HERO_BACKGROUND_IMAGE})`,
+            backgroundImage: `linear-gradient(to right, rgba(248, 250, 252, 0.6), rgba(248, 250, 252, 0.6), rgba(236, 253, 245, 0.6)), url(${HERO_BACKGROUND_IMAGE})`,
           }}
         >
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-18">

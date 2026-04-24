@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import {
   isAuthenticated,
   getUserFromToken,
@@ -11,14 +17,18 @@ import HerbalistManageRecipes from "./HerbalistManageRecipes";
 import HerbalistInventory from "./HerbalistInventory";
 import HerbalistDashboardHome from "./HerbalistDashboardHome";
 import HerbalistProfile from "./HerbalistProfile";
+import HerbalistSubOrders from "./HerbalistSubOrders";
+import SubOrderDetails from "./SubOrderDetails";
 import Sidebar from "../../../components/herbalist/Sidebar";
 import useHerbalistDashboardData from "../../../hooks/useHerbalistDashboardData";
 import { normalizeHerbalistUser } from "../../../services/herbalistProfile";
+import { getMySubOrders } from "../../../api/subOrders";
 
 function HerbalistDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState(null);
+  const [ordersCount, setOrdersCount] = useState(null);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -65,6 +75,34 @@ function HerbalistDashboard() {
     );
   }, [dashboardData?.userDetails]);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadOrdersCount = async () => {
+      try {
+        const response = await getMySubOrders();
+        const items = Array.isArray(response)
+          ? response
+          : (response?.items ?? []);
+        if (isMounted) {
+          setOrdersCount(items.length);
+        }
+      } catch (_error) {
+        if (isMounted) {
+          setOrdersCount(null);
+        }
+      }
+    };
+
+    if (user) {
+      loadOrdersCount();
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
+
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -84,6 +122,7 @@ function HerbalistDashboard() {
         onNavigate={handleNavigate}
         user={user}
         onLogout={handleLogout}
+        ordersCount={ordersCount}
       />
       <main className="flex-1 overflow-y-auto">
         <div className="p-8 max-w-7xl mx-auto">
@@ -135,6 +174,16 @@ function HerbalistDashboard() {
               }
             />
             <Route path="/inventory" element={<HerbalistInventory />} />
+            <Route path="/orders" element={<HerbalistSubOrders />} />
+            <Route path="/orders/:id" element={<SubOrderDetails />} />
+            <Route
+              path="/suborders"
+              element={<Navigate to="/herbalist/dashboard/orders" replace />}
+            />
+            <Route
+              path="/suborders/:id"
+              element={<Navigate to="/herbalist/dashboard/orders" replace />}
+            />
             <Route
               path="*"
               element={

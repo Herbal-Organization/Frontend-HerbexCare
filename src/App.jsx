@@ -6,7 +6,7 @@ import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import PatientDashboard from "./pages/dashboard/patient/PatientDashboard";
 import HerbalistDashboard from "./pages/dashboard/herbalist/HerbalistDashboard";
 
-import PatientHome from "./pages/browse/BrowseRecipe";
+import PatientHome from "./pages/dashboard/patient/PatientHome";
 import RecipesPage from "./pages/browse/RecipesPage";
 import HerbsPage from "./pages/browse/HerbsPage";
 import RecipeDetailsPage from "./pages/browse/RecipeDetailsPage";

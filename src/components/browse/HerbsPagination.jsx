@@ -1,11 +1,6 @@
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
-function RecipesPagination({
-  currentPage,
-  totalPages,
-  itemCount,
-  onPageChange,
-}) {
+function HerbsPagination({ currentPage, totalPages, itemCount, onPageChange }) {
   if (!itemCount) {
     return null;
   }
@@ -60,4 +55,4 @@ function RecipesPagination({
   );
 }
 
-export default RecipesPagination;
+export default HerbsPagination;

@@ -9,13 +9,17 @@ import {
   MdPerson,
 } from "react-icons/md";
 
-function Sidebar({ currentPath, onNavigate, user, onLogout }) {
+function Sidebar({ currentPath, onNavigate, user, onLogout, ordersCount }) {
   const navigation = [
     { name: "Dashboard", href: "/herbalist/dashboard" },
     { name: "Manage Herbs", href: "/herbalist/dashboard/herbs" },
     { name: "Manage Recipes", href: "/herbalist/dashboard/recipes" },
     { name: "Inventory", href: "/herbalist/dashboard/inventory" },
-    { name: "Orders", href: "/herbalist/dashboard/orders", badge: "12" },
+    {
+      name: "Orders",
+      href: "/herbalist/dashboard/orders",
+      badge: Number.isFinite(ordersCount) ? String(ordersCount) : null,
+    },
     { name: "Profile", href: "/herbalist/dashboard/profile" },
   ];
 

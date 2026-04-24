@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import {
   FaArrowLeft,
   FaCheckCircle,
@@ -5,279 +6,550 @@ import {
   FaLeaf,
   FaStamp,
   FaUserMd,
+  FaTags,
 } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "motion/react";
+import { toast } from "react-hot-toast";
+import Skeleton from "react-loading-skeleton";
 import PatientNavbar from "../../components/browse/PatientNavbar";
 import Footer from "../../components/landing/Footer";
 import useHerbDetails from "../../hooks/useHerbDetails";
+import { useCart } from "../../context/CartContext";
+
+/* ── Add to cart form ── */
+function AddToCartForm({ providers, herb }) {
+  const { addHerbToCart } = useCart();
+  const [selectedProviderId, setSelectedProviderId] = useState("");
+  const [quantity, setQuantity] = useState("");
+
+  // Sort providers by price (ascending - best price first)
+  const sortedProviders = useMemo(() => {
+    return [...(providers || [])].sort((a, b) => {
+      const priceA = a.pricePerKilo || Infinity;
+      const priceB = b.pricePerKilo || Infinity;
+      return priceA - priceB;
+    });
+  }, [providers]);
+
+  // Get selected provider data
+  const selectedProvider = useMemo(
+    () =>
+      sortedProviders.find(
+        (p) =>
+          (p.id ?? p.herbalistId ?? p.userId) === parseInt(selectedProviderId),
+      ),
+    [selectedProviderId, sortedProviders],
+  );
+
+  const handleAdd = () => {
+    if (!selectedProviderId) {
+      toast.error("Please select a herbalist");
+      return;
+    }
+
+    const qty = parseInt(quantity, 10);
+    if (!qty || qty <= 0) {
+      toast.error("Please enter a valid quantity");
+      return;
+    }
+
+    if (!selectedProvider) return;
+
+    const pricePerKilo = selectedProvider.pricePerKilo || 0;
+
+    addHerbToCart({
+      herbId: herb.herbId || herb.id,
+      herbalistId:
+        selectedProvider.id ||
+        selectedProvider.herbalistId ||
+        selectedProvider.userId,
+      quantityPerGram: qty,
+      pricePerKilo: pricePerKilo,
+      totalPrice: (pricePerKilo * qty) / 1000,
+      _previewName: herb.herbName,
+      _providerName:
+        selectedProvider.fullName ||
+        selectedProvider.name ||
+        selectedProvider.userName ||
+        "Licensed Herbalist",
+    });
+
+    toast.success("Added to cart!");
+    setQuantity("");
+    setSelectedProviderId("");
+  };
+
+  const estimatedTotal =
+    selectedProvider && quantity
+      ? ((selectedProvider.pricePerKilo || 0) * parseInt(quantity, 10)) / 1000
+      : 0;
+
+  return (
+    <div className="rounded-2xl border border-slate-100 bg-white p-6">
+      <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
+        <div className="w-8 h-8 rounded-lg bg-[#EAF3DE] flex items-center justify-center shrink-0">
+          <FaTags className="text-[#3B6D11] text-sm" />
+        </div>
+        <h2 className="text-sm font-medium text-slate-900">Add to cart</h2>
+      </div>
+
+      <div className="space-y-4">
+        {/* Herbalist selector */}
+        <div>
+          <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+            Select herbalist
+          </label>
+          <select
+            value={selectedProviderId}
+            onChange={(e) => setSelectedProviderId(e.target.value)}
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-[#3B6D11] focus:ring-2 focus:ring-[#3B6D11]/10 transition appearance-none cursor-pointer"
+          >
+            <option value="">
+              {sortedProviders.length > 0
+                ? "Choose the best price..."
+                : "No herbalists available"}
+            </option>
+            {sortedProviders.map((p) => {
+              const providerId = p.id ?? p.herbalistId ?? p.userId;
+              const providerName =
+                p.fullName || p.name || p.userName || "Licensed Herbalist";
+              const price = p.pricePerKilo
+                ? `${p.pricePerKilo} EGP/kg`
+                : "Price N/A";
+              const rating = p.averageRating
+                ? ` (${Number(p.averageRating).toFixed(1)} ★)`
+                : "";
+
+              return (
+                <option key={providerId} value={providerId}>
+                  {providerName} • {price}
+                  {rating}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+
+        {/* Selected provider details */}
+        {selectedProvider && (
+          <div className="p-3 bg-[#EAF3DE] rounded-lg border border-[#C0DD97]">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-[#3B6D11] uppercase tracking-wider">
+                Selected provider
+              </span>
+              {selectedProvider.averageRating && (
+                <span className="text-[11px] font-medium bg-white text-[#633806] border border-[#EF9F27] border-opacity-50 rounded px-2 py-0.5">
+                  {Number(selectedProvider.averageRating).toFixed(1)} ★
+                </span>
+              )}
+            </div>
+            <p className="text-sm font-semibold text-[#27500A] mb-1">
+              {selectedProvider.fullName ||
+                selectedProvider.name ||
+                selectedProvider.userName}
+            </p>
+            <p className="text-sm font-bold text-[#3B6D11]">
+              {selectedProvider.pricePerKilo
+                ? `${selectedProvider.pricePerKilo} EGP/kg`
+                : "Price N/A"}
+            </p>
+          </div>
+        )}
+
+        {/* Quantity input */}
+        <div>
+          <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+            Quantity (grams)
+          </label>
+          <input
+            type="number"
+            min="1"
+            step="50"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            placeholder="e.g., 100, 250, 500..."
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 placeholder-slate-400 outline-none focus:border-[#3B6D11] focus:ring-2 focus:ring-[#3B6D11]/10 transition"
+          />
+        </div>
+
+        {/* Price breakdown */}
+        {selectedProvider && quantity && (
+          <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs text-slate-600 font-medium">
+                Unit price:
+              </span>
+              <span className="text-sm font-semibold text-slate-900">
+                {selectedProvider.pricePerKilo} EGP/kg
+              </span>
+            </div>
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs text-slate-600 font-medium">
+                Quantity:
+              </span>
+              <span className="text-sm font-semibold text-slate-900">
+                {quantity}g
+              </span>
+            </div>
+            <div className="pt-2 border-t border-slate-200 flex justify-between items-center">
+              <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
+                Total:
+              </span>
+              <span className="text-lg font-bold text-[#3B6D11]">
+                {estimatedTotal.toFixed(2)} EGP
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Add button */}
+        <button
+          type="button"
+          disabled={
+            !selectedProviderId ||
+            !quantity ||
+            Number(quantity) <= 0 ||
+            !selectedProvider?.pricePerKilo
+          }
+          onClick={handleAdd}
+          className="w-full rounded-lg bg-[#3B6D11] text-white px-4 py-3 text-sm font-semibold transition hover:bg-[#2d5209] disabled:opacity-40 disabled:pointer-events-none uppercase tracking-wider"
+        >
+          Add to cart
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ── Section card wrapper ── */
+function SectionCard({ title, icon, iconBg = "bg-slate-100", children }) {
+  return (
+    <div className="rounded-2xl border border-slate-100 bg-white p-6">
+      <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
+        <div
+          className={`w-8 h-8 rounded-lg ${iconBg} flex items-center justify-center shrink-0`}
+        >
+          {icon}
+        </div>
+        <h2 className="text-sm font-medium text-slate-900">{title}</h2>
+      </div>
+      {children}
+    </div>
+  );
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.15 },
-  },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
-
 const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 300, damping: 24 },
+    transition: { type: "spring", stiffness: 300, damping: 28 },
   },
 };
-
-function HerbInfoCard({ title, icon, children, tone = "slate" }) {
-  const toneClasses = {
-    slate: "border-slate-200 bg-white hover:border-slate-300",
-    emerald: "border-emerald-200 bg-emerald-50/50 hover:border-emerald-300",
-    amber: "border-amber-200 bg-amber-50/50 hover:border-amber-300",
-  };
-
-  const iconTones = {
-    slate: "text-slate-500 bg-slate-100 group-hover:bg-slate-200",
-    emerald:
-      "text-emerald-600 bg-emerald-100 group-hover:bg-emerald-200 group-hover:text-emerald-700",
-    amber:
-      "text-amber-600 bg-amber-100 group-hover:bg-amber-200 group-hover:text-amber-700",
-  };
-
-  return (
-    <motion.article
-      variants={itemVariants}
-      whileHover={{ y: -6, transition: { duration: 0.2 } }}
-      className={`group rounded-[2rem] border p-8 shadow-sm hover:shadow-lg transition-all duration-300 ${toneClasses[tone]}`}
-    >
-      <div className="flex items-center gap-4">
-        <div className={`rounded-2xl p-4 transition-colors ${iconTones[tone]}`}>
-          {icon}
-        </div>
-        <h2 className="text-2xl font-extrabold text-slate-900">{title}</h2>
-      </div>
-      <div className="mt-6">{children}</div>
-    </motion.article>
-  );
-}
 
 function HerbDetailsPage() {
   const { herbId } = useParams();
   const { herb, providers, isLoading, error, reload } = useHerbDetails(herbId);
 
+  const uniqueProviders = useMemo(() => {
+    const seen = new Set();
+    return (providers || []).filter((p) => {
+      const id = p?.id ?? p?.herbalistId ?? p?.userId;
+      if (!id) return false;
+      if (seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    });
+  }, [providers]);
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <PatientNavbar />
-      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8 flex-1 w-full">
+
+      <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8 flex-1 w-full">
         <Link
           to="/patient/home/herbs"
-          className="inline-flex items-center gap-3 rounded-full bg-white px-5 py-2.5 text-sm font-bold text-slate-600 shadow-sm transition-all hover:text-emerald-600 hover:shadow-md hover:-translate-y-0.5"
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 bg-white border border-slate-200 rounded-full px-4 py-2 mb-8 hover:text-[#3B6D11] transition-colors"
         >
-          <FaArrowLeft className="text-xs" />
-          Back to herbs
+          <FaArrowLeft className="text-xs" /> Back to herbs
         </Link>
 
-        {isLoading ? (
-          <div className="mt-12 rounded-[2rem] border border-slate-200 bg-white p-16 text-center shadow-sm">
-            <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-emerald-500" />
-            <p className="mt-6 text-sm font-bold text-slate-500 uppercase tracking-widest">
-              Loading herb details...
-            </p>
-          </div>
-        ) : null}
+        {/* Loading */}
+        {isLoading && (
+          <div className="space-y-5">
+            <div className="rounded-2xl border border-slate-100 bg-white overflow-hidden grid lg:grid-cols-[340px_1fr]">
+              <div className="min-h-70 bg-[#EAF3DE] p-8">
+                <Skeleton height="100%" borderRadius={24} />
+              </div>
+              <div className="p-8 lg:p-10 border-t lg:border-t-0 lg:border-l border-slate-100 flex flex-col justify-center space-y-4">
+                <div className="flex flex-wrap gap-2">
+                  <Skeleton width={110} height={24} borderRadius={9999} />
+                  <Skeleton width={128} height={24} borderRadius={9999} />
+                </div>
+                <Skeleton height={54} width="70%" />
+                <Skeleton height={18} width="35%" />
+                <Skeleton count={3} />
+              </div>
+            </div>
 
-        {!isLoading && error ? (
-          <div className="mt-12 rounded-[2rem] border border-red-100 bg-red-50 p-16 text-center shadow-sm">
-            <h2 className="text-xl font-extrabold text-red-800">
+            <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] items-start">
+              <div className="space-y-5">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <div
+                    key={`herb-details-left-${index}`}
+                    className="rounded-2xl border border-slate-100 bg-white p-6"
+                  >
+                    <Skeleton width="30%" height={18} className="mb-5" />
+                    <Skeleton count={index === 0 ? 3 : 2} />
+                  </div>
+                ))}
+              </div>
+
+              <div className="space-y-5">
+                <div className="rounded-2xl border border-slate-100 bg-white p-6">
+                  <Skeleton width="28%" height={18} className="mb-5" />
+                  <div className="space-y-4">
+                    <Skeleton height={56} />
+                    <Skeleton height={56} />
+                    <Skeleton height={56} />
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-slate-100 bg-white p-6">
+                  <Skeleton width="30%" height={18} className="mb-5" />
+                  <Skeleton count={4} />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Error */}
+        {!isLoading && error && (
+          <div className="rounded-2xl border border-red-100 bg-red-50 p-14 text-center">
+            <h2 className="text-lg font-medium text-red-800 mb-2">
               Unable to load herb details
             </h2>
-            <p className="mt-3 text-sm font-medium text-red-600">{error}</p>
+            <p className="text-sm text-red-500 mb-7">{error}</p>
             <button
-              type="button"
               onClick={reload}
-              className="mt-8 rounded-full bg-red-600 px-8 py-3 text-sm font-bold text-white hover:bg-red-700 hover:shadow-lg transition-all"
+              className="rounded-full bg-red-600 text-white text-sm font-medium px-6 py-2.5 hover:bg-red-700 transition-colors"
             >
-              Try Again
+              Try again
             </button>
           </div>
-        ) : null}
+        )}
 
-        {!isLoading && !error && herb ? (
+        {/* Content */}
+        {!isLoading && !error && herb && (
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="mt-10 space-y-10"
+            className="space-y-5"
           >
-            <motion.section
+            {/* Hero */}
+            <motion.div
               variants={itemVariants}
-              className="overflow-hidden rounded-[2.5rem] border border-emerald-100 bg-white shadow-md relative"
+              className="rounded-2xl border border-slate-100 bg-white overflow-hidden grid lg:grid-cols-[340px_1fr]"
             >
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/30" />
-              <div className="grid gap-0 lg:grid-cols-[0.95fr_1.05fr] relative z-10">
-                <div className="relative min-h-[340px] bg-emerald-50 lg:h-full">
-                  {herb.imageURL ? (
-                    <img
-                      src={herb.imageURL}
-                      alt={herb.herbName}
-                      className="h-full w-full object-cover"
+              {/* Image panel */}
+              <div className="relative bg-[#EAF3DE] min-h-70 flex items-center justify-center">
+                {herb.imageURL ? (
+                  <img
+                    src={herb.imageURL}
+                    alt={herb.herbName}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                ) : (
+                  <svg
+                    className="opacity-15"
+                    width="120"
+                    height="155"
+                    viewBox="0 0 120 155"
+                    fill="none"
+                  >
+                    <path
+                      d="M60 3C95 38 105 100 60 152C15 100 25 38 60 3Z"
+                      fill="#3B6D11"
                     />
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <FaLeaf className="text-9xl text-emerald-200/50" />
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-900/20 to-transparent" />
+                    <line
+                      x1="60"
+                      y1="3"
+                      x2="60"
+                      y2="152"
+                      stroke="#3B6D11"
+                      strokeWidth="2"
+                    />
+                    <line
+                      x1="60"
+                      y1="55"
+                      x2="35"
+                      y2="78"
+                      stroke="#3B6D11"
+                      strokeWidth="1.5"
+                    />
+                    <line
+                      x1="60"
+                      y1="78"
+                      x2="85"
+                      y2="100"
+                      stroke="#3B6D11"
+                      strokeWidth="1.5"
+                    />
+                    <line
+                      x1="60"
+                      y1="100"
+                      x2="32"
+                      y2="118"
+                      stroke="#3B6D11"
+                      strokeWidth="1.5"
+                    />
+                  </svg>
+                )}
+              </div>
+
+              {/* Info panel */}
+              <div className="p-8 lg:p-10 border-t lg:border-t-0 lg:border-l border-slate-100 flex flex-col justify-center">
+                <div className="flex flex-wrap gap-2 mb-5">
+                  <span className="text-[10px] font-medium uppercase tracking-wider bg-slate-100 text-slate-500 rounded-full px-3 py-1">
+                    Herb document
+                  </span>
+                  <span
+                    className={`text-[10px] font-medium uppercase tracking-wider rounded-full px-3 py-1 border ${
+                      herb.isApproved
+                        ? "bg-[#EAF3DE] text-[#27500A] border-[#97C459]"
+                        : "bg-[#FAEEDA] text-[#633806] border-[#EF9F27]"
+                    }`}
+                  >
+                    {herb.isApproved ? "Approved" : "Pending approval"}
+                  </span>
                 </div>
 
-                <div className="p-10 lg:p-14 flex flex-col justify-center bg-white/60 backdrop-blur-md">
-                  <div className="flex flex-wrap gap-3">
-                    <span className="rounded-full bg-slate-900 px-4 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.2em] text-white shadow-sm">
-                      Herb Document
-                    </span>
-                    <span
-                      className={`rounded-full px-4 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.2em] shadow-sm border ${
-                        herb.isApproved === true
-                          ? "bg-emerald-500 text-white border-emerald-400"
-                          : "bg-amber-100 text-amber-800 border-amber-200"
-                      }`}
-                    >
-                      {herb.isApproved === true
-                        ? "Approved by Medical Board"
-                        : "Approval pending"}
-                    </span>
-                  </div>
+                <h1 className="text-4xl text-slate-900 leading-tight mb-2">
+                  {herb.herbName}
+                </h1>
+                <p className="text-base italic text-slate-400 mb-5">
+                  {herb.scientificName}
+                </p>
+                <p className="text-sm leading-relaxed text-slate-500 max-w-lg">
+                  {herb.description || "No description provided."}
+                </p>
+              </div>
+            </motion.div>
 
-                  <h1 className="mt-6 text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
-                    {herb.herbName}
-                  </h1>
-                  <p className="mt-3 text-xl italic font-medium text-slate-500">
-                    {herb.scientificName}
+            {/* Body grid */}
+            <motion.div
+              variants={itemVariants}
+              className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] items-start"
+            >
+              {/* Left column */}
+              <div className="space-y-5">
+                <SectionCard
+                  title="Primary benefits"
+                  icon={<FaCheckCircle className="text-[#3B6D11] text-sm" />}
+                  iconBg="bg-[#EAF3DE]"
+                >
+                  <p className="text-sm leading-relaxed text-slate-600 mb-4">
+                    {herb.benefits || "No specific benefits noted."}
                   </p>
-
-                  <div className="mt-8 mb-4">
-                    <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">
-                      Description
-                    </p>
-                    <p className="text-base leading-relaxed font-medium text-slate-600">
-                      {herb.description || "No description provided."}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.section>
-
-            <section className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-              <div className="space-y-8">
-                <HerbInfoCard
-                  title="Primary Benefits"
-                  icon={<FaCheckCircle className="text-xl" />}
-                  tone="emerald"
-                >
-                  <div className="rounded-2xl bg-white p-5 border border-emerald-100 shadow-sm">
-                    <p className="text-sm leading-relaxed font-medium text-slate-700">
-                      {herb.benefits || "No specific benefits noted."}
-                    </p>
-                  </div>
-                  {herb.benefitList?.length ? (
-                    <div className="mt-6">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-600/70 mb-3">
-                        Key Highlights
-                      </p>
-                      <div className="flex flex-wrap gap-2.5">
-                        {herb.benefitList.map((benefit) => (
-                          <span
-                            key={benefit}
-                            className="rounded-xl border border-emerald-100 bg-white px-4 py-2 text-xs font-bold text-emerald-700 shadow-sm"
-                          >
-                            {benefit}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ) : null}
-                </HerbInfoCard>
-
-                <HerbInfoCard
-                  title="Dosage Guidance"
-                  icon={<FaLeaf className="text-xl" />}
-                >
-                  <div className="rounded-2xl bg-slate-50 p-6 border border-slate-100">
-                    <p className="text-sm leading-relaxed font-medium text-slate-700">
-                      {herb.dosage ||
-                        "Consult your herbalist for proper dosage instructions before proceeding."}
-                    </p>
-                  </div>
-                </HerbInfoCard>
-              </div>
-
-              <div className="space-y-8">
-                <HerbInfoCard
-                  title="Warnings & Cautions"
-                  icon={<FaExclamationTriangle className="text-xl" />}
-                  tone="amber"
-                >
-                  <div className="rounded-2xl bg-white p-6 border border-amber-100 shadow-sm">
-                    <p className="text-sm leading-relaxed font-bold text-slate-800">
-                      {herb.warnings ||
-                        "No explicit warnings listed. Always exercise caution and consult a professional."}
-                    </p>
-                  </div>
-                </HerbInfoCard>
-
-                <HerbInfoCard
-                  title="Available Providers"
-                  icon={<FaUserMd className="text-xl" />}
-                >
-                  {providers && providers.length > 0 ? (
-                    <div className="space-y-3">
-                      {providers.map((p, index) => (
-                        <div key={index} className="rounded-2xl border border-slate-100 bg-slate-50 p-4 hover:bg-white hover:shadow-sm transition-all flex items-center justify-between">
-                          <div>
-                            <p className="text-sm font-bold text-slate-900">{p.fullName || p.name || p.userName || "Professional Herbalist"}</p>
-                            <p className="mt-1 text-[10px] uppercase font-bold text-slate-400 tracking-wider">Licensed Supplier</p>
-                          </div>
-                          {p.averageRating && (
-                             <span className="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg">
-                               {Number(p.averageRating).toFixed(1)} ★
-                             </span>
-                          )}
-                        </div>
+                  {herb.benefitList?.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {herb.benefitList.map((b) => (
+                        <span
+                          key={b}
+                          className="text-[11px] font-medium bg-[#EAF3DE] text-[#3B6D11] border border-[#C0DD97] rounded-full px-3 py-1"
+                        >
+                          {b}
+                        </span>
                       ))}
                     </div>
-                  ) : (
-                    <div className="rounded-2xl bg-slate-50 p-6 border border-slate-100 text-center">
-                      <p className="text-sm leading-relaxed font-medium text-slate-500">
-                        Currently, no herbalists have specifically listed this herb in their active inventory.
-                      </p>
-                    </div>
                   )}
-                </HerbInfoCard>
+                </SectionCard>
 
-                <HerbInfoCard
-                  title="Record Curation"
-                  icon={<FaStamp className="text-xl" />}
+                <SectionCard
+                  title="Dosage guidance"
+                  icon={<FaLeaf className="text-slate-500 text-sm" />}
                 >
-                  <div className="grid gap-5">
-                    <div className="group rounded-2xl border border-slate-100 bg-slate-50 p-5 hover:bg-white hover:shadow-sm transition-all">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 group-hover:text-primary transition-colors">
-                        Approval Status
-                      </p>
-                      <p className="mt-2 text-sm font-bold text-slate-900">
-                        {herb.isApproved == null
-                          ? "Under Review"
-                          : herb.isApproved
-                            ? "Officially Approved"
-                            : "Pending Approval"}
-                      </p>
-                    </div>
+                  <p className="text-sm leading-relaxed text-slate-600">
+                    {herb.dosage ||
+                      "Consult your herbalist for proper dosage instructions."}
+                  </p>
+                </SectionCard>
+
+                <SectionCard
+                  title="Warnings & cautions"
+                  icon={
+                    <FaExclamationTriangle className="text-[#854F0B] text-sm" />
+                  }
+                  iconBg="bg-[#FAEEDA]"
+                >
+                  <div className="rounded-xl bg-[#FAEEDA] border border-[#EF9F27]/40 p-4">
+                    <p className="text-sm leading-relaxed text-[#412402]">
+                      {herb.warnings ||
+                        "No explicit warnings listed. Always consult a professional before use."}
+                    </p>
                   </div>
-                </HerbInfoCard>
+                </SectionCard>
               </div>
-            </section>
+
+              {/* Right column */}
+              <div className="space-y-5">
+                <AddToCartForm providers={uniqueProviders} herb={herb} />
+
+                <SectionCard
+                  title="Record details"
+                  icon={<FaStamp className="text-slate-500 text-sm" />}
+                >
+                  <div className="divide-y divide-slate-100">
+                    {[
+                      {
+                        label: "Approval status",
+                        value:
+                          herb.isApproved == null
+                            ? "Under review"
+                            : herb.isApproved
+                              ? "Officially approved"
+                              : "Pending approval",
+                        pill: herb.isApproved,
+                      },
+                    ].map(({ label, value, pill }) => (
+                      <div
+                        key={label}
+                        className="flex items-center justify-between py-3 first:pt-0 last:pb-0"
+                      >
+                        <span className="text-[11px] uppercase tracking-wider text-slate-400 font-medium">
+                          {label}
+                        </span>
+                        {pill != null ? (
+                          <span
+                            className={`text-[11px] font-medium rounded-full px-3 py-1 border ${
+                              pill
+                                ? "bg-[#EAF3DE] text-[#27500A] border-[#97C459]"
+                                : "bg-[#FAEEDA] text-[#633806] border-[#EF9F27]"
+                            }`}
+                          >
+                            {value}
+                          </span>
+                        ) : (
+                          <span className="text-xs font-medium text-slate-700">
+                            {value}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </SectionCard>
+              </div>
+            </motion.div>
           </motion.div>
-        ) : null}
+        )}
       </main>
+
       <Footer />
     </div>
   );

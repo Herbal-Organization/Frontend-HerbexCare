@@ -7,13 +7,17 @@ import {
   FaBars,
   FaTimes,
   FaSignOutAlt,
+  FaShoppingCart,
 } from "react-icons/fa";
 import { getUserFromToken, logout } from "../../utils/auth";
+import { useCart } from "../../context/CartContext";
 
 function PatientNavbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const user = getUserFromToken();
+  const { getCartCount } = useCart();
+  const cartCount = getCartCount();
 
   const navItems = [
     { label: "Home", path: "/patient/home", exact: true },
@@ -74,6 +78,19 @@ function PatientNavbar() {
 
           {/* Right Section */}
           <div className="flex items-center gap-4">
+            {/* Cart Icon */}
+            <Link
+              to="/patient/dashboard/cart"
+              className="relative p-2 text-slate-500 hover:bg-emerald-50 hover:text-emerald-600 rounded-full transition-all"
+            >
+              <FaShoppingCart className="text-lg" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-white">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+
             {/* Notification Bell */}
             <button className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors hidden sm:block">
               <FaBell className="text-lg" />
@@ -138,6 +155,14 @@ function PatientNavbar() {
                   {item.label}
                 </Link>
               ))}
+              <Link
+                to="/patient/dashboard/cart"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-2 w-full px-3 py-2 rounded-md text-sm font-medium text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-colors"
+              >
+                <FaShoppingCart className="text-lg" />
+                <span>My Cart ({cartCount})</span>
+              </Link>
               <button
                 onClick={() => {
                   setIsMobileMenuOpen(false);

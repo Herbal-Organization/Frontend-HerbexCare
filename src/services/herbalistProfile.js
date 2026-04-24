@@ -32,13 +32,15 @@ const normalizeTime = (value) => {
 };
 
 const formatTimeForApi = (value) => {
+  // normalize for UI (HH:MM) then convert to API time format HH:MM:SS
   const normalizedValue = normalizeTime(value);
 
   if (!normalizedValue) {
-    return "00:00";
+    // Some backends reject null for time fields; send explicit zero time instead
+    return "00:00:00";
   }
 
-  return normalizedValue;
+  return `${normalizedValue}:00`;
 };
 
 const getStoredHerbalistProfile = () => {
@@ -148,7 +150,19 @@ export const saveHerbalistProfile = async (profile) => {
     availableTo: formatTimeForApi(profile.availableTo),
   };
 
-  await updateMyHerbalistProfile(payload);
+  // Log payload to help debug server-side validation issues
+  console.log("Saving herbalist profile payload:", payload);
+
+  try {
+    await updateMyHerbalistProfile(payload);
+  } catch (err) {
+    console.error(
+      "Failed to update herbalist profile",
+      err.response?.status,
+      err.response?.data,
+    );
+    throw err;
+  }
 
   // Re-read profile after update so UI reflects backend truth immediately.
   const updatedProfileResponse = await getMyHerbalistProfile().catch(

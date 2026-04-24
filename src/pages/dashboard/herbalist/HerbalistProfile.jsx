@@ -75,10 +75,24 @@ function HerbalistProfile({
       await onProfileUpdated?.();
       toast.success("Profile updated successfully!");
     } catch (err) {
-      const message =
-        err.response?.data?.message ||
-        err.response?.data?.title ||
-        "Failed to update herbalist profile.";
+      const data = err.response?.data;
+      console.error("Herbalist profile update error:", data || err);
+
+      let message =
+        data?.message || data?.title || "Failed to update herbalist profile.";
+
+      if (data?.errors && typeof data.errors === "object") {
+        // flatten errors object into readable messages
+        const details = Object.values(data.errors)
+          .flat()
+          .filter(Boolean)
+          .map((m) => String(m));
+
+        if (details.length > 0) {
+          message = details.join("; ");
+        }
+      }
+
       setSaveError(message);
       toast.error(message);
     } finally {

@@ -1,27 +1,49 @@
-import { FaSpa, FaShoppingBag, FaBookOpen, FaUser, FaLeaf, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaSpa,
+  FaShoppingBag,
+  FaShoppingCart,
+  FaBookOpen,
+  FaUser,
+  FaLeaf,
+  FaSignOutAlt,
+} from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function PatientSidebar({ user, onLogout }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const displayName = user?.fullName || user?.name || user?.userName || "Patient";
+  const displayName =
+    user?.fullName || user?.name || user?.userName || "Patient";
 
   const navigation = [
     { name: "Dashboard", href: "/patient/dashboard", icon: FaSpa },
-    { name: "My Orders", href: "/patient/dashboard/orders", icon: FaShoppingBag },
-    { name: "Saved Recipes", href: "/patient/dashboard/recipes", icon: FaBookOpen },
+    { name: "My Cart", href: "/patient/dashboard/cart", icon: FaShoppingCart },
+    {
+      name: "My Orders",
+      href: "/patient/dashboard/orders",
+      icon: FaShoppingBag,
+    },
+    {
+      name: "Saved Recipes",
+      href: "/patient/dashboard/recipes",
+      icon: FaBookOpen,
+    },
     { name: "Profile", href: "/patient/dashboard/profile", icon: FaUser },
   ];
 
   return (
     <aside className="w-72 bg-white border-r border-slate-200 flex flex-col fixed h-full">
-      <div className="p-6 flex items-center gap-3"> 
+      <div className="p-6 flex items-center gap-3">
         <div className="bg-primary rounded-lg p-2 text-white flex items-center justify-center">
           <FaSpa className="text-2xl" />
         </div>
         <div>
-          <h1 className="text-slate-900 font-bold text-lg leading-none">Herbal Care AI</h1>
-          <p className="text-primary text-xs font-medium mt-1">Your Wellness Partner</p>
+          <h1 className="text-slate-900 font-bold text-lg leading-none">
+            Herbal Care AI
+          </h1>
+          <p className="text-primary text-xs font-medium mt-1">
+            Your Wellness Partner
+          </p>
         </div>
       </div>
 
@@ -78,7 +100,9 @@ function PatientSidebar({ user, onLogout }) {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold truncate">{displayName}</p>
-              <p className="text-xs text-slate-500 truncate">{user.role || "Member"}</p>
+              <p className="text-xs text-slate-500 truncate">
+                {user.role || "Member"}
+              </p>
             </div>
           </div>
         </div>

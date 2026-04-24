@@ -155,7 +155,22 @@ function HerbalistInventory() {
     setIsSaving(true);
     try {
       if (editingItem) {
-        await updateInventoryHerb(herbId, {
+        const inventoryId = editingItem.inventoryId || editingItem.id;
+
+        // Validate inventoryId
+        if (!Number.isFinite(Number(inventoryId))) {
+          throw new Error(
+            `Invalid inventory ID: ${inventoryId}. Cannot proceed with update.`,
+          );
+        }
+
+        // Log the data being sent for debugging
+        console.log("Updating inventory with:", {
+          inventoryId: Number(inventoryId),
+          payload: { pricePerKilo, isActive: Boolean(form.isActive) },
+        });
+
+        await updateInventoryHerb(inventoryId, {
           pricePerKilo,
           isActive: Boolean(form.isActive),
         });
@@ -168,10 +183,25 @@ function HerbalistInventory() {
       resetForm();
       await loadInventoryData();
     } catch (err) {
-      const message =
-        err.response?.data?.message ||
-        err.response?.data?.title ||
-        `Failed to ${editingItem ? "update" : "add"} inventory item.`;
+      // Get detailed error information
+      const errorData = err.response?.data;
+      let message = `Failed to ${editingItem ? "update" : "add"} inventory item.`;
+
+      if (errorData?.message) {
+        message = errorData.message;
+      } else if (errorData?.title) {
+        message = errorData.title;
+      } else if (err.message) {
+        message = err.message;
+      }
+
+      // Log full error for debugging
+      console.error("API Error:", {
+        status: err.response?.status,
+        data: errorData,
+        message,
+      });
+
       toast.error(message);
     } finally {
       setIsSaving(false);
@@ -189,7 +219,8 @@ function HerbalistInventory() {
 
     setIsDeleting(true);
     try {
-      await deleteInventoryHerb(item.herbId);
+      const inventoryId = item.inventoryId || item.id;
+      await deleteInventoryHerb(inventoryId);
       toast.success("Herb removed from inventory.");
       await loadInventoryData();
     } catch (err) {
@@ -211,6 +242,122 @@ function HerbalistInventory() {
       {/* Dynamic Background Blur Effects */}
       <div className="pointer-events-none absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-emerald-400/10 blur-[120px] mix-blend-multiply"></div>
       <div className="pointer-events-none absolute top-40 -left-20 h-[400px] w-[400px] rounded-full bg-teal-400/10 blur-[100px] mix-blend-multiply"></div>
+
+      {/* Form Section */}
+      <div className="relative z-10">
+        <form
+          onSubmit={handleSubmit}
+          className="rounded-3xl border border-white/60 bg-white shadow-[0_4px_20px_rgb(0,0,0,0.03)] backdrop-blur-xl p-8"
+        >
+          <div className="mb-8">
+            <h2 className="text-2xl font-extrabold text-slate-900">
+              {editingItem
+                ? "Update Inventory Item"
+                : "Add New Herb to Inventory"}
+            </h2>
+            <p className="mt-2 text-sm font-medium text-slate-600">
+              {editingItem
+                ? "Modify the price and availability status for this herb."
+                : "Select a global herb and set its price per kilogram."}
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Herb Selection */}
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">
+                <FaLeaf className="inline mr-2 text-emerald-600" />
+                Select Herb
+              </label>
+              <select
+                name="herbId"
+                value={form.herbId}
+                onChange={handleChange}
+                disabled={Boolean(editingItem)}
+                className="w-full rounded-lg border-2 border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 disabled:bg-slate-100 disabled:text-slate-500"
+              >
+                <option value="">
+                  {hasSelectableHerb
+                    ? "Choose an herb..."
+                    : "No herbs available"}
+                </option>
+                {(editingItem ? [editingItem] : availableHerbs).map((herb) => (
+                  <option
+                    key={herb.herbId || herb.id}
+                    value={herb.herbId || herb.id}
+                  >
+                    {herb.herbName || herb.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Price Per Kilo */}
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">
+                <FaTags className="inline mr-2 text-emerald-600" />
+                Price Per Kilogram (EGP)
+              </label>
+              <input
+                type="number"
+                name="pricePerKilo"
+                value={form.pricePerKilo}
+                onChange={handleChange}
+                step="0.01"
+                min="0"
+                placeholder="Enter price..."
+                className="w-full rounded-lg border-2 border-slate-200 px-4 py-3 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+              />
+            </div>
+          </div>
+
+          {/* Active Status Checkbox */}
+          <div className="mt-6 flex items-center gap-3">
+            <input
+              type="checkbox"
+              name="isActive"
+              checked={form.isActive}
+              onChange={handleChange}
+              className="h-5 w-5 cursor-pointer rounded-lg border-2 border-slate-200 accent-emerald-600 focus:ring-2 focus:ring-emerald-500/20"
+            />
+            <label className="text-sm font-bold text-slate-700 cursor-pointer">
+              <FaCheckCircle className="inline mr-2 text-emerald-600" />
+              Mark as Active
+            </label>
+          </div>
+
+          {/* Form Buttons */}
+          <div className="mt-8 flex gap-3">
+            <button
+              type="submit"
+              disabled={isSaving || !hasSelectableHerb || !form.pricePerKilo}
+              className="flex-1 rounded-lg bg-emerald-600 px-6 py-3 font-bold text-white shadow-md transition-all hover:bg-emerald-700 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSaving ? (
+                <>
+                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent mr-2" />
+                  {editingItem ? "Updating..." : "Adding..."}
+                </>
+              ) : editingItem ? (
+                "Update Item"
+              ) : (
+                "Add to Inventory"
+              )}
+            </button>
+
+            {editingItem && (
+              <button
+                type="button"
+                onClick={resetForm}
+                className="flex-1 rounded-lg border-2 border-slate-200 px-6 py-3 font-bold text-slate-700 transition-all hover:bg-slate-50"
+              >
+                <FaTimes className="inline mr-2" />
+                Cancel
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
 
       {/* Inventory Grid Section */}
       <div className="relative z-10">
