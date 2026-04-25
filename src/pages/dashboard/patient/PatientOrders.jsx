@@ -18,6 +18,39 @@ import {
 } from "../../../api/orders";
 import { toast } from "react-hot-toast";
 
+const normalizeOrderStatus = (status) => (status || "").trim().toLowerCase();
+
+const getOrderStatusTone = (status) => {
+  const normalizedStatus = normalizeOrderStatus(status);
+
+  if (normalizedStatus === "canceled" || normalizedStatus === "cancelled") {
+    return "bg-rose-50 border-rose-100 text-rose-600";
+  }
+
+  if (normalizedStatus === "paid" || normalizedStatus === "confirmed") {
+    return "bg-emerald-50 border-emerald-100 text-emerald-600";
+  }
+
+  if (normalizedStatus === "processing") {
+    return "bg-amber-50 border-amber-100 text-amber-600";
+  }
+
+  if (normalizedStatus === "completed") {
+    return "bg-sky-50 border-sky-100 text-sky-600";
+  }
+
+  return "bg-slate-50 border-slate-100 text-slate-600";
+};
+
+const canContinuePayment = (order) => {
+  const status = normalizeOrderStatus(order.status);
+  const method = normalizeOrderStatus(order.paymentMethod);
+
+  return (
+    status === "pending" && (method === "wallet" || method === "creditcard")
+  );
+};
+
 function PatientOrders() {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -88,7 +121,7 @@ function PatientOrders() {
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
           (order.orderId || order.id) === cancellingOrderId
-            ? { ...order, status: "Cancelled" }
+            ? { ...order, status: "Canceled" }
             : order,
         ),
       );
@@ -224,13 +257,9 @@ function PatientOrders() {
 
                     {order.status && (
                       <span
-                        className={`rounded-full px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest shadow-sm border ${
-                          order.status.toLowerCase().includes("cancel")
-                            ? "bg-rose-50 border-rose-100 text-rose-600"
-                            : order.status.toLowerCase().includes("process")
-                              ? "bg-amber-50 border-amber-100 text-amber-600"
-                              : "bg-emerald-50 border-emerald-100 text-emerald-600"
-                        }`}
+                        className={`rounded-full border px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest shadow-sm ${getOrderStatusTone(
+                          order.status,
+                        )}`}
                       >
                         {order.status}
                       </span>
@@ -262,14 +291,24 @@ function PatientOrders() {
                   Inspect Order Manifest <FaArrowRight />
                 </Link>
 
-                {!order.status?.toLowerCase().includes("cancel") && (
-                  <button
-                    onClick={() => handleCancelClick(orderId)}
-                    className="relative z-10 mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-rose-50 border border-rose-200 px-4 py-3 text-xs font-bold text-rose-600 transition-all hover:bg-rose-100 focus:ring-4 focus:ring-rose-500/10 hover:shadow-lg hover:-translate-y-0.5"
+                {canContinuePayment(order) && (
+                  <Link
+                    to={`/patient/dashboard/orders/${orderId}/payment`}
+                    className="relative z-10 mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-3 text-xs font-bold text-emerald-700 transition-all hover:bg-emerald-100 focus:ring-4 focus:ring-emerald-500/10 hover:shadow-lg hover:-translate-y-0.5"
                   >
-                    <FaTimes /> Cancel Order
-                  </button>
+                    Continue Payment <FaCheckCircle />
+                  </Link>
                 )}
+
+                {normalizeOrderStatus(order.status) !== "canceled" &&
+                  normalizeOrderStatus(order.status) !== "cancelled" && (
+                    <button
+                      onClick={() => handleCancelClick(orderId)}
+                      className="relative z-10 mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-rose-50 border border-rose-200 px-4 py-3 text-xs font-bold text-rose-600 transition-all hover:bg-rose-100 focus:ring-4 focus:ring-rose-500/10 hover:shadow-lg hover:-translate-y-0.5"
+                    >
+                      <FaTimes /> Cancel Order
+                    </button>
+                  )}
               </div>
             );
           })}

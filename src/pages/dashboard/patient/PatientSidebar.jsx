@@ -6,14 +6,16 @@ import {
   FaUser,
   FaLeaf,
   FaSignOutAlt,
+  FaHome,
+  FaReceipt,
+  FaBrain,
 } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function PatientSidebar({ user, onLogout }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const displayName =
-    user?.fullName || user?.name || user?.userName || "Patient";
+  const displayName = user?.email || "Patient";
 
   const navigation = [
     { name: "Dashboard", href: "/patient/dashboard", icon: FaSpa },
@@ -28,7 +30,26 @@ function PatientSidebar({ user, onLogout }) {
       href: "/patient/dashboard/recipes",
       icon: FaBookOpen,
     },
-    { name: "Profile", href: "/patient/dashboard/profile", icon: FaUser },
+    {
+      name: "AI Consultation",
+      href: "/patient/dashboard/ai-consultation",
+      icon: FaBrain,
+    },
+    {
+      name: "Herb Library",
+      href: "/patient/home/herbs",
+      icon: FaLeaf,
+    },
+    {
+      name: "Recipe Library",
+      href: "/patient/home/recipes",
+      icon: FaReceipt,
+    },
+    {
+      name: "Profile",
+      href: "/patient/dashboard/profile",
+      icon: FaUser,
+    },
   ];
 
   return (
@@ -39,7 +60,7 @@ function PatientSidebar({ user, onLogout }) {
         </div>
         <div>
           <h1 className="text-slate-900 font-bold text-lg leading-none">
-            Herbal Care AI
+            HerbexCare.AI
           </h1>
           <p className="text-primary text-xs font-medium mt-1">
             Your Wellness Partner
@@ -59,7 +80,7 @@ function PatientSidebar({ user, onLogout }) {
               key={item.name}
               type="button"
               onClick={() => navigate(item.href)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-semibold transition-colors ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-semibold transition-colors cursor-pointer ${
                 isCurrent
                   ? "bg-primary/10 text-primary"
                   : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
@@ -78,16 +99,16 @@ function PatientSidebar({ user, onLogout }) {
             <button
               type="button"
               onClick={() => navigate("/patient/home")}
-              className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50"
+              className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 cursor-pointer"
             >
-              <FaLeaf className="text-primary" />
-              <span>Browse Recipes</span>
+              <FaHome className="text-primary" />
+              <span>Home</span>
             </button>
 
             <button
               type="button"
               onClick={onLogout}
-              className="flex w-full items-center gap-3 rounded-xl bg-slate-900 px-4 py-3 text-left text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-800"
+              className="flex w-full items-center gap-3 rounded-xl bg-slate-900 px-4 py-3 text-left text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-800 cursor-pointer"
             >
               <FaSignOutAlt className="text-xs" />
               <span>Sign Out</span>

@@ -12,7 +12,9 @@ import PatientDashboardOverview from "./PatientDashboardOverview";
 import PatientCart from "./PatientCart";
 import PatientOrders from "./PatientOrders";
 import PatientOrderDetails from "./PatientOrderDetails";
+import PatientPaymentSimulation from "./PaymentSimulationPage";
 import PatientSavedRecipes from "./PatientSavedRecipes";
+import PatientAiConsultation from "./ai-pages/PatientAiConsultation";
 import usePatientDashboardData from "../../../hooks/usePatientDashboardData";
 import {
   buildPatientDashboardUser,
@@ -115,8 +117,16 @@ function PatientDashboard() {
             />
             <Route path="/cart" element={<PatientCart />} />
             <Route path="/orders" element={<PatientOrders />} />
+            <Route
+              path="/orders/:orderId/payment"
+              element={<PatientPaymentSimulation />}
+            />
             <Route path="/orders/:orderId" element={<PatientOrderDetails />} />
             <Route path="/recipes" element={<PatientSavedRecipes />} />
+            <Route
+              path="/ai-consultation"
+              element={<PatientAiConsultation />}
+            />
             <Route
               path="*"
               element={<Navigate to="/patient/dashboard" replace />}

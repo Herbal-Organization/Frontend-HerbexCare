@@ -11,16 +11,17 @@ const normalizeReview = (review, fallbackKey) => ({
     review?.id ??
     review?.reviewId ??
     review?.recipeReviewId ??
-    review?.userId ??
+    review?.feedbackId ??
     fallbackKey,
   comment: review?.comment || "",
   ratingValue: Number(review?.ratingValue ?? review?.rating ?? 0),
   createdDate:
-    review?.createdDate ||
-    review?.createdAt ||
-    review?.dateCreated ||
-    null,
-  userName:
+    review?.createdDate || review?.createdAt || review?.dateCreated || null,
+  patientName:
+    review?.patientName ||
+    review?.patient?.fullName ||
+    review?.patient?.name ||
+    review?.patient?.userName ||
     review?.userName ||
     review?.username ||
     review?.fullName ||
@@ -58,7 +59,9 @@ function useRecipeReviews(recipeId) {
           ? allReviews.map((review, index) => normalizeReview(review, index))
           : [],
       );
-      setMyReview(currentUserReview ? normalizeReview(currentUserReview, "me") : null);
+      setMyReview(
+        currentUserReview ? normalizeReview(currentUserReview, "me") : null,
+      );
     } catch (err) {
       const message =
         err.response?.data?.message ||

@@ -131,11 +131,11 @@ function ReviewCard({ review }) {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-full bg-[#EAF3DE] flex items-center justify-center text-[#27500A] text-sm font-medium shrink-0">
-            {review.userName?.charAt(0).toUpperCase()}
+            {review.patientName?.charAt(0).toUpperCase()}
           </div>
           <div>
             <p className="text-sm font-medium text-slate-900">
-              {review.userName}
+              {review.patientName}
             </p>
             <p className="text-[11px] text-slate-400">
               {review.createdDate
@@ -156,6 +156,11 @@ function ReviewCard({ review }) {
             />
           ))}
         </div>
+      </div>
+      <div className="flex items-center gap-2 text-[11px] font-medium text-slate-500 mb-2">
+        <span className="rounded-full bg-[#FAEEDA] px-2.5 py-1 text-[#854F0B]">
+          Rating: {review.ratingValue}/5
+        </span>
       </div>
       <p className="text-xs leading-relaxed text-slate-500 bg-slate-50 rounded-lg p-3">
         {review.comment || "No comment provided."}

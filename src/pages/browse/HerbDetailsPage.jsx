@@ -120,10 +120,16 @@ function AddToCartForm({ providers, herb }) {
     setSelectedProviderId("");
   };
 
-  const estimatedTotal =
-    selectedProvider && quantity
-      ? ((selectedProvider.pricePerKilo || 0) * parseInt(quantity, 10)) / 1000
-      : 0;
+  const estimatedTotal = (() => {
+    if (!selectedProvider || !quantity) return 0;
+
+    const grams = Number(quantity);
+    const pricePerKilo = getProviderPricePerKilo(selectedProvider);
+
+    if (!Number.isFinite(grams) || grams <= 0 || !pricePerKilo) return 0;
+
+    return (grams / 1000) * pricePerKilo;
+  })();
 
   return (
     <div className="rounded-2xl border border-slate-100 bg-white p-6">

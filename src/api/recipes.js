@@ -6,7 +6,9 @@ export const getAllRecipes = async () => {
 };
 
 export const getRecipesByHerbalist = async (herbalistId) => {
-  const { data } = await httpClient.get(`/api/Recipes/herbalist/${herbalistId}`);
+  const { data } = await httpClient.get(
+    `/api/Recipes/herbalist/${herbalistId}`,
+  );
   return data;
 };
 
@@ -40,21 +42,21 @@ export const getRecipeById = async (recipeId) => {
 
 export const getRecipeReviews = async (recipeId) => {
   const { data } = await httpClient.get(
-    `/api/recipe/${recipeId}/Feedbacks/all`,
+    `/api/Feedbacks/recipe/${recipeId}/all`,
   );
   return data;
 };
 
 export const getMyRecipeReview = async (recipeId) => {
   const { data } = await httpClient.get(
-    `/api/recipe/${recipeId}/Feedbacks/get-me`,
+    `/api/Feedbacks/recipe/${recipeId}/get-me`,
   );
   return data;
 };
 
 export const submitRecipeReview = async (recipeId, payload) => {
   const { data } = await httpClient.post(
-    `/api/recipe/${recipeId}/Feedbacks/submit`,
+    `/api/Feedbacks/recipe/${recipeId}/submit`,
     payload,
   );
   return data;
@@ -62,7 +64,7 @@ export const submitRecipeReview = async (recipeId, payload) => {
 
 export const deleteMyRecipeReview = async (recipeId) => {
   const { data } = await httpClient.delete(
-    `/api/recipe/${recipeId}/Feedbacks/delete-me`,
+    `/api/Feedbacks/recipe/${recipeId}/delete-me`,
   );
   return data;
 };

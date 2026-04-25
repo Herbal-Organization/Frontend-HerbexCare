@@ -1,8 +1,45 @@
 import { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaReceipt, FaMapMarkerAlt, FaCreditCard, FaLeaf, FaFlask, FaSpinner, FaTimesCircle, FaCheckCircle, FaMoneyCheckAlt, FaExclamationCircle } from "react-icons/fa";
-import { getOrderById, cancelOrder, simulatePayment } from "../../../api/orders";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  FaArrowLeft,
+  FaCreditCard,
+  FaExclamationCircle,
+  FaFlask,
+  FaLeaf,
+  FaMapMarkerAlt,
+  FaReceipt,
+  FaSpinner,
+  FaTimesCircle,
+} from "react-icons/fa";
+import { cancelOrder, getOrderById } from "../../../api/orders";
 import { toast } from "react-hot-toast";
+
+const normalizeStatus = (status) => (status || "").trim().toLowerCase();
+
+const isPaidStatus = (status) => {
+  const normalized = normalizeStatus(status);
+  return (
+    normalized === "paid" ||
+    normalized === "confirmed" ||
+    normalized === "processing" ||
+    normalized === "completed"
+  );
+};
+
+const isCanceledStatus = (status) => {
+  const normalized = normalizeStatus(status);
+  return normalized === "canceled" || normalized === "cancelled";
+};
+
+const canContinuePayment = (order) => {
+  const status = normalizeStatus(order?.status);
+  const paymentMethod = normalizeStatus(order?.paymentMethod);
+
+  return (
+    status === "pending" &&
+    (paymentMethod === "wallet" || paymentMethod === "creditcard")
+  );
+};
 
 function PatientOrderDetails() {
   const { orderId } = useParams();
@@ -11,16 +48,18 @@ function PatientOrderDetails() {
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-  
   const [isCanceling, setIsCanceling] = useState(false);
-  const [isSimulating, setIsSimulating] = useState(false);
 
   const fetchOrderDetails = async () => {
     try {
       const data = await getOrderById(orderId);
       setOrder(data);
     } catch (err) {
-      setError(err.response?.data?.message || err.response?.data?.title || "Unable to acquire the localized manifest at this time.");
+      setError(
+        err.response?.data?.message ||
+          err.response?.data?.title ||
+          "Unable to load order details.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -31,40 +70,37 @@ function PatientOrderDetails() {
   }, [orderId]);
 
   const handleCancel = async () => {
-    if (!window.confirm("Are you positive you wish to formally cancel this logistical dispatch?")) {
+    if (
+      !window.confirm(
+        "Are you sure you want to cancel this order? This action cannot be undone.",
+      )
+    ) {
       return;
     }
-    
+
     setIsCanceling(true);
     try {
       await cancelOrder(orderId);
-      toast.success("Order sequence terminated effectively");
-      await fetchOrderDetails(); // Reload state gracefully 
-    } catch(err) {
-      toast.error(err.response?.data?.message || err.response?.data?.title || "Termination failed.");
+      toast.success("Order canceled successfully");
+      await fetchOrderDetails();
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message ||
+          err.response?.data?.title ||
+          "Failed to cancel order.",
+      );
     } finally {
       setIsCanceling(false);
     }
   };
 
-  const handleSimulatePayment = async () => {
-    setIsSimulating(true);
-    try {
-      await simulatePayment(orderId);
-      toast.success("Financial transaction simulated safely");
-      await fetchOrderDetails(); 
-    } catch(err) {
-      toast.error(err.response?.data?.message || err.response?.data?.title || "Simulation interrupted randomly.");
-    } finally {
-      setIsSimulating(false);
-    }
-  };
-
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-center px-4 py-16 sm:px-6 lg:px-8">
         <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-500" />
-        <p className="mt-6 text-sm font-bold uppercase tracking-widest text-slate-400">Fetching Secure Manifest...</p>
+        <p className="mt-6 text-sm font-bold uppercase tracking-widest text-slate-400">
+          Loading order details
+        </p>
       </div>
     );
   }
@@ -72,171 +108,209 @@ function PatientOrderDetails() {
   if (error || !order) {
     return (
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-        <Link to="/patient/dashboard/orders" className="text-sm font-bold text-slate-500 hover:text-emerald-600 flex items-center gap-2 mb-8 transition-colors">
-          <FaArrowLeft /> Back to Log
+        <Link
+          to="/patient/dashboard/orders"
+          className="mb-8 inline-flex items-center gap-2 text-sm font-bold text-slate-500 transition-colors hover:text-emerald-600"
+        >
+          <FaArrowLeft /> Back to orders
         </Link>
         <div className="rounded-[3rem] border border-red-100 bg-red-50 p-16 text-center shadow-sm">
-           <FaExclamationCircle className="mx-auto text-5xl text-red-400 mb-6" />
-           <h2 className="text-2xl font-bold text-red-800">Manifest Retrieval Fault</h2>
-           <p className="mt-2 text-red-600 font-medium">{error || "Requested entity not found securely"}</p>
+          <FaExclamationCircle className="mx-auto mb-6 text-5xl text-red-400" />
+          <h2 className="text-2xl font-bold text-red-800">
+            Unable to load order
+          </h2>
+          <p className="mt-2 font-medium text-red-600">
+            {error || "Requested order could not be found."}
+          </p>
         </div>
       </div>
     );
   }
 
-  const isCanceled = order.status?.toLowerCase().includes("cancel");
-  const isPaid = order.status?.toLowerCase().includes("paid") || order.status?.toLowerCase().includes("complete") || order.status?.toLowerCase().includes("processed");
+  const status = order.status || "Pending";
+  const normalizedStatus = normalizeStatus(status);
+  const isCanceled = isCanceledStatus(status);
+  const isPaid = isPaidStatus(status);
+  const orderDate = order.orderDate || order.createdAt;
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-      <Link to="/patient/dashboard/orders" className="inline-flex text-sm font-bold text-slate-500 hover:text-emerald-600 items-center justify-center gap-2 mb-8 transition-colors bg-white border border-slate-200 shadow-sm rounded-full px-5 py-2 hover:-translate-y-0.5">
-        <FaArrowLeft /> Historical Index
+      <Link
+        to="/patient/dashboard/orders"
+        className="mb-8 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-bold text-slate-500 shadow-sm transition-colors hover:text-emerald-600"
+      >
+        <FaArrowLeft /> Back to orders
       </Link>
 
-      <div className="mb-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
+      <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-start">
         <div>
-           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-3">
-             <div className="rounded-xl bg-slate-100 border border-slate-200 p-3 text-slate-600 shadow-inner">
-               <FaReceipt className="text-xl" />
-             </div>
-             Manifest #{orderId.toString().substring(0, 8)}
-           </h1>
-           <p className="mt-3 text-sm font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
-             Placed {new Date(order.orderDate || order.createdAt).toLocaleString()}
-           </p>
+          <h1 className="flex items-center gap-3 text-3xl font-extrabold tracking-tight text-slate-900">
+            <div className="rounded-xl border border-slate-200 bg-slate-100 p-3 text-slate-600 shadow-inner">
+              <FaReceipt className="text-xl" />
+            </div>
+            Order #{String(orderId).slice(0, 8)}
+          </h1>
+          <p className="mt-3 flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-slate-400">
+            Placed {new Date(orderDate).toLocaleString()}
+          </p>
         </div>
-        
+
         <div className="flex items-center gap-3">
-          {order.status && (
-             <span className={`inline-flex px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest shadow-sm border ${
-               isCanceled ? "bg-rose-50 border-rose-200 text-rose-700" :
-               isPaid ? "bg-emerald-50 border-emerald-200 text-emerald-700" :
-               "bg-amber-50 border-amber-200 text-amber-700"
-             }`}>
-               {order.status}
-             </span>
-          )}
+          <span
+            className={`inline-flex rounded-full border px-5 py-2 text-xs font-black uppercase tracking-widest shadow-sm ${
+              isCanceled
+                ? "border-rose-200 bg-rose-50 text-rose-700"
+                : isPaid
+                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                  : normalizedStatus === "processing"
+                    ? "border-amber-200 bg-amber-50 text-amber-700"
+                    : "border-slate-200 bg-slate-50 text-slate-700"
+            }`}
+          >
+            {status}
+          </span>
         </div>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
         <div className="space-y-6">
-          <div className="rounded-[2.5rem] border border-slate-200 bg-white p-8 shadow-sm">
-            <h2 className="text-lg font-extrabold text-slate-900 mb-6 flex items-center gap-2 border-b border-slate-100 pb-4">
-              Dispatched Commodities
+          <div className="rounded-[2.5rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <h2 className="mb-6 flex items-center gap-2 border-b border-slate-100 pb-4 text-lg font-extrabold text-slate-900">
+              <FaLeaf /> Order Items
             </h2>
 
-            {order.herbs && order.herbs.length > 0 && (
+            {order.herbs?.length ? (
               <div className="mb-8">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2 mb-4">
-                  <FaLeaf /> Organic Herbs
+                <h3 className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400">
+                  <FaLeaf /> Herbs
                 </h3>
                 <div className="space-y-3">
-                  {order.herbs.map((h, i) => (
-                    <div key={i} className="flex flex-col sm:flex-row justify-between gap-4 rounded-2xl bg-slate-50 border border-slate-100 p-4">
-                       <div>
-                         <p className="font-bold text-slate-900">{h.herbName || `Secured Herb Identity #${h.herbId}`}</p>
-                         <p className="text-xs text-slate-500 font-semibold mt-0.5">Sourced from Herbalist #{h.herbalistId}</p>
-                       </div>
-                       <div className="text-right flex flex-col justify-center">
-                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-white shadow-sm px-3 py-1 rounded-full border border-slate-200">
-                            {h.quantityPerGram} grams extracted
-                         </span>
-                       </div>
+                  {order.herbs.map((herb, index) => (
+                    <div
+                      key={`${herb.herbId || index}`}
+                      className="flex flex-col gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div>
+                        <p className="font-bold text-slate-900">
+                          {herb.herbName || `Herb #${herb.herbId}`}
+                        </p>
+                        <p className="mt-0.5 text-xs font-semibold text-slate-500">
+                          Herbalist #{herb.herbalistId}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-400 shadow-sm">
+                          {herb.quantityPerGram} grams
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
-            )}
-            
-            {order.recipes && order.recipes.length > 0 && (
+            ) : null}
+
+            {order.recipes?.length ? (
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2 mb-4">
-                  <FaFlask /> Mixed Recipes
+                <h3 className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400">
+                  <FaFlask /> Recipes
                 </h3>
                 <div className="space-y-3">
-                  {order.recipes.map((r, i) => (
-                    <div key={i} className="flex flex-col sm:flex-row justify-between gap-4 rounded-2xl bg-slate-50 border border-slate-100 p-4">
-                       <div>
-                         <p className="font-bold text-slate-900">{r.recipeName || `Compound Configuration #${r.recipeId}`}</p>
-                       </div>
-                       <div className="text-right flex flex-col justify-center">
-                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-white shadow-sm px-3 py-1 rounded-full border border-slate-200">
-                            Quantity: {r.quantity}
-                         </span>
-                       </div>
+                  {order.recipes.map((recipe, index) => (
+                    <div
+                      key={`${recipe.recipeId || index}`}
+                      className="flex flex-col gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div>
+                        <p className="font-bold text-slate-900">
+                          {recipe.recipeName || `Recipe #${recipe.recipeId}`}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-400 shadow-sm">
+                          Quantity: {recipe.quantity}
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
-            )}
-            
-            {((!order.herbs || order.herbs.length === 0) && (!order.recipes || order.recipes.length === 0)) && (
-               <p className="text-sm text-slate-500 font-medium italic">Internal record yields zero explicit inventory bindings currently mapped.</p>
-            )}
+            ) : null}
+
+            {!order.herbs?.length && !order.recipes?.length ? (
+              <p className="italic text-slate-500">
+                No items are attached to this order.
+              </p>
+            ) : null}
           </div>
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-[2.5rem] border border-slate-200 bg-white p-8 shadow-sm">
-            <h2 className="text-lg font-extrabold text-slate-900 mb-6 flex items-center gap-2 border-b border-slate-100 pb-4">
-              Routing Trace
+          <div className="rounded-[2.5rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <h2 className="mb-6 flex items-center gap-2 border-b border-slate-100 pb-4 text-lg font-extrabold text-slate-900">
+              Order Details
             </h2>
+
             <div className="space-y-6">
               <div>
-                <p className="text-[10px] font-bold tracking-widest uppercase text-slate-400 flex items-center gap-1.5 mb-2">
-                  <FaMapMarkerAlt /> Target Location
+                <p className="mb-2 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                  <FaMapMarkerAlt /> Shipping Address
                 </p>
-                <div className="rounded-2xl bg-slate-50 p-4 border border-slate-100">
-                   <p className="text-sm font-semibold text-slate-700 leading-relaxed whitespace-pre-wrap">
-                     {order.shippingAddress || "N/A - Direct pickup configured"}
-                   </p>
+                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                  <p className="whitespace-pre-wrap text-sm font-semibold leading-relaxed text-slate-700">
+                    {order.shippingAddress || "No shipping address provided"}
+                  </p>
                 </div>
               </div>
-              
+
               <div>
-                <p className="text-[10px] font-bold tracking-widest uppercase text-slate-400 flex items-center gap-1.5 mb-2">
-                  <FaCreditCard /> Financial Network
+                <p className="mb-2 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                  <FaCreditCard /> Payment Method
                 </p>
-                <div className="rounded-2xl bg-slate-50 p-4 border border-slate-100">
-                   <p className="text-sm font-bold text-slate-900">
-                     {order.paymentMethod || "Untracked Configuration"}
-                   </p>
+                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                  <p className="text-sm font-bold text-slate-900">
+                    {order.paymentMethod || "Not selected"}
+                  </p>
                 </div>
               </div>
             </div>
-            
-            {order.totalCost != null && order.totalCost > 0 && (
-               <div className="mt-8 rounded-2xl bg-emerald-50 border border-emerald-100 p-5 flex items-center justify-between">
-                 <span className="text-sm font-bold text-emerald-800 uppercase tracking-widest">Total Valuation</span>
-                 <span className="text-xl font-black text-emerald-600">{order.totalCost} EGP</span>
-               </div>
-            )}
+
+            {order.totalCost != null ? (
+              <div className="mt-8 flex items-center justify-between rounded-2xl border border-emerald-100 bg-emerald-50 p-5">
+                <span className="text-sm font-bold uppercase tracking-widest text-emerald-800">
+                  Total
+                </span>
+                <span className="text-xl font-black text-emerald-600">
+                  {order.totalCost} EGP
+                </span>
+              </div>
+            ) : null}
           </div>
 
-          {/* Action Operations Area */}
           <div className="space-y-3">
-             {!isCanceled && !isPaid && (
-               <button
-                 type="button"
-                 onClick={handleCancel}
-                 disabled={isCanceling}
-                 className="flex w-full items-center justify-center gap-2 rounded-2xl border border-rose-200 bg-white px-5 py-4 text-sm font-bold text-rose-600 shadow-sm transition-all hover:bg-rose-50 disabled:opacity-50"
-               >
-                 {isCanceling ? <FaSpinner className="animate-spin" /> : <FaTimesCircle />} Terminal Revocation
-               </button>
-             )}
-             
-             {!isCanceled && !isPaid && (
-               <button
-                 type="button"
-                 onClick={handleSimulatePayment}
-                 disabled={isSimulating}
-                 className="flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 px-5 py-4 text-sm font-bold text-white shadow-lg transition-all hover:bg-slate-800 hover:-translate-y-0.5 disabled:opacity-50 disabled:pointer-events-none"
-               >
-                 {isSimulating ? <FaSpinner className="animate-spin" /> : <FaMoneyCheckAlt className="text-emerald-400" />} Initiate Mock Financial Trace 
-               </button>
-             )}
+            {canContinuePayment(order) ? (
+              <Link
+                to={`/patient/dashboard/orders/${orderId}/payment`}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 px-5 py-4 text-sm font-bold text-white shadow-lg transition-all hover:bg-slate-800 hover:-translate-y-0.5"
+              >
+                <FaCreditCard className="text-emerald-400" /> Continue Payment
+              </Link>
+            ) : null}
+
+            {!isCanceled && !isPaid ? (
+              <button
+                type="button"
+                onClick={handleCancel}
+                disabled={isCanceling}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-rose-200 bg-white px-5 py-4 text-sm font-bold text-rose-600 shadow-sm transition-all hover:bg-rose-50 disabled:opacity-50"
+              >
+                {isCanceling ? (
+                  <FaSpinner className="animate-spin" />
+                ) : (
+                  <FaTimesCircle />
+                )}
+                Cancel Order
+              </button>
+            ) : null}
           </div>
         </div>
       </div>
