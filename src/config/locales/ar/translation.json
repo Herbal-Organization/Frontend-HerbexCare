@@ -1,0 +1,51 @@
+{
+  "aiConsultation": {
+    "form": {
+      "fields": {
+        "weightKg": "الوزن (كجم)",
+        "heightCm": "الطول (سم)",
+        "severityScore": "درجة الشدة (0-10)",
+        "systolicBp": "ضغط الدم الانقباضي",
+        "diastolicBp": "ضغط الدم الانبساطي",
+        "temperatureCelsius": "درجة الحرارة (م)",
+        "heartRateBpm": "معدل نبض القلب (BPM)",
+        "symptomDurationDays": "مدة الأعراض (بالأيام)"
+      },
+      "symptoms": {
+        "Itchy Eyes": "حكة في العين",
+        "Visual Aura": "وميض أو هالة قدام العين",
+        "Runny Nose": "رشح / سيلان من الأنف",
+        "Headache": "صداع",
+        "Watery Eyes": "دموع في العين",
+        "Sneezing": "عطس",
+        "Chest Pain": "ألم في الصدر",
+        "Painful Urination": "حرقان أو ألم أثناء التبول",
+        "Pelvic Pain": "ألم في أسفل البطن أو الحوض",
+        "Severe Headache": "صداع شديد",
+        "Light Sensitivity": "حساسية من النور",
+        "Cloudy Urine": "بول لونه غامق أو معكر",
+        "Abdominal Pain": "ألم في البطن",
+        "Vomiting": "ترجيع",
+        "Fever": "سخونية / حرارة",
+        "Dizziness": "دوخة",
+        "Cold Hands": "برودة في الإيدين",
+        "Cough": "كحة",
+        "Slow Healing": "الجروح بتاخد وقت عشان تلتئم",
+        "Cold Intolerance": "مش مستحمل البرد",
+        "Blurred Vision": "زغللة في العين",
+        "Diarrhea": "إسهال",
+        "Weight Gain": "زيادة في الوزن",
+        "Nausea": "إحساس بالغثيان",
+        "Excessive Thirst": "عطش زيادة عن الطبيعي",
+        "Nasal Congestion": "انسداد أو احتقان في الأنف",
+        "Frequent Urination": "دخول الحمام كتير (تبول متكرر)",
+        "Dry Skin": "جفاف في الجلد",
+        "Pale Skin": "شحوب في لون الجلد",
+        "Fatigue": "إرهاق أو تعب عام",
+        "Constipation": "إمساك",
+        "Sore Throat": "التهاب أو وجع في الزور",
+        "Shortness Of Breath": "نهجان أو ضيق في التنفس"
+      }
+    }
+  }
+}

@@ -73,3 +73,10 @@ export const getHerbById = async (herbId) => {
   const { data } = await httpClient.get(`/api/Herbs/${herbId}/get-id`);
   return data;
 };
+
+export const toggleRecipeAvailability = async (recipeId) => {
+  const { data } = await httpClient.patch(
+    `/api/Recipes/${recipeId}/toggle-availability`,
+  );
+  return data;
+};

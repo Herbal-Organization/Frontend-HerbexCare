@@ -13,6 +13,7 @@ import PatientCart from "./PatientCart";
 import PatientOrders from "./PatientOrders";
 import PatientOrderDetails from "./PatientOrderDetails";
 import PatientPaymentSimulation from "./PaymentSimulationPage";
+import OrderSuccessPage from "./OrderSuccessPage";
 import PatientSavedRecipes from "./PatientSavedRecipes";
 import PatientAiConsultation from "./ai-pages/PatientAiConsultation";
 import usePatientDashboardData from "../../../hooks/usePatientDashboardData";
@@ -117,6 +118,7 @@ function PatientDashboard() {
             />
             <Route path="/cart" element={<PatientCart />} />
             <Route path="/orders" element={<PatientOrders />} />
+            <Route path="/orders/success" element={<OrderSuccessPage />} />
             <Route
               path="/orders/:orderId/payment"
               element={<PatientPaymentSimulation />}

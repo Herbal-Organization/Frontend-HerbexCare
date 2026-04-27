@@ -1,5 +1,6 @@
 import { FaBrain, FaSpinner, FaStethoscope } from "react-icons/fa";
-import { FORM_FIELDS } from "./aiConsultationConfig";
+import { useTranslation } from "react-i18next";
+import { FORM_FIELDS, SYMPTOMS_LIST } from "./aiConsultationConfig";
 
 function AiConsultationForm({
   form,
@@ -7,9 +8,12 @@ function AiConsultationForm({
   error,
   selectedSymptoms,
   onChange,
+  onSymptomToggle,
   onSubmit,
   onReset,
 }) {
+  const { t } = useTranslation();
+
   return (
     <form
       onSubmit={onSubmit}
@@ -29,7 +33,7 @@ function AiConsultationForm({
         {FORM_FIELDS.map((field) => (
           <label key={field.key} className="space-y-1.5">
             <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
-              {field.label}
+              {t(field.labelKey, { defaultValue: field.label })}
             </span>
             <input
               type="number"
@@ -45,21 +49,36 @@ function AiConsultationForm({
         ))}
       </div>
 
-      <label className="mt-5 block space-y-1.5">
-        <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
-          Symptoms (comma or new line separated)
-        </span>
-        <textarea
-          value={form.symptomsText}
-          onChange={(event) => onChange("symptomsText", event.target.value)}
-          placeholder="headache, fatigue, nausea"
-          disabled={isSubmitting}
-          className="min-h-28 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-900 outline-none transition placeholder:font-medium placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100"
-        />
-      </label>
+      <div className="mt-6 block">
+        <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-slate-500">
+          Select Symptoms
+        </h3>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {SYMPTOMS_LIST.map((symptom) => {
+            const translatedSymptom = t(
+              `aiConsultation.form.symptoms.${symptom}`,
+              { defaultValue: symptom },
+            );
+            return (
+              <label key={symptom} className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  checked={selectedSymptoms.includes(symptom)}
+                  onChange={() => onSymptomToggle(symptom)}
+                  disabled={isSubmitting}
+                  className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-2 focus:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+                />
+                <span className="text-sm font-medium text-slate-700">
+                  {translatedSymptom}
+                </span>
+              </label>
+            );
+          })}
+        </div>
+      </div>
 
-      <p className="mt-3 text-xs font-semibold text-slate-500">
-        Parsed symptoms: {selectedSymptoms.length}
+      <p className="mt-4 text-xs font-semibold text-slate-500">
+        Selected symptoms: {selectedSymptoms.length}
       </p>
 
       <div className="mt-6 flex flex-wrap gap-3">

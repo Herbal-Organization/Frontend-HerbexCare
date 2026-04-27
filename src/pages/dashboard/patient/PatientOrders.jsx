@@ -14,7 +14,6 @@ import {
   getMyOrders,
   cancelOrder,
   markOrderAsFavorite,
-  getFavoriteOrders,
 } from "../../../api/orders";
 import { toast } from "react-hot-toast";
 
@@ -46,8 +45,18 @@ const canContinuePayment = (order) => {
   const status = normalizeOrderStatus(order.status);
   const method = normalizeOrderStatus(order.paymentMethod);
 
+  const isCancelled = status === "canceled" || status === "cancelled";
+  const isAfterPayment =
+    status === "pending" ||
+    status === "paid" ||
+    status === "confirmed" ||
+    status === "processing" ||
+    status === "completed";
+
   return (
-    status === "pending" && (method === "wallet" || method === "creditcard")
+    !isCancelled &&
+    !isAfterPayment &&
+    (method === "wallet" || method === "creditcard")
   );
 };
 

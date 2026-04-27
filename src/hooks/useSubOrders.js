@@ -31,9 +31,32 @@ export default function useSubOrders() {
     load();
   }, [load]);
 
+  useEffect(() => {
+    const handleFocus = () => {
+      load();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        load();
+      }
+    };
+
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    const intervalId = window.setInterval(load, 30000);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.clearInterval(intervalId);
+    };
+  }, [load]);
+
   const refresh = () => load();
 
-  const getById = async (id) => {
+  const getById = useCallback(async (id) => {
     setIsLoading(true);
     try {
       const resp = await getSubOrderById(id);
@@ -41,18 +64,21 @@ export default function useSubOrders() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const setStatus = async (id, status) => {
-    setIsLoading(true);
-    try {
-      const resp = await updateSubOrderStatus(id, status);
-      await load();
-      return resp;
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const setStatus = useCallback(
+    async (id, status) => {
+      setIsLoading(true);
+      try {
+        const resp = await updateSubOrderStatus(id, status);
+        await load();
+        return resp;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [load],
+  );
 
   return {
     data,

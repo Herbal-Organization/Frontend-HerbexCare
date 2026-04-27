@@ -12,6 +12,11 @@ import { toast } from "react-hot-toast";
 
 const getStatus = (value) => (value || "").toLowerCase();
 
+const createTransactionId = () => {
+  const random = Math.random().toString(16).slice(2, 10).toUpperCase();
+  return `TXN-${random}`;
+};
+
 function PaymentSimulationPage() {
   const { orderId } = useParams();
   const navigate = useNavigate();
@@ -36,6 +41,7 @@ function PaymentSimulationPage() {
         const status = getStatus(data?.status);
         const paymentMethod = getStatus(data?.paymentMethod);
         const isPaid =
+          status === "pending" ||
           status === "paid" ||
           status === "confirmed" ||
           status === "processing" ||
@@ -52,7 +58,6 @@ function PaymentSimulationPage() {
         }
 
         setError("");
-        await handleSimulatePayment(false);
       } catch (err) {
         if (!active) {
           return;
@@ -70,28 +75,6 @@ function PaymentSimulationPage() {
       }
     };
 
-    const handleSimulatePayment = async (showToast = true) => {
-      setIsSimulating(true);
-      try {
-        await simulatePayment(orderId);
-        if (showToast) {
-          toast.success("Payment confirmed successfully");
-        }
-        navigate(`/patient/dashboard/orders/${orderId}`, { replace: true });
-      } catch (err) {
-        const message =
-          err.response?.data?.message ||
-          err.response?.data?.title ||
-          "Payment simulation failed.";
-        setError(message);
-        if (showToast) {
-          toast.error(message);
-        }
-      } finally {
-        setIsSimulating(false);
-      }
-    };
-
     loadOrder();
 
     return () => {
@@ -103,7 +86,16 @@ function PaymentSimulationPage() {
     setError("");
     setIsSimulating(true);
     try {
-      await simulatePayment(orderId);
+      await simulatePayment(orderId, {
+        message: "Payment simulated successfully. Order is now pending.",
+        transactionId: createTransactionId(),
+      });
+      try {
+        const refreshed = await getOrderById(orderId);
+        setOrder(refreshed);
+      } catch (_err) {
+        // If refresh fails, still proceed to details page.
+      }
       toast.success("Payment confirmed successfully");
       navigate(`/patient/dashboard/orders/${orderId}`, { replace: true });
     } catch (err) {
@@ -168,7 +160,8 @@ function PaymentSimulationPage() {
           </div>
         ) : (
           <div className="mt-6 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800">
-            The system is simulating an external payment provider call.
+            This order uses {order?.paymentMethod || "wallet or credit card"}.
+            Click below to confirm payment and call the simulation endpoint.
           </div>
         )}
 

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import {
   FaArrowLeft,
+  FaCheck,
   FaCreditCard,
   FaExclamationCircle,
   FaFlask,
@@ -44,6 +45,9 @@ const canContinuePayment = (order) => {
 function PatientOrderDetails() {
   const { orderId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const confirmationMessage = location.state?.message;
+  const showConfirmation = location.state?.showConfirmation;
 
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -141,6 +145,29 @@ function PatientOrderDetails() {
       >
         <FaArrowLeft /> Back to orders
       </Link>
+
+      {showConfirmation && (
+        <div className="mb-8 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm sm:p-8">
+          <div className="flex items-start gap-4">
+            <div className="mt-1 flex shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white">
+              <FaCheck className="text-lg" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-emerald-900">
+                Order Successfully Sent
+              </h3>
+              <p className="mt-2 text-sm font-medium text-emerald-700">
+                {confirmationMessage ||
+                  "Your order has been successfully sent to the herbalist for preparation."}
+              </p>
+              <p className="mt-3 text-xs font-semibold text-emerald-600">
+                You can track the status of your order below and will be
+                notified when it's ready.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-start">
         <div>

@@ -20,9 +20,10 @@ export const cancelOrder = async (orderId) => {
   return data;
 };
 
-export const simulatePayment = async (orderId) => {
+export const simulatePayment = async (orderId, payload) => {
   const { data } = await httpClient.put(
     `/api/Orders/${orderId}/simulate-payment`,
+    payload,
   );
   return data;
 };
@@ -34,5 +35,17 @@ export const markOrderAsFavorite = async (orderId) => {
 
 export const getFavoriteOrders = async () => {
   const { data } = await httpClient.get("/api/Orders/favorites");
+  return data;
+};
+
+export const confirmOrder = async (orderId) => {
+  const { data } = await httpClient.post(`/api/Orders/${orderId}/confirm`);
+  return data;
+};
+
+export const updateOrderStatus = async (orderId, status) => {
+  const { data } = await httpClient.put(`/api/Orders/${orderId}/status`, {
+    status,
+  });
   return data;
 };

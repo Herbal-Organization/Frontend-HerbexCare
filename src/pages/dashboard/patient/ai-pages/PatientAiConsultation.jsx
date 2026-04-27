@@ -1,11 +1,11 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { FaBrain } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { generateAiConsultation } from "../../../../api/aiConsultations";
 import AiConsultationForm from "./AiConsultationForm";
 import AiConsultationResult from "./AiConsultationResult";
 import { INITIAL_FORM } from "./aiConsultationConfig";
-import { parseApiError, parseSymptoms, toNumber } from "./aiConsultationUtils";
+import { parseApiError, toNumber } from "./aiConsultationUtils";
 
 function PatientAiConsultation() {
   const [form, setForm] = useState(INITIAL_FORM);
@@ -13,13 +13,23 @@ function PatientAiConsultation() {
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
 
-  const selectedSymptoms = useMemo(
-    () => parseSymptoms(form.symptomsText),
-    [form.symptomsText],
-  );
+  const selectedSymptoms = form.selectedSymptoms || [];
 
   const handleChange = (key, value) => {
     setForm((current) => ({ ...current, [key]: value }));
+  };
+
+  const handleSymptomToggle = (symptom) => {
+    setForm((current) => {
+      const symptoms = current.selectedSymptoms || [];
+      const isSelected = symptoms.includes(symptom);
+      return {
+        ...current,
+        selectedSymptoms: isSelected
+          ? symptoms.filter((s) => s !== symptom)
+          : [...symptoms, symptom],
+      };
+    });
   };
 
   const handleReset = () => {
@@ -88,6 +98,7 @@ function PatientAiConsultation() {
           error={error}
           selectedSymptoms={selectedSymptoms}
           onChange={handleChange}
+          onSymptomToggle={handleSymptomToggle}
           onSubmit={handleSubmit}
           onReset={handleReset}
         />
