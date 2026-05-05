@@ -10,9 +10,7 @@ export const getSubOrderById = async (id) => {
   return data;
 };
 
-export const updateSubOrderStatus = async (id, status) => {
-  const { data } = await httpClient.put(`/api/SubOrders/${id}/status`, {
-    status,
-  });
+export const updateSubOrderStatus = async (id, payload) => {
+  const { data } = await httpClient.put(`/api/SubOrders/${id}/status`, payload);
   return data;
 };

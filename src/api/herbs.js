@@ -5,7 +5,21 @@ export const getAllHerbs = async () => {
   return data;
 };
 
+export const getHerbById = async (herbId) => {
+  const { data } = await httpClient.get(`/api/Herbs/${herbId}/get-id`);
+  return data;
+};
+
+export const getHerbWithHerbalist = async (herbId) => {
+  const { data } = await httpClient.get(`/api/Herbs/${herbId}/with-herbalist`);
+  return data;
+};
+
 export const createHerb = async (payload) => {
+  // use buildHerbFormData because we are sending image
+  // JSON don't send images directly , we must use form data
+
+  // formData => for data contains files
   const formData = buildHerbFormData(payload);
 
   const { data } = await httpClient.post("/api/Herbs/add", formData, {
@@ -18,6 +32,7 @@ export const createHerb = async (payload) => {
 };
 
 const buildHerbFormData = (payload) => {
+  // obj built-in for uploading files and images
   const formData = new FormData();
 
   formData.append("HerbName", payload.herbName);
@@ -51,39 +66,14 @@ export const updateHerb = async (herbId, payload) => {
 };
 
 export const deleteHerb = async (herbId) => {
+  // convert string to number because the endpoint expects a number
+  // 10 => means base 10
   const id = parseInt(herbId, 10);
-  console.log(
-    "API: Deleting herb with ID:",
-    id,
-    "Original:",
-    herbId,
-    "Type:",
-    typeof id,
-  );
-  if (isNaN(id)) {
-    throw new Error("Invalid herb ID: must be a number");
-  }
   const { data } = await httpClient.delete(`/api/Herbs/${id}/delete`);
-  console.log("API: Delete herb response:", data);
-  return data;
-};
-
-export const getHerbById = async (herbId) => {
-  const { data } = await httpClient.get(`/api/Herbs/${herbId}/get-id`);
-  return data;
-};
-
-export const getHerbWithHerbalist = async (herbId) => {
-  const { data } = await httpClient.get(`/api/Herbs/${herbId}/with-herbalist`);
   return data;
 };
 
 export const getHerbalistsForHerb = async (herbId) => {
-  const { data } = await httpClient.get(`/api/Herbs/${herbId}/herbalists`);
-  return data;
-};
-
-export const getHerbalistPrices = async (herbId) => {
   const { data } = await httpClient.get(`/api/Herbs/${herbId}/herbalists`);
   return data;
 };

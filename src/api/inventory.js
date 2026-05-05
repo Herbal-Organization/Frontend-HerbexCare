@@ -1,6 +1,7 @@
 import httpClient from "./httpClient";
 
 export const getMyInventory = async () => {
+  // { data } => response.data =
   const { data } = await httpClient.get("/api/Inventory/me");
   return data;
 };

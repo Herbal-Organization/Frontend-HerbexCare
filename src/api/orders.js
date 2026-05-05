@@ -1,6 +1,6 @@
 import httpClient from "./httpClient";
 
-export const getMyOrders = async () => {
+export const getAllMyOrders = async () => {
   const { data } = await httpClient.get("/api/Orders/all-my-orders");
   return data;
 };
@@ -35,17 +35,5 @@ export const markOrderAsFavorite = async (orderId) => {
 
 export const getFavoriteOrders = async () => {
   const { data } = await httpClient.get("/api/Orders/favorites");
-  return data;
-};
-
-export const confirmOrder = async (orderId) => {
-  const { data } = await httpClient.post(`/api/Orders/${orderId}/confirm`);
-  return data;
-};
-
-export const updateOrderStatus = async (orderId, status) => {
-  const { data } = await httpClient.put(`/api/Orders/${orderId}/status`, {
-    status,
-  });
   return data;
 };

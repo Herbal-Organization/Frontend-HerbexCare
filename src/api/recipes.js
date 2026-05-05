@@ -5,10 +5,13 @@ export const getAllRecipes = async () => {
   return data;
 };
 
-export const getRecipesByHerbalist = async (herbalistId) => {
-  const { data } = await httpClient.get(
-    `/api/Recipes/herbalist/${herbalistId}`,
-  );
+export const getRecipeById = async (id) => {
+  const { data } = await httpClient.get(`/api/Recipes/${id}/get-id`);
+  return data;
+};
+
+export const getRecipesByHerbalist = async (id) => {
+  const { data } = await httpClient.get(`/api/Recipes/herbalist/${id}`);
   return data;
 };
 
@@ -17,66 +20,14 @@ export const createRecipe = async (payload) => {
   return data;
 };
 
-export const updateRecipe = async (recipeId, payload) => {
-  const { data } = await httpClient.put(
-    `/api/Recipes/${recipeId}/update`,
-    payload,
-  );
+export const updateRecipe = async (id, payload) => {
+  const { data } = await httpClient.put(`/api/Recipes/${id}/update`, payload);
   return data;
 };
 
-export const deactivateRecipe = async (recipeId) => {
-  const { data } = await httpClient.put(`/api/Recipes/${recipeId}/deactivate`);
-  return data;
-};
-
-export const deleteRecipe = async (recipeId) => {
-  const { data } = await httpClient.delete(`/api/Recipes/${recipeId}/delete`);
-  return data;
-};
-
-export const getRecipeById = async (recipeId) => {
-  const { data } = await httpClient.get(`/api/Recipes/${recipeId}/get-id`);
-  return data;
-};
-
-export const getRecipeReviews = async (recipeId) => {
-  const { data } = await httpClient.get(
-    `/api/Feedbacks/recipe/${recipeId}/all`,
-  );
-  return data;
-};
-
-export const getMyRecipeReview = async (recipeId) => {
-  const { data } = await httpClient.get(
-    `/api/Feedbacks/recipe/${recipeId}/get-me`,
-  );
-  return data;
-};
-
-export const submitRecipeReview = async (recipeId, payload) => {
-  const { data } = await httpClient.post(
-    `/api/Feedbacks/recipe/${recipeId}/submit`,
-    payload,
-  );
-  return data;
-};
-
-export const deleteMyRecipeReview = async (recipeId) => {
-  const { data } = await httpClient.delete(
-    `/api/Feedbacks/recipe/${recipeId}/delete-me`,
-  );
-  return data;
-};
-
-export const getHerbById = async (herbId) => {
-  const { data } = await httpClient.get(`/api/Herbs/${herbId}/get-id`);
-  return data;
-};
-
-export const toggleRecipeAvailability = async (recipeId) => {
+export const toggleRecipeAvailability = async (id) => {
   const { data } = await httpClient.patch(
-    `/api/Recipes/${recipeId}/toggle-availability`,
+    `/api/Recipes/${id}/toggle-availability`,
   );
   return data;
 };
