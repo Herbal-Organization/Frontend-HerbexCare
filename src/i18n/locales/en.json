@@ -2,6 +2,15 @@
   "navbar": {
     "brand": "Herbal Care",
     "getStarted": "Get Started"
+    ,
+    "home": "Home",
+    "herbs": "Herbs",
+    "recipes": "Recipes",
+    "profile": "Profile",
+    "logout": "Logout",
+    "myCart": "My Cart",
+    "user": "User",
+    "saved": "Saved"
   },
   "hero": {
     "badge": "Intelligent Natural Healing",

@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa";
 import { getUserFromToken, logout } from "../../utils/auth";
 import { useCart } from "../../context/CartContext";
+import { useTranslation } from "react-i18next";
 
 function PatientNavbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -18,12 +19,13 @@ function PatientNavbar() {
   const user = getUserFromToken();
   const { getCartCount } = useCart();
   const cartCount = getCartCount();
+  const { t } = useTranslation();
 
   const navItems = [
-    { label: "Home", path: "/patient/home", exact: true },
-    { label: "Herbs", path: "/patient/home/herbs" },
-    { label: "Recipes", path: "/patient/home/recipes" },
-    { label: "Profile", path: "/patient/dashboard/profile" },
+    { label: t("navbar.home"), path: "/patient/home", exact: true },
+    { label: t("navbar.herbs"), path: "/patient/home/herbs" },
+    { label: t("navbar.recipes"), path: "/patient/home/recipes" },
+    { label: t("navbar.profile"), path: "/patient/dashboard/profile" },
   ];
 
   const isActive = ({ path, exact }) => {
@@ -55,13 +57,13 @@ function PatientNavbar() {
               <FaLeaf className="text-xl" />
             </div>
             <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-none">
-              Herbal Care AI
+              {t("navbar.brand")}
             </h1>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
-            {navItems.map((item) => (
+                {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -71,7 +73,7 @@ function PatientNavbar() {
                     : "text-slate-600 hover:text-primary hover:bg-slate-50"
                 }`}
               >
-                {item.label}
+                    {item.label}
               </Link>
             ))}
           </nav>
@@ -98,12 +100,12 @@ function PatientNavbar() {
 
             {/* User Profile Dropdown */}
             <div className="hidden sm:flex items-center gap-3 pl-4 border-l border-slate-200">
-              <div className="text-right">
+                <div className="text-right">
                 <p className="text-sm font-medium text-slate-900">
-                  {user?.name || "User"}
+                  {user?.name || t("navbar.user")}
                 </p>
                 <p className="text-xs text-slate-500">
-                  {user?.email || "Patient"}
+                  {user?.email || t("navbar.user")}
                 </p>
               </div>
               <Link
@@ -120,7 +122,7 @@ function PatientNavbar() {
               className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-colors"
             >
               <FaSignOutAlt className="text-lg" />
-              <span>Logout</span>
+              <span>{t("navbar.logout")}</span>
             </button>
 
             {/* Mobile Menu Toggle */}
@@ -155,13 +157,13 @@ function PatientNavbar() {
                   {item.label}
                 </Link>
               ))}
-              <Link
+                <Link
                 to="/patient/dashboard/cart"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="flex items-center gap-2 w-full px-3 py-2 rounded-md text-sm font-medium text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-colors"
               >
                 <FaShoppingCart className="text-lg" />
-                <span>My Cart ({cartCount})</span>
+                <span>{t("navbar.myCart")} ({cartCount})</span>
               </Link>
               <button
                 onClick={() => {
@@ -171,7 +173,7 @@ function PatientNavbar() {
                 className="flex items-center gap-2 w-full px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-colors text-left"
               >
                 <FaSignOutAlt className="text-lg" />
-                <span>Logout</span>
+                <span>{t("navbar.logout")}</span>
               </button>
             </nav>
           </div>
