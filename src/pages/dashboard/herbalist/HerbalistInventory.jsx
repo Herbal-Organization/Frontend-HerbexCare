@@ -34,6 +34,13 @@ const extractInventoryArray = (responseData) => {
   return [];
 };
 
+const extractHerbsArray = (responseData) => {
+  if (Array.isArray(responseData)) return responseData;
+  if (Array.isArray(responseData?.items)) return responseData.items;
+  if (Array.isArray(responseData?.data)) return responseData.data;
+  return [];
+};
+
 // Animation variants
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -66,15 +73,14 @@ function HerbalistInventory() {
     try {
       const [inventoryResponse, herbsResponse] = await Promise.all([
         getMyInventory(),
-        getAllHerbs(),
+        getAllHerbs(1, 1000),
       ]);
 
       const normalizedInventory = normalizeInventoryList(
         extractInventoryArray(inventoryResponse),
       );
-      const normalizedHerbs = Array.isArray(herbsResponse)
-        ? herbsResponse.map(normalizeHerb)
-        : [];
+      const normalizedHerbs =
+        extractHerbsArray(herbsResponse).map(normalizeHerb);
 
       setInventoryItems(normalizedInventory);
       setAllHerbs(normalizedHerbs);

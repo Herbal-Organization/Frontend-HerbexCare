@@ -34,9 +34,57 @@ export const SYMPTOMS_LIST = [
   "Shortness Of Breath",
 ];
 
+export const WIZARD_STEPS = [
+  {
+    id: "demographics",
+    label: "Info",
+    title: "Personal Information",
+    description: "Tell us about yourself",
+    icon: "👤",
+  },
+  {
+    id: "medical",
+    label: "Medical History",
+    title: "Health Background",
+    description: "Any medical conditions?",
+    icon: "🏥",
+  },
+  {
+    id: "vitals",
+    label: "Vital Signs",
+    title: "Current Health Status",
+    description: "Your vital measurements",
+    icon: "💓",
+  },
+  {
+    id: "symptoms",
+    label: "Symptoms",
+    title: "What are you experiencing?",
+    description: "Select applicable symptoms",
+    icon: "🔍",
+  },
+  {
+    id: "review",
+    label: "Review",
+    title: "Confirm Information",
+    description: "Review before generating",
+    icon: "✓",
+  },
+];
+
 export const INITIAL_FORM = {
+  // Demographics
+  age: "",
+  gender: "",
   weightKg: "",
   heightCm: "",
+  // Medical History
+  hasDiabetes: false,
+  hasHypertension: false,
+  hasAllergies: false,
+  isPregnant: false,
+  isSmoker: false,
+  // Vital Signs
   severityScore: "",
   systolicBp: "",
   diastolicBp: "",
@@ -47,61 +95,141 @@ export const INITIAL_FORM = {
 };
 
 export const FORM_FIELDS = [
+  // Demographics Section
+  {
+    key: "age",
+    label: "Age (years)",
+    labelKey: "aiConsultation.form.fields.age",
+    type: "number",
+    step: "1",
+    min: "0",
+    max: "150",
+    section: "demographics",
+  },
+  {
+    key: "gender",
+    label: "Gender",
+    labelKey: "aiConsultation.form.fields.gender",
+    type: "select",
+    options: ["Male", "Female"],
+    section: "demographics",
+  },
   {
     key: "weightKg",
     label: "Weight (kg)",
     labelKey: "aiConsultation.form.fields.weightKg",
+    type: "number",
     step: "0.1",
     min: "0",
+    section: "demographics",
   },
   {
     key: "heightCm",
     label: "Height (cm)",
     labelKey: "aiConsultation.form.fields.heightCm",
+    type: "number",
     step: "0.1",
     min: "0",
+    section: "demographics",
   },
-  {
-    key: "severityScore",
-    label: "Severity Score (0-10)", // 1 => normal, 5 => medium, 10 => urgent
-    labelKey: "aiConsultation.form.fields.severityScore",
-    step: "1",
-    min: "0",
-    max: "10",
-  },
+  // Vital Signs Section
   {
     key: "systolicBp",
-    label: "Systolic BP",
+    label: "Systolic BP (mmHg)",
     labelKey: "aiConsultation.form.fields.systolicBp",
+    type: "number",
     step: "1",
     min: "0",
+    section: "vitals",
   },
   {
     key: "diastolicBp",
-    label: "Diastolic BP",
+    label: "Diastolic BP (mmHg)",
     labelKey: "aiConsultation.form.fields.diastolicBp",
+    type: "number",
     step: "1",
     min: "0",
+    section: "vitals",
   },
   {
     key: "temperatureCelsius",
-    label: "Temperature (C)",
+    label: "Temperature (°C)",
     labelKey: "aiConsultation.form.fields.temperatureCelsius",
+    type: "number",
     step: "0.1",
     min: "0",
+    section: "vitals",
   },
   {
     key: "heartRateBpm",
     label: "Heart Rate (BPM)",
     labelKey: "aiConsultation.form.fields.heartRateBpm",
+    type: "number",
     step: "1",
     min: "0",
+    section: "vitals",
+  },
+  {
+    key: "severityScore",
+    label: "Severity Score (0-10)",
+    labelKey: "aiConsultation.form.fields.severityScore",
+    type: "number",
+    step: "1",
+    min: "0",
+    max: "10",
+    section: "vitals",
   },
   {
     key: "symptomDurationDays",
     label: "Symptom Duration (Days)",
     labelKey: "aiConsultation.form.fields.symptomDurationDays",
+    type: "number",
     step: "1",
     min: "0",
+    section: "vitals",
   },
 ];
+
+export const MEDICAL_HISTORY_FIELDS = [
+  {
+    key: "hasDiabetes",
+    label: "Diabetes",
+    labelKey: "aiConsultation.form.fields.hasDiabetes",
+  },
+  {
+    key: "hasHypertension",
+    label: "Hypertension",
+    labelKey: "aiConsultation.form.fields.hasHypertension",
+  },
+  {
+    key: "hasAllergies",
+    label: "Known Allergies",
+    labelKey: "aiConsultation.form.fields.hasAllergies",
+  },
+  {
+    key: "isPregnant",
+    label: "Pregnant",
+    labelKey: "aiConsultation.form.fields.isPregnant",
+  },
+  {
+    key: "isSmoker",
+    label: "Smoker",
+    labelKey: "aiConsultation.form.fields.isSmoker",
+  },
+];
+
+export function getInputPlaceholder(fieldKey) {
+  const placeholders = {
+    age: "e.g. 29",
+    weightKg: "e.g. 68.5",
+    heightCm: "e.g. 172",
+    systolicBp: "e.g. 120",
+    diastolicBp: "e.g. 80",
+    temperatureCelsius: "e.g. 37.0",
+    heartRateBpm: "e.g. 72",
+    severityScore: "e.g. 6",
+    symptomDurationDays: "e.g. 3",
+  };
+
+  return placeholders[fieldKey] || "";
+}

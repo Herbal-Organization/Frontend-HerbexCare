@@ -1,0 +1,76 @@
+{
+  "navbar": {
+    "brand": "Herbal Care",
+    "getStarted": "Get Started"
+  },
+  "hero": {
+    "badge": "Intelligent Natural Healing",
+    "title": "AI-Powered Herbal Wellness for Your Daily Life",
+    "description": "Discover personalized herbal recipes and natural remedies tailored to your health goals using our advanced botanical AI technology.",
+    "startJourney": "Start Your Journey",
+    "howItWorks": "How It Works",
+    "stats": {
+      "guidedPlans": "Guided Plans",
+      "activeUsers": "Active Users",
+      "aiMatches": "AI Matches"
+    }
+  },
+  "steps": {
+    "title": "Simple Steps to Natural Care",
+    "description": "Our AI analyzes your unique wellness profile to provide safe, effective, and evidence-based herbal solutions.",
+    "step1": {
+      "title": "Share Your Needs",
+      "description": "Tell us about your wellness goals, symptoms, or dietary preferences through our intuitive chat interface."
+    },
+    "step2": {
+      "title": "AI Analysis",
+      "description": "Our advanced algorithms cross-reference clinical herbal databases and safety protocols in seconds."
+    },
+    "step3": {
+      "title": "Get Recipes",
+      "description": "Receive custom-tailored herbal tea blends, tinctures, and wellness plans specific to your body's needs."
+    }
+  },
+  "recipes": {
+    "title": "Featured AI Recipes",
+    "description": "Discover what our community is brewing this week, then explore full collections tailored to your goals.",
+    "viewRecipe": "View Recipe",
+    "recipe1": {
+      "tag": "IMMUNITY",
+      "time": "10m",
+      "title": "Golden Elderberry Infusion",
+      "description": "A potent blend designed to strengthen your natural defenses."
+    },
+    "recipe2": {
+      "tag": "SLEEP",
+      "time": "15m",
+      "title": "Midnight Lavender Mist",
+      "description": "Calming aromas and herbs to prepare your body for deep rest."
+    },
+    "recipe3": {
+      "tag": "ENERGY",
+      "time": "5m",
+      "title": "Revitalizing Mint Tonic",
+      "description": "A refreshing kick to start your day without the caffeine crash."
+    },
+    "recipe4": {
+      "tag": "DIGESTION",
+      "time": "12m",
+      "title": "Ginger Root Soother",
+      "description": "Gentle warmth for a happy stomach and better digestion."
+    }
+  },
+  "newsletter": {
+    "title": "Stay Rooted in Wellness",
+    "description": "Subscribe for weekly AI-curated herbal recipes and holistic wellness tips delivered straight to your inbox.",
+    "placeholder": "Your email address",
+    "subscribe": "Subscribe Now",
+    "privacy": "We value your privacy. Unsubscribe at any time."
+  },
+  "footer": {
+    "tagline": "Combining centuries-old botanical wisdom with cutting-edge artificial intelligence to empower your natural wellness journey.",
+    "copyright": "All rights reserved.",
+    "author": "Karim Safan",
+    "language": "English (US)"
+  }
+}

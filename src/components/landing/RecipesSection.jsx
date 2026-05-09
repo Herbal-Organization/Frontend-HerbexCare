@@ -1,7 +1,8 @@
-import {FaArrowRightLong} from "react-icons/fa6";
-import {MdSchedule} from "react-icons/md";
+import { FaArrowRightLong } from "react-icons/fa6";
+import { MdSchedule } from "react-icons/md";
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import elderberryImg from "../../assets/recipe_elderberry.png";
 import lavenderImg from "../../assets/recipe_lavender.png";
 import mintImg from "../../assets/recipe_mint.png";
@@ -10,39 +11,45 @@ import gingerImg from "../../assets/recipe_ginger.png";
 const MotionDiv = motion.div;
 
 function RecipesSection() {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
+
   const recipes = [
     {
       image: elderberryImg,
-      tag: "IMMUNITY",
-      time: "10m",
-      title: "Golden Elderberry Infusion",
-      description: "A potent blend designed to strengthen your natural defenses."
+      tagKey: "recipes.recipe1.tag",
+      timeKey: "recipes.recipe1.time",
+      titleKey: "recipes.recipe1.title",
+      descriptionKey: "recipes.recipe1.description",
     },
     {
       image: lavenderImg,
-      tag: "SLEEP",
-      time: "15m",
-      title: "Midnight Lavender Mist",
-      description: "Calming aromas and herbs to prepare your body for deep rest."
+      tagKey: "recipes.recipe2.tag",
+      timeKey: "recipes.recipe2.time",
+      titleKey: "recipes.recipe2.title",
+      descriptionKey: "recipes.recipe2.description",
     },
     {
       image: mintImg,
-      tag: "ENERGY",
-      time: "5m",
-      title: "Revitalizing Mint Tonic",
-      description: "A refreshing kick to start your day without the caffeine crash."
+      tagKey: "recipes.recipe3.tag",
+      timeKey: "recipes.recipe3.time",
+      titleKey: "recipes.recipe3.title",
+      descriptionKey: "recipes.recipe3.description",
     },
     {
       image: gingerImg,
-      tag: "DIGESTION",
-      time: "12m",
-      title: "Ginger Root Soother",
-      description: "Gentle warmth for a happy stomach and better digestion."
-    }
+      tagKey: "recipes.recipe4.tag",
+      timeKey: "recipes.recipe4.time",
+      titleKey: "recipes.recipe4.title",
+      descriptionKey: "recipes.recipe4.description",
+    },
   ];
 
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
+    <section
+      className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20"
+      dir={isRTL ? "rtl" : "ltr"}
+    >
       <MotionDiv
         className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4"
         initial={{ opacity: 0, y: 18 }}
@@ -51,10 +58,11 @@ function RecipesSection() {
         transition={{ duration: 0.45 }}
       >
         <div className="max-w-xl">
-          <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Featured AI Recipes</h2>
-          <p className="text-slate-600">Discover what our community is brewing this week, then explore full collections tailored to your goals.</p>
+          <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">
+            {t("recipes.title")}
+          </h2>
+          <p className="text-slate-600">{t("recipes.description")}</p>
         </div>
-        
       </MotionDiv>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -68,34 +76,36 @@ function RecipesSection() {
             transition={{ duration: 0.4, delay: idx * 0.08 }}
           >
             <div className="h-48 w-full overflow-hidden">
-              <img 
-                src={recipe.image} 
-                alt={recipe.title} 
+              <img
+                src={recipe.image}
+                alt={t(recipe.titleKey)}
                 className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
               />
             </div>
-            
+
             <div className="p-6 flex flex-col flex-1">
               <div className="flex items-center justify-between mb-3">
                 <span className="bg-primary-light text-primary text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider">
-                  {recipe.tag}
+                  {t(recipe.tagKey)}
                 </span>
                 <div className="flex items-center text-slate-400 text-xs font-medium">
-                  <MdSchedule className="text-sm mr-1" />
-                  {recipe.time}
+                  <MdSchedule className="text-sm mx-1" />
+                  {t(recipe.timeKey)}
                 </div>
               </div>
-              
-              <h3 className="text-lg font-bold text-slate-900 mb-2 leading-tight">{recipe.title}</h3>
+
+              <h3 className="text-lg font-bold text-slate-900 mb-2 leading-tight">
+                {t(recipe.titleKey)}
+              </h3>
               <p className="text-slate-500 text-sm mb-6 flex-1 line-clamp-2">
-                {recipe.description}
+                {t(recipe.descriptionKey)}
               </p>
-              
+
               <Link
                 to="/auth"
                 className="inline-flex w-full items-center justify-center py-2.5 bg-primary-light/50 hover:bg-primary-light text-primary font-bold text-sm rounded-xl transition-colors"
               >
-                View Recipe
+                {t("recipes.viewRecipe")}
               </Link>
             </div>
           </MotionDiv>

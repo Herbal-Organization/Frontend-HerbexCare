@@ -2,20 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import {
   FaLeaf,
   FaPlus,
-  FaTrashAlt,
   FaEdit,
-  FaSave,
   FaTimes,
-  FaDollarSign,
   FaSearch,
-  FaFilter,
-  FaChevronRight,
   FaCheckCircle,
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "motion/react";
 import RecipeForm from "./manage-recipe/RecipeForm";
-import RecipesList from "./manage-recipe/RecipesList";
 import { getAllHerbs } from "../../../api/herbs";
 import { getAllDiseaseNames } from "../../../api/diseases";
 import {
@@ -29,6 +23,42 @@ const EMPTY_HERB_ROW = {
   herbId: "",
   quantity: "",
 };
+
+const extractHerbsArray = (responseData) => {
+  if (Array.isArray(responseData)) return responseData;
+  if (Array.isArray(responseData?.items)) return responseData.items;
+  if (Array.isArray(responseData?.data)) return responseData.data;
+  return [];
+};
+
+const extractDiseasesArray = (responseData) => {
+  if (Array.isArray(responseData)) return responseData;
+  if (Array.isArray(responseData?.items)) return responseData.items;
+  if (Array.isArray(responseData?.data)) return responseData.data;
+  return [];
+};
+
+const normalizeDisease = (disease, index = 0) => {
+  if (!disease) return null;
+
+  const diseaseName =
+    disease.diseaseName ?? disease.name ?? disease.label ?? String(disease);
+  const diseaseId =
+    disease.diseaseId ?? disease.id ?? disease.value ?? diseaseName ?? index;
+
+  if (!diseaseName) return null;
+
+  return {
+    diseaseId: String(diseaseId),
+    diseaseName: String(diseaseName),
+    diseaseType: disease.diseaseType ?? disease.type ?? "",
+  };
+};
+
+const normalizeDiseaseList = (responseData) =>
+  extractDiseasesArray(responseData)
+    .map((disease, index) => normalizeDisease(disease, index))
+    .filter(Boolean);
 
 // Framer Motion variants
 const containerVariants = {
@@ -76,6 +106,11 @@ function HerbalistManageRecipes({ user, dashboardData }) {
   }, [dashboardData?.herbalistProfile?.id, user?.id]);
 
   useEffect(() => {
+    const loadDiseases = async () => {
+      const diseasesResponse = await getAllDiseaseNames();
+      setDiseases(normalizeDiseaseList(diseasesResponse));
+    };
+
     const loadData = async () => {
       if (!herbalistId) return;
 
@@ -83,15 +118,13 @@ function HerbalistManageRecipes({ user, dashboardData }) {
       setError("");
 
       try {
-        const [herbsResponse, diseasesResponse, recipesResponse] =
-          await Promise.all([
-            getAllHerbs(),
-            getAllDiseaseNames(),
-            getRecipesByHerbalist(herbalistId),
-          ]);
+        const [herbsResponse, recipesResponse] = await Promise.all([
+          getAllHerbs(1, 1000),
+          getRecipesByHerbalist(herbalistId, 1, 1000),
+          loadDiseases(),
+        ]);
 
-        setHerbs(Array.isArray(herbsResponse) ? herbsResponse : []);
-        setDiseases(Array.isArray(diseasesResponse) ? diseasesResponse : []);
+        setHerbs(extractHerbsArray(herbsResponse));
         setExistingRecipes(
           Array.isArray(recipesResponse) ? recipesResponse : [],
         );
@@ -119,11 +152,6 @@ function HerbalistManageRecipes({ user, dashboardData }) {
     );
   }, [existingRecipes, searchQuery]);
 
-  const usedHerbIds = useMemo(
-    () => selectedHerbs.map((item) => String(item.herbId)).filter(Boolean),
-    [selectedHerbs],
-  );
-
   const addHerbRow = () => {
     setSelectedHerbs((current) => [...current, { ...EMPTY_HERB_ROW }]);
   };
@@ -150,10 +178,11 @@ function HerbalistManageRecipes({ user, dashboardData }) {
   };
 
   const toggleDisease = (diseaseId) => {
+    const normalizedDiseaseId = String(diseaseId);
     setSelectedDiseaseIds((current) =>
-      current.includes(diseaseId)
-        ? current.filter((id) => id !== diseaseId)
-        : [...current, diseaseId],
+      current.includes(normalizedDiseaseId)
+        ? current.filter((id) => id !== normalizedDiseaseId)
+        : [...current, normalizedDiseaseId],
     );
   };
 
@@ -165,6 +194,7 @@ function HerbalistManageRecipes({ user, dashboardData }) {
     setSelectedHerbs([{ ...EMPTY_HERB_ROW }]);
     setEditingRecipeId(null);
     setShowCreateForm(false);
+    setSearchQuery("");
     setError("");
   };
 
@@ -172,7 +202,9 @@ function HerbalistManageRecipes({ user, dashboardData }) {
     setDescription(recipe.description || "");
     setInstructions(recipe.instructions || "");
     setPrice(recipe.price || "");
-    setSelectedDiseaseIds(recipe.diseases?.map((d) => d.diseaseId) || []);
+    setSelectedDiseaseIds(
+      recipe.diseases?.map((d) => String(d.diseaseId ?? d.id ?? "")) || [],
+    );
     setSelectedHerbs(
       recipe.herbs?.length > 0
         ? recipe.herbs.map((h) => ({
@@ -225,7 +257,9 @@ function HerbalistManageRecipes({ user, dashboardData }) {
       instructions: instructions.trim(),
       price: priceNum,
       herbs: normalizedHerbs,
-      diseaseIds: selectedDiseaseIds,
+      diseaseIds: selectedDiseaseIds
+        .map((id) => Number(id))
+        .filter((id) => !Number.isNaN(id)),
     };
 
     try {
@@ -239,7 +273,15 @@ function HerbalistManageRecipes({ user, dashboardData }) {
 
       // Refresh list
       if (herbalistId) {
-        const recipesResponse = await getRecipesByHerbalist(herbalistId);
+        const recipesResponse = await getRecipesByHerbalist(
+          herbalistId,
+          1,
+          1000,
+          "",
+          "",
+          "",
+          null,
+        );
         setExistingRecipes(
           Array.isArray(recipesResponse) ? recipesResponse : [],
         );
@@ -305,7 +347,7 @@ function HerbalistManageRecipes({ user, dashboardData }) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center min-h-100">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
@@ -366,8 +408,11 @@ function HerbalistManageRecipes({ user, dashboardData }) {
               show={showCreateForm}
               editingRecipeId={editingRecipeId}
               description={description}
+              setDescription={setDescription}
               instructions={instructions}
+              setInstructions={setInstructions}
               price={price}
+              setPrice={setPrice}
               selectedHerbs={selectedHerbs}
               selectedDiseaseIds={selectedDiseaseIds}
               herbs={herbs}

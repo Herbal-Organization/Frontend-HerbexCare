@@ -5,7 +5,6 @@ import {
   FaLeaf,
   FaRegClock,
   FaStethoscope,
-  FaSyncAlt,
   FaUserCircle,
 } from "react-icons/fa";
 import { getAllHerbs } from "../../../api/herbs";
@@ -172,32 +171,17 @@ function HerbalistDashboardHome({
   return (
     <section className="space-y-8">
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-primary">
-              Herbalist Dashboard
-            </p>
-            <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-900">
-              Welcome back, {user?.name || "Herbalist"}
-            </h1>
-            <p className="mt-2 text-sm font-medium text-slate-600">
-              Track your herbs, recipes, inventory availability, and profile
-              readiness from one place.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                onRetryDashboard?.();
-                loadStats();
-              }}
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-            >
-              <FaSyncAlt className="text-xs" /> Refresh
-            </button>
-          </div>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider text-primary">
+            Herbalist Dashboard
+          </p>
+          <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-900">
+            Welcome back, {user?.name || "Herbalist"}
+          </h1>
+          <p className="mt-2 text-sm font-medium text-slate-600">
+            Track your herbs, recipes, inventory availability, and profile
+            readiness from one place.
+          </p>
         </div>
       </div>
 

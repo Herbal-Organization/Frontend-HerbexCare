@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { getHerbById, getRecipeById } from "../api/recipes";
+import { getRecipeById } from "../api/recipes";
+import { getHerbById } from "../api/herbs";
 import {
   buildRecipeAdvantages,
   buildRecipeDisadvantages,

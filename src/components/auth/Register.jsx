@@ -5,7 +5,7 @@ import { TiPhone } from "react-icons/ti";
 import { FaPerson } from "react-icons/fa6";
 import { MdLocalLibrary } from "react-icons/md";
 import { loginAccount, registerAccount } from "../../api/accounts";
-import { updateMyPatientProfile } from "../../api/patients";
+import { updateMyProfile } from "../../api/patients";
 import useAsyncAction from "../../hooks/useAsyncAction";
 import AuthAlert from "../../components/auth/AuthAlert";
 import AuthInput from "../../components/auth/AuthInput";
@@ -13,8 +13,64 @@ import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
 import { saveHerbalistProfile } from "../../services/herbalistProfile";
 import { clearAuthTokens, storeAuthTokens } from "../../services/authSession";
 
+const buildTimeOptions = () => {
+  const options = [];
+
+  for (let hour = 0; hour < 24; hour += 1) {
+    for (let minute = 0; minute < 60; minute += 30) {
+      const value = `${String(hour).padStart(2, "0")}:${String(minute).padStart(
+        2,
+        "0",
+      )}`;
+      const labelHour = hour % 12 === 0 ? 12 : hour % 12;
+      const labelMinute = minute === 0 ? "00" : "30";
+      const period = hour < 12 ? "AM" : "PM";
+
+      options.push({ value, label: `${labelHour}:${labelMinute} ${period}` });
+    }
+  }
+
+  return options;
+};
+
+const TIME_OPTIONS = buildTimeOptions();
+
+// Map backend field names to friendly field names
+const FIELD_ERROR_MAP = {
+  phone: "Phone Number",
+  email: "Email Address",
+  password: "Password",
+  userName: "Username",
+  fullName: "Full Name",
+  confirmPassword: "Confirm Password",
+  role: "Role",
+};
+
+// Parse backend validation errors and convert to readable messages
+const parseBackendErrors = (errorResponse) => {
+  const errors = errorResponse?.response?.data?.errors;
+  if (!errors || typeof errors !== "object") {
+    return null;
+  }
+
+  const messages = [];
+  Object.entries(errors).forEach(([field, fieldErrors]) => {
+    const fieldName = FIELD_ERROR_MAP[field] || field;
+    if (Array.isArray(fieldErrors)) {
+      fieldErrors.forEach((error) => {
+        messages.push(`${fieldName}: ${error}`);
+      });
+    } else if (typeof fieldErrors === "string") {
+      messages.push(`${fieldName}: ${fieldErrors}`);
+    }
+  });
+
+  return messages.length > 0 ? messages.join(" | ") : null;
+};
+
 function Register({ setIsLogin, setSuccessMsg }) {
   const [role, setRole] = useState("Patient");
+  const [generalError, setGeneralError] = useState("");
   const {
     register,
     handleSubmit,
@@ -57,15 +113,15 @@ function Register({ setIsLogin, setSuccessMsg }) {
   });
 
   const submitRoleDetails = async (values) => {
-    const loginData = await loginAccount({
-      email: values.email,
-      password: values.password,
-    });
-    storeAuthTokens(loginData ?? {});
-
     try {
+      const loginData = await loginAccount({
+        email: values.email?.trim().toLowerCase(),
+        password: values.password,
+      });
+      storeAuthTokens(loginData ?? {});
+
       if (role === "Patient") {
-        await updateMyPatientProfile({
+        await updateMyProfile({
           birthDate: values.birthDate || null,
           gender: values.gender || null,
         });
@@ -77,6 +133,17 @@ function Register({ setIsLogin, setSuccessMsg }) {
         availableFrom: values.availableFrom,
         availableTo: values.availableTo,
       });
+    } catch (err) {
+      // If email confirmation is required, just skip role details for now
+      // User will complete it after confirming their email
+      if (
+        err?.response?.data?.message?.includes("confirm") ||
+        err?.response?.data?.message?.includes("email")
+      ) {
+        console.log("Email confirmation required - skipping role details");
+        return;
+      }
+      throw err;
     } finally {
       clearAuthTokens();
     }
@@ -84,25 +151,40 @@ function Register({ setIsLogin, setSuccessMsg }) {
 
   const onSubmit = async (values) => {
     clearError();
+    setGeneralError("");
 
     try {
-      await submitRegistration({
-        fullName: values.fullName,
-        userName: values.userName,
-        email: values.email,
-        phone: values.phone,
+      // Validate phone format before sending
+      const phoneDigits = values.phone?.replace(/\D/g, "") || "";
+      if (phoneDigits.length < 8 || phoneDigits.length > 15) {
+        return;
+      }
+
+      // Trim whitespace and prepare payload
+      const payload = {
+        fullName: values.fullName?.trim(),
+        userName: values.userName?.trim(),
+        email: values.email?.trim().toLowerCase(),
+        phone: values.phone?.trim(),
         password: values.password,
         confirmPassword: values.confirmPassword,
         role,
-      });
+      };
 
-      let successMessage = "Registration successful! Please log in.";
+      // Log payload for debugging
+      console.log("Registration payload:", payload);
+
+      await submitRegistration(payload);
+      console.log("Registration successful!");
+
+      let successMessage =
+        "✓ Registration successful! Please check your email to confirm your account before logging in.";
 
       try {
         await submitRoleDetails(values);
       } catch {
         successMessage =
-          "Registration successful, but profile details could not be saved now. You can complete them later.";
+          "✓ Registration successful! Please check your email to confirm your account before logging in.\n(Profile details can be completed later)";
       }
 
       reset();
@@ -111,15 +193,21 @@ function Register({ setIsLogin, setSuccessMsg }) {
       window.setTimeout(() => {
         setIsLogin(true);
         setSuccessMsg(null);
-      }, 2500);
-    } catch {
+      }, 4000);
+    } catch (err) {
+      // Try to parse backend validation errors
+      const backendErrors = parseBackendErrors(err);
+      if (backendErrors) {
+        setGeneralError(backendErrors);
+        console.error("Backend validation errors:", backendErrors);
+      }
       return;
     }
   };
 
   return (
     <div>
-      <AuthAlert message={error} type="error" />
+      <AuthAlert message={error || generalError} type="error" />
 
       <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-2 gap-4">
@@ -182,6 +270,26 @@ function Register({ setIsLogin, setSuccessMsg }) {
               value: 8,
               message: "Phone number must be at least 8 digits",
             },
+            maxLength: {
+              value: 15,
+              message: "Phone number must not exceed 15 digits",
+            },
+            pattern: {
+              value: /^[0-9+\-\s()]*$/,
+              message:
+                "Phone number contains invalid characters (only 0-9, +, -, spaces, and parentheses allowed)",
+            },
+            validate: (value) => {
+              if (!value) return true;
+              const digitsOnly = value.replace(/\D/g, "");
+              if (digitsOnly.length < 8) {
+                return "Phone number must contain at least 8 digits";
+              }
+              if (digitsOnly.length > 15) {
+                return "Phone number must not exceed 15 digits";
+              }
+              return true;
+            },
           })}
         />
 
@@ -206,7 +314,9 @@ function Register({ setIsLogin, setSuccessMsg }) {
                 onChange={() => setRole("Patient")}
               />
               <FaPerson
-                className={role === "Patient" ? "text-primary" : "text-slate-400"}
+                className={
+                  role === "Patient" ? "text-primary" : "text-slate-400"
+                }
               />
               <span
                 className={`text-sm font-bold ${
@@ -232,7 +342,9 @@ function Register({ setIsLogin, setSuccessMsg }) {
                 onChange={() => setRole("Herbalist")}
               />
               <MdLocalLibrary
-                className={role === "Herbalist" ? "text-primary" : "text-slate-400"}
+                className={
+                  role === "Herbalist" ? "text-primary" : "text-slate-400"
+                }
               />
               <span
                 className={`text-sm font-bold ${
@@ -303,32 +415,63 @@ function Register({ setIsLogin, setSuccessMsg }) {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <AuthInput
-                label="Available From"
-                type="time"
-                error={errors.availableFrom?.message}
-                {...register("availableFrom", {
-                  required: "Start time is required",
-                })}
-              />
-              <AuthInput
-                label="Available To"
-                type="time"
-                error={errors.availableTo?.message}
-                {...register("availableTo", {
-                  required: "End time is required",
-                  validate: (value) => {
-                    if (!value || !availableFrom) {
-                      return true;
-                    }
+              <div>
+                <label className="mb-2 block text-sm font-bold text-slate-700">
+                  Available From
+                </label>
+                <select
+                  className="block w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                  {...register("availableFrom", {
+                    required: "Start time is required",
+                  })}
+                >
+                  <option value="">Select start time</option>
+                  {TIME_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                {errors.availableFrom?.message ? (
+                  <p className="mt-2 text-xs font-semibold text-red-500">
+                    {errors.availableFrom.message}
+                  </p>
+                ) : null}
+              </div>
 
-                    return (
-                      value > availableFrom ||
-                      "Available to time must be after available from time"
-                    );
-                  },
-                })}
-              />
+              <div>
+                <label className="mb-2 block text-sm font-bold text-slate-700">
+                  Available To
+                </label>
+                <select
+                  className="block w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                  {...register("availableTo", {
+                    required: "End time is required",
+                    validate: (value) => {
+                      if (!value || !availableFrom) {
+                        return true;
+                      }
+
+                      return (
+                        value > availableFrom ||
+                        "Available to time must be after available from time"
+                      );
+                    },
+                  })}
+                >
+                  <option value="">Select end time</option>
+                  {TIME_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                {errors.availableTo?.message ? (
+                  <p className="mt-2 text-xs font-semibold text-red-500">
+                    {errors.availableTo.message}
+                  </p>
+                ) : null}
+              </div>
             </div>
           </div>
         )}
@@ -340,12 +483,23 @@ function Register({ setIsLogin, setSuccessMsg }) {
             placeholder="••••••••"
             autoComplete="new-password"
             inputClassName="font-sans"
+            isPassword={true}
             error={errors.password?.message}
             {...register("password", {
               required: "Password is required",
               minLength: {
                 value: 8,
                 message: "Password must be at least 8 characters",
+              },
+              validate: (value) => {
+                if (!value) return true;
+                if (!/[A-Z]/.test(value))
+                  return "Password must contain at least one uppercase letter";
+                if (!/[a-z]/.test(value))
+                  return "Password must contain at least one lowercase letter";
+                if (!/[0-9]/.test(value))
+                  return "Password must contain at least one number";
+                return true;
               },
             })}
           />
@@ -355,6 +509,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
             placeholder="••••••••"
             autoComplete="new-password"
             inputClassName="font-sans"
+            isPassword={true}
             error={errors.confirmPassword?.message}
             {...register("confirmPassword", {
               required: "Please confirm your password",

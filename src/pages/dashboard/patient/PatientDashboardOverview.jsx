@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion as Motion } from "motion/react";
 import PatientAddressCard from "../../../components/patient/PatientAddressCard";
 import PatientDashboardState from "../../../components/patient/PatientDashboardState";
 import PatientMedicalSummary from "../../../components/patient/PatientMedicalSummary";
@@ -69,7 +69,7 @@ function PatientDashboardOverview({
   const { profile } = dashboardData;
 
   return (
-    <motion.div
+    <Motion.div
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -81,7 +81,7 @@ function PatientDashboardOverview({
         <PatientMedicalSummary profile={profile} />
         <PatientAddressCard profile={profile} />
       </section>
-    </motion.div>
+    </Motion.div>
   );
 }
 

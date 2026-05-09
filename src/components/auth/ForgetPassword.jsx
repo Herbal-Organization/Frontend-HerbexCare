@@ -98,12 +98,23 @@ function ForgetPassword() {
             autoComplete="new-password"
             icon={<FaLock />}
             inputClassName="font-sans"
+            isPassword={true}
             error={errors.newPassword?.message}
             {...register("newPassword", {
               required: "New password is required",
               minLength: {
                 value: 8,
                 message: "New password must be at least 8 characters",
+              },
+              validate: (value) => {
+                if (!value) return true;
+                if (!/[A-Z]/.test(value))
+                  return "Password must contain at least one uppercase letter";
+                if (!/[a-z]/.test(value))
+                  return "Password must contain at least one lowercase letter";
+                if (!/[0-9]/.test(value))
+                  return "Password must contain at least one number";
+                return true;
               },
             })}
           />
@@ -115,6 +126,7 @@ function ForgetPassword() {
             autoComplete="new-password"
             icon={<FaLock />}
             inputClassName="font-sans"
+            isPassword={true}
             error={errors.confirmNewPassword?.message}
             {...register("confirmNewPassword", {
               required: "Please confirm your new password",

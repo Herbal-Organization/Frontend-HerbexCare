@@ -10,6 +10,31 @@ export const getOrderById = async (orderId) => {
   return data;
 };
 
+// Fetch complete order with items - if items are missing, try to get them
+export const getOrderByIdWithItems = async (orderId) => {
+  try {
+    const order = await getOrderById(orderId);
+
+    // If order has no items but has a totalCost, log it for debugging
+    const hasItems =
+      (Array.isArray(order.herbs) && order.herbs.length > 0) ||
+      (Array.isArray(order.recipes) && order.recipes.length > 0) ||
+      (Array.isArray(order.aiRecipes) && order.aiRecipes.length > 0) ||
+      (Array.isArray(order.subOrders) && order.subOrders.length > 0);
+
+    if (!hasItems && order.totalCost > 0) {
+      console.warn(
+        `[OrderAPI] Order ${orderId} has no items but has totalCost: ${order.totalCost}. This may be a data loading issue.`,
+      );
+    }
+
+    return order;
+  } catch (err) {
+    console.error(`[OrderAPI] Failed to fetch order ${orderId}:`, err);
+    throw err;
+  }
+};
+
 export const createOrder = async (orderPayload) => {
   const { data } = await httpClient.post("/api/Orders/create", orderPayload);
   return data;

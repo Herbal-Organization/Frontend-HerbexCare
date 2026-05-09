@@ -50,7 +50,18 @@ export const CartProvider = ({ children }) => {
 
       if (existingIdx !== -1) {
         const updatedHerbs = [...prev.herbs];
-        updatedHerbs[existingIdx].quantityPerGram += herbItem.quantityPerGram;
+        const nextQuantity =
+          Number(updatedHerbs[existingIdx].quantityPerGram || 0) +
+          Number(herbItem.quantityPerGram || 0);
+        updatedHerbs[existingIdx] = {
+          ...updatedHerbs[existingIdx],
+          ...herbItem,
+          quantityPerGram: nextQuantity,
+          totalPrice:
+            (Number(herbItem.pricePerKilo || updatedHerbs[existingIdx].pricePerKilo || 0) *
+              nextQuantity) /
+            1000,
+        };
         return { ...prev, herbs: updatedHerbs };
       }
 

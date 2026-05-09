@@ -11,8 +11,17 @@ export default function useHerbs() {
     try {
       setIsLoading(true);
       setError(null);
-      const data = await getAllHerbs();
-      const normalizedHerbs = Array.isArray(data) ? data.map(normalizeHerb) : [];
+      const response = await getAllHerbs(1, 1000); // Fetch up to 1000 items
+
+      // Handle both array and paginated response formats
+      let herbsData = [];
+      if (Array.isArray(response)) {
+        herbsData = response;
+      } else if (response?.items && Array.isArray(response.items)) {
+        herbsData = response.items;
+      }
+
+      const normalizedHerbs = herbsData.map(normalizeHerb);
 
       const herbsWithOwners = await Promise.all(
         normalizedHerbs.map(async (herb) => {

@@ -2,7 +2,7 @@ import { formatCurrency, getHerbTotal, getRecipeTotal } from "./cartUtils";
 
 function SummaryRows({ herbs, recipes }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 rounded-3xl bg-slate-50/70 p-4">
       {herbs.length > 0 && (
         <div className="border-b border-slate-100 pb-4">
           <p className="mb-3 text-xs font-bold uppercase tracking-widest text-slate-400">
@@ -12,9 +12,9 @@ function SummaryRows({ herbs, recipes }) {
             {herbs.map((herb, index) => (
               <div
                 key={`summary-${herb.herbId ?? index}`}
-                className="flex justify-between gap-2 text-slate-700"
+                className="flex flex-col gap-1 text-slate-700 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
               >
-                <span className="max-w-[70%] truncate font-medium">
+                <span className="min-w-0 max-w-full truncate font-medium sm:max-w-[70%]">
                   {herb._previewName} ({herb.quantityPerGram}g)
                 </span>
                 <span className="whitespace-nowrap font-bold text-emerald-600">
@@ -35,9 +35,9 @@ function SummaryRows({ herbs, recipes }) {
             {recipes.map((recipe, index) => (
               <div
                 key={`recipe-summary-${recipe.recipeId ?? index}`}
-                className="flex justify-between gap-2 text-slate-700"
+                className="flex flex-col gap-1 text-slate-700 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
               >
-                <span className="max-w-[70%] truncate font-medium">
+                <span className="min-w-0 max-w-full truncate font-medium sm:max-w-[70%]">
                   {recipe._previewName} (x{recipe.quantity})
                 </span>
                 <span className="whitespace-nowrap font-bold text-emerald-600">

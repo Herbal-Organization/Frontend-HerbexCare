@@ -14,3 +14,8 @@ export const updateSubOrderStatus = async (id, payload) => {
   const { data } = await httpClient.put(`/api/SubOrders/${id}/status`, payload);
   return data;
 };
+
+export const getMyFinancials = async () => {
+  const { data } = await httpClient.get("/api/SubOrders/my-financials");
+  return data;
+};

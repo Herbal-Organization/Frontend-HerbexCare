@@ -4,9 +4,8 @@ import { BrowserRouter } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import "./index.css";
 import "react-loading-skeleton/dist/skeleton.css";
+import "./i18n/config.js"; // Initialize i18n
 import App from "./App.jsx";
-
-import "./config/i18n.js"
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

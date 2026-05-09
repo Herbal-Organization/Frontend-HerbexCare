@@ -21,12 +21,26 @@ const getErrorMessage = (error, fallbackMessage = DEFAULT_ERROR_MESSAGE) => {
     return responseData.title;
   }
 
+  // Handle validation errors from .NET API
+  if (responseData?.errors && typeof responseData.errors === "object") {
+    const errorMessages = Object.values(responseData.errors)
+      .flat()
+      .filter((msg) => typeof msg === "string")
+      .join("; ");
+    if (errorMessages) {
+      return errorMessages;
+    }
+  }
+
   return fallbackMessage;
 };
 
 function useAsyncAction(action, options = {}) {
-  const { onSuccess, onError, defaultErrorMessage = DEFAULT_ERROR_MESSAGE } =
-    options;
+  const {
+    onSuccess,
+    onError,
+    defaultErrorMessage = DEFAULT_ERROR_MESSAGE,
+  } = options;
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 

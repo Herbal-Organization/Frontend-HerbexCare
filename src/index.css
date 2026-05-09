@@ -5,6 +5,7 @@
   --color-primary-hover: #047857; /* Emerald 700 */
   --color-primary-light: #d1fae5; /* Emerald 100 */
   --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-ar: "Rubik", ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -16,5 +17,9 @@
     background-color: #fafafa;
     color: #1e293b;
     -webkit-font-smoothing: antialiased;
+  }
+
+  html[lang="ar"] body {
+    font-family: var(--font-ar);
   }
 }

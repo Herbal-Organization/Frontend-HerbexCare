@@ -4,9 +4,11 @@ import {
   MdDashboard,
   MdLocalFlorist,
   MdMenuBook,
+  MdBiotech,
   MdInventory,
   MdShoppingCart,
   MdPerson,
+  MdLogout,
 } from "react-icons/md";
 
 function Sidebar({ currentPath, onNavigate, user, onLogout, ordersCount }) {
@@ -14,6 +16,7 @@ function Sidebar({ currentPath, onNavigate, user, onLogout, ordersCount }) {
     { name: "Dashboard", href: "/herbalist/dashboard" },
     { name: "Manage Herbs", href: "/herbalist/dashboard/herbs" },
     { name: "Manage Recipes", href: "/herbalist/dashboard/recipes" },
+    { name: "Manage Diseases", href: "/herbalist/dashboard/diseases" },
     { name: "Inventory", href: "/herbalist/dashboard/inventory" },
     {
       name: "Orders",
@@ -69,6 +72,9 @@ function Sidebar({ currentPath, onNavigate, user, onLogout, ordersCount }) {
               {item.name === "Manage Recipes" && (
                 <MdMenuBook className="w-5 h-5" />
               )}
+              {item.name === "Manage Diseases" && (
+                <MdBiotech className="w-5 h-5" />
+              )}
               {item.name === "Inventory" && <MdInventory className="w-5 h-5" />}
               {item.name === "Orders" && <MdShoppingCart className="w-5 h-5" />}
               {item.name === "Profile" && <MdPerson className="w-5 h-5" />}
@@ -98,9 +104,10 @@ function Sidebar({ currentPath, onNavigate, user, onLogout, ordersCount }) {
           <button
             type="button"
             onClick={onLogout}
-            className="ml-auto text-slate-400 hover:text-slate-600 text-xs font-medium"
+            className="ml-auto flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-white bg-primary rounded-md shadow-md hover:bg-primary-hover hover:scale-105 transition-all duration-300 transform hover:-translate-y-0.5"
           >
-            Logout
+            <MdLogout className="w-4 h-4" />
+            <span>Logout</span>
           </button>
         </div>
       </div>

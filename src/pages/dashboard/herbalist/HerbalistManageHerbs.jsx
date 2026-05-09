@@ -1,5 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { FaLeaf, FaUpload, FaPen, FaTrash, FaCheckCircle, FaBookOpen, FaGlobe, FaPlus, FaTimes } from "react-icons/fa";
+import {
+  FaLeaf,
+  FaUpload,
+  FaPen,
+  FaTrash,
+  FaCheckCircle,
+  FaBookOpen,
+  FaGlobe,
+  FaPlus,
+  FaTimes,
+} from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "motion/react";
 import ProfileLayout from "../../../components/shared/ProfileLayout";
@@ -35,8 +45,18 @@ const getLocallyStoredHerbIds = (herbalistId) => {
 const saveLocallyStoredHerbIds = (herbalistId, ids) => {
   if (!herbalistId) return;
   try {
-    localStorage.setItem(`my_created_herbs_${herbalistId}`, JSON.stringify(ids));
+    localStorage.setItem(
+      `my_created_herbs_${herbalistId}`,
+      JSON.stringify(ids),
+    );
   } catch {}
+};
+
+const extractHerbsArray = (responseData) => {
+  if (Array.isArray(responseData)) return responseData;
+  if (Array.isArray(responseData?.items)) return responseData.items;
+  if (Array.isArray(responseData?.data)) return responseData.data;
+  return [];
 };
 
 function HerbalistManageHerbs({ user, dashboardData }) {
@@ -50,7 +70,8 @@ function HerbalistManageHerbs({ user, dashboardData }) {
   const [error, setError] = useState("");
 
   // Add to Inventory Modal States
-  const [selectedHerbForInventory, setSelectedHerbForInventory] = useState(null);
+  const [selectedHerbForInventory, setSelectedHerbForInventory] =
+    useState(null);
   const [pricePerKilo, setPricePerKilo] = useState("");
   const [isAddingToInventory, setIsAddingToInventory] = useState(false);
 
@@ -61,12 +82,16 @@ function HerbalistManageHerbs({ user, dashboardData }) {
   const imageName = useMemo(() => form.image?.name || "", [form.image]);
 
   const loadHerbs = async () => {
-    if (!herbalistId) return;
+    if (!herbalistId) {
+      setMyHerbs([]);
+      setOtherHerbs([]);
+      return;
+    }
 
     setIsLoading(true);
     try {
-      const data = await getAllHerbs();
-      const allHerbs = Array.isArray(data) ? data.map(normalizeHerb) : [];
+      const data = await getAllHerbs(1, 1000);
+      const allHerbs = extractHerbsArray(data).map(normalizeHerb);
 
       const mine = [];
       const others = [];
@@ -75,7 +100,8 @@ function HerbalistManageHerbs({ user, dashboardData }) {
 
       for (const herb of allHerbs) {
         if (
-          (herb.herbalistId && Number(herb.herbalistId) === Number(herbalistId)) ||
+          (herb.herbalistId &&
+            Number(herb.herbalistId) === Number(herbalistId)) ||
           localIds.includes(herb.herbId) ||
           localIds.includes(String(herb.herbId))
         ) {
@@ -174,14 +200,18 @@ function HerbalistManageHerbs({ user, dashboardData }) {
         resetForm();
         await loadHerbs();
       } else {
-        const oldIds = new Set([...myHerbs, ...otherHerbs].map((h) => h.herbId));
+        const oldIds = new Set(
+          [...myHerbs, ...otherHerbs].map((h) => h.herbId),
+        );
         await createHerb(payload);
         toast.success("Herb added successfully!");
 
         // Diff to assign new herb to current user
-        const newData = await getAllHerbs();
-        const allHerbsRefetched = Array.isArray(newData) ? newData.map(normalizeHerb) : [];
-        const newlyAdded = allHerbsRefetched.filter((h) => !oldIds.has(h.herbId));
+        const newData = await getAllHerbs(1, 1000);
+        const allHerbsRefetched = extractHerbsArray(newData).map(normalizeHerb);
+        const newlyAdded = allHerbsRefetched.filter(
+          (h) => !oldIds.has(h.herbId),
+        );
 
         if (newlyAdded.length > 0) {
           const stored = getLocallyStoredHerbIds(herbalistId);
@@ -207,7 +237,11 @@ function HerbalistManageHerbs({ user, dashboardData }) {
   };
 
   const handleDelete = async (herbId, herbName) => {
-    if (!window.confirm(`Are you sure you want to delete "${herbName}"? This action cannot be undone.`)) {
+    if (
+      !window.confirm(
+        `Are you sure you want to delete "${herbName}"? This action cannot be undone.`,
+      )
+    ) {
       return;
     }
     setIsDeleting(true);
@@ -255,7 +289,9 @@ function HerbalistManageHerbs({ user, dashboardData }) {
         herbId: selectedHerbForInventory.herbId || selectedHerbForInventory.id,
         pricePerKilo: parsedPrice,
       });
-      toast.success(`${selectedHerbForInventory.herbName} added to your inventory!`);
+      toast.success(
+        `${selectedHerbForInventory.herbName} added to your inventory!`,
+      );
       closeInventoryModal();
     } catch (err) {
       const message =
@@ -281,7 +317,11 @@ function HerbalistManageHerbs({ user, dashboardData }) {
         <div className="flex items-start gap-4">
           <div className="h-14 w-14 rounded-2xl overflow-hidden shrink-0 bg-slate-50 border border-slate-100 flex items-center justify-center">
             {herb.imageURL ? (
-              <img src={herb.imageURL} alt={herb.herbName} className="object-cover w-full h-full" />
+              <img
+                src={herb.imageURL}
+                alt={herb.herbName}
+                className="object-cover w-full h-full"
+              />
             ) : (
               <FaLeaf className="text-emerald-200/50 text-2xl" />
             )}
@@ -326,7 +366,7 @@ function HerbalistManageHerbs({ user, dashboardData }) {
             onClick={() => openInventoryModal(herb)}
             className="w-full relative overflow-hidden flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition-all hover:bg-slate-800 hover:shadow-lg hover:-translate-y-0.5 focus:ring-4 focus:ring-slate-900/20"
           >
-            <FaBookOpen className="text-xs text-emerald-400" /> 
+            <FaBookOpen className="text-xs text-emerald-400" />
             Add to Inventory
           </button>
         </div>
@@ -336,7 +376,6 @@ function HerbalistManageHerbs({ user, dashboardData }) {
 
   return (
     <div className="space-y-12 relative min-h-screen">
-      
       {/* Creation/Edit Form Section */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -348,11 +387,12 @@ function HerbalistManageHerbs({ user, dashboardData }) {
             Registry Configuration
           </h1>
           <p className="text-lg text-slate-500 font-medium">
-            Draft, edit, and formulate proprietary blends for your active catalog.
+            Draft, edit, and formulate proprietary blends for your active
+            catalog.
           </p>
         </div>
 
-        <motion.div 
+        <motion.div
           layout
           className="overflow-hidden rounded-[2rem] border border-white/60 bg-white/60 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-2xl"
         >
@@ -384,14 +424,14 @@ function HerbalistManageHerbs({ user, dashboardData }) {
             {editingHerbId ? (
               <div className="mb-6 flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50/80 backdrop-blur-sm px-6 py-5 text-sm shadow-sm">
                 <span className="font-bold flex items-center gap-2 text-emerald-800 tracking-wide">
-                  <FaPen className="text-emerald-500" /> Active Edit Session 
+                  <FaPen className="text-emerald-500" /> Active Edit Session
                 </span>
                 <button
                   type="button"
                   onClick={resetForm}
                   className="font-bold text-emerald-600 flex items-center gap-2 bg-white px-4 py-2 rounded-xl shadow-sm border border-emerald-100 transition-all hover:bg-emerald-500 hover:text-white"
                 >
-                  <FaTimes /> Override & Cancel 
+                  <FaTimes /> Override & Cancel
                 </button>
               </div>
             ) : null}
@@ -519,7 +559,11 @@ function HerbalistManageHerbs({ user, dashboardData }) {
                 ) : (
                   <>
                     <FaCheckCircle className="text-emerald-400" />
-                    <span>{editingHerbId ? "Finalize Edits" : "Deploy Configuration"}</span>
+                    <span>
+                      {editingHerbId
+                        ? "Finalize Edits"
+                        : "Deploy Configuration"}
+                    </span>
                   </>
                 )}
               </button>
@@ -529,19 +573,20 @@ function HerbalistManageHerbs({ user, dashboardData }) {
           </form>
         </motion.div>
       </motion.div>
-      
+
       {/* My Herbs Section */}
       <section className="relative z-10">
         <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl font-extrabold text-slate-900 flex items-center gap-3">
-               <div className="p-2 bg-emerald-100 text-emerald-600 rounded-xl shadow-inner">
-                 <FaCheckCircle className="text-xl" />
-               </div>
-               My Managed Herbs
+              <div className="p-2 bg-emerald-100 text-emerald-600 rounded-xl shadow-inner">
+                <FaCheckCircle className="text-xl" />
+              </div>
+              My Managed Herbs
             </h2>
             <p className="mt-2 text-sm text-slate-500 max-w-lg leading-relaxed">
-              Herbs natively configured and managed by you. You retain full editing privileges over their details.
+              Herbs natively configured and managed by you. You retain full
+              editing privileges over their details.
             </p>
           </div>
           {myHerbs.length > 0 && (
@@ -553,17 +598,20 @@ function HerbalistManageHerbs({ user, dashboardData }) {
 
         {isLoading ? (
           <div className="py-12 flex justify-center">
-             <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-500/30 border-t-emerald-500" />
+            <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-500/30 border-t-emerald-500" />
           </div>
         ) : myHerbs.length === 0 ? (
           <div className="py-16 text-center rounded-[3rem] border-2 border-dashed border-slate-200 bg-slate-50">
             <FaLeaf className="mx-auto text-4xl text-slate-300 mb-4" />
             <p className="text-lg font-bold text-slate-600">No Custom Herbs</p>
-            <p className="text-sm text-slate-500 mt-1 max-w-sm mx-auto">You have not created any proprietary herbs. Use the form above to deploy your initial formulas.</p>
+            <p className="text-sm text-slate-500 mt-1 max-w-sm mx-auto">
+              You have not created any proprietary herbs. Use the form above to
+              deploy your initial formulas.
+            </p>
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 xlg:grid-cols-3">
-             {myHerbs.map((herb) => renderHerbCard(herb, true))}
+            {myHerbs.map((herb) => renderHerbCard(herb, true))}
           </div>
         )}
       </section>
@@ -573,14 +621,15 @@ function HerbalistManageHerbs({ user, dashboardData }) {
         <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl font-extrabold text-slate-900 flex items-center gap-3">
-               <div className="p-2 bg-indigo-100 text-indigo-600 rounded-xl shadow-inner">
-                 <FaGlobe className="text-xl" />
-               </div>
-               Global Registry
+              <div className="p-2 bg-indigo-100 text-indigo-600 rounded-xl shadow-inner">
+                <FaGlobe className="text-xl" />
+              </div>
+              Global Registry
             </h2>
             <p className="mt-2 text-sm text-slate-500 max-w-lg leading-relaxed">
-              Standardized herbs deployed by the central medical board or other practitioners. 
-              Review the catalog and instantly import items to your inventory.
+              Standardized herbs deployed by the central medical board or other
+              practitioners. Review the catalog and instantly import items to
+              your inventory.
             </p>
           </div>
           {otherHerbs.length > 0 && (
@@ -592,15 +641,17 @@ function HerbalistManageHerbs({ user, dashboardData }) {
 
         {isLoading ? (
           <div className="py-12 flex justify-center">
-             <div className="h-10 w-10 animate-spin rounded-full border-4 border-indigo-500/30 border-t-indigo-500" />
+            <div className="h-10 w-10 animate-spin rounded-full border-4 border-indigo-500/30 border-t-indigo-500" />
           </div>
         ) : otherHerbs.length === 0 ? (
           <div className="py-16 text-center rounded-[3rem] border-2 border-dashed border-slate-200 bg-slate-50">
-            <p className="text-sm font-semibold text-slate-500">Global registry is currently empty.</p>
+            <p className="text-sm font-semibold text-slate-500">
+              Global registry is currently empty.
+            </p>
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 xlg:grid-cols-3 opacity-90 transition-opacity hover:opacity-100">
-             {otherHerbs.map((herb) => renderHerbCard(herb, false))}
+            {otherHerbs.map((herb) => renderHerbCard(herb, false))}
           </div>
         )}
       </section>
@@ -608,20 +659,22 @@ function HerbalistManageHerbs({ user, dashboardData }) {
       {/* Inventory Modal Focus Box */}
       <AnimatePresence>
         {selectedHerbForInventory && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-md"
           >
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
               className="w-full max-w-md overflow-hidden rounded-[2.5rem] bg-white shadow-2xl"
             >
               <div className="flex items-center justify-between border-b border-slate-100 px-8 py-5 bg-slate-50/50">
-                <h3 className="text-xl font-extrabold text-slate-900">Push to Inventory</h3>
+                <h3 className="text-xl font-extrabold text-slate-900">
+                  Push to Inventory
+                </h3>
                 <button
                   type="button"
                   onClick={closeInventoryModal}
@@ -631,7 +684,7 @@ function HerbalistManageHerbs({ user, dashboardData }) {
                   <FaTimes />
                 </button>
               </div>
-              
+
               <form onSubmit={handleAddToInventory} className="p-8">
                 <div className="mb-6 rounded-3xl bg-emerald-50/50 p-5 border border-emerald-100/50">
                   <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-emerald-600/70">
@@ -650,7 +703,9 @@ function HerbalistManageHerbs({ user, dashboardData }) {
                     Selling Price / Kg
                   </label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-extrabold text-slate-400">EGP</span>
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-extrabold text-slate-400">
+                      EGP
+                    </span>
                     <input
                       autoFocus
                       type="number"
@@ -672,9 +727,12 @@ function HerbalistManageHerbs({ user, dashboardData }) {
                     className="group flex w-full h-14 items-center justify-center gap-2 rounded-2xl bg-slate-900 font-bold text-white shadow-[0_8px_20px_rgb(15,23,42,0.2)] transition-all hover:-translate-y-0.5 hover:bg-slate-800 disabled:pointer-events-none disabled:opacity-50"
                   >
                     {isAddingToInventory ? (
-                       <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-white"></div>
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-white"></div>
                     ) : (
-                       <><FaPlus className="text-xs text-emerald-400" /> Confirm Listing Deployment</>
+                      <>
+                        <FaPlus className="text-xs text-emerald-400" /> Confirm
+                        Listing Deployment
+                      </>
                     )}
                   </button>
                   <button

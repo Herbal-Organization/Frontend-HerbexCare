@@ -12,7 +12,7 @@ export const getAllReviewAIRecipe = async (id) => {
   return data;
 };
 
-export const addReviewAIRecipe = async (id) => {
+export const addReviewAIRecipe = async (payload, id) => {
   const { data } = await httpClient.post(
     `/api/ai-recipe/${id}/reviews/submit`,
     payload,

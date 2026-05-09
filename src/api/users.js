@@ -6,7 +6,7 @@ export const getAllUsers = async () => {
 };
 
 export const getUserById = async (id) => {
-  const { data } = await httpClient.get(`/api/Users/get-by-id/${id}`);
+  const { data } = await httpClient.get(`/api/Users/get/${id}`);
   return data;
 };
 

@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  deleteMyRecipeReview,
-  getMyRecipeReview,
-  getRecipeReviews,
-  submitRecipeReview,
-} from "../api/recipes";
+  deleteMyRecipeFeedback as deleteMyRecipeReview,
+  getMyRecipeFeedback as getMyRecipeReview,
+  getRecipeFeedbacks as getRecipeReviews,
+  submitRecipeFeedback as submitRecipeReview,
+} from "../api/feedbacks";
 
 const normalizeReview = (review, fallbackKey) => ({
   id:

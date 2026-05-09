@@ -1,6 +1,10 @@
 import { FaBrain, FaSpinner, FaStethoscope } from "react-icons/fa";
-import { useTranslation } from "react-i18next";
-import { FORM_FIELDS, SYMPTOMS_LIST } from "./aiConsultationConfig";
+import {
+  FORM_FIELDS,
+  SYMPTOMS_LIST,
+  MEDICAL_HISTORY_FIELDS,
+  getInputPlaceholder,
+} from "./aiConsultationConfig";
 
 function AiConsultationForm({
   form,
@@ -8,11 +12,15 @@ function AiConsultationForm({
   error,
   selectedSymptoms,
   onChange,
+  onCheckboxChange,
   onSymptomToggle,
   onSubmit,
   onReset,
 }) {
-  const { t } = useTranslation();
+  const demographicsFields = FORM_FIELDS.filter(
+    (f) => f.section === "demographics",
+  );
+  const vitalsFields = FORM_FIELDS.filter((f) => f.section === "vitals");
 
   return (
     <form
@@ -20,7 +28,7 @@ function AiConsultationForm({
       className="rounded-4xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"
     >
       <h2 className="mb-6 flex items-center gap-2 text-lg font-extrabold text-slate-900">
-        <FaStethoscope /> Clinical Inputs
+        <FaStethoscope /> Patient Consultation
       </h2>
 
       {error ? (
@@ -29,57 +37,126 @@ function AiConsultationForm({
         </div>
       ) : null}
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {FORM_FIELDS.map((field) => (
-          <label key={field.key} className="space-y-1.5">
-            <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
-              {t(field.labelKey, { defaultValue: field.label })}
-            </span>
-            <input
-              type="number"
-              min={field.min}
-              max={field.max}
-              step={field.step}
-              value={form[field.key]}
-              onChange={(event) => onChange(field.key, event.target.value)}
-              disabled={isSubmitting}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-900 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100"
-            />
-          </label>
-        ))}
+      {/* Demographics Section */}
+      <div className="mb-6">
+        <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-slate-500">
+          Info
+        </h3>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {demographicsFields.map((field) => (
+            <label key={field.key} className="space-y-1.5">
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                {field.label}
+              </span>
+              {field.type === "select" ? (
+                <select
+                  value={form[field.key]}
+                  onChange={(event) => onChange(field.key, event.target.value)}
+                  disabled={isSubmitting}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-900 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100"
+                >
+                  <option value="">Select {field.label}</option>
+                  {field.options?.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type="number"
+                  min={field.min}
+                  max={field.max}
+                  step={field.step}
+                  placeholder={getInputPlaceholder(field.key)}
+                  value={form[field.key]}
+                  onChange={(event) => onChange(field.key, event.target.value)}
+                  disabled={isSubmitting}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-900 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100"
+                />
+              )}
+            </label>
+          ))}
+        </div>
       </div>
 
-      <div className="mt-6 block">
+      {/* Medical History Section */}
+      <div className="mb-6">
+        <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-slate-500">
+          Medical History
+        </h3>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {MEDICAL_HISTORY_FIELDS.map((field) => (
+            <label key={field.key} className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={form[field.key] || false}
+                onChange={(event) =>
+                  onCheckboxChange(field.key, event.target.checked)
+                }
+                disabled={isSubmitting}
+                className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-2 focus:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+              />
+              <span className="text-sm font-medium text-slate-700">
+                {field.label}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Vital Signs Section */}
+      <div className="mb-6">
+        <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-slate-500">
+          Vital Signs
+        </h3>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {vitalsFields.map((field) => (
+            <label key={field.key} className="space-y-1.5">
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                {field.label}
+              </span>
+              <input
+                type="number"
+                min={field.min}
+                max={field.max}
+                step={field.step}
+                placeholder={getInputPlaceholder(field.key)}
+                value={form[field.key]}
+                onChange={(event) => onChange(field.key, event.target.value)}
+                disabled={isSubmitting}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-900 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-100"
+              />
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Symptoms Section */}
+      <div className="mb-6">
         <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-slate-500">
           Select Symptoms
         </h3>
         <div className="grid gap-3 sm:grid-cols-2">
-          {SYMPTOMS_LIST.map((symptom) => {
-            const translatedSymptom = t(
-              `aiConsultation.form.symptoms.${symptom}`,
-              { defaultValue: symptom },
-            );
-            return (
-              <label key={symptom} className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={selectedSymptoms.includes(symptom)}
-                  onChange={() => onSymptomToggle(symptom)}
-                  disabled={isSubmitting}
-                  className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-2 focus:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
-                />
-                <span className="text-sm font-medium text-slate-700">
-                  {translatedSymptom}
-                </span>
-              </label>
-            );
-          })}
+          {SYMPTOMS_LIST.map((symptom) => (
+            <label key={symptom} className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={selectedSymptoms.includes(symptom)}
+                onChange={() => onSymptomToggle(symptom)}
+                disabled={isSubmitting}
+                className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-2 focus:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+              />
+              <span className="text-sm font-medium text-slate-700">
+                {symptom}
+              </span>
+            </label>
+          ))}
         </div>
+        <p className="mt-3 text-xs font-semibold text-slate-500">
+          Selected symptoms: {selectedSymptoms.length}
+        </p>
       </div>
-
-      <p className="mt-4 text-xs font-semibold text-slate-500">
-        Selected symptoms: {selectedSymptoms.length}
-      </p>
 
       <div className="mt-6 flex flex-wrap gap-3">
         <button
@@ -88,7 +165,7 @@ function AiConsultationForm({
           className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isSubmitting ? <FaSpinner className="animate-spin" /> : <FaBrain />}
-          {isSubmitting ? "Generating..." : "Generate Consultation"}
+          {isSubmitting ? "Generating..." : "Generate Recipe"}
         </button>
 
         <button

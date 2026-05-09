@@ -1,4 +1,4 @@
-import { getUserById } from "../api/patients";
+import { getUserById } from "../api/users";
 import {
   getMyHerbalistProfile,
   updateMyHerbalistProfile,
@@ -36,13 +36,11 @@ const formatTimeForApi = (value) => {
   const normalizedValue = normalizeTime(value);
 
   if (!normalizedValue) {
-    // Some backends reject null for time fields; send explicit zero time instead
-    return "00:00:00";
+    return null;
   }
 
   return `${normalizedValue}:00`;
 };
-
 const getStoredHerbalistProfile = () => {
   try {
     const rawValue = localStorage.getItem(HERBALIST_PROFILE_STORAGE_KEY);
@@ -145,7 +143,7 @@ export const getHerbalistDashboardData = async (userId) => {
 
 export const saveHerbalistProfile = async (profile) => {
   const payload = {
-    bio: profile.bio?.trim() || "",
+    bio: profile.bio?.trim() || null,
     availableFrom: formatTimeForApi(profile.availableFrom),
     availableTo: formatTimeForApi(profile.availableTo),
   };

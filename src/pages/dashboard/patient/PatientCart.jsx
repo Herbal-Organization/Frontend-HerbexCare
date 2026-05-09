@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../../context/CartContext";
-import { createOrder, getMyOrders } from "../../../api/orders";
+import { createOrder, getAllMyOrders } from "../../../api/orders";
+import { getUserFromToken } from "../../../utils/auth";
 import CartPageHeader from "./cart-page/CartPageHeader";
 import EmptyCartState from "./cart-page/EmptyCartState";
 import CartItemsCard from "./cart-page/CartItemsCard";
@@ -129,6 +130,12 @@ function PatientCart() {
   const navigate = useNavigate();
 
   const [shippingAddress, setShippingAddress] = useState("");
+  const [contactName, setContactName] = useState(
+    () => getUserFromToken()?.name || "",
+  );
+  const [contactPhone, setContactPhone] = useState(
+    () => getUserFromToken()?.phone || "",
+  );
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -148,6 +155,7 @@ function PatientCart() {
     if (isSubmitting) return;
 
     const normalizedPaymentMethod = paymentMethod.trim().toLowerCase();
+    const currentUser = getUserFromToken() || {};
 
     const invalidHerbSelections = cart.herbs.some(
       (herb) => !herb.herbalistId || Number(herb.pricePerKilo) <= 0,
@@ -156,6 +164,16 @@ function PatientCart() {
       setError(
         "Please select a valid herbalist and price for each herb before placing the order.",
       );
+      return;
+    }
+
+    if (!contactName.trim()) {
+      setError("Please enter a contact name.");
+      return;
+    }
+
+    if (!contactPhone.trim()) {
+      setError("Please enter a contact phone number.");
       return;
     }
 
@@ -175,10 +193,16 @@ function PatientCart() {
     setError("");
 
     try {
+      const orderTotal = herbsTotal + recipesTotal;
       const herbsArray = cart.herbs.map((herb) => ({
         herbId: Number(herb.herbId) || 0,
         herbalistId: Number(herb.herbalistId) || 0,
         quantityPerGram: Number(herb.quantityPerGram) || 0,
+        unitPrice: Number(herb.pricePerKilo) || 0,
+        itemPrice: Number(herb.pricePerKilo) || 0,
+        totalPrice:
+          (Number(herb.pricePerKilo) * Number(herb.quantityPerGram || 0)) /
+          1000,
       }));
 
       const recipesArray = cart.recipes.map((recipe) => ({
@@ -187,8 +211,25 @@ function PatientCart() {
       }));
 
       const orderPayload = {
-        shippingAddress,
+        shippingAddress: shippingAddress.trim(),
+        contactName: contactName.trim(),
+        contactPhone: contactPhone.trim(),
         paymentMethod: normalizedPaymentMethod,
+        customerInformation: {
+          customerId: currentUser.userId || currentUser.id || null,
+          name: contactName.trim() || currentUser.name || "",
+          email: currentUser.email || "",
+          phone: contactPhone.trim() || currentUser.phone || "",
+        },
+        shippingDetails: {
+          address: shippingAddress.trim(),
+          contactName: contactName.trim(),
+          contactPhone: contactPhone.trim(),
+        },
+        totalPrice: orderTotal,
+        totalCost: orderTotal,
+        orderTimestamp: new Date().toISOString(),
+        status: "Pending",
       };
 
       if (herbsArray.length > 0) {
@@ -219,7 +260,7 @@ function PatientCart() {
       if (orderId === null) {
         for (let attempt = 0; attempt < 3 && orderId === null; attempt += 1) {
           try {
-            const myOrdersResponse = await getMyOrders();
+            const myOrdersResponse = await getAllMyOrders();
             const myOrders = normalizeOrdersList(myOrdersResponse);
             orderId = pickLatestOrderId(myOrders);
           } catch (_err) {
@@ -263,6 +304,11 @@ function PatientCart() {
       clearCart();
       navigate("/patient/dashboard/orders");
     } catch (err) {
+      console.error("Order creation failed:", {
+        status: err.response?.status,
+        data: err.response?.data,
+        message: err.message,
+      });
       setError(
         err.response?.data?.message ||
           err.response?.data?.error ||
@@ -275,44 +321,50 @@ function PatientCart() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-3 py-6 sm:px-6 sm:py-10 lg:px-8">
-      <CartPageHeader cartCount={cartCount} />
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+      <div className="space-y-6 sm:space-y-8">
+        <CartPageHeader cartCount={cartCount} />
 
-      {cartCount === 0 ? (
-        <EmptyCartState />
-      ) : (
-        <form
-          onSubmit={handleCheckout}
-          className="grid gap-5 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] lg:gap-8"
-        >
-          <CartItemsCard
-            herbs={cart.herbs}
-            recipes={cart.recipes}
-            onRemoveHerb={removeHerbFromCart}
-            onUpdateHerb={updateHerbQuantity}
-            onRemoveRecipe={removeRecipeFromCart}
-            onUpdateRecipe={updateRecipeQuantity}
-          />
-
-          <div className="space-y-5 lg:sticky lg:top-6 lg:self-start lg:space-y-6">
-            <OrderSummaryCard
+        {cartCount === 0 ? (
+          <EmptyCartState />
+        ) : (
+          <form
+            onSubmit={handleCheckout}
+            className="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)] xl:gap-8"
+          >
+            <CartItemsCard
               herbs={cart.herbs}
               recipes={cart.recipes}
-              herbsTotal={herbsTotal}
-              recipesTotal={recipesTotal}
+              onRemoveHerb={removeHerbFromCart}
+              onUpdateHerb={updateHerbQuantity}
+              onRemoveRecipe={removeRecipeFromCart}
+              onUpdateRecipe={updateRecipeQuantity}
             />
 
-            <CheckoutPanel
-              shippingAddress={shippingAddress}
-              paymentMethod={paymentMethod}
-              isSubmitting={isSubmitting}
-              error={error}
-              onAddressChange={setShippingAddress}
-              onPaymentChange={setPaymentMethod}
-            />
-          </div>
-        </form>
-      )}
+            <div className="space-y-5 xl:sticky xl:top-6 xl:self-start xl:space-y-6">
+              <OrderSummaryCard
+                herbs={cart.herbs}
+                recipes={cart.recipes}
+                herbsTotal={herbsTotal}
+                recipesTotal={recipesTotal}
+              />
+
+              <CheckoutPanel
+                shippingAddress={shippingAddress}
+                contactName={contactName}
+                contactPhone={contactPhone}
+                paymentMethod={paymentMethod}
+                isSubmitting={isSubmitting}
+                error={error}
+                onAddressChange={setShippingAddress}
+                onContactNameChange={setContactName}
+                onContactPhoneChange={setContactPhone}
+                onPaymentChange={setPaymentMethod}
+              />
+            </div>
+          </form>
+        )}
+      </div>
     </div>
   );
 }

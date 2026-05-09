@@ -1,18 +1,27 @@
 import httpClient from "./httpClient";
 
-export const myMedicalHistory = async () => {
-  const { data } = await httpClient.get("/api/MedicalHistory/me");
+const MEDICAL_LANG_HEADERS = {
+  "Accept-Language": "en",
+};
+
+export const getMyMedicalHistory = async () => {
+  const { data } = await httpClient.get("/api/MedicalHistories/me", {
+    headers: MEDICAL_LANG_HEADERS,
+  });
   return data;
 };
 
-export const updateMyMedicalHistory = async (payload) => {
-  const { data } = await httpClient.put("/api/MedicalHistory/me", payload);
+export const saveMyMedicalHistory = async (payload) => {
+  const { data } = await httpClient.post("/api/MedicalHistories/me", payload, {
+    headers: MEDICAL_LANG_HEADERS,
+  });
   return data;
 };
 
-export const getPatientMedicalHistory = async (patientId) => {
-  const { data } = await httpClient.get(
-    `/api/MedicalHistories/patient/${patientId}`,
-  );
+// GET: patient medical history by id
+export const getPatientMedicalHistory = async (id) => {
+  const { data } = await httpClient.get(`/api/MedicalHistories/patient/${id}`, {
+    headers: MEDICAL_LANG_HEADERS,
+  });
   return data;
 };

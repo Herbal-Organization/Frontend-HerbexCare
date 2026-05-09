@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   FaEdit,
@@ -7,15 +7,20 @@ import {
   FaDollarSign,
   FaChevronRight,
   FaTrashAlt,
-  FaSave
+  FaSearch,
+  FaSave,
 } from "react-icons/fa";
+import DiseaseSearchSelect from "../../../../components/shared/DiseaseSearchSelect";
 
 export default function RecipeForm({
   show,
   editingRecipeId,
   description,
+  setDescription,
   instructions,
+  setInstructions,
   price,
+  setPrice,
   selectedHerbs,
   selectedDiseaseIds,
   herbs,
@@ -96,7 +101,7 @@ export default function RecipeForm({
                   </label>
                   <input
                     value={description}
-                    onChange={() => {}}
+                    onChange={(e) => setDescription(e.target.value)}
                     className="block w-full rounded-2xl border-slate-200 bg-slate-50/50 px-5 py-4 outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 text-slate-900 text-sm border font-bold transition-all hover:bg-white"
                   />
                 </div>
@@ -107,8 +112,8 @@ export default function RecipeForm({
                   </label>
                   <textarea
                     value={instructions}
-                    onChange={() => {}}
-                    className="block w-full rounded-2xl border-slate-200 bg-slate-50/50 px-5 py-4 outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 text-slate-900 text-sm border font-medium transition-all hover:bg-white resize-none min-h-[140px]"
+                    onChange={(e) => setInstructions(e.target.value)}
+                    className="block w-full rounded-2xl border-slate-200 bg-slate-50/50 px-5 py-4 outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 text-slate-900 text-sm border font-medium transition-all hover:bg-white resize-none min-h-35"
                   />
                 </div>
 
@@ -125,7 +130,7 @@ export default function RecipeForm({
                       step="0.01"
                       min="0"
                       value={price}
-                      onChange={() => {}}
+                      onChange={(e) => setPrice(e.target.value)}
                       className="block w-full rounded-2xl border-slate-200 bg-slate-50/50 py-4 pl-12 pr-16 outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 text-slate-900 text-lg border font-black transition-all hover:bg-white"
                     />
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-5 border-l border-slate-200 ml-4 pl-4 uppercase text-[10px] font-black text-slate-400">
@@ -165,7 +170,9 @@ export default function RecipeForm({
                     <div className="relative flex-1 w-full">
                       <select
                         value={item.herbId}
-                        onChange={() => {}}
+                        onChange={(e) =>
+                          updateHerbRow(index, "herbId", e.target.value)
+                        }
                         className="block w-full rounded-xl border-slate-200 bg-white py-3 pl-4 pr-10 outline-none focus:border-primary text-slate-900 text-sm border font-bold cursor-pointer appearance-none shadow-sm"
                       >
                         <option value="">Select an ingredient...</option>
@@ -185,7 +192,9 @@ export default function RecipeForm({
                         type="number"
                         min="1"
                         value={item.quantity}
-                        onChange={() => {}}
+                        onChange={(e) =>
+                          updateHerbRow(index, "quantity", e.target.value)
+                        }
                         placeholder="Qty"
                         className="block w-full rounded-xl border-slate-200 bg-white py-3 px-4 outline-none focus:border-primary text-slate-900 text-sm border font-black shadow-sm"
                       />
@@ -214,34 +223,23 @@ export default function RecipeForm({
                 </h3>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                {diseases.map((disease) => {
-                  const isSelected = selectedDiseaseIds.includes(
-                    disease.diseaseId,
-                  );
-                  return (
-                    <button
-                      key={disease.diseaseId}
-                      type="button"
-                      onClick={() => toggleDisease(disease.diseaseId)}
-                      className={`relative text-left p-4 rounded-2xl border transition-all flex flex-col justify-between h-24 ${isSelected ? "border-primary bg-primary/5 ring-1 ring-primary/20" : "border-slate-100 bg-slate-50/50 hover:bg-white hover:border-slate-300"}`}
-                    >
-                      <span
-                        className={`text-xs font-extrabold line-clamp-2 ${isSelected ? "text-primary" : "text-slate-900"}`}
-                      >
-                        {disease.diseaseName}
-                      </span>
-                      <span className="text-[9px] font-black uppercase text-slate-400 tracking-tighter">
-                        {disease.diseaseType}
-                      </span>
-                      {isSelected && (
-                        <span className="absolute top-3 right-3 text-primary text-sm">
-                          ✓
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
+              <div className="group">
+                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4 px-1">
+                  Select diseases for this recipe
+                </label>
+                <DiseaseSearchSelect
+                  selectedDiseaseIds={selectedDiseaseIds}
+                  onSelectionChange={toggleDisease}
+                  disabled={false}
+                  isLoading={false}
+                />
+              </div>
+
+              <div className="rounded-2xl border border-blue-100 bg-blue-50/40 p-4">
+                <p className="text-xs font-medium text-blue-700">
+                  💡 <strong>Tip:</strong> To create new diseases, visit the{" "}
+                  <strong>Manage Diseases</strong> page from your dashboard.
+                </p>
               </div>
             </section>
           </div>

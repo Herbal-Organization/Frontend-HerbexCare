@@ -15,7 +15,21 @@ export const getPatientById = async (id) => {
   return data;
 };
 
-export const getAllPatients = async () => {
-  const { data } = await httpClient.get("/api/Patients/all");
+export const getAllPatients = async (
+  pageNumber = 1,
+  pageSize = 10,
+  searchValue = "",
+  sortColumn = "",
+  sortDirection = "",
+) => {
+  const { data } = await httpClient.get("/api/Patients/all", {
+    params: {
+      PageNumber: pageNumber,
+      PageSize: pageSize,
+      SearchValue: searchValue,
+      SortColumn: sortColumn,
+      SortDirection: sortDirection,
+    },
+  });
   return data;
 };

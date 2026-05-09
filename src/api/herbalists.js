@@ -22,3 +22,16 @@ export const updateMyHerbalistProfile = async (payload) => {
   );
   return data;
 };
+
+export const deleteMyHerbalistAccount = async (userId) => {
+  const { data } = await httpClient.delete(`/api/Users/delete/${userId}`);
+  return data;
+};
+
+export const resetMyHerbalistAccount = async (payload) => {
+  const { data } = await httpClient.post(
+    "/api/Accounts/reset-password",
+    payload,
+  );
+  return data;
+};

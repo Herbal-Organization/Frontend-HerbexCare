@@ -5,35 +5,65 @@ import HerbsGrid from "../../components/browse/HerbsGrid";
 import HerbsPagination from "../../components/browse/HerbsPagination";
 import Footer from "../../components/landing/Footer";
 import useHerbs from "../../hooks/useHerbs";
+import HerbFilters from "../../components/browse/HerbFilters";
 
 const HERBS_PER_PAGE = 8;
 
 function HerbsPage() {
   const { herbs, isLoading, error, reload } = useHerbs();
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedBenefits, setSelectedBenefits] = useState([]);
+  const [approvalFilter, setApprovalFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const filteredHerbs = useMemo(() => {
-    const normalizedSearch = searchTerm.trim().toLowerCase();
+  // Extract unique benefits from all herbs
+  const availableBenefits = useMemo(() => {
+    const benefitsSet = new Set();
+    herbs.forEach((herb) => {
+      herb.benefitList?.forEach((benefit) => {
+        benefitsSet.add(benefit);
+      });
+    });
+    return Array.from(benefitsSet).sort();
+  }, [herbs]);
 
-    if (!normalizedSearch) {
-      return herbs;
+  const filteredHerbs = useMemo(() => {
+    let result = herbs;
+
+    // Filter by search term
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+    if (normalizedSearch) {
+      result = result.filter((herb) =>
+        [
+          herb.name,
+          herb.herbName,
+          herb.scientificName,
+          herb.description,
+          herb.benefits,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedSearch),
+      );
     }
 
-    return herbs.filter((herb) =>
-      [
-        herb.name,
-        herb.herbName,
-        herb.scientificName,
-        herb.description,
-        herb.benefits,
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase()
-        .includes(normalizedSearch),
-    );
-  }, [herbs, searchTerm]);
+    // Filter by selected benefits
+    if (selectedBenefits.length > 0) {
+      result = result.filter((herb) =>
+        selectedBenefits.some((benefit) => herb.benefitList?.includes(benefit)),
+      );
+    }
+
+    // Filter by approval status
+    if (approvalFilter === "approved") {
+      result = result.filter((herb) => herb.isApproved === true);
+    } else if (approvalFilter === "pending") {
+      result = result.filter((herb) => herb.isApproved !== true);
+    }
+
+    return result;
+  }, [herbs, searchTerm, selectedBenefits, approvalFilter]);
 
   const totalPages = Math.max(
     1,
@@ -50,6 +80,30 @@ function HerbsPage() {
     setCurrentPage(1);
   };
 
+  const handleBenefitChange = (benefit) => {
+    setSelectedBenefits((current) =>
+      current.includes(benefit)
+        ? current.filter((b) => b !== benefit)
+        : [...current, benefit],
+    );
+    setCurrentPage(1);
+  };
+
+  const handleApprovalChange = (status) => {
+    setApprovalFilter(status);
+    setCurrentPage(1);
+  };
+
+  const handleClearFilters = () => {
+    setSearchTerm("");
+    setSelectedBenefits([]);
+    setApprovalFilter("all");
+    setCurrentPage(1);
+  };
+
+  const hasActiveFilters =
+    searchTerm || selectedBenefits.length > 0 || approvalFilter !== "all";
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
       <PatientNavbar />
@@ -62,6 +116,16 @@ function HerbsPage() {
           resultCount={filteredHerbs.length}
           resultLabel={`herb${filteredHerbs.length === 1 ? "" : "s"} available`}
           placeholder="Search herbs by name, scientific name, or benefits..."
+        />
+
+        <HerbFilters
+          availableBenefits={availableBenefits}
+          selectedBenefits={selectedBenefits}
+          onBenefitChange={handleBenefitChange}
+          approvalFilter={approvalFilter}
+          onApprovalChange={handleApprovalChange}
+          hasActiveFilters={hasActiveFilters}
+          onClearFilters={handleClearFilters}
         />
 
         <HerbsGrid

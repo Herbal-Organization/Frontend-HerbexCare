@@ -108,9 +108,9 @@ function PatientSidebar({ user, onLogout }) {
             <button
               type="button"
               onClick={onLogout}
-              className="flex w-full items-center gap-3 rounded-xl bg-slate-900 px-4 py-3 text-left text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-800 cursor-pointer"
+              className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-white bg-primary hover:bg-primary-hover hover:scale-105 transition-all duration-300"
             >
-              <FaSignOutAlt className="text-xs" />
+              <FaSignOutAlt className="w-4 h-4" />
               <span>Sign Out</span>
             </button>
           </div>

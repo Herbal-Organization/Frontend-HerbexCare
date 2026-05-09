@@ -1,17 +1,56 @@
 import httpClient from "./httpClient";
 
-export const getAllRecipes = async () => {
-  const { data } = await httpClient.get("/api/Recipes/all");
+const RECIPES_LANG_HEADERS = {
+  "Accept-Language": "en",
+};
+
+export const getAllRecipes = async (
+  pageNumber = 1,
+  pageSize = 10,
+  searchValue = "",
+  sortColumn = "",
+  sortDirection = "",
+) => {
+  const { data } = await httpClient.get("/api/Recipes/all", {
+    headers: RECIPES_LANG_HEADERS,
+    params: {
+      PageNumber: pageNumber,
+      PageSize: pageSize,
+      SearchValue: searchValue,
+      SortColumn: sortColumn,
+      SortDirection: sortDirection,
+    },
+  });
   return data;
 };
 
 export const getRecipeById = async (id) => {
-  const { data } = await httpClient.get(`/api/Recipes/${id}/get-id`);
+  const { data } = await httpClient.get(`/api/Recipes/${id}/get-id`, {
+    headers: RECIPES_LANG_HEADERS,
+  });
   return data;
 };
 
-export const getRecipesByHerbalist = async (id) => {
-  const { data } = await httpClient.get(`/api/Recipes/herbalist/${id}`);
+export const getRecipesByHerbalist = async (
+  id,
+  pageNumber = 1,
+  pageSize = 10,
+  searchValue = "",
+  sortColumn = "",
+  sortDirection = "",
+  isActive = true,
+) => {
+  const { data } = await httpClient.get(`/api/Recipes/herbalist/${id}`, {
+    params: {
+      PageNumber: pageNumber,
+      PageSize: pageSize,
+      SearchValue: searchValue,
+      SortColumn: sortColumn,
+      SortDirection: sortDirection,
+      isActive: isActive,
+    },
+    headers: RECIPES_LANG_HEADERS,
+  });
   return data;
 };
 

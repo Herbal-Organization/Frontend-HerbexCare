@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
 import AuthPage from "./pages/auth/AuthPage";
 import ForgetPassword from "./components/auth/ForgetPassword";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -12,6 +12,7 @@ import HerbsPage from "./pages/browse/HerbsPage";
 import RecipeDetailsPage from "./pages/browse/RecipeDetailsPage";
 import HerbDetailsPage from "./pages/browse/HerbDetailsPage";
 import LandingPage from "./pages/LandingPage";
+import { isAuthenticated } from "./utils/auth";
 
 import { Toaster } from "react-hot-toast";
 
@@ -23,8 +24,26 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
-        <Route path="/forget" element={<ForgetPassword />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route
+          path="/forget"
+          element={
+            isAuthenticated() ? (
+              <Navigate to="/reset-password" replace />
+            ) : (
+              <ForgetPassword />
+            )
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            isAuthenticated() ? (
+              <ResetPasswordPage />
+            ) : (
+              <Navigate to="/forget" replace />
+            )
+          }
+        />
 
         <Route element={<ProtectedRoute allowedRoles={["Patient"]} />}>
           <Route path="/patient/home" element={<PatientHome />} />

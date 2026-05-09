@@ -6,7 +6,10 @@ export const getMyInventoryAIRecipes = async () => {
 };
 
 export const addInventoryAIRecipes = async (payload) => {
-  const { data } = await httpClient.post("/api/InventoryAiRecipes/add");
+  const { data } = await httpClient.post(
+    "/api/InventoryAiRecipes/add",
+    payload,
+  );
   return data;
 };
 
@@ -37,6 +40,8 @@ export const removeInventoryAIRecipe = async (id) => {
 
 /** GET: herbalists related to this inventory item */
 export const getInventoryAIRecipeHerbalists = async (id) => {
-  const {data} = await httpClient.get(`/api/InventoryAiRecipes/${id}/herbalists`);
+  const { data } = await httpClient.get(
+    `/api/InventoryAiRecipes/${id}/herbalists`,
+  );
   return data;
 };

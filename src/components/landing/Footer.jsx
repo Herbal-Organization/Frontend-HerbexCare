@@ -1,14 +1,21 @@
 import React from "react";
 import { MdPhotoCamera } from "react-icons/md";
 import { FaLeaf, FaShareAltSquare } from "react-icons/fa";
-import { GrLanguage } from "react-icons/gr";
 import { motion } from "motion/react";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../LanguageSwitcher";
 
 const MotionDiv = motion.div;
 
 function Footer() {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
+
   return (
-    <footer className="bg-gradient-to-b from-white to-slate-50 border-t border-slate-200 pt-16 pb-8 px-4 sm:px-6 lg:px-8">
+    <footer
+      className="bg-gradient-to-b from-white to-slate-50 border-t border-slate-200 pt-16 pb-8 px-4 sm:px-6 lg:px-8"
+      dir={isRTL ? "rtl" : "ltr"}
+    >
       <div className="mx-auto max-w-7xl">
         <MotionDiv
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16"
@@ -24,13 +31,12 @@ function Footer() {
                 <FaLeaf className="text-xl" />
               </div>
               <h2 className="text-slate-900 text-2xl font-bold tracking-tight">
-                Herbal Care
+                {t("navbar.brand")}
               </h2>
             </div>
 
             <p className="text-slate-500 text-sm leading-relaxed mb-6 max-w-md">
-              Combining centuries-old botanical wisdom with cutting-edge
-              artificial intelligence to empower your natural wellness journey.
+              {t("footer.tagline")}
             </p>
 
             {/* Social Icons */}
@@ -62,14 +68,14 @@ function Footer() {
         >
           <p className="text-slate-400 text-sm mb-4 md:mb-0">
             © {new Date().getFullYear()}
-            <span className="font-medium text-slate-600"> Karim Safan</span>.
-            All rights reserved.
+            <span className="font-medium text-slate-600">
+              {" "}
+              {t("footer.author")}
+            </span>
+            . {t("footer.copyright")}
           </p>
 
-          <div className="flex items-center gap-2 text-slate-400 text-sm cursor-pointer hover:text-primary transition-colors">
-            <GrLanguage className="text-lg" />
-            <span className="hover:underline">English (US)</span>
-          </div>
+          <LanguageSwitcher />
         </MotionDiv>
       </div>
     </footer>

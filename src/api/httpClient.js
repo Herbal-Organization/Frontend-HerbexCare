@@ -26,9 +26,20 @@ let refreshRequest = null;
 
 httpClient.interceptors.request.use((config) => {
   const token = getAccessToken();
+  const lang = localStorage.getItem("i18nextLng") || "en";
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  config.headers["Accept-Language"] = lang;
+
+  // Debug logging
+  if (typeof window !== "undefined") {
+    console.log(`[HTTP] ${config.method.toUpperCase()} ${config.url}`, {
+      "Accept-Language": config.headers["Accept-Language"],
+      params: config.params,
+    });
   }
 
   return config;
@@ -43,6 +54,14 @@ httpClient.interceptors.response.use(
     const isExcludedPath = AUTH_EXCLUDED_PATHS.some((path) =>
       requestPath.includes(path),
     );
+
+    // Log error details for debugging
+    if (typeof window !== "undefined") {
+      console.error(`[HTTP ERROR] ${status} ${requestPath}`, {
+        data: error.response?.data,
+        errors: error.response?.data?.errors,
+      });
+    }
 
     if (
       status !== 401 ||

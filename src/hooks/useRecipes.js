@@ -12,8 +12,17 @@ function useRecipes() {
     setError("");
 
     try {
-      const data = await getAllRecipes();
-      setRecipes(Array.isArray(data) ? data.map(normalizeRecipe) : []);
+      const response = await getAllRecipes(1, 1000); // Fetch up to 1000 items
+
+      // Handle both array and paginated response formats
+      let recipesData = [];
+      if (Array.isArray(response)) {
+        recipesData = response;
+      } else if (response?.items && Array.isArray(response.items)) {
+        recipesData = response.items;
+      }
+
+      setRecipes(recipesData.map(normalizeRecipe));
     } catch (err) {
       const message =
         err.response?.data?.message ||

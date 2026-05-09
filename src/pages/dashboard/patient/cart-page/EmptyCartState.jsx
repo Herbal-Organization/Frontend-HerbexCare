@@ -3,12 +3,14 @@ import { FaShoppingCart } from "react-icons/fa";
 
 function EmptyCartState() {
   return (
-    <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50/50 px-4 py-16 text-center sm:rounded-[3rem] sm:py-24">
-      <FaShoppingCart className="mb-6 text-5xl text-slate-300" />
-      <h2 className="text-2xl font-bold text-slate-700">
+    <div className="flex flex-col items-center justify-center rounded-4xl border-2 border-dashed border-slate-200 bg-linear-to-br from-slate-50 to-white px-4 py-16 text-center shadow-sm sm:rounded-[3rem] sm:py-24">
+      <div className="mb-6 rounded-full bg-white p-5 shadow-sm ring-1 ring-slate-100">
+        <FaShoppingCart className="text-4xl text-slate-300 sm:text-5xl" />
+      </div>
+      <h2 className="text-2xl font-bold text-slate-700 sm:text-3xl">
         Your Medical Cart is Empty
       </h2>
-      <p className="mb-8 mt-2 max-w-sm text-slate-500">
+      <p className="mb-8 mt-3 max-w-md text-sm leading-7 text-slate-500 sm:text-base">
         Navigate back to the active catalogs to discover proprietary herbs and
         tailored recipes.
       </p>

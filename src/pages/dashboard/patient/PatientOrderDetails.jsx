@@ -57,8 +57,13 @@ function PatientOrderDetails() {
   const fetchOrderDetails = async () => {
     try {
       const data = await getOrderById(orderId);
+      console.log("Order data received:", data);
+      console.log("Herbs:", data.herbs);
+      console.log("Recipes:", data.recipes);
+      console.log("SubOrders:", data.subOrders);
       setOrder(data);
     } catch (err) {
+      console.error("Error fetching order:", err);
       setError(
         err.response?.data?.message ||
           err.response?.data?.title ||
@@ -263,10 +268,76 @@ function PatientOrderDetails() {
               </div>
             ) : null}
 
-            {!order.herbs?.length && !order.recipes?.length ? (
-              <p className="italic text-slate-500">
-                No items are attached to this order.
-              </p>
+            {order.subOrders?.length ? (
+              <div className="mb-8">
+                <h3 className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400">
+                  <FaLeaf /> Order Tasks
+                </h3>
+                <div className="space-y-3">
+                  {order.subOrders.map((subOrder, index) => (
+                    <div
+                      key={`${subOrder.id || index}`}
+                      className="flex flex-col gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div>
+                        <p className="font-bold text-slate-900">
+                          {subOrder.herbName ||
+                            subOrder.name ||
+                            subOrder.itemName ||
+                            `Item #${subOrder.id || index + 1}`}
+                        </p>
+                        {subOrder.herbalistId && (
+                          <p className="mt-0.5 text-xs font-semibold text-slate-500">
+                            Herbalist #{subOrder.herbalistId}
+                          </p>
+                        )}
+                        {subOrder.status && (
+                          <p className="mt-0.5 text-xs font-semibold text-slate-500">
+                            Status: <span className="capitalize">{subOrder.status}</span>
+                          </p>
+                        )}
+                      </div>
+                      {(subOrder.quantity || subOrder.quantityPerGram) && (
+                        <div className="text-right">
+                          <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-400 shadow-sm">
+                            {subOrder.quantityPerGram
+                              ? `${subOrder.quantityPerGram} grams`
+                              : `Qty: ${subOrder.quantity}`}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            {!order.herbs?.length &&
+            !order.recipes?.length &&
+            !order.subOrders?.length ? (
+              <div className="rounded-2xl border border-amber-100 bg-amber-50 p-6">
+                <div className="flex items-start gap-4">
+                  <div className="mt-1 flex shrink-0 items-center justify-center rounded-full bg-amber-500 text-white">
+                    <FaExclamationCircle className="text-lg" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-amber-900">
+                      Order items are being processed
+                    </p>
+                    <p className="mt-2 text-sm text-amber-800">
+                      {normalizedStatus === "pending"
+                        ? "Your order is pending. The herbalist will begin preparing your items once payment is confirmed."
+                        : "Order items details are currently unavailable. Please try refreshing the page."}
+                    </p>
+                    <p className="mt-3 text-xs font-semibold text-amber-700">
+                      Order Total:{" "}
+                      <span className="font-black text-amber-900">
+                        {order.totalCost} EGP
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
             ) : null}
           </div>
         </div>

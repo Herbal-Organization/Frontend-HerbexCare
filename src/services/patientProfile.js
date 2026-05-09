@@ -1,11 +1,9 @@
+import { getMyProfile, updateMyProfile } from "../api/patients";
+import { getUserById, updateUsersAddress } from "../api/users";
 import {
   getMyMedicalHistory,
-  getMyPatientProfile,
-  getUserById,
-  updateMyAddress,
-  updateMyPatientProfile,
-  upsertMyMedicalHistory,
-} from "../api/patients";
+  saveMyMedicalHistory,
+} from "../api/medicalHistories";
 
 export const DEFAULT_MEDICAL_HISTORY = {
   diabetes: false,
@@ -215,9 +213,9 @@ export const buildPatientProfileState = ({
 
 export const getPatientDashboardData = async (userId) => {
   const [userDetails, medicalHistory, patientInfo] = await Promise.all([
-    userId ? getUserById(userId) : Promise.resolve(null),
+    userId ? getUserById(userId).catch(() => null) : Promise.resolve(null),
     getMyMedicalHistory().catch(() => null),
-    getMyPatientProfile().catch(() => null),
+    getMyProfile().catch(() => null),
   ]);
 
   return {
@@ -233,36 +231,78 @@ export const getPatientDashboardData = async (userId) => {
 };
 
 export const savePatientProfile = async (profile) => {
-  const patientInfoPayload = {
-    birthDate: profile.birthDate || null,
-    gender: profile.gender || null,
-  };
+  // Build patient info payload - send only provided values to avoid backend null constraint issues.
+  const patientInfoPayload = {};
+  if (profile.birthDate && profile.birthDate.trim()) {
+    patientInfoPayload.birthDate = profile.birthDate.trim();
+  }
+  if (profile.gender && profile.gender.trim()) {
+    patientInfoPayload.gender = profile.gender.trim();
+  }
 
-  const addressPayload = {
-    governorate: profile.governorate,
-    city: profile.city,
-    street: profile.street,
-  };
+  // Build address payload - send only provided values.
+  const addressPayload = {};
+  if (profile.governorate && profile.governorate.trim()) {
+    addressPayload.governorate = profile.governorate.trim();
+  }
+  if (profile.city && profile.city.trim()) {
+    addressPayload.city = profile.city.trim();
+  }
+  if (profile.street && profile.street.trim()) {
+    addressPayload.street = profile.street.trim();
+  }
 
+  // Build medical history payload
   const medicalHistoryPayload = {
-    diabetes: profile.diabetes,
-    hypertension: profile.hypertension,
-    asthma: profile.asthma,
-    heartDisease: profile.heartDisease,
-    kidneyDisease: profile.kidneyDisease,
-    liverDisease: profile.liverDisease,
-    smoker: profile.smoker,
-    pregnancy: profile.pregnancy,
-    otherNotes: profile.otherNotes,
+    diabetes: !!profile.diabetes,
+    hypertension: !!profile.hypertension,
+    asthma: !!profile.asthma,
+    heartDisease: !!profile.heartDisease,
+    kidneyDisease: !!profile.kidneyDisease,
+    liverDisease: !!profile.liverDisease,
+    smoker: !!profile.smoker,
+    pregnancy: !!profile.pregnancy,
+    otherNotes:
+      profile.otherNotes && profile.otherNotes.trim()
+        ? profile.otherNotes.trim()
+        : "",
   };
 
-  await Promise.all([
-    updateMyPatientProfile(patientInfoPayload),
-    updateMyAddress(addressPayload),
-    upsertMyMedicalHistory(medicalHistoryPayload),
-  ]);
+  const operations = [
+    {
+      name: "medical history",
+      run: () => saveMyMedicalHistory(medicalHistoryPayload),
+    },
+  ];
 
-  storePatientInfo(patientInfoPayload);
+  if (Object.keys(patientInfoPayload).length > 0) {
+    operations.push({
+      name: "patient info",
+      run: () => updateMyProfile(patientInfoPayload),
+    });
+  }
+
+  if (Object.keys(addressPayload).length > 0) {
+    operations.push({
+      name: "address",
+      run: () => updateUsersAddress(addressPayload),
+    });
+  }
+
+  const results = await Promise.allSettled(
+    operations.map((operation) => operation.run()),
+  );
+  const failed = results
+    .map((result, index) => ({ result, name: operations[index].name }))
+    .filter(({ result }) => result.status === "rejected");
+
+  if (failed.length === operations.length) {
+    throw failed[0].result.reason;
+  }
+
+  if (Object.keys(patientInfoPayload).length > 0) {
+    storePatientInfo(patientInfoPayload);
+  }
 
   return {
     patientInfoPayload,

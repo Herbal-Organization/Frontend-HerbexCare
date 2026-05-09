@@ -14,6 +14,7 @@ import {
 } from "../../../utils/auth";
 import HerbalistManageHerbs from "./HerbalistManageHerbs";
 import HerbalistManageRecipes from "./HerbalistManageRecipes";
+import HerbalistManageDiseases from "./HerbalistManageDiseases";
 import HerbalistInventory from "./HerbalistInventory";
 import HerbalistDashboardHome from "./HerbalistDashboardHome";
 import HerbalistProfile from "./HerbalistProfile";
@@ -173,6 +174,7 @@ function HerbalistDashboard() {
                 />
               }
             />
+            <Route path="/diseases" element={<HerbalistManageDiseases />} />
             <Route path="/inventory" element={<HerbalistInventory />} />
             <Route path="/orders" element={<HerbalistSubOrders />} />
             <Route path="/orders/:id" element={<SubOrderDetails />} />

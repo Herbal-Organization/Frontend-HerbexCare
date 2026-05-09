@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosMail } from "react-icons/io";
 import { FaLock } from "react-icons/fa";
-import { loginAccount } from "../../api/accounts";
+import { loginAccount, resendConfirmationEmail } from "../../api/accounts";
 import AuthAlert from "../../components/auth/AuthAlert";
 import AuthInput from "../../components/auth/AuthInput";
 import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
@@ -12,16 +13,21 @@ import { getUserRole } from "../../utils/auth";
 
 function Login({ setSuccessMsg }) {
   const navigate = useNavigate();
+  const [pendingEmail, setPendingEmail] = useState("");
+  const [resendSuccess, setResendSuccess] = useState("");
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm({
     defaultValues: {
       email: "",
       password: "",
     },
   });
+
+  const emailValue = watch("email");
 
   const {
     error,
@@ -39,13 +45,52 @@ function Login({ setSuccessMsg }) {
         navigate(getPostLoginRoute(role));
       }, 1000);
     },
+    onError: (err, message) => {
+      // Check if error is about email confirmation
+      if (
+        message?.includes("confirm") ||
+        message?.includes("confirmation") ||
+        message?.toLowerCase().includes("email")
+      ) {
+        setPendingEmail(emailValue?.trim().toLowerCase());
+      }
+    },
   });
+
+  const {
+    isLoading: isResending,
+    execute: submitResendEmail,
+    clearError: clearResendError,
+  } = useAsyncAction(resendConfirmationEmail, {
+    defaultErrorMessage: "Failed to resend email. Please try again.",
+    onSuccess: () => {
+      setResendSuccess(
+        "Confirmation email sent! Please check your inbox and spam folder.",
+      );
+      setTimeout(() => setResendSuccess(""), 5000);
+    },
+  });
+
+  const handleResendEmail = async () => {
+    clearResendError();
+    setResendSuccess("");
+    if (pendingEmail) {
+      await submitResendEmail({ email: pendingEmail });
+    }
+  };
 
   const onSubmit = async (values) => {
     clearError();
     try {
-      await submitLogin(values);
-    } catch {
+      // Trim email and password to prevent whitespace issues
+      const payload = {
+        email: values.email?.trim().toLowerCase(),
+        password: values.password,
+      };
+      console.log("Login attempt with:", { email: payload.email });
+      await submitLogin(payload);
+    } catch (err) {
+      console.error("Login error:", err?.response?.data);
       return;
     }
   };
@@ -53,6 +98,30 @@ function Login({ setSuccessMsg }) {
   return (
     <div>
       <AuthAlert message={error} type="error" />
+      {resendSuccess && (
+        <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+          {resendSuccess}
+        </div>
+      )}
+
+      {pendingEmail && (
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <p className="mb-3 text-sm text-blue-700">
+            <strong>Email Confirmation Required</strong>
+            <br />
+            Please confirm your email address to proceed. A confirmation link
+            has been sent to <strong>{pendingEmail}</strong>
+          </p>
+          <button
+            type="button"
+            onClick={handleResendEmail}
+            disabled={isResending}
+            className="inline-block rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white hover:bg-blue-700 disabled:opacity-50"
+          >
+            {isResending ? "Sending..." : "Resend Confirmation Email"}
+          </button>
+        </div>
+      )}
 
       <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
         <AuthInput
@@ -90,6 +159,7 @@ function Login({ setSuccessMsg }) {
             autoComplete="current-password"
             icon={<FaLock />}
             inputClassName="font-sans"
+            isPassword={true}
             error={errors.password?.message}
             {...register("password", {
               required: "Password is required",

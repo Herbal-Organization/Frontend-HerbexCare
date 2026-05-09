@@ -4,8 +4,8 @@ function TotalsBlock({ herbsTotal, recipesTotal }) {
   const allItemsTotal = herbsTotal + recipesTotal;
 
   return (
-    <div className="pt-2">
-      <div className="mb-3 flex items-center justify-between">
+    <div className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-slate-100">
+      <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <span className="text-sm font-semibold text-slate-700">
           Subtotal (Recipes)
         </span>
@@ -13,7 +13,7 @@ function TotalsBlock({ herbsTotal, recipesTotal }) {
           {formatCurrency(recipesTotal)}
         </span>
       </div>
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <span className="text-sm font-semibold text-slate-700">
           Subtotal (Herbs)
         </span>
@@ -21,7 +21,7 @@ function TotalsBlock({ herbsTotal, recipesTotal }) {
           {formatCurrency(herbsTotal)}
         </span>
       </div>
-      <div className="mb-3 flex items-center justify-between border-t border-slate-100 pt-2">
+      <div className="mb-3 flex flex-col gap-1 border-t border-slate-100 pt-3 sm:flex-row sm:items-center sm:justify-between">
         <span className="text-sm font-semibold text-slate-800">
           Subtotal (All Items)
         </span>
@@ -29,7 +29,7 @@ function TotalsBlock({ herbsTotal, recipesTotal }) {
           {formatCurrency(allItemsTotal)}
         </span>
       </div>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <span className="text-sm font-semibold text-slate-700">Shipping</span>
         <span className="text-lg font-bold text-slate-600">TBD</span>
       </div>
