@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
-import { FaLeaf, FaSpinner, FaSearch, FaExclamationTriangle, FaTimes } from "react-icons/fa";
-import { fetchConsultationCatalog, fetchCatalogById } from "../../../../api/aiConsultations";
+import {
+  FaLeaf,
+  FaSpinner,
+  FaSearch,
+  FaExclamationTriangle,
+  FaTimes,
+} from "react-icons/fa";
+import {
+  fetchConsultationCatalog,
+  fetchCatalogById,
+} from "../../../../api/aiConsultations";
 import { toast } from "react-hot-toast";
 
 function HerbCatalog() {
@@ -23,7 +32,10 @@ function HerbCatalog() {
       const data = await fetchConsultationCatalog();
       setCatalog(Array.isArray(data) ? data : data?.items ? data.items : []);
     } catch (err) {
-      const message = err?.response?.data?.message || err?.message || "Failed to load catalog";
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to load catalog";
       setError(message);
       toast.error(message);
       console.error("Failed to load catalog:", err);
@@ -39,7 +51,10 @@ function HerbCatalog() {
       const data = await fetchCatalogById(id);
       setCatalogDetail(data);
     } catch (err) {
-      const message = err?.response?.data?.message || err?.message || "Failed to load catalog details";
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to load catalog details";
       toast.error(message);
       console.error("Failed to load catalog detail:", err);
     } finally {
@@ -68,7 +83,9 @@ function HerbCatalog() {
             <FaLeaf className="text-3xl" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">AI Consultation Catalog</h1>
+            <h1 className="text-3xl font-bold text-slate-900">
+              AI Consultation Catalog
+            </h1>
             <p className="text-slate-600">
               Browse consultation types and health recommendations
             </p>
@@ -140,7 +157,9 @@ function HerbCatalog() {
                       <p className="text-xs font-bold uppercase tracking-widest text-slate-600 mb-2">
                         Description
                       </p>
-                      <p className="text-sm text-slate-700 line-clamp-2">{item.description}</p>
+                      <p className="text-sm text-slate-700 line-clamp-2">
+                        {item.description}
+                      </p>
                     </div>
                   )}
 
@@ -150,7 +169,10 @@ function HerbCatalog() {
                         Focus Areas
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {(Array.isArray(item.focusAreas) ? item.focusAreas : item.focusAreas.split(",")).map((area, idx) => (
+                        {(Array.isArray(item.focusAreas)
+                          ? item.focusAreas
+                          : item.focusAreas.split(",")
+                        ).map((area, idx) => (
                           <span
                             key={idx}
                             className="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold"
@@ -199,7 +221,9 @@ function HerbCatalog() {
           >
             <div className="bg-linear-to-r from-emerald-500 to-teal-500 text-white p-6 sticky top-0 flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold">{selectedCatalog.name || selectedCatalog.title}</h2>
+                <h2 className="text-2xl font-bold">
+                  {selectedCatalog.name || selectedCatalog.title}
+                </h2>
                 {selectedCatalog.type && (
                   <p className="text-emerald-100 mt-1">
                     Type: {selectedCatalog.type}
@@ -225,25 +249,32 @@ function HerbCatalog() {
               <div className="p-6 space-y-4">
                 {selectedCatalog.description && (
                   <div>
-                    <h3 className="font-bold text-slate-900 mb-2">Description</h3>
-                    <p className="text-slate-700">{selectedCatalog.description}</p>
+                    <h3 className="font-bold text-slate-900 mb-2">
+                      Description
+                    </h3>
+                    <p className="text-slate-700">
+                      {selectedCatalog.description}
+                    </p>
                   </div>
                 )}
 
                 {catalogDetail?.focusAreas && (
                   <div>
-                    <h3 className="font-bold text-slate-900 mb-2">Focus Areas</h3>
+                    <h3 className="font-bold text-slate-900 mb-2">
+                      Focus Areas
+                    </h3>
                     <div className="flex flex-wrap gap-2">
-                      {(Array.isArray(catalogDetail.focusAreas) ? catalogDetail.focusAreas : catalogDetail.focusAreas.split(",")).map(
-                        (area, idx) => (
-                          <span
-                            key={idx}
-                            className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-sm font-semibold"
-                          >
-                            {typeof area === "string" ? area.trim() : area}
-                          </span>
-                        ),
-                      )}
+                      {(Array.isArray(catalogDetail.focusAreas)
+                        ? catalogDetail.focusAreas
+                        : catalogDetail.focusAreas.split(",")
+                      ).map((area, idx) => (
+                        <span
+                          key={idx}
+                          className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-sm font-semibold"
+                        >
+                          {typeof area === "string" ? area.trim() : area}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 )}
@@ -257,15 +288,21 @@ function HerbCatalog() {
 
                 {catalogDetail?.benefits && (
                   <div className="bg-emerald-50 rounded-lg p-4">
-                    <h3 className="font-bold text-emerald-900 mb-2">Benefits</h3>
+                    <h3 className="font-bold text-emerald-900 mb-2">
+                      Benefits
+                    </h3>
                     <p className="text-emerald-800">{catalogDetail.benefits}</p>
                   </div>
                 )}
 
                 {catalogDetail?.recommendations && (
                   <div className="bg-yellow-50 rounded-lg p-4">
-                    <h3 className="font-bold text-yellow-900 mb-2">Recommendations</h3>
-                    <p className="text-yellow-800">{catalogDetail.recommendations}</p>
+                    <h3 className="font-bold text-yellow-900 mb-2">
+                      Recommendations
+                    </h3>
+                    <p className="text-yellow-800">
+                      {catalogDetail.recommendations}
+                    </p>
                   </div>
                 )}
 
