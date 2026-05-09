@@ -10,7 +10,11 @@ import {
   FaLeaf,
 } from "react-icons/fa";
 import { myAllConsultations } from "../../../../api/aiConsultations";
-import { toggleFavorite, getMyAIRecipesFavorites } from "../../../../api/favorites";
+import {
+  toggleFavorite,
+  getMyAIRecipesFavorites,
+} from "../../../../api/favorites";
+import { normalizeGeneratedRecipe } from "./aiConsultationUtils";
 
 function AiConsultationResult({ result, onNewConsultation }) {
   const [activeTab, setActiveTab] = useState("recipe");
@@ -36,22 +40,6 @@ function AiConsultationResult({ result, onNewConsultation }) {
     }
   };
 
-  const parseRecipeData = (result) => {
-    try {
-      // If result is already an object, use it directly
-      let recipeData = typeof result === "string" ? JSON.parse(result) : result;
-
-      // Ensure it's an object
-      if (!recipeData || typeof recipeData !== "object") {
-        recipeData = { rawContent: result };
-      }
-
-      return recipeData;
-    } catch (error) {
-      return { rawContent: typeof result === "string" ? result : JSON.stringify(result) };
-    }
-  };
-
   const renderIngredientsList = (ingredients) => {
     if (!ingredients) return null;
 
@@ -66,7 +54,9 @@ function AiConsultationResult({ result, onNewConsultation }) {
         .map((i) => i.trim())
         .filter((i) => i.length > 0);
     } else if (typeof ingredients === "object") {
-      ingredientsList = Object.entries(ingredients).map(([key, value]) => `${key}: ${value}`);
+      ingredientsList = Object.entries(ingredients).map(
+        ([key, value]) => `${key}: ${value}`,
+      );
     }
 
     return (
@@ -99,10 +89,12 @@ function AiConsultationResult({ result, onNewConsultation }) {
       <div className="space-y-3">
         {instructionsList.map((instruction, idx) => (
           <div key={idx} className="flex items-start gap-4">
-            <div className="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-600 font-bold flex-shrink-0">
+            <div className="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-600 font-bold shrink-0">
               {idx + 1}
             </div>
-            <span className="text-slate-700 pt-0.5">{instruction.replace(/^\d+\.\s*/, "")}</span>
+            <span className="text-slate-700 pt-0.5">
+              {instruction.replace(/^\d+\.\s*/, "")}
+            </span>
           </div>
         ))}
       </div>
@@ -117,7 +109,9 @@ function AiConsultationResult({ result, onNewConsultation }) {
       };
       await toggleFavorite(payload);
       setIsSaved(!isSaved);
-      toast.success(isSaved ? "Recipe removed from favorites" : "Recipe saved to favorites");
+      toast.success(
+        isSaved ? "Recipe removed from favorites" : "Recipe saved to favorites",
+      );
     } catch (error) {
       toast.error("Failed to save recipe");
       console.error(error);
@@ -125,6 +119,8 @@ function AiConsultationResult({ result, onNewConsultation }) {
   };
 
   if (!result) return null;
+
+  const structuredRecipe = normalizeGeneratedRecipe(result);
 
   const recipeContent =
     typeof result === "string" ? result : JSON.stringify(result, null, 2);
@@ -134,7 +130,7 @@ function AiConsultationResult({ result, onNewConsultation }) {
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 p-4 text-white shadow-lg">
+          <div className="rounded-2xl bg-linear-to-br from-emerald-500 to-teal-500 p-4 text-white shadow-lg">
             <FaCheckCircle className="text-3xl" />
           </div>
           <div>
@@ -197,7 +193,7 @@ function AiConsultationResult({ result, onNewConsultation }) {
           <div className="lg:col-span-2 space-y-6">
             <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
               {/* Header */}
-              <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-slate-200 p-6">
+              <div className="bg-linear-to-r from-emerald-50 to-teal-50 border-b border-slate-200 p-6">
                 <h2 className="text-2xl font-bold text-slate-900">
                   Herbal Recipe Recommendation
                 </h2>
@@ -209,54 +205,54 @@ function AiConsultationResult({ result, onNewConsultation }) {
               {/* Recipe Content */}
               <div className="p-6 sm:p-8 space-y-8">
                 {(() => {
-                  const recipeData = parseRecipeData(result);
+                  const recipeData = structuredRecipe.raw || {};
 
                   return (
                     <>
                       {/* Recipe Name */}
-                      {(recipeData.recipeName || recipeData.name || recipeData.title) && (
-                        <div className="mb-6">
-                          <h3 className="text-xl font-bold text-slate-900">
-                            {recipeData.recipeName || recipeData.name || recipeData.title}
-                          </h3>
-                        </div>
-                      )}
+                      <div className="mb-6">
+                        <h3 className="text-xl font-bold text-slate-900">
+                          {structuredRecipe.title}
+                        </h3>
+                      </div>
 
                       {/* Ingredients Section */}
-                      {(recipeData.ingredients || recipeData.components || recipeData.herbs) && (
-                        <div>
-                          <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                            <span className="text-2xl">🌿</span>
-                            Ingredients
-                          </h3>
-                          <div className="bg-emerald-50 rounded-lg p-6 border border-emerald-200">
-                            {renderIngredientsList(
-                              recipeData.ingredients ||
-                                recipeData.components ||
-                                recipeData.herbs
-                            )}
-                          </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                          <span className="text-2xl">🌿</span>
+                          Ingredients
+                        </h3>
+                        <div className="bg-emerald-50 rounded-lg p-6 border border-emerald-200">
+                          {structuredRecipe.ingredients.length > 0 ? (
+                            renderIngredientsList(structuredRecipe.ingredients)
+                          ) : (
+                            <p className="text-slate-700">
+                              No ingredients were returned for this recipe.
+                            </p>
+                          )}
                         </div>
-                      )}
+                      </div>
 
                       {/* Instructions Section */}
-                      {(recipeData.instructions ||
-                        recipeData.preparation ||
-                        recipeData.method) && (
-                        <div>
-                          <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                            <span className="text-2xl">📋</span>
-                            Preparation Instructions
-                          </h3>
-                          <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                            {renderInstructions(
-                              recipeData.instructions ||
-                                recipeData.preparation ||
-                                recipeData.method
-                            )}
-                          </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                          <span className="text-2xl">📋</span>
+                          Preparation Instructions
+                        </h3>
+                        <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
+                          {structuredRecipe.preparationInstructions.length >
+                          0 ? (
+                            renderInstructions(
+                              structuredRecipe.preparationInstructions,
+                            )
+                          ) : (
+                            <p className="text-slate-700">
+                              Preparation instructions were not returned by the
+                              AI response.
+                            </p>
+                          )}
                         </div>
-                      )}
+                      </div>
 
                       {/* Dosage Section */}
                       {(recipeData.dosage ||
@@ -273,7 +269,9 @@ function AiConsultationResult({ result, onNewConsultation }) {
                                 <p className="text-xs font-bold uppercase tracking-widest text-purple-900 mb-2">
                                   Dosage
                                 </p>
-                                <p className="text-slate-700">{recipeData.dosage}</p>
+                                <p className="text-slate-700">
+                                  {recipeData.dosage}
+                                </p>
                               </div>
                             )}
                             {recipeData.usage && (
@@ -281,7 +279,9 @@ function AiConsultationResult({ result, onNewConsultation }) {
                                 <p className="text-xs font-bold uppercase tracking-widest text-purple-900 mb-2">
                                   Usage
                                 </p>
-                                <p className="text-slate-700">{recipeData.usage}</p>
+                                <p className="text-slate-700">
+                                  {recipeData.usage}
+                                </p>
                               </div>
                             )}
                             {recipeData.duration && (
@@ -289,7 +289,9 @@ function AiConsultationResult({ result, onNewConsultation }) {
                                 <p className="text-xs font-bold uppercase tracking-widest text-purple-900 mb-2">
                                   Duration
                                 </p>
-                                <p className="text-slate-700">{recipeData.duration}</p>
+                                <p className="text-slate-700">
+                                  {recipeData.duration}
+                                </p>
                               </div>
                             )}
                           </div>
@@ -306,22 +308,28 @@ function AiConsultationResult({ result, onNewConsultation }) {
                           <div className="bg-yellow-50 rounded-lg p-6 border border-yellow-200">
                             {Array.isArray(
                               recipeData.benefits ||
-                                recipeData.expectedBenefits
+                                recipeData.expectedBenefits,
                             ) ? (
                               <ul className="space-y-2">
                                 {(
                                   recipeData.benefits ||
                                   recipeData.expectedBenefits
                                 ).map((benefit, idx) => (
-                                  <li key={idx} className="flex items-start gap-2 text-slate-700">
-                                    <span className="text-yellow-600 font-bold">→</span>
+                                  <li
+                                    key={idx}
+                                    className="flex items-start gap-2 text-slate-700"
+                                  >
+                                    <span className="text-yellow-600 font-bold">
+                                      →
+                                    </span>
                                     {benefit}
                                   </li>
                                 ))}
                               </ul>
                             ) : (
                               <p className="text-slate-700">
-                                {recipeData.benefits || recipeData.expectedBenefits}
+                                {recipeData.benefits ||
+                                  recipeData.expectedBenefits}
                               </p>
                             )}
                           </div>
@@ -374,7 +382,9 @@ function AiConsultationResult({ result, onNewConsultation }) {
                                 <p className="text-xs font-bold uppercase tracking-widest text-slate-700 mb-2">
                                   Notes
                                 </p>
-                                <p className="text-slate-700">{recipeData.notes}</p>
+                                <p className="text-slate-700">
+                                  {recipeData.notes}
+                                </p>
                               </div>
                             )}
                           </div>
@@ -387,11 +397,13 @@ function AiConsultationResult({ result, onNewConsultation }) {
                           ⚕️ Important Medical Disclaimer
                         </p>
                         <p className="text-sm text-yellow-800">
-                          This is an AI-generated recommendation and should not be considered
-                          professional medical advice. Always consult with a qualified healthcare
-                          provider or registered herbalist before starting any new treatment,
-                          especially if you are pregnant, nursing, taking medications, or have
-                          underlying health conditions. Discontinue use immediately if you
+                          This is an AI-generated recommendation and should not
+                          be considered professional medical advice. Always
+                          consult with a qualified healthcare provider or
+                          registered herbalist before starting any new
+                          treatment, especially if you are pregnant, nursing,
+                          taking medications, or have underlying health
+                          conditions. Discontinue use immediately if you
                           experience any adverse reactions.
                         </p>
                       </div>
@@ -411,7 +423,7 @@ function AiConsultationResult({ result, onNewConsultation }) {
               </h3>
               <div className="flex items-end gap-4">
                 <div className="text-4xl font-bold text-emerald-600">
-                  {result.confidenceScore || 78}
+                  {structuredRecipe.confidenceScore || 78}
                 </div>
                 <div className="text-sm text-emerald-700 mb-1">%</div>
               </div>
@@ -419,7 +431,7 @@ function AiConsultationResult({ result, onNewConsultation }) {
                 <div
                   className="h-full bg-emerald-600 transition-all"
                   style={{
-                    width: `${result.confidenceScore || 78}%`,
+                    width: `${structuredRecipe.confidenceScore || 78}%`,
                   }}
                 />
               </div>
@@ -461,7 +473,7 @@ function AiConsultationResult({ result, onNewConsultation }) {
       {/* History Tab */}
       {activeTab === "history" && (
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200 p-6">
+          <div className="bg-linear-to-r from-slate-50 to-slate-100 border-b border-slate-200 p-6">
             <h2 className="text-xl font-bold text-slate-900">
               Consultation History
             </h2>
