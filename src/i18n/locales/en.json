@@ -73,4 +73,44 @@
     "author": "Karim Safan",
     "language": "English (US)"
   }
+  ,
+  "patientHome": {
+    "badge": "Patient Home",
+    "welcome": "Welcome back, {{name}}",
+    "patient": "Patient",
+    "description": "This is your main place to reach the most important parts of the system quickly.",
+    "openDashboard": "Open Dashboard",
+    "browseHerbs": "Browse Herbs",
+    "quickAccess": {
+      "title": "Quick Access",
+      "description": "Only the main actions you need every day."
+    },
+    "facilities": {
+      "aiConsultation": {
+        "title": "AI Consultation",
+        "description": "Start a quick symptom-based AI consultation.",
+        "cta": "Start Now"
+      },
+      "browseHerbs": {
+        "title": "Browse Herbs",
+        "description": "Explore medicinal herbs and their benefits.",
+        "cta": "Open Herbs"
+      },
+      "browseRecipes": {
+        "title": "Browse Recipes",
+        "description": "See herbal recipes and treatment plans.",
+        "cta": "Open Recipes"
+      },
+      "myCart": {
+        "title": "My Cart",
+        "description": "Check items before placing an order.",
+        "cta": "Open Cart"
+      },
+      "myProfile": {
+        "title": "My Profile",
+        "description": "Update personal and medical details.",
+        "cta": "Open Profile"
+      }
+    }
+  }
 }
