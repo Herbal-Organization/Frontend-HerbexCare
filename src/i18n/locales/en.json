@@ -1,8 +1,7 @@
 {
   "navbar": {
     "brand": "Herbal Care",
-    "getStarted": "Get Started"
-    ,
+    "getStarted": "Get Started",
     "home": "Home",
     "herbs": "Herbs",
     "recipes": "Recipes",
@@ -81,8 +80,7 @@
     "copyright": "All rights reserved.",
     "author": "Karim Safan",
     "language": "English (US)"
-  }
-  ,
+  },
   "patientHome": {
     "badge": "Patient Home",
     "welcome": "Welcome back, {{name}}",
@@ -121,5 +119,22 @@
         "cta": "Open Profile"
       }
     }
+  },
+  "patientSidebar": {
+    "brand": "HerbexCare.AI",
+    "tagline": "Your Wellness Partner",
+    "dashboard": "Dashboard",
+    "myCart": "My Cart",
+    "myOrders": "My Orders",
+    "savedRecipes": "Saved Recipes",
+    "aiConsultation": "AI Consultation",
+    "herbLibrary": "Herb Library",
+    "recipeLibrary": "Recipe Library",
+    "profile": "Profile",
+    "home": "Home",
+    "signOut": "Sign Out",
+    "patient": "Patient",
+    "member": "Member"
   }
 }
+

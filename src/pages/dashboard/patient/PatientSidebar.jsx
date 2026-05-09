@@ -11,42 +11,44 @@ import {
   FaBrain,
 } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function PatientSidebar({ user, onLogout }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const displayName = user?.email || "Patient";
+  const { t } = useTranslation();
+  const displayName = user?.email || t("patientSidebar.patient");
 
   const navigation = [
-    { name: "Dashboard", href: "/patient/dashboard", icon: FaSpa },
-    { name: "My Cart", href: "/patient/dashboard/cart", icon: FaShoppingCart },
+    { name: t("patientSidebar.dashboard"), href: "/patient/dashboard", icon: FaSpa },
+    { name: t("patientSidebar.myCart"), href: "/patient/dashboard/cart", icon: FaShoppingCart },
     {
-      name: "My Orders",
+      name: t("patientSidebar.myOrders"),
       href: "/patient/dashboard/orders",
       icon: FaShoppingBag,
     },
     {
-      name: "Saved Recipes",
+      name: t("patientSidebar.savedRecipes"),
       href: "/patient/dashboard/recipes",
       icon: FaBookOpen,
     },
     {
-      name: "AI Consultation",
+      name: t("patientSidebar.aiConsultation"),
       href: "/patient/dashboard/ai-consultation",
       icon: FaBrain,
     },
     {
-      name: "Herb Library",
+      name: t("patientSidebar.herbLibrary"),
       href: "/patient/home/herbs",
       icon: FaLeaf,
     },
     {
-      name: "Recipe Library",
+      name: t("patientSidebar.recipeLibrary"),
       href: "/patient/home/recipes",
       icon: FaReceipt,
     },
     {
-      name: "Profile",
+      name: t("patientSidebar.profile"),
       href: "/patient/dashboard/profile",
       icon: FaUser,
     },
@@ -60,10 +62,10 @@ function PatientSidebar({ user, onLogout }) {
         </div>
         <div>
           <h1 className="text-slate-900 font-bold text-lg leading-none">
-            HerbexCare.AI
+            {t("patientSidebar.brand")}
           </h1>
           <p className="text-primary text-xs font-medium mt-1">
-            Your Wellness Partner
+            {t("patientSidebar.tagline")}
           </p>
         </div>
       </div>
@@ -102,7 +104,7 @@ function PatientSidebar({ user, onLogout }) {
               className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 cursor-pointer"
             >
               <FaHome className="text-primary" />
-              <span>Home</span>
+              <span>{t("patientSidebar.home")}</span>
             </button>
 
             <button
@@ -111,7 +113,7 @@ function PatientSidebar({ user, onLogout }) {
               className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-white bg-primary hover:bg-primary-hover hover:scale-105 transition-all duration-300"
             >
               <FaSignOutAlt className="w-4 h-4" />
-              <span>Sign Out</span>
+              <span>{t("patientSidebar.signOut")}</span>
             </button>
           </div>
 
@@ -122,7 +124,7 @@ function PatientSidebar({ user, onLogout }) {
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold truncate">{displayName}</p>
               <p className="text-xs text-slate-500 truncate">
-                {user.role || "Member"}
+                {user.role || t("patientSidebar.member")}
               </p>
             </div>
           </div>

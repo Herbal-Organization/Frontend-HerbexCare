@@ -1,8 +1,7 @@
 {
   "navbar": {
     "brand": "العلاج بالأعشاب",
-    "getStarted": "ابدأ الآن"
-    ,
+    "getStarted": "ابدأ الآن",
     "home": "الرئيسية",
     "herbs": "الأعشاب",
     "recipes": "الوصفات",
@@ -81,8 +80,7 @@
     "copyright": "جميع الحقوق محفوظة.",
     "author": "كريم سعفان",
     "language": "العربية"
-  }
-  ,
+  },
   "patientHome": {
     "badge": "الصفحة الرئيسية للمريض",
     "welcome": "مرحبًا بعودتك، {{name}}",
@@ -121,5 +119,22 @@
         "cta": "افتح الملف"
       }
     }
+  },
+  "patientSidebar": {
+    "brand": "HerbexCare.AI",
+    "tagline": "شريكك في العافية",
+    "dashboard": "لوحة التحكم",
+    "myCart": "سلتي",
+    "myOrders": "طلباتي",
+    "savedRecipes": "الوصفات المحفوظة",
+    "aiConsultation": "استشارة الذكاء الاصطناعي",
+    "herbLibrary": "مكتبة الأعشاب",
+    "recipeLibrary": "مكتبة الوصفات",
+    "profile": "الملف الشخصي",
+    "home": "الرئيسية",
+    "signOut": "تسجيل الخروج",
+    "patient": "مريض",
+    "member": "عضو"
   }
 }
+
