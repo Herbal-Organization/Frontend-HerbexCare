@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
-import { FaLeaf, FaSpinner, FaSearch } from "react-icons/fa";
-import { getAllCatalogs } from "../../../../api/aiConsultations";
+import { FaLeaf, FaSpinner, FaSearch, FaExclamationTriangle, FaTimes } from "react-icons/fa";
+import { fetchConsultationCatalog, fetchCatalogById } from "../../../../api/aiConsultations";
+import { toast } from "react-hot-toast";
 
 function HerbCatalog() {
   const [catalog, setCatalog] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
-  const [selectedHerb, setSelectedHerb] = useState(null);
+  const [selectedCatalog, setSelectedCatalog] = useState(null);
+  const [catalogDetail, setCatalogDetail] = useState(null);
+  const [detailLoading, setDetailLoading] = useState(false);
 
   useEffect(() => {
     loadCatalog();
@@ -14,20 +18,45 @@ function HerbCatalog() {
 
   const loadCatalog = async () => {
     setLoading(true);
+    setError(null);
     try {
-      const data = await getAllCatalogs();
-      setCatalog(data || []);
-    } catch (error) {
-      console.error("Failed to load catalog:", error);
+      const data = await fetchConsultationCatalog();
+      setCatalog(Array.isArray(data) ? data : data?.items ? data.items : []);
+    } catch (err) {
+      const message = err?.response?.data?.message || err?.message || "Failed to load catalog";
+      setError(message);
+      toast.error(message);
+      console.error("Failed to load catalog:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  const filteredHerbs = catalog.filter(
-    (herb) =>
-      herb.name?.toLowerCase().includes(search.toLowerCase()) ||
-      herb.benefits?.toLowerCase().includes(search.toLowerCase()),
+  const loadCatalogDetail = async (id) => {
+    if (!id) return;
+    setDetailLoading(true);
+    try {
+      const data = await fetchCatalogById(id);
+      setCatalogDetail(data);
+    } catch (err) {
+      const message = err?.response?.data?.message || err?.message || "Failed to load catalog details";
+      toast.error(message);
+      console.error("Failed to load catalog detail:", err);
+    } finally {
+      setDetailLoading(false);
+    }
+  };
+
+  const handleSelectCatalog = (item) => {
+    setSelectedCatalog(item);
+    loadCatalogDetail(item.id || item.consultationId);
+  };
+
+  const filteredCatalog = catalog.filter(
+    (item) =>
+      item.name?.toLowerCase().includes(search.toLowerCase()) ||
+      item.description?.toLowerCase().includes(search.toLowerCase()) ||
+      item.type?.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -35,13 +64,13 @@ function HerbCatalog() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-4 mb-6">
-          <div className="rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 p-4 text-white shadow-lg">
+          <div className="rounded-2xl bg-linear-to-br from-emerald-500 to-teal-500 p-4 text-white shadow-lg">
             <FaLeaf className="text-3xl" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Herb Catalog</h1>
+            <h1 className="text-3xl font-bold text-slate-900">AI Consultation Catalog</h1>
             <p className="text-slate-600">
-              Browse our collection of medicinal herbs
+              Browse consultation types and health recommendations
             </p>
           </div>
         </div>
@@ -51,7 +80,7 @@ function HerbCatalog() {
           <FaSearch className="absolute left-3 top-3.5 text-slate-400" />
           <input
             type="text"
-            placeholder="Search herbs by name or benefits..."
+            placeholder="Search consultations by name or type..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
@@ -59,142 +88,200 @@ function HerbCatalog() {
         </div>
       </div>
 
+      {/* Error State */}
+      {error && !loading && (
+        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 flex items-center gap-3">
+          <FaExclamationTriangle className="text-red-600 text-lg" />
+          <div>
+            <p className="font-semibold text-red-900">Failed to load catalog</p>
+            <p className="text-sm text-red-700 mt-1">{error}</p>
+          </div>
+          <button
+            onClick={loadCatalog}
+            className="ml-auto px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-500 transition text-sm"
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
       {loading ? (
         <div className="flex justify-center py-12">
-          <FaSpinner className="text-4xl text-emerald-600 animate-spin" />
+          <div className="text-center">
+            <FaSpinner className="text-4xl text-emerald-600 animate-spin mx-auto mb-4" />
+            <p className="text-slate-600">Loading consultation catalog...</p>
+          </div>
         </div>
-      ) : (
+      ) : !error ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredHerbs.length > 0 ? (
-            filteredHerbs.map((herb) => (
+          {filteredCatalog.length > 0 ? (
+            filteredCatalog.map((item) => (
               <div
-                key={herb.id}
-                className="rounded-lg border border-slate-200 bg-white shadow-sm hover:shadow-md transition cursor-pointer overflow-hidden"
-                onClick={() => setSelectedHerb(herb)}
+                key={item.id || item.consultationId}
+                className="rounded-lg border border-slate-200 bg-white shadow-sm hover:shadow-md transition cursor-pointer overflow-hidden hover:border-emerald-300"
+                onClick={() => handleSelectCatalog(item)}
               >
                 {/* Header */}
-                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-4 border-b border-slate-200">
+                <div className="bg-linear-to-r from-emerald-50 to-teal-50 p-4 border-b border-slate-200">
                   <h3 className="font-bold text-slate-900 text-lg">
-                    {herb.name}
+                    {item.name || item.title}
                   </h3>
-                  {herb.latinName && (
-                    <p className="text-xs text-slate-500 italic">
-                      {herb.latinName}
+                  {item.type && (
+                    <p className="text-xs text-slate-500 font-medium mt-1">
+                      Type: {item.type}
                     </p>
                   )}
                 </div>
 
                 {/* Content */}
                 <div className="p-4 space-y-3">
-                  {herb.benefits && (
+                  {item.description && (
                     <div>
                       <p className="text-xs font-bold uppercase tracking-widest text-slate-600 mb-2">
-                        Benefits
+                        Description
                       </p>
-                      <p className="text-sm text-slate-700">{herb.benefits}</p>
+                      <p className="text-sm text-slate-700 line-clamp-2">{item.description}</p>
                     </div>
                   )}
 
-                  {herb.properties && (
+                  {item.focusAreas && (
                     <div>
                       <p className="text-xs font-bold uppercase tracking-widest text-slate-600 mb-2">
-                        Properties
+                        Focus Areas
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {herb.properties.split(",").map((prop, idx) => (
+                        {(Array.isArray(item.focusAreas) ? item.focusAreas : item.focusAreas.split(",")).map((area, idx) => (
                           <span
                             key={idx}
                             className="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold"
                           >
-                            {prop.trim()}
+                            {typeof area === "string" ? area.trim() : area}
                           </span>
                         ))}
                       </div>
                     </div>
                   )}
 
-                  {herb.dosage && (
+                  {item.duration && (
                     <div className="rounded-lg bg-slate-50 p-3">
                       <p className="text-xs font-bold text-slate-600 mb-1">
-                        Dosage
+                        Duration
                       </p>
-                      <p className="text-sm text-slate-700">{herb.dosage}</p>
+                      <p className="text-sm text-slate-700">{item.duration}</p>
                     </div>
                   )}
                 </div>
               </div>
             ))
           ) : (
-            <div className="col-span-full text-center py-8">
-              <p className="text-slate-600">
-                No herbs found matching your search
+            <div className="col-span-full text-center py-12">
+              <FaLeaf className="text-6xl text-slate-300 mx-auto mb-4" />
+              <p className="text-slate-600 text-lg font-medium">
+                No consultations found matching your search
               </p>
             </div>
           )}
         </div>
-      )}
+      ) : null}
 
       {/* Detailed View Modal */}
-      {selectedHerb && (
+      {selectedCatalog && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-          onClick={() => setSelectedHerb(null)}
+          onClick={() => {
+            setSelectedCatalog(null);
+            setCatalogDetail(null);
+          }}
         >
           <div
-            className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-96 overflow-y-auto"
+            className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white p-6 sticky top-0">
-              <h2 className="text-2xl font-bold">{selectedHerb.name}</h2>
-              {selectedHerb.latinName && (
-                <p className="text-emerald-100 italic">
-                  {selectedHerb.latinName}
-                </p>
-              )}
-            </div>
-
-            <div className="p-6 space-y-4">
-              {selectedHerb.description && (
-                <div>
-                  <h3 className="font-bold text-slate-900 mb-2">Description</h3>
-                  <p className="text-slate-700">{selectedHerb.description}</p>
-                </div>
-              )}
-
-              {selectedHerb.benefits && (
-                <div>
-                  <h3 className="font-bold text-slate-900 mb-2">Benefits</h3>
-                  <p className="text-slate-700">{selectedHerb.benefits}</p>
-                </div>
-              )}
-
-              {selectedHerb.dosage && (
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <h3 className="font-bold text-blue-900 mb-2">
-                    Recommended Dosage
-                  </h3>
-                  <p className="text-blue-800">{selectedHerb.dosage}</p>
-                </div>
-              )}
-
-              {selectedHerb.contraindications && (
-                <div className="bg-yellow-50 rounded-lg p-4">
-                  <h3 className="font-bold text-yellow-900 mb-2">
-                    Contraindications
-                  </h3>
-                  <p className="text-yellow-800">
-                    {selectedHerb.contraindications}
+            <div className="bg-linear-to-r from-emerald-500 to-teal-500 text-white p-6 sticky top-0 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{selectedCatalog.name || selectedCatalog.title}</h2>
+                {selectedCatalog.type && (
+                  <p className="text-emerald-100 mt-1">
+                    Type: {selectedCatalog.type}
                   </p>
-                </div>
-              )}
-
+                )}
+              </div>
               <button
-                onClick={() => setSelectedHerb(null)}
-                className="w-full mt-6 rounded-lg bg-emerald-600 px-4 py-2.5 font-semibold text-white hover:bg-emerald-500 transition"
+                onClick={() => {
+                  setSelectedCatalog(null);
+                  setCatalogDetail(null);
+                }}
+                className="text-white hover:bg-white hover:bg-opacity-20 p-2 rounded-lg transition"
               >
-                Close
+                <FaTimes className="text-xl" />
               </button>
             </div>
+
+            {detailLoading ? (
+              <div className="p-6 flex justify-center">
+                <FaSpinner className="text-3xl text-emerald-600 animate-spin" />
+              </div>
+            ) : (
+              <div className="p-6 space-y-4">
+                {selectedCatalog.description && (
+                  <div>
+                    <h3 className="font-bold text-slate-900 mb-2">Description</h3>
+                    <p className="text-slate-700">{selectedCatalog.description}</p>
+                  </div>
+                )}
+
+                {catalogDetail?.focusAreas && (
+                  <div>
+                    <h3 className="font-bold text-slate-900 mb-2">Focus Areas</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {(Array.isArray(catalogDetail.focusAreas) ? catalogDetail.focusAreas : catalogDetail.focusAreas.split(",")).map(
+                        (area, idx) => (
+                          <span
+                            key={idx}
+                            className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-sm font-semibold"
+                          >
+                            {typeof area === "string" ? area.trim() : area}
+                          </span>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {catalogDetail?.duration && (
+                  <div className="bg-blue-50 rounded-lg p-4">
+                    <h3 className="font-bold text-blue-900 mb-2">Duration</h3>
+                    <p className="text-blue-800">{catalogDetail.duration}</p>
+                  </div>
+                )}
+
+                {catalogDetail?.benefits && (
+                  <div className="bg-emerald-50 rounded-lg p-4">
+                    <h3 className="font-bold text-emerald-900 mb-2">Benefits</h3>
+                    <p className="text-emerald-800">{catalogDetail.benefits}</p>
+                  </div>
+                )}
+
+                {catalogDetail?.recommendations && (
+                  <div className="bg-yellow-50 rounded-lg p-4">
+                    <h3 className="font-bold text-yellow-900 mb-2">Recommendations</h3>
+                    <p className="text-yellow-800">{catalogDetail.recommendations}</p>
+                  </div>
+                )}
+
+                {/* Add to Consultation Button */}
+                <button
+                  className="w-full mt-6 rounded-lg bg-emerald-600 px-4 py-2.5 font-semibold text-white hover:bg-emerald-500 transition"
+                  onClick={() => {
+                    toast.success("Consultation selected!");
+                    setSelectedCatalog(null);
+                    setCatalogDetail(null);
+                  }}
+                >
+                  Use This Consultation
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
