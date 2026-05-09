@@ -21,6 +21,7 @@ function AiConsultationResult({ result, onNewConsultation }) {
   const [history, setHistory] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [savingRecipe, setSavingRecipe] = useState(false);
 
   useEffect(() => {
     if (activeTab === "history") {
@@ -102,6 +103,8 @@ function AiConsultationResult({ result, onNewConsultation }) {
   };
 
   const handleSaveRecipe = async () => {
+    if (savingRecipe) return;
+    setSavingRecipe(true);
     try {
       const payload = {
         recipeId: result.id || result.consultationId,
@@ -110,11 +113,13 @@ function AiConsultationResult({ result, onNewConsultation }) {
       await toggleFavorite(payload);
       setIsSaved(!isSaved);
       toast.success(
-        isSaved ? "Recipe removed from favorites" : "Recipe saved to favorites",
+        isSaved ? "Recipe removed from favorites" : "Recipe saved to favorites!",
       );
     } catch (error) {
       toast.error("Failed to save recipe");
       console.error(error);
+    } finally {
+      setSavingRecipe(false);
     }
   };
 
@@ -144,12 +149,22 @@ function AiConsultationResult({ result, onNewConsultation }) {
         </div>
         <button
           onClick={handleSaveRecipe}
-          className="flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 font-semibold text-slate-700 border border-slate-200 hover:bg-slate-50 transition"
+          disabled={savingRecipe}
+          className={`flex items-center gap-2 rounded-lg px-4 py-2.5 font-semibold transition ${
+            isSaved
+              ? "bg-amber-50 border border-amber-200 text-amber-700 hover:bg-amber-100"
+              : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
+          } ${savingRecipe ? "opacity-60 cursor-not-allowed" : ""}`}
         >
-          {isSaved ? (
+          {savingRecipe ? (
+            <>
+              <FaSpinner className="text-amber-500 animate-spin" />
+              Saving...
+            </>
+          ) : isSaved ? (
             <>
               <FaBookmark className="text-amber-500" />
-              Saved
+              Saved to Favorites
             </>
           ) : (
             <>

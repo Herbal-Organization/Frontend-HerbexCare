@@ -47,7 +47,7 @@ function FavoriteRecipes() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-4 mb-6">
-          <div className="rounded-2xl bg-gradient-to-br from-red-500 to-pink-500 p-4 text-white shadow-lg">
+          <div className="rounded-2xl bg-linear-to-br from-red-500 to-pink-500 p-4 text-white shadow-lg">
             <FaHeart className="text-3xl" />
           </div>
           <div>
@@ -70,7 +70,7 @@ function FavoriteRecipes() {
               onClick={() => setSelectedRecipe(recipe)}
             >
               {/* Header */}
-              <div className="bg-gradient-to-r from-red-50 to-pink-50 p-4 border-b border-slate-200">
+              <div className="bg-linear-to-r from-red-50 to-pink-50 p-4 border-b border-slate-200">
                 <h3 className="font-bold text-slate-900">
                   {recipe.recipeName || "Recipe"}
                 </h3>
@@ -147,7 +147,7 @@ function FavoriteRecipes() {
             className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-96 overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-gradient-to-r from-red-500 to-pink-500 text-white p-6 sticky top-0">
+            <div className="bg-linear-to-r from-red-500 to-pink-500 text-white p-6 sticky top-0">
               <h2 className="text-2xl font-bold">
                 {selectedRecipe.recipeName || "Recipe"}
               </h2>
