@@ -131,10 +131,561 @@
     "herbLibrary": "Herb Library",
     "recipeLibrary": "Recipe Library",
     "profile": "Profile",
+    "settings": "Settings",
     "home": "Home",
     "signOut": "Sign Out",
     "patient": "Patient",
     "member": "Member"
+  },
+  "herbalistSidebar": {
+    "dashboard": "Dashboard",
+    "manageHerbs": "Manage Herbs",
+    "manageRecipes": "Manage Recipes",
+    "manageDiseases": "Manage Diseases",
+    "inventory": "Inventory",
+    "orders": "Orders",
+    "profile": "Profile",
+    "settings": "Settings",
+    "member": "Practitioner"
+  },
+  "dashboardSettings": {
+    "kicker": "Account settings",
+    "title": "Settings",
+    "subtitle": "Manage your password, language, and account access from one place.",
+    "account": {
+      "unknown": "User",
+      "signedInAs": "Signed in as"
+    },
+    "profile": {
+      "title": "Profile and address",
+      "description": "Update your account and address information.",
+      "submit": "Save profile",
+      "submitting": "Saving...",
+      "fields": {
+        "fullName": "Full name",
+        "userName": "Username",
+        "email": "Email",
+        "phone": "Phone",
+        "governorate": "Governorate",
+        "city": "City",
+        "street": "Street"
+      }
+    },
+    "language": {
+      "title": "Language",
+      "description": "Switch the dashboard interface between English and Arabic."
+    },
+    "security": {
+      "password": {
+        "title": "Reset password",
+        "description": "Set a new password for your account.",
+        "submit": "Update password",
+        "submitting": "Updating..."
+      },
+      "delete": {
+        "title": "Delete account",
+        "description": "Permanently remove your account and all associated data.",
+        "submit": "Delete account",
+        "submitting": "Deleting..."
+      }
+    },
+    "messages": {
+      "accountUnavailable": "Unable to resolve your account details.",
+      "emailMismatch": "Type your exact email address to confirm deletion.",
+      "profileUpdateSuccess": "Profile updated successfully.",
+      "profileUpdateError": "Failed to update profile. Please try again."
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "subtitle": "Manage your personal information and medical history",
+    "sections": {
+      "personalInfo": {
+        "title": "Personal Information",
+        "description": "Your primary account details",
+        "fullName": "Full Name",
+        "email": "Email Address",
+        "username": "Username",
+        "phone": "Phone Number"
+      },
+      "patientDetails": {
+        "title": "Patient Details",
+        "description": "Essential medical demographics",
+        "birthDate": "Birth Date",
+        "gender": "Gender",
+        "genderOptions": {
+          "male": "Male",
+          "female": "Female"
+        }
+      },
+      "medicalHistory": {
+        "title": "Medical History",
+        "description": "Select any pre-existing conditions",
+        "conditions": {
+          "diabetes": "Diabetes",
+          "hypertension": "Hypertension",
+          "asthma": "Asthma",
+          "heartDisease": "Heart Disease",
+          "kidneyDisease": "Kidney Disease",
+          "liverDisease": "Liver Disease",
+          "smoker": "Smoker",
+          "pregnancy": "Pregnancy",
+          "allergies": "Known Allergies"
+        },
+        "otherNotes": "Other Notes",
+        "notesPlaceholder": "Describe any other medical conditions, allergies, or relevant notes..."
+      },
+      "addressInfo": {
+        "title": "Address Information",
+        "description": "Where should we deliver your orders?",
+        "governorate": "Governorate",
+        "city": "City",
+        "street": "Street",
+        "placeholders": {
+          "governorate": "Select governorate",
+          "city": "Select city",
+          "street": "Enter street name and building number"
+        }
+      },
+      "photo": {
+        "title": "Profile Picture",
+        "description": "Upload a professional photo to help your doctors identify you easily. JPG or PNG.",
+        "change": "Upload New Image",
+        "remove": "Remove"
+      },
+      "security": {
+        "title": "Security",
+        "changePassword": "Change Password",
+        "changePasswordDescription": "Update your password to keep your account secure",
+        "deleteAccount": "Delete Account",
+        "deleteAccountDescription": "Permanently remove your account and all associated data",
+        "deleteAccountWarning": "⚠️ This action cannot be undone. Your account and all associated data will be permanently deleted."
+      }
+    },
+    "actions": {
+      "save": "Save Changes",
+      "saving": "Saving Changes...",
+      "cancel": "Cancel"
+    },
+    "messages": {
+      "success": "Profile updated successfully!",
+      "error": "Failed to update profile. Please try again.",
+      "loading": "Loading profile data...",
+      "noData": "N/A",
+      "deleteSuccess": "Account deleted successfully. Redirecting to login...",
+      "confirmDelete": "Are you absolutely sure? This cannot be undone.",
+      "unavailableTitle": "Profile data is unavailable",
+      "unavailableDescription": "We couldn't load your address and medical history yet.",
+      "passwordChangeError": "Password change failed. Please try again.",
+      "passwordChangeSuccess": "Password changed successfully!",
+      "deleteAccountError": "Account deletion failed. Please try again."
+    },
+    "common": {
+      "select": "Select"
+    },
+    "modals": {
+      "changePassword": {
+        "title": "Change Password",
+        "description": "Enter your current password and new password",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm New Password",
+        "submit": "Update Password",
+        "submitting": "Updating...",
+        "validation": {
+          "currentRequired": "Current password is required",
+          "newRequired": "New password is required",
+          "confirmRequired": "Please confirm your new password",
+          "minLength": "Password must be at least 8 characters",
+          "mismatch": "Passwords do not match",
+          "uppercase": "Must contain at least one uppercase letter",
+          "lowercase": "Must contain at least one lowercase letter",
+          "number": "Must contain at least one number"
+        }
+      },
+      "deleteAccount": {
+        "title": "Delete Account",
+        "description": "This action cannot be undone",
+        "warning": "⚠️ Deleting your account will permanently remove all your data, including medical history, orders, and preferences. This action cannot be undone.",
+        "confirmLabel": "Type your email to confirm: ",
+        "placeholder": "Enter {{email}} to confirm",
+        "submit": "Delete Account",
+        "submitting": "Deleting..."
+      }
+    }
+  },
+  "aiConsultation": {
+    "nav": {
+      "generator": "AI Recipe Generator",
+      "catalog": "Herb Catalog",
+      "consultations": "My Consultations",
+      "favorites": "Saved Recipes"
+    },
+    "profileIncomplete": {
+      "title": "Profile Incomplete",
+      "description": "To provide accurate AI consultations, we need your birth date and gender from your profile. Please update your profile details to continue.",
+      "action": "Update My Profile"
+    },
+    "title": "AI Herbal Consultation",
+    "subtitle": "Get personalized herbal recommendations based on your symptoms and health profile.",
+    "newConsultation": "New Consultation",
+    "history": "My Consultations",
+    "catalog": {
+      "title": "AI Consultation Catalog",
+      "subtitle": "Browse consultation types and health recommendations",
+      "searchPlaceholder": "Search consultations by name or type...",
+      "loading": "Loading consultation catalog...",
+      "noResults": "No consultations found matching your search",
+      "focusAreas": "Focus Areas",
+      "duration": "Duration",
+      "benefits": "Benefits",
+      "actions": {
+        "use": "Use This Consultation",
+        "retry": "Retry"
+      },
+      "messages": {
+        "loadError": "Failed to load catalog",
+        "detailError": "Failed to load catalog details",
+        "selected": "Consultation selected!"
+      }
+    },
+    "wizard": {
+      "step1": {
+        "title": "Personal Information",
+        "description": "Tell us about yourself"
+      },
+      "step2": {
+        "title": "Health Background",
+        "description": "Any medical conditions?"
+      },
+      "step3": {
+        "title": "Current Health Status",
+        "description": "Your vital measurements"
+      },
+      "step4": {
+        "title": "What are you experiencing?",
+        "description": "Select applicable symptoms"
+      },
+      "step5": {
+        "title": "Confirm Information",
+        "description": "Review before generating"
+      }
+    },
+    "favorites": {
+      "title": "Saved Recipes",
+      "subtitle": "Your favorite AI-generated recipes",
+      "loading": "Loading saved recipes...",
+      "noFavorites": "No saved recipes yet",
+      "noFavoritesSubtitle": "Generate and save recipes to view them here",
+      "savedOn": "Saved on {{date}}",
+      "viewDetails": "Click to view details",
+      "actions": {
+        "remove": "Remove",
+        "close": "Close"
+      },
+      "messages": {
+        "loadError": "Failed to load saved recipes",
+        "removeSuccess": "Recipe removed from favorites",
+        "removeError": "Failed to remove recipe",
+        "historyError": "Failed to load consultation history",
+        "saveSuccess": "Recipe saved to favorites!",
+        "saveError": "Failed to save recipe",
+        "noHistory": "No consultation history found",
+        "generateError": "Failed to generate AI consultation. Please try again."
+      }
+    },
+    "form": {
+      "title": "Patient Consultation",
+      "sections": {
+        "info": "General Info",
+        "medical": "Medical History",
+        "vitals": "Vital Signs",
+        "symptoms": "Select Symptoms",
+        "review": "Review Info",
+        "demographics": "Personal Information",
+        "medicalHistory": "Health Background"
+      },
+      "labels": {
+        "select": "Select"
+      },
+      "fields": {
+        "age": "Age",
+        "gender": "Gender",
+        "weightKg": "Weight",
+        "heightCm": "Height",
+        "hasDiabetes": "Diabetes",
+        "hasHypertension": "Hypertension",
+        "hasAllergies": "Known Allergies",
+        "isPregnant": "Pregnant",
+        "isSmoker": "Smoker",
+        "systolicBp": "Systolic BP",
+        "diastolicBp": "Diastolic BP",
+        "temperatureCelsius": "Temperature",
+        "heartRateBpm": "Heart Rate",
+        "symptomDurationDays": "Symptom Duration",
+        "severityScore": "Severity Score"
+      },
+      "options": {
+        "gender": {
+          "male": "Male",
+          "female": "Female"
+        }
+      },
+      "placeholders": {
+        "age": "e.g. 29",
+        "weightKg": "e.g. 68.5",
+        "heightCm": "e.g. 172",
+        "systolicBp": "e.g. 120",
+        "diastolicBp": "e.g. 80",
+        "temperatureCelsius": "e.g. 37.0",
+        "heartRateBpm": "e.g. 72",
+        "severityScore": "e.g. 6",
+        "symptomDurationDays": "e.g. 3",
+        "selectGender": "Select Gender"
+      },
+      "symptoms": {
+        "itchy_eyes": "Itchy Eyes",
+        "visual_aura": "Visual Aura",
+        "runny_nose": "Runny Nose",
+        "headache": "Headache",
+        "watery_eyes": "Watery Eyes",
+        "sneezing": "Sneezing",
+        "chest_pain": "Chest Pain",
+        "painful_urination": "Painful Urination",
+        "pelvic_pain": "Pelvic Pain",
+        "severe_headache": "Severe Headache",
+        "light_sensitivity": "Light Sensitivity",
+        "cloudy_urine": "Cloudy Urine",
+        "abdominal_pain": "Abdominal Pain",
+        "vomiting": "Vomiting",
+        "fever": "Fever",
+        "dizziness": "Dizziness",
+        "cold_hands": "Cold Hands",
+        "cough": "Cough",
+        "slow_healing": "Slow Healing",
+        "cold_intolerance": "Cold Intolerance",
+        "blurred_vision": "Blurred Vision",
+        "diarrhea": "Diarrhea",
+        "weight_gain": "Weight Gain",
+        "nausea": "Nausea",
+        "excessive_thirst": "Excessive Thirst",
+        "nasal_congestion": "Nasal Congestion",
+        "frequent_urination": "Frequent Urination",
+        "dry_skin": "Dry Skin",
+        "pale_skin": "Pale Skin",
+        "fatigue": "Fatigue",
+        "constipation": "Constipation",
+        "sore_throat": "Sore Throat",
+        "shortness_of_breath": "Shortness Of Breath"
+      },
+      "submit": "Generate Recipe",
+      "submitting": "Generating...",
+      "reset": "Reset",
+      "selectedSymptoms": "Selected symptoms: {{count}}",
+      "selectedCount": "Selected: {{count}} symptoms",
+      "medicalInstruction": "Check any conditions that apply to you",
+      "symptomsInstruction": "Select all symptoms you're experiencing",
+      "noConditions": "No conditions selected",
+      "noSymptoms": "No symptoms selected",
+      "units": {
+        "years": "years",
+        "kg": "kg",
+        "cm": "cm",
+        "mmHg": "mmHg",
+        "bpm": "BPM",
+        "days": "days"
+      },
+      "actions": {
+        "previous": "Previous",
+        "next": "Next",
+        "reset": "Reset"
+      },
+      "messages": {
+        "symptomRequired": "Please add at least one symptom.",
+        "generateSuccess": "AI recipe generated successfully!"
+      },
+      "placeholders": {
+        "selectGender": "Select Gender",
+        "age": "e.g. 29",
+        "weightKg": "e.g. 68.5",
+        "heightCm": "e.g. 172",
+        "systolicBp": "e.g. 120",
+        "diastolicBp": "e.g. 80",
+        "temperatureCelsius": "e.g. 37.0",
+        "heartRateBpm": "e.g. 72",
+        "severityScore": "e.g. 6",
+        "symptomDurationDays": "e.g. 3"
+      }
+    },
+    "result": {
+      "title": "AI Recommendation",
+      "successTitle": "Recipe Generated Successfully",
+      "successSubtitle": "Your personalized herbal remedy recommendation",
+      "defaultTitle": "AI Herbal Recipe",
+      "consultationNumber": "Consultation #{{number}}",
+      "disclaimer": "Disclaimer: This is an AI-generated recommendation. Please consult with a healthcare professional before starting any herbal treatment.",
+      "medicalDisclaimerTitle": "Important Medical Disclaimer",
+      "medicalDisclaimerText": "This is an AI-generated recommendation and should not be considered professional medical advice. Always consult with a qualified healthcare provider or registered herbalist before starting any herbal treatment, especially if you are pregnant, nursing, taking medications, or have underlying health conditions. Discontinue use immediately if you experience any adverse reactions.",
+      "tabs": {
+        "recipe": "Generated Recipe",
+        "history": "History"
+      },
+      "sections": {
+        "summary": "Summary",
+        "recipe": "Herbal Recipe Recommendation",
+        "recipeSubtitle": "Based on your health profile and symptoms",
+        "ingredients": "Ingredients",
+        "instructions": "Preparation Instructions",
+        "usage": "Usage & Dosage",
+        "dosage": "Dosage",
+        "use": "Usage",
+        "duration": "Duration",
+        "benefits": "Expected Benefits",
+        "precautions": "Precautions & Warnings",
+        "additional": "Additional Information",
+        "storage": "Storage",
+        "notes": "Notes"
+      },
+      "empty": {
+        "ingredients": "No ingredients were returned for this recipe.",
+        "instructions": "Preparation instructions were not returned by the AI response."
+      },
+      "sidebar": {
+        "confidence": "Confidence Score",
+        "reliability": "Reliability of this recommendation",
+        "keyInfo": "Key Info",
+        "type": "Type",
+        "typeValue": "Herbal Blend",
+        "safety": "Safety",
+        "safetyValue": "Natural ingredients",
+        "duration": "Duration",
+        "durationValue": "2-4 weeks typical"
+      },
+      "actions": {
+        "save": "Save Recipe",
+        "saving": "Saving...",
+        "saved": "Saved to Favorites",
+        "another": "Generate Another Recipe",
+        "view": "View"
+      },
+      "messages": {
+        "saveSuccess": "Recipe saved to favorites!",
+        "removeSuccess": "Recipe removed from favorites",
+        "saveError": "Failed to save recipe",
+        "historyError": "Failed to load history",
+        "noHistory": "No previous consultations"
+      }
+    },
+    "myConsultations": {
+      "title": "My Consultations",
+      "subtitle": "Review your past AI consultations",
+      "searchPlaceholder": "Search consultations by title or type...",
+      "loading": "Loading your consultations...",
+      "noResults": "No consultations found matching your search",
+      "startNew": "Start by generating a new consultation using the AI Recipe Generator",
+      "retry": "Retry",
+      "type": "Type",
+      "created": "Created",
+      "unknownDate": "Date unknown",
+      "description": "Description",
+      "confidence": "Confidence",
+      "symptoms": "Symptoms",
+      "recommendations": "Recommendations",
+      "preparation": "Preparation Instructions",
+      "relatedHerbs": "Related Herbs",
+      "view": "View",
+      "messages": {
+        "historyError": "Failed to load consultations",
+        "detailError": "Failed to load consultation details"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Please enter your details to continue",
+      "emailLabel": "Email Address",
+      "passwordLabel": "Password",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign In",
+      "loading": "Signing In",
+      "success": "Login successful!",
+      "orContinueWith": "Or continue with",
+      "backToHome": "Back to Home",
+      "confirmationRequired": "Email Confirmation Required",
+      "confirmationSubtitle": "Please confirm your email address to proceed. A confirmation link has been sent to your email.",
+      "resendConfirmation": "Resend Confirmation Email",
+      "sending": "Sending...",
+      "googleSubmit": "Continue with Google",
+      "googleError": "Failed to login with Google. Please try again."
+    },
+    "register": {
+      "title": "Create an account",
+      "subtitle": "Join us to start your natural wellness journey",
+      "submit": "Create Account",
+      "loading": "Creating Account",
+      "alreadyHaveAccount": "Already have an account? Sign In",
+      "fullName": "Full Name",
+      "email": "Email Address",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "role": "I am a...",
+      "patient": "Patient",
+      "herbalist": "Herbalist",
+      "agreeTerms": "I agree to the terms and conditions"
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "subtitle": "Enter your email and choose a new password for your account.",
+      "sideDescription": "Recover access to your herbal care account and get back to your wellness journey.",
+      "submit": "Reset Password",
+      "loading": "Resetting Password",
+      "backToLogin": "Back to Sign In"
+    }
+  },
+  "dashboard": {
+    "hero": {
+      "tagline": "Patient Dashboard",
+      "welcome": "Welcome back",
+      "description": "Keep your profile, address, and medical history up to date so your herbal care plan stays perfectly tailored to you.",
+      "email": "Email",
+      "phone": "Phone",
+      "birthDate": "Birth Date",
+      "gender": "Gender",
+      "notAvailable": "Not available",
+      "notSet": "Not set",
+      "location": "Primary Location",
+      "updateProfile": "Update in your profile",
+      "medicalProfile": "Medical Profile",
+      "active": "Active",
+      "syncing": "Syncing from your health records",
+      "secureSync": "Secure Data Sync",
+      "protected": "End-to-end protected by Herbal AI"
+    },
+    "medicalHistory": {
+      "title": "Medical History",
+      "subtitle": "Conditions securely saved in your health profile",
+      "activeConditions": "Active Conditions",
+      "noConditions": "No Active Conditions",
+      "noConditionsDesc": "You haven't marked any medical flags.",
+      "additionalNotes": "Additional Notes",
+      "noNotes": "No additional medical notes or allergies documented in your profile yet."
+    },
+    "address": {
+      "title": "Address Details",
+      "subtitle": "Your primary location configuration",
+      "governorate": "Governorate",
+      "city": "City",
+      "street": "Street Name / Number",
+      "notSet": "Not set"
+    },
+    "states": {
+      "loadingTitle": "Loading your dashboard",
+      "loadingDesc": "We're fetching your address and medical history.",
+      "errorTitle": "Unable to load dashboard data",
+      "noDataTitle": "No dashboard data yet",
+      "noDataDesc": "Once your profile data is available, it will appear here.",
+      "retry": "Try Again"
+    }
   }
 }
-
