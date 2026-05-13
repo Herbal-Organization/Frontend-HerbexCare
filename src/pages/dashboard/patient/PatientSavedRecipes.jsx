@@ -6,9 +6,9 @@ import {
   FaFlask,
   FaTrash,
 } from "react-icons/fa";
-import { getMyRecipesFavorites, toggleFavorite } from "../../../api/favorites";
+import { getFavoriteOrders } from "../../../api/orders";
 
-function extractRecipesArray(payload) {
+function extractOrdersArray(payload) {
   if (Array.isArray(payload)) return payload;
   if (Array.isArray(payload?.items)) return payload.items;
   if (Array.isArray(payload?.data)) return payload.data;
@@ -16,18 +16,17 @@ function extractRecipesArray(payload) {
 }
 
 function PatientSavedRecipes() {
-  const [favoriteRecipes, setFavoriteRecipes] = useState([]);
+  const [favoriteOrders, setFavoriteOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-  const [removingId, setRemovingId] = useState(null);
 
   useEffect(() => {
-    const loadFavoriteRecipes = async () => {
+    const loadFavoriteOrders = async () => {
       try {
         setIsLoading(true);
         setError("");
-        const response = await getMyRecipesFavorites();
-        setFavoriteRecipes(extractRecipesArray(response));
+        const response = await getFavoriteOrders();
+        setFavoriteOrders(extractOrdersArray(response));
       } catch (err) {
         setError(
           err.response?.data?.message ||
@@ -39,54 +38,34 @@ function PatientSavedRecipes() {
       }
     };
 
-    loadFavoriteRecipes();
+    loadFavoriteOrders();
   }, []);
 
   const savedRecipes = useMemo(
     () =>
-      favoriteRecipes
-        .map((item) => ({
-          recipeId: item.recipeId || item.id || item.targetId,
-          recipeName: item.recipeName || item.title || item.name,
-          description: item.description || "",
-          savedDate: item.createdAt || item.savedAt || item.date,
-          rating: item.rating ?? item.averageRating,
-        }))
+      favoriteOrders
+        .flatMap((order) => {
+          const orderId = order.orderId || order.id;
+          const orderDate = order.orderDate || order.createdAt || null;
+          const recipes = Array.isArray(order.recipes) ? order.recipes : [];
+
+          return recipes.map((recipe) => ({
+            recipeId: recipe.recipeId || recipe.id,
+            recipeName: recipe.recipeName || recipe.title || `Recipe #${recipe.recipeId || recipe.id}`,
+            description: recipe.description || "",
+            savedDate: orderDate,
+            rating: recipe.rating ?? recipe.averageRating,
+            orderId,
+          }));
+        })
         .filter((item) => item.recipeId)
         .sort((a, b) => {
           const aDate = a.savedDate ? new Date(a.savedDate).getTime() : 0;
           const bDate = b.savedDate ? new Date(b.savedDate).getTime() : 0;
           return bDate - aDate;
         }),
-    [favoriteRecipes],
+    [favoriteOrders],
   );
-
-  const handleRemoveSavedRecipe = async (recipeId) => {
-    const targetId = Number(recipeId || 0);
-    if (!targetId) return;
-
-    setRemovingId(targetId);
-    try {
-      await toggleFavorite({
-        targetId,
-        type: "Recipe",
-      });
-      setFavoriteRecipes((current) =>
-        current.filter((item) => {
-          const itemId = Number(item.recipeId || item.id || item.targetId || 0);
-          return itemId !== targetId;
-        }),
-      );
-    } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          err.response?.data?.title ||
-          "Unable to update saved recipes right now.",
-      );
-    } finally {
-      setRemovingId(null);
-    }
-  };
 
   if (isLoading) {
     return (
@@ -111,7 +90,7 @@ function PatientSavedRecipes() {
           Saved Recipes
         </h1>
         <p className="text-lg font-medium text-slate-500">
-          Recipes you saved from the recipe library.
+          Recipes collected from your favorite orders.
         </p>
       </div>
 
@@ -129,13 +108,13 @@ function PatientSavedRecipes() {
             No Saved Recipes Yet
           </h2>
           <p className="mt-2 text-slate-500 mb-8 max-w-sm font-medium">
-            Save recipes from the recipe library to see them here.
+            Favorite an order that contains recipes to see them here.
           </p>
           <Link
-            to="/patient/home/recipes"
+            to="/patient/dashboard/orders"
             className="rounded-full bg-slate-900 px-6 py-3 text-sm font-bold text-white transition-all hover:bg-slate-800 hover:-translate-y-0.5 shadow-md"
           >
-            Browse Recipes
+            Go to Orders
           </Link>
         </div>
       ) : (
@@ -178,20 +157,11 @@ function PatientSavedRecipes() {
 
               <div className="mt-5 grid grid-cols-2 gap-2">
                 <Link
-                  to={`/patient/home/recipes/${recipe.recipeId}`}
+                  to={`/patient/dashboard/orders/${recipe.orderId}`}
                   className="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-slate-800"
                 >
-                  View Recipe
+                  View Latest Order
                 </Link>
-                <button
-                  type="button"
-                  onClick={() => handleRemoveSavedRecipe(recipe.recipeId)}
-                  disabled={removingId === Number(recipe.recipeId)}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-xs font-bold text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <FaTrash className="text-[11px]" />
-                  {removingId === Number(recipe.recipeId) ? "Removing..." : "Remove"}
-                </button>
               </div>
             </div>
           ))}
