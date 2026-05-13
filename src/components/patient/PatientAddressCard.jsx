@@ -1,5 +1,6 @@
 import { FaCity, FaMapMarkedAlt, FaMapMarkerAlt, FaRoad } from "react-icons/fa";
 import { motion } from "motion/react";
+import { useTranslation } from "react-i18next";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -10,7 +11,7 @@ const itemVariants = {
   },
 };
 
-function AddressRow({ icon, label, value }) {
+function AddressRow({ icon, label, value, t }) {
   return (
     <div className="group flex items-start gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-5 hover:bg-white hover:border-slate-200 hover:shadow-sm transition-all">
       <div className="mt-0.5 rounded-xl bg-white p-2.5 text-slate-400 shadow-sm group-hover:text-primary group-hover:scale-110 transition-all">
@@ -21,7 +22,7 @@ function AddressRow({ icon, label, value }) {
           {label}
         </p>
         <p className="mt-1 text-sm font-bold text-slate-800">
-          {value || "Not set"}
+          {value || t("dashboard.address.notSet")}
         </p>
       </div>
     </div>
@@ -29,6 +30,7 @@ function AddressRow({ icon, label, value }) {
 }
 
 function PatientAddressCard({ profile }) {
+  const { t } = useTranslation();
   return (
     <motion.section 
       variants={itemVariants}
@@ -39,9 +41,9 @@ function PatientAddressCard({ profile }) {
           <FaMapMarkedAlt className="text-xl" />
         </div>
         <div>
-          <h2 className="text-2xl font-extrabold text-slate-900">Address Details</h2>
+          <h2 className="text-2xl font-extrabold text-slate-900">{t("dashboard.address.title")}</h2>
           <p className="mt-1 text-sm font-medium text-slate-500">
-            Your primary location configuration
+            {t("dashboard.address.subtitle")}
           </p>
         </div>
       </div>
@@ -49,18 +51,21 @@ function PatientAddressCard({ profile }) {
       <div className="grid gap-4">
         <AddressRow
           icon={<FaMapMarkerAlt className="text-lg" />}
-          label="Governorate"
+          label={t("dashboard.address.governorate")}
           value={profile?.governorate}
+          t={t}
         />
         <AddressRow 
           icon={<FaCity className="text-lg" />} 
-          label="City" 
-          value={profile?.city} 
+          label={t("dashboard.address.city")} 
+          value={profile?.city}
+          t={t}
         />
         <AddressRow 
           icon={<FaRoad className="text-lg" />} 
-          label="Street Name / Number" 
-          value={profile?.street} 
+          label={t("dashboard.address.street")} 
+          value={profile?.street}
+          t={t}
         />
       </div>
     </motion.section>
