@@ -319,7 +319,7 @@
       "generator": "AI Recipe Generator",
       "catalog": "Herb Catalog",
       "consultations": "My Consultations",
-      "favorites": "Saved Recipes"
+      "favorites": "Favorite Recipes"
     },
     "profileIncomplete": {
       "title": "Profile Incomplete",
@@ -372,10 +372,10 @@
       }
     },
     "favorites": {
-      "title": "Saved Recipes",
+      "title": "Favorite Recipes",
       "subtitle": "Your favorite AI-generated recipes",
       "loading": "Loading saved recipes...",
-      "noFavorites": "No saved recipes yet",
+      "noFavorites": "No favorite recipes yet",
       "noFavoritesSubtitle": "Generate and save recipes to view them here",
       "savedOn": "Saved on {{date}}",
       "viewDetails": "Click to view details",
