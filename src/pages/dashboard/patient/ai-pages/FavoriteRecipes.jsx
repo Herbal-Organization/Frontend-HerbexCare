@@ -311,7 +311,7 @@ function FavoriteRecipes() {
               <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 {favorites.map((recipe, idx) => (
                   <div
-                    key={recipe.id || idx}
+                    key={recipe.targetId || recipe.recipeId || recipe.id || idx}
                     onClick={() => {
                         setSelectedDetail(recipe);
                         setViewMode("detail");
@@ -335,19 +335,28 @@ function FavoriteRecipes() {
                     
                     <div className="flex-1">
                       <p className="text-xl font-black text-slate-900 leading-tight group-hover:text-red-700 transition-colors line-clamp-2">
-                        {recipe.recipeName || "Favorite Recipe"}
+                        {recipe.name || recipe.recipeName || recipe.title || "Favorite Recipe"}
                       </p>
                       <div className="flex items-center gap-2 mt-4">
                         <FaClock className="text-slate-300 text-xs" />
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                          Saved on {new Date(recipe.createdAt).toLocaleDateString()}
-                        </p>
+                        {(() => {
+                          const savedDate = recipe.createdAt || recipe.savedAt || recipe.date;
+                          if (!savedDate || Number.isNaN(new Date(savedDate).getTime())) {
+                            return null;
+                          }
+
+                          return (
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                              Saved on {new Date(savedDate).toLocaleDateString()}
+                            </p>
+                          );
+                        })()}
                       </div>
                     </div>
 
                     <div className="pt-6 border-t border-slate-100 flex items-center justify-between group-hover:border-red-200 transition-colors">
                       <button
-                        onClick={(e) => handleRemoveFavorite(recipe.id, e)}
+                        onClick={(e) => handleRemoveFavorite(recipe.targetId || recipe.recipeId || recipe.id, e)}
                         className="text-[10px] font-black text-red-600 uppercase tracking-[0.2em] hover:underline"
                       >
                         Remove
@@ -359,7 +368,7 @@ function FavoriteRecipes() {
               </div>
             ) : (
               <div className="text-center py-32 bg-white rounded-[3rem] border-2 border-slate-50 shadow-sm">
-                <div className="inline-flex h-24 w-24 items-center justify-center rounded-[2rem] bg-slate-50 text-slate-200 mb-8 shadow-inner">
+                <div className="inline-flex h-24 w-24 items-center justify-center rounded-4xl bg-slate-50 text-slate-200 mb-8 shadow-inner">
                   <FaHeart className="text-5xl" />
                 </div>
                 <p className="text-2xl font-black text-slate-900 mb-3">No favorite recipes yet</p>
