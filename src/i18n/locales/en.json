@@ -634,6 +634,23 @@
       "herbalist": "Herbalist",
       "agreeTerms": "I agree to the terms and conditions"
     },
+    "confirmEmail": {
+      "title": "Confirm your email",
+      "subtitle": "We are verifying your email address now.",
+      "sideDescription": "Secure your herbal care account by confirming the email address used during registration.",
+      "loadingTitle": "Verifying your email",
+      "loadingMessage": "Please wait while we confirm your email link.",
+      "successTitle": "Email confirmed",
+      "successMessage": "Your email address has been verified successfully.",
+      "successHint": "You can now return to Sign In and access your account.",
+      "successAlert": "Email confirmation completed successfully.",
+      "errorTitle": "Confirmation failed",
+      "errorMessage": "We could not verify this email confirmation link.",
+      "errorAlert": "The confirmation link is invalid, expired, or already used.",
+      "missingParams": "The confirmation link is missing the required email or token.",
+      "backToLogin": "Back to Sign In",
+      "tryAgain": "Try again"
+    },
     "forgotPassword": {
       "title": "Forgot Password",
       "subtitle": "Enter your email and choose a new password for your account.",

@@ -1,5 +1,6 @@
 import { Navigate, Routes, Route } from "react-router-dom";
 import AuthPage from "./pages/auth/AuthPage";
+import ConfirmEmailPage from "./pages/auth/ConfirmEmailPage";
 import ForgetPassword from "./components/auth/ForgetPassword";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
@@ -24,6 +25,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/confirm-email" element={<ConfirmEmailPage />} />
         <Route
           path="/forget"
           element={

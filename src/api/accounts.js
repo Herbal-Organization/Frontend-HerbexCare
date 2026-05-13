@@ -1,6 +1,5 @@
 import httpClient from "./httpClient";
 
-// service layer
 export const registerAccount = async (payload) => {
   const { data } = await httpClient.post("/api/Accounts/register", payload);
   return data;
@@ -42,18 +41,11 @@ export const forgotPasswordAccount = async (payload) => {
   return data;
 };
 
-export const refreshAccount = async (payload) => {
-  const { data } = await httpClient.post("/api/Accounts/refresh", payload);
-  return data;
-};
-
-export const logoutAccount = async (payload) => {
-  const { data } = await httpClient.post("/api/Accounts/logout", payload);
-  return data;
-};
-
 export const googleLoginAccount = async (payload) => {
-  const { data } = await httpClient.post("/api/Accounts/google-login", payload);
+  const { data } = await httpClient.post(
+    "/api/Accounts/google-login",
+    payload,
+  );
   return data;
 };
 
