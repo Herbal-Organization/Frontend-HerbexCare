@@ -14,6 +14,7 @@ export const DEFAULT_MEDICAL_HISTORY = {
   liverDisease: false,
   smoker: false,
   pregnancy: false,
+  allergies: false,
   otherNotes: "",
 };
 
@@ -40,6 +41,7 @@ export const MEDICAL_CONDITIONS = [
   { name: "liverDisease", label: "Liver Disease" },
   { name: "smoker", label: "Smoker" },
   { name: "pregnancy", label: "Pregnancy" },
+  { name: "allergies", label: "Known Allergies" },
 ];
 
 const normalizeDateForInput = (value) => {
@@ -207,14 +209,30 @@ export const buildPatientProfileState = ({
     liverDisease: medicalHistory?.liverDisease ?? false,
     smoker: medicalHistory?.smoker ?? false,
     pregnancy: medicalHistory?.pregnancy ?? false,
+    allergies: medicalHistory?.allergies ?? false,
     otherNotes: medicalHistory?.otherNotes ?? "",
   };
 };
 
 export const getPatientDashboardData = async (userId) => {
-  const [userDetails, medicalHistory, patientInfo] = await Promise.all([
+  // Fetch medical history, and auto-create if doesn't exist (404 for new users)
+  let medicalHistory = null;
+  try {
+    medicalHistory = await getMyMedicalHistory();
+  } catch (err) {
+    // If 404 (not found), auto-initialize with default values for new users
+    if (err.response?.status === 404) {
+      try {
+        medicalHistory = await saveMyMedicalHistory(DEFAULT_MEDICAL_HISTORY);
+      } catch {
+        // If initialization also fails, continue with null
+        medicalHistory = null;
+      }
+    }
+  }
+
+  const [userDetails, patientInfo] = await Promise.all([
     userId ? getUserById(userId).catch(() => null) : Promise.resolve(null),
-    getMyMedicalHistory().catch(() => null),
     getMyProfile().catch(() => null),
   ]);
 
@@ -262,6 +280,7 @@ export const savePatientProfile = async (profile) => {
     liverDisease: !!profile.liverDisease,
     smoker: !!profile.smoker,
     pregnancy: !!profile.pregnancy,
+    allergies: !!profile.allergies,
     otherNotes:
       profile.otherNotes && profile.otherNotes.trim()
         ? profile.otherNotes.trim()
@@ -313,5 +332,5 @@ export const savePatientProfile = async (profile) => {
 
 export const getActiveConditions = (profile) =>
   MEDICAL_CONDITIONS.filter((condition) => profile?.[condition.name]).map(
-    (condition) => condition.label,
+    (condition) => condition.name,
   );
