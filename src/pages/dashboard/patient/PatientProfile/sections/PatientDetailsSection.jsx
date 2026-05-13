@@ -1,5 +1,6 @@
 import { FaVenusMars, FaBirthdayCake } from "react-icons/fa";
 import { motion } from "motion/react";
+import { useTranslation } from "react-i18next";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -11,6 +12,7 @@ const itemVariants = {
 };
 
 function PatientDetailsSection({ profile, updateField }) {
+  const { t } = useTranslation();
   return (
     <motion.div
       variants={itemVariants}
@@ -21,9 +23,9 @@ function PatientDetailsSection({ profile, updateField }) {
           <FaVenusMars className="text-lg" />
         </div>
         <div>
-          <h2 className="text-lg font-bold text-slate-900">Patient Details</h2>
+          <h2 className="text-lg font-bold text-slate-900">{t("profile.sections.patientDetails.title")}</h2>
           <p className="text-xs text-slate-500 font-medium">
-            Demographic information
+            {t("profile.sections.patientDetails.description")}
           </p>
         </div>
       </div>
@@ -31,10 +33,10 @@ function PatientDetailsSection({ profile, updateField }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
         <div className="group">
           <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 group-focus-within:text-primary transition-colors">
-            Birth Date
+            {t("profile.sections.patientDetails.birthDate")}
           </label>
           <div className="relative group-hover:shadow-sm transition-shadow rounded-xl">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 group-focus-within:text-primary transition-colors">
+            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-4 text-slate-400 group-focus-within:text-primary transition-colors">
               <FaBirthdayCake />
             </div>
             <input
@@ -42,30 +44,30 @@ function PatientDetailsSection({ profile, updateField }) {
               name="birthDate"
               value={profile.birthDate}
               onChange={updateField}
-              className="block w-full rounded-xl border-slate-200 bg-slate-50/50 py-3 pl-11 pr-4 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-slate-900 text-sm border font-medium transition-all hover:bg-white hover:border-slate-300"
+              className="block w-full rounded-xl border-slate-200 bg-slate-50/50 py-3 ps-11 pe-4 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-slate-900 text-sm border font-medium transition-all hover:bg-white hover:border-slate-300"
             />
           </div>
         </div>
 
         <div className="group">
           <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 group-focus-within:text-primary transition-colors">
-            Gender
+            {t("profile.sections.patientDetails.gender")}
           </label>
           <div className="relative group-hover:shadow-sm transition-shadow rounded-xl">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 group-focus-within:text-primary transition-colors">
+            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-4 text-slate-400 group-focus-within:text-primary transition-colors">
               <FaVenusMars />
             </div>
             <select
               name="gender"
               value={profile.gender}
               onChange={updateField}
-              className="block w-full appearance-none rounded-xl border-slate-200 bg-slate-50/50 py-3 pl-11 pr-4 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-slate-900 text-sm border font-medium transition-all hover:bg-white hover:border-slate-300 cursor-pointer"
+              className="block w-full appearance-none rounded-xl border-slate-200 bg-slate-50/50 py-3 ps-11 pe-4 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-slate-900 text-sm border font-medium transition-all hover:bg-white hover:border-slate-300 cursor-pointer"
             >
-              <option value="">Select gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
+              <option value="">{t("profile.sections.patientDetails.genderOptions.choose")}</option>
+              <option value="Male">{t("profile.sections.patientDetails.genderOptions.male")}</option>
+              <option value="Female">{t("profile.sections.patientDetails.genderOptions.female")}</option>
             </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+            <div className="pointer-events-none absolute inset-y-0 end-0 flex items-center px-4 text-slate-400">
               <svg
                 className="h-4 w-4 fill-current"
                 xmlns="http://www.w3.org/2000/svg"

@@ -201,20 +201,13 @@ export const buildPatientProfileState = ({
 }) => {
   const persistedPatientInfo = getStoredPatientInfo();
 
-  // Prefer API values when present (including empty string), but keep local storage values when API returns null/undefined.
-  const birthDateValue =
-    patientInfo?.birthDate != null
-      ? patientInfo.birthDate
-      : persistedPatientInfo?.birthDate;
-
-  const genderValue =
-    patientInfo?.gender != null
-      ? patientInfo.gender
-      : persistedPatientInfo?.gender;
+  // For new users: only use persisted (user-set) values, not backend defaults
+  // This ensures new users must explicitly set gender and birthDate
+  const birthDateValue = persistedPatientInfo?.birthDate || "";
+  const genderValue = persistedPatientInfo?.gender || "";
 
   const resolvedPatientInfo = {
     ...persistedPatientInfo,
-    ...(patientInfo || {}),
     birthDate: birthDateValue,
     gender: genderValue,
   };

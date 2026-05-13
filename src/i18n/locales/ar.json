@@ -233,6 +233,7 @@
         "birthDate": "تاريخ الميلاد",
         "gender": "الجنس",
         "genderOptions": {
+          "choose": "اختر الجنس",
           "male": "ذكر",
           "female": "أنثى"
         }
