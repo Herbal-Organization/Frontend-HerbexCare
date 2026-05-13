@@ -612,6 +612,7 @@
       "submit": "Sign In",
       "loading": "Signing In",
       "success": "Login successful!",
+      "emailNotFound": "Email Not Founded",
       "orContinueWith": "Or continue with",
       "backToHome": "Back to Home",
       "confirmationRequired": "Email Confirmation Required",

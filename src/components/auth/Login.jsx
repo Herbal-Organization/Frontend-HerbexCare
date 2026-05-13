@@ -10,9 +10,13 @@ import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
 import useAsyncAction from "../../hooks/useAsyncAction";
 import { getPostLoginRoute, storeAuthTokens } from "../../services/authSession";
 import { getUserRole } from "../../utils/auth";
+import { useTranslation } from "react-i18next";
+import SocialAuthButtons from "./SocialAuthButtons";
 
 function Login({ setSuccessMsg }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const [localError, setLocalError] = useState("");
   const [pendingEmail, setPendingEmail] = useState("");
   const [resendSuccess, setResendSuccess] = useState("");
   const {
@@ -35,10 +39,10 @@ function Login({ setSuccessMsg }) {
     execute: submitLogin,
     clearError,
   } = useAsyncAction(loginAccount, {
-    defaultErrorMessage: "Login failed. Please check your credentials.",
+    defaultErrorMessage: t("auth.login.error"),
     onSuccess: (data) => {
       storeAuthTokens(data ?? {});
-      setSuccessMsg("Login successful!");
+      setSuccessMsg(t("auth.login.success"));
 
       window.setTimeout(() => {
         const role = getUserRole();
@@ -46,11 +50,23 @@ function Login({ setSuccessMsg }) {
       }, 1000);
     },
     onError: (err, message) => {
+      // Map backend 'User not found' / 404 to localized message
+      const serverMessage = message || "";
+      const status = err?.response?.status;
+
+      if (
+        serverMessage.toLowerCase().includes("user not found") ||
+        status === 404
+      ) {
+        setLocalError(t("auth.login.emailNotFound"));
+        return;
+      }
+
       // Check if error is about email confirmation
       if (
-        message?.includes("confirm") ||
-        message?.includes("confirmation") ||
-        message?.toLowerCase().includes("email")
+        serverMessage?.includes("confirm") ||
+        serverMessage?.includes("confirmation") ||
+        serverMessage?.toLowerCase().includes("email")
       ) {
         setPendingEmail(emailValue?.trim().toLowerCase());
       }
@@ -81,6 +97,7 @@ function Login({ setSuccessMsg }) {
 
   const onSubmit = async (values) => {
     clearError();
+    setLocalError("");
     try {
       // Trim email and password to prevent whitespace issues
       const payload = {
@@ -97,7 +114,7 @@ function Login({ setSuccessMsg }) {
 
   return (
     <div>
-      <AuthAlert message={error} type="error" />
+      <AuthAlert message={localError || error} type="error" />
       {resendSuccess && (
         <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700">
           {resendSuccess}
@@ -107,10 +124,9 @@ function Login({ setSuccessMsg }) {
       {pendingEmail && (
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
           <p className="mb-3 text-sm text-blue-700">
-            <strong>Email Confirmation Required</strong>
+            <strong>{t("auth.login.confirmationRequired")}</strong>
             <br />
-            Please confirm your email address to proceed. A confirmation link
-            has been sent to <strong>{pendingEmail}</strong>
+            {t("auth.login.confirmationSubtitle")}
           </p>
           <button
             type="button"
@@ -118,14 +134,14 @@ function Login({ setSuccessMsg }) {
             disabled={isResending}
             className="inline-block rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white hover:bg-blue-700 disabled:opacity-50"
           >
-            {isResending ? "Sending..." : "Resend Confirmation Email"}
+            {isResending ? t("auth.login.sending") : t("auth.login.resendConfirmation")}
           </button>
         </div>
       )}
 
       <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
         <AuthInput
-          label="Email Address"
+          label={t("auth.login.emailLabel")}
           type="email"
           placeholder="name@example.com"
           autoComplete="email"
@@ -143,13 +159,13 @@ function Login({ setSuccessMsg }) {
         <div>
           <div className="flex items-center justify-between mb-2">
             <label className="block text-sm font-bold text-slate-700">
-              Password
+              {t("auth.login.passwordLabel")}
             </label>
             <Link
               to="/forget"
               className="text-xs font-bold text-primary hover:text-primary-hover"
             >
-              Forgot password?
+              {t("auth.login.forgotPassword")}
             </Link>
           </div>
           <AuthInput
@@ -170,44 +186,14 @@ function Login({ setSuccessMsg }) {
         <div className="pt-2">
           <AuthSubmitButton
             isLoading={isLoading}
-            label="Sign In"
-            loadingLabel="Signing In"
+            label={t("auth.login.submit")}
+            loadingLabel={t("auth.login.loading")}
             className="cursor-pointer"
           />
         </div>
       </form>
 
-      <div className="mt-8">
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-100"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="bg-white px-4 text-slate-400 font-medium">
-              Or continue with
-            </span>
-          </div>
-        </div>
-
-        <div className="mt-6 grid grid-cols-2 gap-4">
-          <button className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors">
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google"
-              className="h-5 w-5"
-            />
-            <span className="sr-only sm:not-sr-only">Google</span>
-          </button>
-          <button className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors">
-            <img
-              src="https://www.svgrepo.com/show/475647/facebook-color.svg"
-              alt="Facebook"
-              className="h-5 w-5"
-            />
-            <span className="sr-only sm:not-sr-only">Facebook</span>
-          </button>
-        </div>
-      </div>
+      <SocialAuthButtons />
     </div>
   );
 }
