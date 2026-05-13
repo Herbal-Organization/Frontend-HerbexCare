@@ -297,7 +297,8 @@
       "unavailableDescription": "لم نتمكن من تحميل عنوانك وسجلك الطبي بعد.",
       "passwordChangeError": "فشل تغيير كلمة المرور. يرجى المحاولة مرة أخرى.",
       "passwordChangeSuccess": "تم تغيير كلمة المرور بنجاح!",
-      "deleteAccountError": "فشل حذف الحساب. يرجى المحاولة مرة أخرى."
+      "deleteAccountError": "فشل حذف الحساب. يرجى المحاولة مرة أخرى.",
+      "completionRequired": "يرجى ملء تاريخ ميلادك والجنس لإكمال إعداد ملفك الشخصي."
     },
     "common": {
       "select": "اختر"

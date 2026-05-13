@@ -278,7 +278,8 @@
       "unavailableDescription": "We couldn't load your address and medical history yet.",
       "passwordChangeError": "Password change failed. Please try again.",
       "passwordChangeSuccess": "Password changed successfully!",
-      "deleteAccountError": "Account deletion failed. Please try again."
+      "deleteAccountError": "Account deletion failed. Please try again.",
+      "completionRequired": "Please fill in your birth date and gender to complete your profile setup."
     },
     "common": {
       "select": "Select"

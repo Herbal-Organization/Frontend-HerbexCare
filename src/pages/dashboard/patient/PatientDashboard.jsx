@@ -15,16 +15,22 @@ import PatientOrderDetails from "./PatientOrderDetails";
 import PatientPaymentSimulation from "./PaymentSimulationPage";
 import OrderSuccessPage from "./OrderSuccessPage";
 import PatientSavedRecipes from "./PatientSavedRecipes";
+import PatientSettings from "./PatientSettings";
 import AiConsultationPage from "./ai-pages/AiConsultationPage";
 import usePatientDashboardData from "../../../hooks/usePatientDashboardData";
 import {
   buildPatientDashboardUser,
   getPersistedPatientUser,
+  isProfileComplete,
+  markProfileAsComplete,
 } from "../../../services/patientProfile";
+
+const PROFILE_COMPLETION_KEY = "patient_profile_completed";
 
 function PatientDashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState(() => getPersistedPatientUser());
+  const [needsProfileCompletion, setNeedsProfileCompletion] = useState(false);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -78,6 +84,20 @@ function PatientDashboard() {
     );
   }, [dashboardData?.userDetails]);
 
+  // Check if user needs to complete profile (set gender/birthdate on first login)
+  useEffect(() => {
+    if (dashboardData?.profile && !isProfileComplete(dashboardData.profile)) {
+      setNeedsProfileCompletion(true);
+    }
+  }, [dashboardData?.profile]);
+
+  // Redirect to profile completion if needed
+  useEffect(() => {
+    if (needsProfileCompletion) {
+      navigate("/patient/dashboard/profile?requireCompletion=true");
+    }
+  }, [needsProfileCompletion, navigate]);
+
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -90,7 +110,7 @@ function PatientDashboard() {
     <div className="flex min-h-screen bg-slate-50 text-slate-900">
       <PatientSidebar user={user} onLogout={handleLogout} />
 
-      <div className="flex-1 ml-72 flex flex-col min-h-screen">
+      <div className="flex-1 ms-72 flex flex-col min-h-screen">
         <main className="flex-1 bg-slate-50">
           <Routes>
             <Route
@@ -116,6 +136,7 @@ function PatientDashboard() {
                 />
               }
             />
+            <Route path="/settings" element={<PatientSettings user={user} />} />
             <Route path="/cart" element={<PatientCart />} />
             <Route path="/orders" element={<PatientOrders />} />
             <Route path="/orders/success" element={<OrderSuccessPage />} />

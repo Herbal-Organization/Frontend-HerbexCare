@@ -31,6 +31,7 @@ export const DEFAULT_PATIENT_INFO = {
 
 const PATIENT_INFO_STORAGE_KEY = "patient_profile_info";
 const PATIENT_USER_STORAGE_KEY = "patient_dashboard_user";
+const PROFILE_COMPLETION_KEY = "patient_profile_completed";
 
 export const MEDICAL_CONDITIONS = [
   { name: "diabetes", label: "Diabetes" },
@@ -43,6 +44,32 @@ export const MEDICAL_CONDITIONS = [
   { name: "pregnancy", label: "Pregnancy" },
   { name: "allergies", label: "Known Allergies" },
 ];
+
+// Check if user has explicitly set gender and birthdate
+export const isProfileComplete = (profile) => {
+  // Profile is considered incomplete if gender or birthDate are empty/not set by user
+  const hasGender = profile?.gender && profile.gender.trim() !== "";
+  const hasBirthDate = profile?.birthDate && profile.birthDate.trim() !== "";
+  return hasGender && hasBirthDate;
+};
+
+// Mark profile as completed after user fills in required fields
+export const markProfileAsComplete = () => {
+  try {
+    localStorage.setItem(PROFILE_COMPLETION_KEY, "true");
+  } catch {
+    return;
+  }
+};
+
+// Check if profile was already marked as complete
+export const wasProfileCompleted = () => {
+  try {
+    return localStorage.getItem(PROFILE_COMPLETION_KEY) === "true";
+  } catch {
+    return false;
+  }
+};
 
 const normalizeDateForInput = (value) => {
   if (!value) {
