@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   FaArrowLeft,
+  FaBookmark,
   FaCheckCircle,
   FaExclamationTriangle,
   FaLeaf,
+  FaRegBookmark,
   FaStar,
   FaUserMd,
   FaCalendarAlt,
@@ -19,6 +21,7 @@ import Footer from "../../components/landing/Footer";
 import useRecipeDetails from "../../hooks/useRecipeDetails";
 import useRecipeReviews from "../../hooks/useRecipeReviews";
 import { isAuthenticated } from "../../utils/auth";
+import { getMyRecipesFavorites, toggleFavorite } from "../../api/favorites";
 
 import { useCart } from "../../context/CartContext";
 
@@ -200,6 +203,8 @@ function RecipeDetailsPage() {
 
   const [reviewForm, setReviewForm] = useState({ ratingValue: 5, comment: "" });
   const canReview = isAuthenticated();
+  const [isRecipeSaved, setIsRecipeSaved] = useState(false);
+  const [isSavingRecipe, setIsSavingRecipe] = useState(false);
 
   const [recipeQuantity, setRecipeQuantity] = useState(1);
 
@@ -210,6 +215,75 @@ function RecipeDetailsPage() {
       comment: myReview.comment || "",
     });
   }, [myReview]);
+
+  useEffect(() => {
+    const syncSavedState = async () => {
+      if (!canReview) {
+        setIsRecipeSaved(false);
+        return;
+      }
+
+      const currentRecipeId = Number(recipe?.recipeId || recipe?.id || recipeId || 0);
+      if (!currentRecipeId) return;
+
+      try {
+        const response = await getMyRecipesFavorites();
+        const items = Array.isArray(response)
+          ? response
+          : Array.isArray(response?.items)
+            ? response.items
+            : Array.isArray(response?.data)
+              ? response.data
+              : [];
+
+        const exists = items.some((item) => {
+          const id = Number(item?.recipeId || item?.id || item?.targetId || 0);
+          return id === currentRecipeId;
+        });
+        setIsRecipeSaved(exists);
+      } catch {
+        setIsRecipeSaved(false);
+      }
+    };
+
+    syncSavedState();
+  }, [canReview, recipe?.id, recipe?.recipeId, recipeId]);
+
+  const handleToggleSavedRecipe = async () => {
+    if (!canReview) {
+      toast.error("Log in as a patient to save recipes.");
+      return;
+    }
+
+    if (isSavingRecipe) return;
+
+    const targetId = Number(recipe?.recipeId || recipe?.id || recipeId || 0);
+    if (!targetId) {
+      toast.error("Unable to resolve this recipe id.");
+      return;
+    }
+
+    setIsSavingRecipe(true);
+    try {
+      await toggleFavorite({
+        targetId,
+        type: "Recipe",
+      });
+
+      setIsRecipeSaved((prev) => !prev);
+      toast.success(
+        isRecipeSaved ? "Recipe removed from saved recipes." : "Recipe saved successfully.",
+      );
+    } catch (error) {
+      const message =
+        error?.response?.data?.message ||
+        error?.response?.data?.title ||
+        "Failed to update saved recipe.";
+      toast.error(message);
+    } finally {
+      setIsSavingRecipe(false);
+    }
+  };
 
   const averageFromReviews = useMemo(() => {
     if (!reviews.length) return null;
@@ -317,7 +391,7 @@ function RecipeDetailsPage() {
 
         {/* Error */}
         {!isLoading && error && (
-          <div className="rounded-2xl border border-red-100 bg-red-50 p-14 text-center">
+          <div className="rounded-2xl border border-eed-100 bg-red-50 p-14 text-center">
             <h2 className="text-lg font-medium text-red-800 mb-2">
               Unable to load recipe
             </h2>
@@ -363,6 +437,22 @@ function RecipeDetailsPage() {
               <p className="text-sm leading-relaxed text-slate-500 max-w-2xl mb-6">
                 {recipe.description}
               </p>
+
+              <div className="mb-4">
+                <button
+                  type="button"
+                  onClick={handleToggleSavedRecipe}
+                  disabled={isSavingRecipe}
+                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
+                    isRecipeSaved
+                      ? "border-amber-200 bg-amber-50 text-amber-700"
+                      : "border-slate-200 bg-white text-slate-700 hover:border-emerald-200 hover:text-emerald-700"
+                  } ${isSavingRecipe ? "opacity-60 cursor-not-allowed" : ""}`}
+                >
+                  {isRecipeSaved ? <FaBookmark className="text-[11px]" /> : <FaRegBookmark className="text-[11px]" />}
+                  {isSavingRecipe ? "Saving..." : isRecipeSaved ? "Saved" : "Save Recipe"}
+                </button>
+              </div>
 
               <div className="flex flex-wrap gap-2">
                 {recipe.targetedDiseases?.length ? (
@@ -617,7 +707,7 @@ function RecipeDetailsPage() {
                         Share your experience
                       </p>
                     </div>
-                    <div className="text-right bg-slate-50 border border-slate-100 rounded-xl px-4 py-3">
+                    <div className="text-end bg-slate-50 border border-slate-100 rounded-xl px-4 py-3">
                       <p
                         style={{ fontFamily: "'Instrument Serif', serif" }}
                         className="text-2xl text-slate-900 leading-none"
@@ -631,7 +721,7 @@ function RecipeDetailsPage() {
                   </div>
 
                   {reviewsError && (
-                    <div className="rounded-xl border border-red-100 bg-red-50 p-3 text-xs text-red-600 mb-4">
+                    <div className="rounded-xl border border-eed-100 bg-red-50 p-3 text-xs text-red-600 mb-4">
                       {reviewsError}
                     </div>
                   )}
@@ -693,7 +783,7 @@ function RecipeDetailsPage() {
                             type="button"
                             onClick={handleDelete}
                             disabled={isDeleting}
-                            className="text-xs font-medium text-red-500 bg-red-50 border border-red-100 rounded-lg px-4 py-2 hover:bg-red-100 transition-colors disabled:opacity-50"
+                            className="text-xs font-medium text-red-500 bg-red-50 border border-eed-100 rounded-lg px-4 py-2 hover:bg-red-100 transition-colors disabled:opacity-50"
                           >
                             {isDeleting ? "Deleting..." : "Delete"}
                           </button>
