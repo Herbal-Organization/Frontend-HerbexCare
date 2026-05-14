@@ -630,9 +630,10 @@
       "fullName": "Full Name",
       "username": "Username",
       "email": "Email Address",
+      "phone": "Phone Number",
       "password": "Password",
       "confirmPassword": "Confirm Password",
-      "role": "I am a...",
+      "role": "I am registering as a",
       "patient": "Patient",
       "herbalist": "Herbalist",
       "agreeTerms": "I agree to the terms and conditions"

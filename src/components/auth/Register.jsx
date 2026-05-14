@@ -182,7 +182,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
         />
 
         <AuthInput
-          label="Phone Number"
+          label={t("auth.register.phone")}
           type="tel"
           placeholder="01203564652"
           autoComplete="tel"
@@ -219,7 +219,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
 
         <div>
           <label className="mb-2 block text-sm font-bold text-slate-700">
-            I am registering as a
+            {t("auth.register.role")}
           </label>
           <div className="grid grid-cols-2 gap-3">
             <label
@@ -247,7 +247,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
                   role === "Patient" ? "text-primary" : "text-slate-600"
                 }`}
               >
-                Patient
+                {t("auth.register.patient")}
               </span>
             </label>
             <label
@@ -275,7 +275,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
                   role === "Herbalist" ? "text-primary" : "text-slate-600"
                 }`}
               >
-                Herbalist
+                {t("auth.register.herbalist")}
               </span>
             </label>
           </div>
@@ -285,6 +285,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
         <div className="grid grid-cols-2 gap-4">
           <AuthInput
             label="Password"
+            label={t("auth.register.password")}
             type="password"
             placeholder="••••••••"
             autoComplete="new-password"
@@ -311,6 +312,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
           />
           <AuthInput
             label="Confirm Password"
+              label={t("auth.register.confirmPassword")}
             type="password"
             placeholder="••••••••"
             autoComplete="new-password"
