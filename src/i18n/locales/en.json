@@ -612,7 +612,6 @@
       "submit": "Sign In",
       "loading": "Signing In",
       "success": "Login successful!",
-      "emailNotFound": "Email Not Founded",
       "orContinueWith": "Or continue with",
       "backToHome": "Back to Home",
       "confirmationRequired": "Email Confirmation Required",
@@ -629,6 +628,7 @@
       "loading": "Creating Account",
       "alreadyHaveAccount": "Already have an account? Sign In",
       "fullName": "Full Name",
+      "username": "Username",
       "email": "Email Address",
       "password": "Password",
       "confirmPassword": "Confirm Password",
@@ -651,7 +651,6 @@
       "errorMessage": "We could not verify this email confirmation link.",
       "errorAlert": "The confirmation link is invalid, expired, or already used.",
       "missingParams": "The confirmation link is missing the required email or token.",
-      "emailNotFound": "Email Not Founded",
       "backToLogin": "Back to Sign In",
       "tryAgain": "Try again"
     },

@@ -1,712 +1,711 @@
 {
   "navbar": {
-    "brand": "Herbal Care",
-    "getStarted": "Get Started",
-    "home": "Home",
-    "herbs": "Herbs",
-    "recipes": "Recipes",
-    "profile": "Profile",
-    "logout": "Logout",
-    "myCart": "My Cart",
-    "user": "User",
-    "saved": "Saved"
+    "brand": "العلاج بالأعشاب",
+    "getStarted": "ابدأ الآن",
+    "home": "الرئيسية",
+    "herbs": "الأعشاب",
+    "recipes": "الوصفات",
+    "profile": "الملف الشخصي",
+    "logout": "تسجيل الخروج",
+    "myCart": "سلتي",
+    "user": "المستخدم",
+    "saved": "محفوظ"
   },
   "hero": {
-    "badge": "Intelligent Natural Healing",
-    "title": "AI-Powered Herbal Wellness for Your Daily Life",
-    "description": "Discover personalized herbal recipes and natural remedies tailored to your health goals using our advanced botanical AI technology.",
-    "startJourney": "Start Your Journey",
-    "howItWorks": "How It Works",
+    "badge": "شفاء طبيعي مدعوم بالذكاء الاصطناعي",
+    "title": "صحة عشبية ذكية لحياتك اليومية",
+    "description": "اكتشف وصفات عشبية مخصصة وعلاجات طبيعية مصممة خصيصًا لأهدافك الصحية باستخدام تقنيات الذكاء الاصطناعي المتقدمة في الطب النباتي.",
+    "startJourney": "ابدأ رحلتك",
+    "howItWorks": "كيف يعمل النظام",
     "stats": {
-      "guidedPlans": "Guided Plans",
-      "activeUsers": "Active Users",
-      "aiMatches": "AI Matches"
+      "guidedPlans": "خطط موجهة",
+      "activeUsers": "مستخدم نشط",
+      "aiMatches": "توصيات الذكاء الاصطناعي"
     }
   },
   "steps": {
-    "title": "Simple Steps to Natural Care",
-    "description": "Our AI analyzes your unique wellness profile to provide safe, effective, and evidence-based herbal solutions.",
+    "title": "خطوات بسيطة نحو العناية الطبيعية",
+    "description": "يقوم ذكاؤنا الاصطناعي بتحليل حالتك الصحية لتقديم حلول عشبية آمنة وفعالة قائمة على المعرفة العلمية.",
     "step1": {
-      "title": "Share Your Needs",
-      "description": "Tell us about your wellness goals, symptoms, or dietary preferences through our intuitive chat interface."
+      "title": "شارك احتياجاتك",
+      "description": "أخبرنا عن أهدافك الصحية أو الأعراض أو تفضيلاتك الغذائية عبر واجهة سهلة الاستخدام."
     },
     "step2": {
-      "title": "AI Analysis",
-      "description": "Our advanced algorithms cross-reference clinical herbal databases and safety protocols in seconds."
+      "title": "تحليل ذكي",
+      "description": "تقوم خوارزمياتنا المتقدمة بمراجعة قواعد بيانات الأعشاب الطبية وبروتوكولات السلامة خلال ثوانٍ."
     },
     "step3": {
-      "title": "Get Recipes",
-      "description": "Receive custom-tailored herbal tea blends, tinctures, and wellness plans specific to your body's needs."
+      "title": "احصل على الوصفات",
+      "description": "استلم وصفات شاي عشبي، خلطات طبيعية، وخطط صحية مخصصة تناسب احتياجات جسمك."
     }
   },
   "recipes": {
-    "title": "Featured AI Recipes",
-    "description": "Discover what our community is brewing this week, then explore full collections tailored to your goals.",
-    "viewRecipe": "View Recipe",
+    "title": "وصفات مميزة بالذكاء الاصطناعي",
+    "description": "اكتشف أحدث الوصفات التي ينشئها المجتمع هذا الأسبوع، ثم استعرض المجموعات الكاملة المصممة لأهدافك الصحية.",
+    "viewRecipe": "عرض الوصفة",
     "recipe1": {
-      "tag": "IMMUNITY",
-      "time": "10m",
-      "title": "Golden Elderberry Infusion",
-      "description": "A potent blend designed to strengthen your natural defenses."
+      "tag": "المناعة",
+      "time": "10 دقائق",
+      "title": "مزيج الشيح الذهبي",
+      "description": "خليط قوي مصمم لدعم وتقوية جهازك المناعي."
     },
     "recipe2": {
-      "tag": "SLEEP",
-      "time": "15m",
-      "title": "Midnight Lavender Mist",
-      "description": "Calming aromas and herbs to prepare your body for deep rest."
+      "tag": "النوم",
+      "time": "15 دقيقة",
+      "title": "عطر اللافندر الليلي",
+      "description": "أعشاب وروائح مهدئة تساعد على الاسترخاء والنوم العميق."
     },
     "recipe3": {
-      "tag": "ENERGY",
-      "time": "5m",
-      "title": "Revitalizing Mint Tonic",
-      "description": "A refreshing kick to start your day without the caffeine crash."
+      "tag": "الطاقة",
+      "time": "5 دقائق",
+      "title": "انتعاش النعناع",
+      "description": "دفعة منعشة لبدء يومك بدون الحاجة للكافيين."
     },
     "recipe4": {
-      "tag": "DIGESTION",
-      "time": "12m",
-      "title": "Ginger Root Soother",
-      "description": "Gentle warmth for a happy stomach and better digestion."
+      "tag": "الهضم",
+      "time": "12 دقيقة",
+      "title": "مهدئ الزنجبيل",
+      "description": "دفء طبيعي يساعد على تحسين الهضم وراحة المعدة."
     }
   },
   "newsletter": {
-    "title": "Stay Rooted in Wellness",
-    "description": "Subscribe for weekly AI-curated herbal recipes and holistic wellness tips delivered straight to your inbox.",
-    "placeholder": "Your email address",
-    "subscribe": "Subscribe Now",
-    "privacy": "We value your privacy. Unsubscribe at any time."
+    "title": "ابقَ على تواصل مع الصحة الطبيعية",
+    "description": "اشترك للحصول على وصفات عشبية أسبوعية مختارة بالذكاء الاصطناعي ونصائح صحية مباشرة إلى بريدك الإلكتروني.",
+    "placeholder": "أدخل بريدك الإلكتروني",
+    "subscribe": "اشترك الآن",
+    "privacy": "نحترم خصوصيتك. يمكنك إلغاء الاشتراك في أي وقت."
   },
   "footer": {
-    "tagline": "Combining centuries-old botanical wisdom with cutting-edge artificial intelligence to empower your natural wellness journey.",
-    "copyright": "All rights reserved.",
-    "author": "Karim Safan",
-    "language": "English (US)"
+    "tagline": "نمزج بين الحكمة النباتية القديمة وتقنيات الذكاء الاصطناعي الحديثة لدعم رحلتك نحو صحة طبيعية أفضل.",
+    "copyright": "جميع الحقوق محفوظة.",
+    "author": "كريم سعفان",
+    "language": "العربية"
   },
   "patientHome": {
-    "badge": "Patient Home",
-    "welcome": "Welcome back, {{name}}",
-    "patient": "Patient",
-    "description": "This is your main place to reach the most important parts of the system quickly.",
-    "openDashboard": "Open Dashboard",
-    "browseHerbs": "Browse Herbs",
+    "badge": "الصفحة الرئيسية للمريض",
+    "welcome": "مرحبًا بعودتك , {{name }}",
+    "patient": "مريض",
+    "description": "هذا هو المكان الرئيسي للوصول إلى أهم أجزاء النظام بسرعة.",
+    "openDashboard": "افتح لوحة التحكم",
+    "browseHerbs": "تصفح الأعشاب",
+    "catalog": {
+      "title": "كتالوج استشارات الذكاء الاصطناعي",
+      "subtitle": "تصفح أنواع الاستشارات والتوصيات الصحية",
+      "searchPlaceholder": "ابحث في الاستشارات بالاسم أو النوع...",
+      "loading": "جاري تحميل كتالوج الاستشارات...",
+      "noResults": "لم يتم العثور على استشارات تطابق بحثك",
+      "focusAreas": "مجالات التركيز",
+      "duration": "المدة",
+      "benefits": "الفوائد",
+      "actions": {
+        "use": "استخدم هذه الاستشارة",
+        "retry": "إعادة المحاولة"
+      },
+      "messages": {
+        "loadError": "فشل تحميل الكتالوج",
+        "detailError": "فشل تحميل تفاصيل الكتالوج",
+        "selected": "تم اختيار الاستشارة!"
+      }
+    },
     "quickAccess": {
-      "title": "Quick Access",
-      "description": "Only the main actions you need every day."
+      "title": "الوصول السريع",
+      "description": "أهم الإجراءات التي تحتاجها يوميًا."
     },
     "facilities": {
       "aiConsultation": {
-        "title": "AI Consultation",
-        "description": "Start a quick symptom-based AI consultation.",
-        "cta": "Start Now"
+        "title": "استشارة الذكاء الاصطناعي",
+        "description": "ابدأ استشارة سريعة للاعراض بواسطة الذكاء الاصطناعي.",
+        "cta": "ابدأ الآن"
       },
       "browseHerbs": {
-        "title": "Browse Herbs",
-        "description": "Explore medicinal herbs and their benefits.",
-        "cta": "Open Herbs"
+        "title": "تصفح الأعشاب",
+        "description": "استكشف الأعشاب الطبية وفوائدها.",
+        "cta": "افتح الأعشاب"
       },
       "browseRecipes": {
-        "title": "Browse Recipes",
-        "description": "See herbal recipes and treatment plans.",
-        "cta": "Open Recipes"
+        "title": "تصفح الوصفات",
+        "description": "شاهد الوصفات والخطط العلاجية.",
+        "cta": "افتح الوصفات"
       },
       "myCart": {
-        "title": "My Cart",
-        "description": "Check items before placing an order.",
-        "cta": "Open Cart"
+        "title": "سلتي",
+        "description": "تحقق من العناصر قبل إتمام الطلب.",
+        "cta": "افتح السلة"
       },
       "myProfile": {
-        "title": "My Profile",
-        "description": "Update personal and medical details.",
-        "cta": "Open Profile"
+        "title": "ملفي الشخصي ",
+        "description": "قم بتحديث البيانات الشخصية والطبية.",
+        "cta": "افتح الملف"
       }
     }
   },
   "patientSidebar": {
     "brand": "HerbexCare.AI",
-    "tagline": "Your Wellness Partner",
-    "dashboard": "Dashboard",
-    "myCart": "My Cart",
-    "myOrders": "My Orders",
-    "savedRecipes": "Saved Recipes",
-    "aiConsultation": "AI Consultation",
-    "herbLibrary": "Herb Library",
-    "recipeLibrary": "Recipe Library",
-    "profile": "Profile",
-    "settings": "Settings",
-    "home": "Home",
-    "signOut": "Sign Out",
-    "patient": "Patient",
-    "member": "Member"
+    "tagline": "شريكك في العافية",
+    "dashboard": "لوحة التحكم",
+    "myCart": "سلتي",
+    "myOrders": "طلباتي",
+    "savedRecipes": "الوصفات المحفوظة",
+    "aiConsultation": "استشارة الذكاء الاصطناعي",
+    "herbLibrary": "مكتبة الأعشاب",
+    "recipeLibrary": "مكتبة الوصفات",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات",
+    "home": "الرئيسية",
+    "signOut": "تسجيل الخروج",
+    "patient": "مريض",
+    "member": "عضو"
   },
   "herbalistSidebar": {
-    "dashboard": "Dashboard",
-    "manageHerbs": "Manage Herbs",
-    "manageRecipes": "Manage Recipes",
-    "manageDiseases": "Manage Diseases",
-    "inventory": "Inventory",
-    "orders": "Orders",
-    "profile": "Profile",
-    "settings": "Settings",
-    "member": "Practitioner"
+    "dashboard": "لوحة التحكم",
+    "manageHerbs": "إدارة الأعشاب",
+    "manageRecipes": "إدارة الوصفات",
+    "manageDiseases": "إدارة الأمراض",
+    "inventory": "المخزون",
+    "orders": "الطلبات",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات",
+    "member": "ممارس"
   },
   "dashboardSettings": {
-    "kicker": "Account settings",
-    "title": "Settings",
-    "subtitle": "Manage your password, language, and account access from one place.",
+    "kicker": "إعدادات الحساب",
+    "title": "الإعدادات",
+    "subtitle": "أدِر كلمة المرور واللغة والوصول إلى الحساب من مكان واحد.",
     "account": {
-      "unknown": "User",
-      "signedInAs": "Signed in as"
+      "unknown": "المستخدم",
+      "signedInAs": "مسجل الدخول باسم"
     },
     "profile": {
-      "title": "Profile and address",
-      "description": "Update your account and address information.",
-      "submit": "Save profile",
-      "submitting": "Saving...",
+      "title": "الملف الشخصي والعنوان",
+      "description": "حدّث معلومات حسابك وعنوانك.",
+      "submit": "حفظ الملف الشخصي",
+      "submitting": "جاري الحفظ...",
       "fields": {
-        "fullName": "Full name",
-        "userName": "Username",
-        "email": "Email",
-        "phone": "Phone",
-        "governorate": "Governorate",
-        "city": "City",
-        "street": "Street"
+        "fullName": "الاسم الكامل",
+        "userName": "اسم المستخدم",
+        "email": "البريد الإلكتروني",
+        "phone": "رقم الهاتف",
+        "governorate": "المحافظة",
+        "city": "المدينة",
+        "street": "الشارع"
       }
     },
     "language": {
-      "title": "Language",
-      "description": "Switch the dashboard interface between English and Arabic."
+      "title": "اللغة",
+      "description": "بدّل واجهة لوحة التحكم بين الإنجليزية والعربية."
     },
     "security": {
       "password": {
-        "title": "Reset password",
-        "description": "Set a new password for your account.",
-        "submit": "Update password",
-        "submitting": "Updating..."
+        "title": "إعادة تعيين كلمة المرور",
+        "description": "عيّن كلمة مرور جديدة لحسابك.",
+        "submit": "تحديث كلمة المرور",
+        "submitting": "جاري التحديث..."
       },
       "delete": {
-        "title": "Delete account",
-        "description": "Permanently remove your account and all associated data.",
-        "submit": "Delete account",
-        "submitting": "Deleting..."
+        "title": "حذف الحساب",
+        "description": "احذف حسابك وجميع البيانات المرتبطة به نهائياً.",
+        "submit": "حذف الحساب",
+        "submitting": "جاري الحذف..."
       }
     },
     "messages": {
-      "accountUnavailable": "Unable to resolve your account details.",
-      "emailMismatch": "Type your exact email address to confirm deletion.",
-      "profileUpdateSuccess": "Profile updated successfully.",
-      "profileUpdateError": "Failed to update profile. Please try again."
+      "accountUnavailable": "تعذر تحديد تفاصيل حسابك.",
+      "emailMismatch": "اكتب عنوان بريدك الإلكتروني بدقة لتأكيد الحذف.",
+      "profileUpdateSuccess": "تم تحديث الملف الشخصي بنجاح.",
+      "profileUpdateError": "فشل تحديث الملف الشخصي. يرجى المحاولة مرة أخرى."
     }
   },
   "profile": {
-    "title": "My Profile",
-    "subtitle": "Manage your personal information and medical history",
+    "title": "الملف الشخصي",
+    "subtitle": "إدارة معلوماتك الشخصية وسجلك الطبي",
     "sections": {
       "personalInfo": {
-        "title": "Personal Information",
-        "description": "Your primary account details",
-        "fullName": "Full Name",
-        "email": "Email Address",
-        "username": "Username",
-        "phone": "Phone Number"
+        "title": "المعلومات الشخصية",
+        "description": "تفاصيل حسابك الأساسية",
+        "fullName": "الاسم الكامل",
+        "email": "البريد الإلكتروني",
+        "username": "اسم المستخدم",
+        "phone": "رقم الهاتف"
       },
       "patientDetails": {
-        "title": "Patient Details",
-        "description": "Essential medical demographics",
-        "birthDate": "Birth Date",
-        "gender": "Gender",
+        "title": "تفاصيل المريض",
+        "description": "البيانات الديموغرافية الطبية الأساسية",
+        "birthDate": "تاريخ الميلاد",
+        "gender": "الجنس",
         "genderOptions": {
-          "choose": "Choose Gender",
-          "male": "Male",
-          "female": "Female"
+          "choose": "اختر الجنس",
+          "male": "ذكر",
+          "female": "أنثى"
         }
       },
       "medicalHistory": {
-        "title": "Medical History",
-        "description": "Select any pre-existing conditions",
+        "title": "السجل الطبي",
+        "description": "اختر أي حالات مرضية سابقة",
         "conditions": {
-          "diabetes": "Diabetes",
-          "hypertension": "Hypertension",
-          "asthma": "Asthma",
-          "heartDisease": "Heart Disease",
-          "kidneyDisease": "Kidney Disease",
-          "liverDisease": "Liver Disease",
-          "smoker": "Smoker",
-          "pregnancy": "Pregnancy",
-          "allergies": "Known Allergies"
+          "diabetes": "السكري",
+          "hypertension": "ضغط الدم المرتفع",
+          "asthma": "الربو",
+          "heartDisease": "أمراض القلب",
+          "kidneyDisease": "أمراض الكلى",
+          "liverDisease": "أمراض الكبد",
+          "smoker": "مدخن",
+          "pregnancy": "حمل",
+          "allergies": "حساسية معروفة"
         },
-        "otherNotes": "Other Notes",
-        "notesPlaceholder": "Describe any other medical conditions, allergies, or relevant notes..."
+        "otherNotes": "ملاحظات أخرى",
+        "notesPlaceholder": "صف أي حالات طبية أخرى، حساسية، أو ملاحظات ذات صلة..."
       },
       "addressInfo": {
-        "title": "Address Information",
-        "description": "Where should we deliver your orders?",
-        "governorate": "Governorate",
-        "city": "City",
-        "street": "Street",
+        "title": "معلومات العنوان",
+        "description": "أين يجب أن نسلم طلباتك؟",
+        "governorate": "المحافظة",
+        "city": "المدينة",
+        "street": "الشارع",
         "placeholders": {
-          "governorate": "Select governorate",
-          "city": "Select city",
-          "street": "Enter street name and building number"
+          "governorate": "اختر المحافظة",
+          "city": "اختر المدينة",
+          "street": "أدخل اسم الشارع ورقم المبنى"
         }
       },
       "photo": {
-        "title": "Profile Picture",
-        "description": "Upload a professional photo to help your doctors identify you easily. JPG or PNG.",
-        "change": "Upload New Image",
-        "remove": "Remove"
+        "title": "صورة الملف الشخصي",
+        "description": "قم بتحميل صورة احترافية لمساعدة أطبائك في التعرف عليك بسهولة. JPG أو PNG.",
+        "change": "تحميل صورة جديدة",
+        "remove": "إزالة"
       },
       "security": {
-        "title": "Security",
-        "changePassword": "Change Password",
-        "changePasswordDescription": "Update your password to keep your account secure",
-        "deleteAccount": "Delete Account",
-        "deleteAccountDescription": "Permanently remove your account and all associated data",
-        "deleteAccountWarning": "⚠️ This action cannot be undone. Your account and all associated data will be permanently deleted."
+        "title": "الأمان",
+        "changePassword": "تغيير كلمة المرور",
+        "changePasswordDescription": "قم بتحديث كلمة مرورك للحفاظ على أمان حسابك",
+        "deleteAccount": "حذف الحساب",
+        "deleteAccountDescription": "قم بإزالة حسابك وجميع البيانات المرتبطة به نهائياً",
+        "deleteAccountWarning": "⚠️ لا يمكن التراجع عن هذا الإجراء. سيتم حذف حسابك وجميع البيانات المرتبطة به نهائياً."
       }
     },
     "actions": {
-      "save": "Save Changes",
-      "saving": "Saving Changes...",
-      "cancel": "Cancel"
+      "save": "حفظ التغييرات",
+      "saving": "جاري الحفظ...",
+      "cancel": "إلغاء"
     },
     "messages": {
-      "success": "Profile updated successfully!",
-      "error": "Failed to update profile. Please try again.",
-      "loading": "Loading profile data...",
-      "noData": "N/A",
-      "deleteSuccess": "Account deleted successfully. Redirecting to login...",
-      "confirmDelete": "Are you absolutely sure? This cannot be undone.",
-      "unavailableTitle": "Profile data is unavailable",
-      "unavailableDescription": "We couldn't load your address and medical history yet.",
-      "passwordChangeError": "Password change failed. Please try again.",
-      "passwordChangeSuccess": "Password changed successfully!",
-      "deleteAccountError": "Account deletion failed. Please try again.",
-      "completionRequired": "Please fill in your birth date and gender to complete your profile setup."
+      "success": "تم تحديث الملف الشخصي بنجاح!",
+      "error": "فشل تحديث الملف الشخصي. يرجى المحاولة مرة أخرى.",
+      "loading": "جاري تحميل بيانات الملف الشخصي...",
+      "noData": "غير متوفر",
+      "deleteSuccess": "تم حذف الحساب بنجاح. جاري تحويلك إلى صفحة تسجيل الدخول...",
+      "confirmDelete": "هل أنت متأكد تماماً؟ لا يمكن التراجع عن هذا الإجراء.",
+      "unavailableTitle": "بيانات الملف الشخصي غير متوفرة",
+      "unavailableDescription": "لم نتمكن من تحميل عنوانك وسجلك الطبي بعد.",
+      "passwordChangeError": "فشل تغيير كلمة المرور. يرجى المحاولة مرة أخرى.",
+      "passwordChangeSuccess": "تم تغيير كلمة المرور بنجاح!",
+      "deleteAccountError": "فشل حذف الحساب. يرجى المحاولة مرة أخرى.",
+      "completionRequired": "يرجى ملء تاريخ ميلادك والجنس لإكمال إعداد ملفك الشخصي."
     },
     "common": {
-      "select": "Select"
+      "select": "اختر"
     },
     "modals": {
       "changePassword": {
-        "title": "Change Password",
-        "description": "Enter your current password and new password",
-        "currentPassword": "Current Password",
-        "newPassword": "New Password",
-        "confirmPassword": "Confirm New Password",
-        "submit": "Update Password",
-        "submitting": "Updating...",
+        "title": "تغيير كلمة المرور",
+        "description": "أدخل كلمة المرور الحالية وكلمة المرور الجديدة",
+        "currentPassword": "كلمة المرور الحالية",
+        "newPassword": "كلمة المرور الجديدة",
+        "confirmPassword": "تأكيد كلمة المرور الجديدة",
+        "submit": "تحديث كلمة المرور",
+        "submitting": "جاري التحديث...",
         "validation": {
-          "currentRequired": "Current password is required",
-          "newRequired": "New password is required",
-          "confirmRequired": "Please confirm your new password",
-          "minLength": "Password must be at least 8 characters",
-          "mismatch": "Passwords do not match",
-          "uppercase": "Must contain at least one uppercase letter",
-          "lowercase": "Must contain at least one lowercase letter",
-          "number": "Must contain at least one number"
+          "currentRequired": "كلمة المرور الحالية مطلوبة",
+          "newRequired": "كلمة المرور الجديدة مطلوبة",
+          "confirmRequired": "يرجى تأكيد كلمة المرور الجديدة",
+          "minLength": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+          "mismatch": "كلمات المرور غير متطابقة",
+          "uppercase": "يجب أن تحتوي على حرف كبير واحد على الأقل",
+          "lowercase": "يجب أن تحتوي على حرف صغير واحد على الأقل",
+          "number": "يجب أن تحتوي على رقم واحد على الأقل"
         }
       },
       "deleteAccount": {
-        "title": "Delete Account",
-        "description": "This action cannot be undone",
-        "warning": "⚠️ Deleting your account will permanently remove all your data, including medical history, orders, and preferences. This action cannot be undone.",
-        "confirmLabel": "Type your email to confirm: ",
-        "placeholder": "Enter {{email}} to confirm",
-        "submit": "Delete Account",
-        "submitting": "Deleting..."
+        "title": "حذف الحساب",
+        "description": "لا يمكن التراجع عن هذا الإجراء",
+        "warning": "⚠️ سيؤدي حذف حسابك إلى إزالة جميع بياناتك نهائياً، بما في ذلك السجل الطبي والطلبات والتفضيلات. لا يمكن التراجع عن هذا الإجراء.",
+        "confirmLabel": "اكتب بريدك الإلكتروني للتأكيد: ",
+        "placeholder": "أدخل {{email}} للتأكيد",
+        "submit": "حذف الحساب",
+        "submitting": "جاري الحذف..."
       }
     }
   },
   "aiConsultation": {
     "nav": {
-      "generator": "AI Recipe Generator",
-      "catalog": "Herb Catalog",
-      "consultations": "My Consultations",
-      "favorites": "Favorite Recipes"
+      "generator": "مولد الوصفات بالذكاء الاصطناعي",
+      "catalog": "كتالوج الأعشاب",
+      "consultations": "استشاراتي",
+      "favorites": "الوصفات المفضلة"
     },
     "profileIncomplete": {
-      "title": "Profile Incomplete",
-      "description": "To provide accurate AI consultations, we need your birth date and gender from your profile. Please update your profile details to continue.",
-      "action": "Update My Profile"
+      "title": "الملف الشخصي غير مكتمل",
+      "description": "لتقديم استشارات دقيقة بالذكاء الاصطناعي، نحتاج إلى تاريخ ميلادك وجنسك من ملفك الشخصي. يرجى تحديث تفاصيل ملفك الشخصي للمتابعة.",
+      "action": "تحديث ملفي الشخصي"
     },
-    "title": "AI Herbal Consultation",
-    "subtitle": "Get personalized herbal recommendations based on your symptoms and health profile.",
-    "newConsultation": "New Consultation",
-    "history": "My Consultations",
-    "catalog": {
-      "title": "AI Consultation Catalog",
-      "subtitle": "Browse consultation types and health recommendations",
-      "searchPlaceholder": "Search consultations by name or type...",
-      "loading": "Loading consultation catalog...",
-      "noResults": "No consultations found matching your search",
-      "focusAreas": "Focus Areas",
-      "duration": "Duration",
-      "benefits": "Benefits",
-      "actions": {
-        "use": "Use This Consultation",
-        "retry": "Retry"
-      },
-      "messages": {
-        "loadError": "Failed to load catalog",
-        "detailError": "Failed to load catalog details",
-        "selected": "Consultation selected!"
-      }
-    },
+    "title": "استشارة عشبية بالذكاء الاصطناعي",
+    "subtitle": "احصل على توصيات عشبية مخصصة بناءً على أعراضك وملفك الصحي.",
+    "newConsultation": "استشارة جديدة",
+    "history": "استشاراتي",
     "wizard": {
       "step1": {
-        "title": "Personal Information",
-        "description": "Tell us about yourself"
+        "title": "المعلومات الشخصية",
+        "description": "أخبرنا عن نفسك"
       },
       "step2": {
-        "title": "Health Background",
-        "description": "Any medical conditions?"
+        "title": "الخلفية الصحية",
+        "description": "هل لديك أي حالات طبية؟"
       },
       "step3": {
-        "title": "Current Health Status",
-        "description": "Your vital measurements"
+        "title": "الحالة الصحية الحالية",
+        "description": "قياساتك الحيوية"
       },
       "step4": {
-        "title": "What are you experiencing?",
-        "description": "Select applicable symptoms"
+        "title": "ماذا تعاني منه؟",
+        "description": "اختر الأعراض التي تنطبق عليك"
       },
       "step5": {
-        "title": "Confirm Information",
-        "description": "Review before generating"
+        "title": "تأكيد المعلومات",
+        "description": "راجع المعلومات قبل التوليد"
       }
     },
     "favorites": {
-      "title": "Favorite Recipes",
-      "subtitle": "Your favorite AI-generated recipes",
-      "loading": "Loading saved recipes...",
-      "noFavorites": "No favorite recipes yet",
-      "noFavoritesSubtitle": "Generate and save recipes to view them here",
-      "savedOn": "Saved on {{date}}",
-      "viewDetails": "Click to view details",
+      "title": "الوصفات المفضلة",
+      "subtitle": "وصفاتك المفضلة المولدة بالذكاء الاصطناعي",
+      "loading": "جاري تحميل الوصفات المحفوظة...",
+      "noFavorites": "لا توجد وصفات مفضلة بعد",
+      "noFavoritesSubtitle": "قم بتوليد وحفظ الوصفات لعرضها هنا",
+      "savedOn": "تم الحفظ في {{date}}",
+      "viewDetails": "اضغط لعرض التفاصيل",
       "actions": {
-        "remove": "Remove",
-        "close": "Close"
+        "remove": "إزالة",
+        "close": "إغلاق"
       },
       "messages": {
-        "loadError": "Failed to load saved recipes",
-        "removeSuccess": "Recipe removed from favorites",
-        "removeError": "Failed to remove recipe",
-        "historyError": "Failed to load consultation history",
-        "saveSuccess": "Recipe saved to favorites!",
-        "saveError": "Failed to save recipe",
-        "noHistory": "No consultation history found",
-        "generateError": "Failed to generate AI consultation. Please try again."
+        "loadError": "فشل تحميل الوصفات المحفوظة",
+        "removeSuccess": "تمت إزالة الوصفة من المفضلة",
+        "removeError": "فشل إزالة الوصفة",
+        "historyError": "فشل تحميل سجل الاستشارات",
+        "saveSuccess": "تم حفظ الوصفة في المفضلة!",
+        "saveError": "فشل حفظ الوصفة",
+        "noHistory": "لم يتم العثور على سجل استشارات",
+        "generateError": "فشل في توليد الاستشارة بالذكاء الاصطناعي. يرجى المحاولة مرة أخرى."
       }
     },
     "form": {
-      "title": "Patient Consultation",
+      "title": "استشارة المريض",
       "sections": {
-        "info": "General Info",
-        "medical": "Medical History",
-        "vitals": "Vital Signs",
-        "symptoms": "Select Symptoms",
-        "review": "Review Info",
-        "demographics": "Personal Information",
-        "medicalHistory": "Health Background"
+        "info": "معلومات عامة",
+        "medical": "السجل الطبي",
+        "vitals": "العلامات الحيوية",
+        "symptoms": "اختر الأعراض",
+        "review": "مراجعة المعلومات",
+        "demographics": "المعلومات الشخصية",
+        "medicalHistory": "الخلفية الصحية"
       },
       "labels": {
-        "select": "Select"
+        "select": "اختر"
       },
       "fields": {
-        "age": "Age",
-        "gender": "Gender",
-        "weightKg": "Weight",
-        "heightCm": "Height",
-        "hasDiabetes": "Diabetes",
-        "hasHypertension": "Hypertension",
-        "hasAllergies": "Known Allergies",
-        "isPregnant": "Pregnant",
-        "isSmoker": "Smoker",
-        "systolicBp": "Systolic BP",
-        "diastolicBp": "Diastolic BP",
-        "temperatureCelsius": "Temperature",
-        "heartRateBpm": "Heart Rate",
-        "symptomDurationDays": "Symptom Duration",
-        "severityScore": "Severity Score"
+        "age": "العمر",
+        "gender": "الجنس",
+        "weightKg": "الوزن",
+        "heightCm": "الطول",
+        "hasDiabetes": "السكري",
+        "hasHypertension": "ضغط الدم المرتفع",
+        "hasAllergies": "حساسية معروفة",
+        "isPregnant": "حامل",
+        "isSmoker": "مدخن",
+        "systolicBp": "الضغط الانقباضي",
+        "diastolicBp": "الضغط الانبساطي",
+        "heartRateBpm": "نبض القلب",
+        "temperatureCelsius": "درجة الحرارة",
+        "severityScore": "مستوى الألم",
+        "symptomDurationDays": "مدة الأعراض"
       },
       "options": {
         "gender": {
-          "male": "Male",
-          "female": "Female"
+          "male": "ذكر",
+          "female": "أنثى"
         }
       },
       "placeholders": {
-        "age": "e.g. 29",
-        "weightKg": "e.g. 68.5",
-        "heightCm": "e.g. 172",
-        "systolicBp": "e.g. 120",
-        "diastolicBp": "e.g. 80",
-        "temperatureCelsius": "e.g. 37.0",
-        "heartRateBpm": "e.g. 72",
-        "severityScore": "e.g. 6",
-        "symptomDurationDays": "e.g. 3",
-        "selectGender": "Select Gender"
+        "age": "مثلاً: 29",
+        "weightKg": "مثلاً: 68.5",
+        "heightCm": "مثلاً: 172",
+        "systolicBp": "مثلاً: 120",
+        "diastolicBp": "مثلاً: 80",
+        "temperatureCelsius": "مثلاً: 37.0",
+        "heartRateBpm": "مثلاً: 72",
+        "severityScore": "مثلاً: 6",
+        "symptomDurationDays": "مثلاً: 3",
+        "selectGender": "اختر الجنس"
       },
       "symptoms": {
-        "itchy_eyes": "Itchy Eyes",
-        "visual_aura": "Visual Aura",
-        "runny_nose": "Runny Nose",
-        "headache": "Headache",
-        "watery_eyes": "Watery Eyes",
-        "sneezing": "Sneezing",
-        "chest_pain": "Chest Pain",
-        "painful_urination": "Painful Urination",
-        "pelvic_pain": "Pelvic Pain",
-        "severe_headache": "Severe Headache",
-        "light_sensitivity": "Light Sensitivity",
-        "cloudy_urine": "Cloudy Urine",
-        "abdominal_pain": "Abdominal Pain",
-        "vomiting": "Vomiting",
-        "fever": "Fever",
-        "dizziness": "Dizziness",
-        "cold_hands": "Cold Hands",
-        "cough": "Cough",
-        "slow_healing": "Slow Healing",
-        "cold_intolerance": "Cold Intolerance",
-        "blurred_vision": "Blurred Vision",
-        "diarrhea": "Diarrhea",
-        "weight_gain": "Weight Gain",
-        "nausea": "Nausea",
-        "excessive_thirst": "Excessive Thirst",
-        "nasal_congestion": "Nasal Congestion",
-        "frequent_urination": "Frequent Urination",
-        "dry_skin": "Dry Skin",
-        "pale_skin": "Pale Skin",
-        "fatigue": "Fatigue",
-        "constipation": "Constipation",
-        "sore_throat": "Sore Throat",
-        "shortness_of_breath": "Shortness Of Breath"
+        "itchy_eyes": "حكة في العين",
+        "visual_aura": "هالة بصرية",
+        "runny_nose": "سيلان الأنف",
+        "headache": "صداع",
+        "watery_eyes": "دموع العين",
+        "sneezing": "عطس",
+        "chest_pain": "ألم في الصدر",
+        "painful_urination": "تبول مؤلم",
+        "pelvic_pain": "ألم في الحوض",
+        "severe_headache": "صداع حاد",
+        "light_sensitivity": "حساسية للضوء",
+        "cloudy_urine": "بول عكر",
+        "abdominal_pain": "ألم في البطن",
+        "vomiting": "قيء",
+        "fever": "حمى",
+        "dizziness": "دوار",
+        "cold_hands": "برودة اليدين",
+        "cough": "سعال",
+        "slow_healing": "بطء التئام الجروح",
+        "cold_intolerance": "عدم تحمل البرودة",
+        "blurred_vision": "رؤية ضبابية",
+        "diarrhea": "إسهال",
+        "weight_gain": "زيادة في الوزن",
+        "nausea": "غثيان",
+        "excessive_thirst": "عطش مفرط",
+        "nasal_congestion": "احتقان الأنف",
+        "frequent_urination": "تبول متكرر",
+        "dry_skin": "جفاف الجلد",
+        "pale_skin": "شحوب الجلد",
+        "fatigue": "تعب / إرهاق",
+        "constipation": "إمساك",
+        "sore_throat": "التهاب الحلق",
+        "shortness_of_breath": "ضيق في التنفس"
       },
-      "submit": "Generate Recipe",
-      "submitting": "Generating...",
-      "reset": "Reset",
-      "selectedSymptoms": "Selected symptoms: {{count}}",
-      "selectedCount": "Selected: {{count}} symptoms",
-      "medicalInstruction": "Check any conditions that apply to you",
-      "symptomsInstruction": "Select all symptoms you're experiencing",
-      "noConditions": "No conditions selected",
-      "noSymptoms": "No symptoms selected",
+      "submit": "توليد الوصفة",
+      "submitting": "جاري التوليد...",
+      "reset": "إعادة تعيين",
+      "selectedSymptoms": "الأعراض المختارة: {{count}}",
+      "selectedCount": "المختار: {{count}} أعراض",
+      "medicalInstruction": "تحقق من أي حالات تنطبق عليك",
+      "symptomsInstruction": "اختر جميع الأعراض التي تعاني منها",
+      "noConditions": "لم يتم اختيار أي حالات",
+      "noSymptoms": "لم يتم اختيار أي أعراض",
       "units": {
-        "years": "years",
-        "kg": "kg",
-        "cm": "cm",
-        "mmHg": "mmHg",
-        "bpm": "BPM",
-        "days": "days"
+        "years": "سنوات",
+        "kg": "كجم",
+        "cm": "سم",
+        "mmHg": "ملم زئبق",
+        "bpm": "نبضة/دقيقة",
+        "days": "أيام"
       },
       "actions": {
-        "previous": "Previous",
-        "next": "Next",
-        "reset": "Reset"
+        "previous": "السابق",
+        "next": "التالي",
+        "reset": "إعادة تعيين"
       },
       "messages": {
-        "symptomRequired": "Please add at least one symptom.",
-        "generateSuccess": "AI recipe generated successfully!"
+        "symptomRequired": "يرجى إضافة عرض واحد على الأقل.",
+        "generateSuccess": "تم توليد الوصفة بنجاح!"
       },
       "placeholders": {
-        "selectGender": "Select Gender",
-        "age": "e.g. 29",
-        "weightKg": "e.g. 68.5",
-        "heightCm": "e.g. 172",
-        "systolicBp": "e.g. 120",
-        "diastolicBp": "e.g. 80",
-        "temperatureCelsius": "e.g. 37.0",
-        "heartRateBpm": "e.g. 72",
-        "severityScore": "e.g. 6",
-        "symptomDurationDays": "e.g. 3"
+        "selectGender": "اختر الجنس",
+        "age": "مثلاً 29",
+        "weightKg": "مثلاً 68.5",
+        "heightCm": "مثلاً 172",
+        "systolicBp": "مثلاً 120",
+        "diastolicBp": "مثلاً 80",
+        "temperatureCelsius": "مثلاً 37.0",
+        "heartRateBpm": "مثلاً 72",
+        "severityScore": "مثلاً 6",
+        "symptomDurationDays": "مثلاً 3"
       }
     },
     "result": {
-      "title": "AI Recommendation",
-      "successTitle": "Recipe Generated Successfully",
-      "successSubtitle": "Your personalized herbal remedy recommendation",
-      "defaultTitle": "AI Herbal Recipe",
-      "consultationNumber": "Consultation #{{number}}",
-      "disclaimer": "Disclaimer: This is an AI-generated recommendation. Please consult with a healthcare professional before starting any herbal treatment.",
-      "medicalDisclaimerTitle": "Important Medical Disclaimer",
-      "medicalDisclaimerText": "This is an AI-generated recommendation and should not be considered professional medical advice. Always consult with a qualified healthcare provider or registered herbalist before starting any herbal treatment, especially if you are pregnant, nursing, taking medications, or have underlying health conditions. Discontinue use immediately if you experience any adverse reactions.",
+      "title": "توصية الذكاء الاصطناعي",
+      "successTitle": "تم توليد الوصفة بنجاح",
+      "successSubtitle": "توصيتك العشبية المخصصة بناءً على حالتك",
+      "defaultTitle": "وصفة عشبية بالذكاء الاصطناعي",
+      "consultationNumber": "استشارة رقم {{number}}",
+      "disclaimer": "إخلاء مسؤولية: هذه توصية ناتجة عن ذكاء اصطناعي. يرجى استشارة مختص قبل البدء بأي علاج عشبي.",
+      "medicalDisclaimerTitle": "إخلاء مسؤولية طبي هام",
+      "medicalDisclaimerText": "هذه توصية ناتجة عن ذكاء اصطناعي ولا ينبغي اعتبارها نصيحة طبية مهنية. استشر دائماً مقدم رعاية صحية مؤهل أو أخصائي أعشاب مسجل قبل البدء بأي علاج جديد، خاصة إذا كنت حاملاً أو مرضعة أو تتناول أدوية أو تعاني من حالات صحية كامنة. توقف عن الاستخدام فوراً إذا واجهت أي ردود فعل سلبية.",
       "tabs": {
-        "recipe": "Generated Recipe",
-        "history": "History"
+        "recipe": "الوصفة المولدة",
+        "history": "السجل"
       },
       "sections": {
-        "summary": "Summary",
-        "recipe": "Herbal Recipe Recommendation",
-        "recipeSubtitle": "Based on your health profile and symptoms",
-        "ingredients": "Ingredients",
-        "instructions": "Preparation Instructions",
-        "usage": "Usage & Dosage",
-        "dosage": "Dosage",
-        "use": "Usage",
-        "duration": "Duration",
-        "benefits": "Expected Benefits",
-        "precautions": "Precautions & Warnings",
-        "additional": "Additional Information",
-        "storage": "Storage",
-        "notes": "Notes"
+        "summary": "الملخص",
+        "recipe": "توصية الوصفة العشبية",
+        "recipeSubtitle": "بناءً على ملفك الصحي وأعراضك",
+        "ingredients": "المكونات",
+        "instructions": "تعليمات التحضير",
+        "usage": "الاستخدام والجرعة",
+        "dosage": "الجرعة",
+        "use": "طريقة الاستخدام",
+        "duration": "المدة",
+        "benefits": "الفوائد المتوقعة",
+        "precautions": "الاحتياطات والتحذيرات",
+        "additional": "معلومات إضافية",
+        "storage": "التخزين",
+        "notes": "ملاحظات"
       },
       "empty": {
-        "ingredients": "No ingredients were returned for this recipe.",
-        "instructions": "Preparation instructions were not returned by the AI response."
+        "ingredients": "لم يتم إرجاع أي مكونات لهذه الوصفة.",
+        "instructions": "لم يتم إرجاع تعليمات التحضير من قبل الذكاء الاصطناعي."
       },
       "sidebar": {
-        "confidence": "Confidence Score",
-        "reliability": "Reliability of this recommendation",
-        "keyInfo": "Key Info",
-        "type": "Type",
-        "typeValue": "Herbal Blend",
-        "safety": "Safety",
-        "safetyValue": "Natural ingredients",
-        "duration": "Duration",
-        "durationValue": "2-4 weeks typical"
+        "confidence": "مستوى الثقة",
+        "reliability": "موثوقية هذه التوصية",
+        "keyInfo": "معلومات أساسية",
+        "type": "النوع",
+        "typeValue": "مزيج عشبي",
+        "safety": "الأمان",
+        "safetyValue": "مكونات طبيعية",
+        "duration": "المدة",
+        "durationValue": "2-4 أسابيع عادةً"
       },
       "actions": {
-        "save": "Save Recipe",
-        "saving": "Saving...",
-        "saved": "Saved to Favorites",
-        "another": "Generate Another Recipe",
-        "view": "View"
+        "save": "حفظ الوصفة",
+        "saving": "جاري الحفظ...",
+        "saved": "تم الحفظ في المفضلة",
+        "another": "توليد وصفة أخرى",
+        "view": "عرض"
       },
       "messages": {
-        "saveSuccess": "Recipe saved to favorites!",
-        "removeSuccess": "Recipe removed from favorites",
-        "saveError": "Failed to save recipe",
-        "historyError": "Failed to load history",
-        "noHistory": "No previous consultations"
+        "saveSuccess": "تم حفظ الوصفة في المفضلة!",
+        "removeSuccess": "تمت إزالة الوصفة من المفضلة",
+        "saveError": "فشل حفظ الوصفة",
+        "historyError": "فشل تحميل السجل",
+        "noHistory": "لا توجد استشارات سابقة"
       }
     },
     "myConsultations": {
-      "title": "My Consultations",
-      "subtitle": "Review your past AI consultations",
-      "searchPlaceholder": "Search consultations by title or type...",
-      "loading": "Loading your consultations...",
-      "noResults": "No consultations found matching your search",
-      "startNew": "Start by generating a new consultation using the AI Recipe Generator",
-      "retry": "Retry",
-      "type": "Type",
-      "created": "Created",
-      "unknownDate": "Date unknown",
-      "description": "Description",
-      "confidence": "Confidence",
-      "symptoms": "Symptoms",
-      "recommendations": "Recommendations",
-      "preparation": "Preparation Instructions",
-      "relatedHerbs": "Related Herbs",
-      "view": "View",
+      "title": "استشاراتي",
+      "subtitle": "راجع استشاراتك السابقة مع الذكاء الاصطناعي",
+      "searchPlaceholder": "ابحث في الاستشارات بالعنوان أو النوع...",
+      "loading": "جاري تحميل استشاراتك...",
+      "noResults": "لم يتم العثور على استشارات تطابق بحثك",
+      "startNew": "ابدأ بتوليد استشارة جديدة باستخدام مولد الوصفات بالذكاء الاصطناعي",
+      "retry": "إعادة المحاولة",
+      "type": "النوع",
+      "created": "تاريخ الإنشاء",
+      "unknownDate": "تاريخ غير معروف",
+      "description": "الوصف",
+      "confidence": "مستوى الثقة",
+      "symptoms": "الأعراض",
+      "recommendations": "التوصيات",
+      "preparation": "تعليمات التحضير",
+      "relatedHerbs": "الأعشاب ذات الصلة",
+      "view": "عرض",
       "messages": {
-        "historyError": "Failed to load consultations",
-        "detailError": "Failed to load consultation details"
+        "historyError": "فشل تحميل الاستشارات",
+        "detailError": "فشل تحميل تفاصيل الاستشارة"
       }
     }
   },
   "auth": {
     "login": {
-      "title": "Welcome back",
-      "subtitle": "Please enter your details to continue",
-      "emailLabel": "Email Address",
-      "passwordLabel": "Password",
-      "forgotPassword": "Forgot password?",
-      "submit": "Sign In",
-      "loading": "Signing In",
-      "success": "Login successful!",
-      "emailNotFound": "Email Not Founded",
-      "orContinueWith": "Or continue with",
-      "backToHome": "Back to Home",
-      "confirmationRequired": "Email Confirmation Required",
-      "confirmationSubtitle": "Please confirm your email address to proceed. A confirmation link has been sent to your email.",
-      "resendConfirmation": "Resend Confirmation Email",
-      "sending": "Sending...",
-      "googleSubmit": "Continue with Google",
-      "googleError": "Failed to login with Google. Please try again."
+      "title": "مرحباً بعودتك",
+      "subtitle": "يرجى إدخال بياناتك للمتابعة",
+      "emailLabel": "البريد الإلكتروني",
+      "passwordLabel": "كلمة المرور",
+      "forgotPassword": "نسيت كلمة المرور؟",
+      "submit": "تسجيل الدخول",
+      "loading": "جاري الدخول",
+      "success": "تم تسجيل الدخول بنجاح!",
+      "orContinueWith": "أو المتابعة باستخدام",
+      "backToHome": "العودة للرئيسية",
+      "confirmationRequired": "تأكيد البريد الإلكتروني مطلوب",
+      "confirmationSubtitle": "يرجى تأكيد عنوان بريدك الإلكتروني للمتابعة. تم إرسال رابط تأكيد إلى بريدك الإلكتروني.",
+      "resendConfirmation": "إعادة إرسال بريد التأكيد",
+      "sending": "جاري الإرسال...",
+      "googleSubmit": "المتابعة باستخدام جوجل",
+      "googleError": "فشل تسجيل الدخول باستخدام جوجل. يرجى المحاولة مرة أخرى."
     },
     "register": {
-      "title": "Create an account",
-      "subtitle": "Join us to start your natural wellness journey",
-      "submit": "Create Account",
-      "loading": "Creating Account",
-      "alreadyHaveAccount": "Already have an account? Sign In",
-      "fullName": "Full Name",
-      "email": "Email Address",
-      "password": "Password",
-      "confirmPassword": "Confirm Password",
-      "role": "I am a...",
-      "patient": "Patient",
-      "herbalist": "Herbalist",
-      "agreeTerms": "I agree to the terms and conditions"
+      "title": "إنشاء حساب جديد",
+      "subtitle": "انضم إلينا لبدء رحلة العافية الطبيعية",
+      "submit": "إنشاء حساب",
+      "loading": "جاري الإنشاء",
+      "alreadyHaveAccount": "لديك حساب بالفعل؟ سجل دخولك",
+      "fullName": "الاسم الكامل",
+      "username": "اسم المستخدم",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "role": "أنا...",
+      "patient": "مريض",
+      "herbalist": "خبير أعشاب",
+      "agreeTerms": "أوافق على الشروط والأحكام"
     },
     "confirmEmail": {
-      "title": "Confirm your email",
-      "subtitle": "We are verifying your email address now.",
-      "sideDescription": "Secure your herbal care account by confirming the email address used during registration.",
-      "loadingTitle": "Verifying your email",
-      "loadingMessage": "Please wait while we confirm your email link.",
-      "successTitle": "Email confirmed",
-      "successMessage": "Your email address has been verified successfully.",
-      "successHint": "You can now return to Sign In and access your account.",
-      "successAlert": "Email confirmation completed successfully.",
-      "errorTitle": "Confirmation failed",
-      "errorMessage": "We could not verify this email confirmation link.",
-      "errorAlert": "The confirmation link is invalid, expired, or already used.",
-      "missingParams": "The confirmation link is missing the required email or token.",
-      "emailNotFound": "Email Not Founded",
-      "backToLogin": "Back to Sign In",
-      "tryAgain": "Try again"
+      "title": "تأكيد البريد الإلكتروني",
+      "subtitle": "نقوم الآن بالتحقق من عنوان بريدك الإلكتروني.",
+      "sideDescription": "قم بتأمين حسابك في Herbal Care من خلال تأكيد البريد الإلكتروني المستخدم عند التسجيل.",
+      "loadingTitle": "جاري التحقق من البريد الإلكتروني",
+      "loadingMessage": "يرجى الانتظار بينما نقوم بتأكيد رابط البريد الإلكتروني.",
+      "successTitle": "تم تأكيد البريد الإلكتروني",
+      "successMessage": "تم التحقق من عنوان بريدك الإلكتروني بنجاح.",
+      "successHint": "يمكنك الآن العودة إلى صفحة تسجيل الدخول والوصول إلى حسابك.",
+      "successAlert": "اكتمل تأكيد البريد الإلكتروني بنجاح.",
+      "errorTitle": "فشل التأكيد",
+      "errorMessage": "تعذر التحقق من رابط تأكيد البريد الإلكتروني هذا.",
+      "errorAlert": "رابط التأكيد غير صالح أو منتهي الصلاحية أو تم استخدامه بالفعل.",
+      "missingParams": "رابط التأكيد يفتقد إلى البريد الإلكتروني أو الرمز المطلوبين.",
+      "backToLogin": "العودة لتسجيل الدخول",
+      "tryAgain": "حاول مرة أخرى"
     },
     "forgotPassword": {
-      "title": "Forgot Password",
-      "subtitle": "Enter your email and choose a new password for your account.",
-      "sideDescription": "Recover access to your herbal care account and get back to your wellness journey.",
-      "submit": "Reset Password",
-      "loading": "Resetting Password",
-      "backToLogin": "Back to Sign In"
+      "title": "نسيت كلمة المرور",
+      "subtitle": "أدخل بريدك الإلكتروني واختر كلمة مرور جديدة لحسابك.",
+      "sideDescription": "استعد الوصول إلى حسابك واستأنف رحلتك نحو العافية.",
+      "submit": "إعادة تعيين كلمة المرور",
+      "loading": "جاري التعيين",
+      "backToLogin": "العودة لتسجيل الدخول"
     }
   },
   "dashboard": {
     "hero": {
-      "tagline": "Patient Dashboard",
-      "welcome": "Welcome back",
-      "description": "Keep your profile, address, and medical history up to date so your herbal care plan stays perfectly tailored to you.",
-      "email": "Email",
-      "phone": "Phone",
-      "birthDate": "Birth Date",
-      "gender": "Gender",
-      "notAvailable": "Not available",
-      "notSet": "Not set",
-      "location": "Primary Location",
-      "updateProfile": "Update in your profile",
-      "medicalProfile": "Medical Profile",
-      "active": "Active",
-      "syncing": "Syncing from your health records",
-      "secureSync": "Secure Data Sync",
-      "protected": "End-to-end protected by Herbal AI"
+      "tagline": "لوحة تحكم المريض",
+      "welcome": "أهلاً بك مجدداً",
+      "description": "حافظ على ملفك الشخصي وعنوانك وسجلك الطبي محدثاً لتبقى خطة الرعاية الخاصة بك مصممة خصيصاً لك.",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "birthDate": "تاريخ الميلاد",
+      "gender": "الجنس",
+      "notAvailable": "غير متوفر",
+      "notSet": "لم يحدد",
+      "location": "الموقع الرئيسي",
+      "updateProfile": "حدث في ملفك الشخصي",
+      "medicalProfile": "الملف الطبي",
+      "active": "نشط",
+      "syncing": "جاري المزامنة من سجلاتك الصحية",
+      "secureSync": "مزامنة بيانات آمنة",
+      "protected": "محمي بالكامل بواسطة Herbal AI"
     },
     "medicalHistory": {
-      "title": "Medical History",
-      "subtitle": "Conditions securely saved in your health profile",
-      "activeConditions": "Active Conditions",
-      "noConditions": "No Active Conditions",
-      "noConditionsDesc": "You haven't marked any medical flags.",
-      "additionalNotes": "Additional Notes",
-      "noNotes": "No additional medical notes or allergies documented in your profile yet."
+      "title": "السجل الطبي",
+      "subtitle": "الحالات المرضية المحفوظة بأمان في ملفك الصحي",
+      "activeConditions": "الحالات النشطة",
+      "noConditions": "لا توجد حالات نشطة",
+      "noConditionsDesc": "لم تقم بتحديد أي علامات طبية.",
+      "additionalNotes": "ملاحظات إضافية",
+      "noNotes": "لا توجد ملاحظات طبية إضافية أو حساسية موثقة في ملفك الشخصي بعد."
     },
     "address": {
-      "title": "Address Details",
-      "subtitle": "Your primary location configuration",
-      "governorate": "Governorate",
-      "city": "City",
-      "street": "Street Name / Number",
-      "notSet": "Not set"
+      "title": "تفاصيل العنوان",
+      "subtitle": "تكوين موقعك الرئيسي",
+      "governorate": "المحافظة",
+      "city": "المدينة",
+      "street": "اسم الشارع / الرقم",
+      "notSet": "لم يحدد"
     },
     "states": {
-      "loadingTitle": "Loading your dashboard",
-      "loadingDesc": "We're fetching your address and medical history.",
-      "errorTitle": "Unable to load dashboard data",
-      "noDataTitle": "No dashboard data yet",
-      "noDataDesc": "Once your profile data is available, it will appear here.",
-      "retry": "Try Again"
+      "loadingTitle": "جاري تحميل لوحة التحكم",
+      "loadingDesc": "نحن نقوم بجلب عنوانك وسجلك الطبي.",
+      "errorTitle": "غير قادر على تحميل بيانات لوحة التحكم",
+      "noDataTitle": "لا توجد بيانات لوحة تحكم بعد",
+      "noDataDesc": "بمجرد توفر بيانات ملفك الشخصي، ستظهر هنا.",
+      "retry": "حاول مرة أخرى"
     }
   }
 }
