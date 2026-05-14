@@ -379,7 +379,7 @@ function HerbalistManageRecipes({ user, dashboardData }) {
             {!showCreateForm && (
               <>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+                  <div className="absolute inset-y-0 start-0 ps-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
                     <FaSearch className="text-sm" />
                   </div>
                   <input
@@ -387,7 +387,7 @@ function HerbalistManageRecipes({ user, dashboardData }) {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search recipes..."
-                    className="pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all w-48 md:w-64"
+                    className="ps-10 pe-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all w-48 md:w-64"
                   />
                 </div>
                 <button
@@ -480,12 +480,12 @@ function HerbalistManageRecipes({ user, dashboardData }) {
                           <div className="h-12 w-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-lg shadow-inner group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500">
                             <FaLeaf />
                           </div>
-                          <div className="text-right">
+                          <div className="text-end">
                             <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest leading-none mb-1">
                               Price Point
                             </p>
                             <p className="text-xl font-black text-slate-900">
-                              <span className="text-xs text-slate-400 mr-0.5 font-bold">
+                              <span className="text-xs text-slate-400 me-0.5 font-bold">
                                 EGP
                               </span>
                               {recipe.price || 0}
@@ -536,7 +536,7 @@ function HerbalistManageRecipes({ user, dashboardData }) {
                           className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-black text-sm transition-colors disabled:opacity-50 ${
                             recipe.isActive === false
                               ? "border border-emerald-100 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-                              : "border border-rose-100 bg-rose-50 text-rose-700 hover:bg-rose-100"
+                              : "border border-eose-100 bg-rose-50 text-rose-700 hover:bg-rose-100"
                           }`}
                           title={
                             recipe.isActive === false

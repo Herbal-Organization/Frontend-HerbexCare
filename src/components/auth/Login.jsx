@@ -16,7 +16,6 @@ import SocialAuthButtons from "./SocialAuthButtons";
 function Login({ setSuccessMsg }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [localError, setLocalError] = useState("");
   const [pendingEmail, setPendingEmail] = useState("");
   const [resendSuccess, setResendSuccess] = useState("");
   const {
@@ -50,23 +49,11 @@ function Login({ setSuccessMsg }) {
       }, 1000);
     },
     onError: (err, message) => {
-      // Map backend 'User not found' / 404 to localized message
-      const serverMessage = message || "";
-      const status = err?.response?.status;
-
-      if (
-        serverMessage.toLowerCase().includes("user not found") ||
-        status === 404
-      ) {
-        setLocalError(t("auth.login.emailNotFound"));
-        return;
-      }
-
       // Check if error is about email confirmation
       if (
-        serverMessage?.includes("confirm") ||
-        serverMessage?.includes("confirmation") ||
-        serverMessage?.toLowerCase().includes("email")
+        message?.includes("confirm") ||
+        message?.includes("confirmation") ||
+        message?.toLowerCase().includes("email")
       ) {
         setPendingEmail(emailValue?.trim().toLowerCase());
       }
@@ -97,7 +84,6 @@ function Login({ setSuccessMsg }) {
 
   const onSubmit = async (values) => {
     clearError();
-    setLocalError("");
     try {
       // Trim email and password to prevent whitespace issues
       const payload = {
@@ -114,7 +100,7 @@ function Login({ setSuccessMsg }) {
 
   return (
     <div>
-      <AuthAlert message={localError || error} type="error" />
+      <AuthAlert message={error} type="error" />
       {resendSuccess && (
         <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700">
           {resendSuccess}

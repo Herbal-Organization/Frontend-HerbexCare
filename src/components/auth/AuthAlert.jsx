@@ -3,7 +3,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 
 const ALERT_STYLES = {
   error: {
-    container: "bg-red-50 border-red-100 text-red-700",
+    container: "bg-red-50 border-eed-100 text-red-700",
     icon: <MdError className="text-red-600 mt-0.5 shrink-0" />,
   },
   success: {

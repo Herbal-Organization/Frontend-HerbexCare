@@ -42,7 +42,7 @@ function FacetFilters({
             </button>
 
             {showSingleDropdown && (
-              <div className="absolute top-full mt-1 left-0 z-20 bg-white border border-slate-200 rounded-lg shadow-lg overflow-hidden min-w-48">
+              <div className="absolute top-full mt-1 start-0 z-20 bg-white border border-slate-200 rounded-lg shadow-lg overflow-hidden min-w-48">
                 {singleFilter.options.map((option) => (
                   <button
                     type="button"
@@ -51,9 +51,9 @@ function FacetFilters({
                       singleFilter.onChange(option.value);
                       setShowSingleDropdown(false);
                     }}
-                    className={`w-full px-4 py-3 text-left text-sm font-medium transition-colors ${
+                    className={`w-full px-4 py-3 text-start text-sm font-medium transition-colors ${
                       singleFilter.value === option.value
-                        ? "bg-emerald-50 text-emerald-700 border-l-4 border-emerald-500"
+                        ? "bg-emerald-50 text-emerald-700 border-s-4 border-emerald-500"
                         : "text-slate-700 hover:bg-slate-50"
                     }`}
                   >
@@ -87,7 +87,7 @@ function FacetFilters({
             </button>
 
             {showMultiDropdown && (
-              <div className="absolute top-full mt-1 left-0 z-20 bg-white border border-slate-200 rounded-lg shadow-lg overflow-y-auto max-h-72 min-w-72">
+              <div className="absolute top-full mt-1 start-0 z-20 bg-white border border-slate-200 rounded-lg shadow-lg overflow-y-auto max-h-72 min-w-72">
                 {multiFilter.options.length === 0 ? (
                   <div className="px-4 py-6 text-center text-sm text-slate-500">
                     No options available
@@ -145,7 +145,7 @@ function FacetFilters({
           <button
             type="button"
             onClick={onClearFilters}
-            className="ml-auto px-4 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all"
+            className="ms-auto px-4 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all"
           >
             Clear All Filters
           </button>

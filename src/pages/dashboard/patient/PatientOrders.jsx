@@ -146,7 +146,7 @@ function PatientOrders() {
                       </h3>
                       <p className="text-sm text-slate-500">{formattedDate}</p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-end">
                       <p className="text-lg font-bold text-slate-900">
                         {totalPrice.toFixed(2)} EGP
                       </p>

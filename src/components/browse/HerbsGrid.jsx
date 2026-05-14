@@ -17,7 +17,7 @@ function HerbsGrid({ herbs, isLoading, error, onRetry }) {
         {Array.from({ length: 8 }).map((_, index) => (
           <div
             key={`herb-skeleton-${index}`}
-            className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white text-left shadow-sm"
+            className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white text-start shadow-sm"
           >
             <div className="relative">
               <Skeleton
@@ -30,7 +30,7 @@ function HerbsGrid({ herbs, isLoading, error, onRetry }) {
                 width={84}
                 height={24}
                 borderRadius={9999}
-                containerClassName="absolute right-3 top-3"
+                containerClassName="absolute end-3 top-3"
                 baseColor="#d9e6cd"
                 highlightColor="#edf5e6"
               />
@@ -82,7 +82,7 @@ function HerbsGrid({ herbs, isLoading, error, onRetry }) {
 
   if (error) {
     return (
-      <div className="rounded-4xl border border-red-100 bg-red-50 p-16 text-center shadow-sm max-w-2xl mx-auto mt-12">
+      <div className="rounded-4xl border border-eed-100 bg-red-50 p-16 text-center shadow-sm max-w-2xl mx-auto mt-12">
         <h2 className="text-xl font-extrabold text-red-800">
           Unable to load herbs
         </h2>

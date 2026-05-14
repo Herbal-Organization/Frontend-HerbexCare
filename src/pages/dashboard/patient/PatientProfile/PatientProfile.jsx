@@ -35,7 +35,7 @@ function PatientProfile({ user, dashboardData, isLoading, onProfileUpdated }) {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const requireCompletion = searchParams.get("requireCompletion") === "true";
-  
+
   const initialProfile = useMemo(() => {
     const rawProfile = dashboardData?.profile ?? {
       ...DEFAULT_PATIENT_INFO,
@@ -123,7 +123,9 @@ function PatientProfile({ user, dashboardData, isLoading, onProfileUpdated }) {
           animate={{ opacity: 1, height: "auto" }}
           className="mb-6 rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700"
         >
-          ℹ️ {t("profile.messages.completionRequired") || "Please fill in your personal information to complete your profile setup."}
+          ℹ️{" "}
+          {t("profile.messages.completionRequired") ||
+            "Please fill in your personal information to complete your profile setup."}
         </motion.div>
       )}
 

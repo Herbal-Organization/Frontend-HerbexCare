@@ -25,7 +25,7 @@ function HerbCard({ herb }) {
       whileHover={{ y: -4 }}
       type="button"
       onClick={() => navigate(`/patient/home/herbs/${herb.herbId}`)}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white text-left h-full w-full transition-all duration-250 hover:-translate-y-1 hover:shadow-xl cursor-pointer"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white text-start h-full w-full transition-all duration-250 hover:-translate-y-1 hover:shadow-xl cursor-pointer"
     >
       {/* Image / Placeholder */}
       <div className="relative">
@@ -60,7 +60,7 @@ function HerbCard({ herb }) {
           </div>
         )}
         <span
-          className={`absolute top-3 right-3 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
+          className={`absolute top-3 end-3 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
             herb.isApproved
               ? "bg-[#EAF3DE] text-[#27500A] border-[#97C459]"
               : "bg-[#FAEEDA] text-[#633806] border-[#EF9F27]"

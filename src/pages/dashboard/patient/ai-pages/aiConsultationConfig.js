@@ -38,52 +38,49 @@ export const WIZARD_STEPS = [
   {
     id: "demographics",
     label: "Info",
+    labelKey: "aiConsultation.form.sections.info",
     title: "Personal Information",
-    description: "Tell us about yourself",
+    titleKey: "aiConsultation.wizard.step1.title",
+    description: "Tell us about your physical characteristics",
+    descriptionKey: "aiConsultation.wizard.step1.description",
     icon: "👤",
-  },
-  {
-    id: "medical",
-    label: "Medical History",
-    title: "Health Background",
-    description: "Any medical conditions?",
-    icon: "🏥",
   },
   {
     id: "vitals",
     label: "Vital Signs",
+    labelKey: "aiConsultation.form.sections.vitals",
     title: "Current Health Status",
+    titleKey: "aiConsultation.wizard.step3.title",
     description: "Your vital measurements",
+    descriptionKey: "aiConsultation.wizard.step3.description",
     icon: "💓",
   },
   {
     id: "symptoms",
     label: "Symptoms",
+    labelKey: "aiConsultation.form.sections.symptoms",
     title: "What are you experiencing?",
+    titleKey: "aiConsultation.wizard.step4.title",
     description: "Select applicable symptoms",
+    descriptionKey: "aiConsultation.wizard.step4.description",
     icon: "🔍",
   },
   {
     id: "review",
     label: "Review",
+    labelKey: "aiConsultation.form.sections.review",
     title: "Confirm Information",
+    titleKey: "aiConsultation.wizard.step5.title",
     description: "Review before generating",
+    descriptionKey: "aiConsultation.wizard.step5.description",
     icon: "✓",
   },
 ];
 
 export const INITIAL_FORM = {
-  // Demographics
-  age: "",
-  gender: "",
+  // Demographics (Weight/Height)
   weightKg: "",
   heightCm: "",
-  // Medical History
-  hasDiabetes: false,
-  hasHypertension: false,
-  hasAllergies: false,
-  isPregnant: false,
-  isSmoker: false,
   // Vital Signs
   severityScore: "",
   systolicBp: "",
@@ -96,24 +93,6 @@ export const INITIAL_FORM = {
 
 export const FORM_FIELDS = [
   // Demographics Section
-  {
-    key: "age",
-    label: "Age (years)",
-    labelKey: "aiConsultation.form.fields.age",
-    type: "number",
-    step: "1",
-    min: "0",
-    max: "150",
-    section: "demographics",
-  },
-  {
-    key: "gender",
-    label: "Gender",
-    labelKey: "aiConsultation.form.fields.gender",
-    type: "select",
-    options: ["Male", "Female"],
-    section: "demographics",
-  },
   {
     key: "weightKg",
     label: "Weight (kg)",
@@ -190,45 +169,18 @@ export const FORM_FIELDS = [
   },
 ];
 
-export const MEDICAL_HISTORY_FIELDS = [
-  {
-    key: "hasDiabetes",
-    label: "Diabetes",
-    labelKey: "aiConsultation.form.fields.hasDiabetes",
-  },
-  {
-    key: "hasHypertension",
-    label: "Hypertension",
-    labelKey: "aiConsultation.form.fields.hasHypertension",
-  },
-  {
-    key: "hasAllergies",
-    label: "Known Allergies",
-    labelKey: "aiConsultation.form.fields.hasAllergies",
-  },
-  {
-    key: "isPregnant",
-    label: "Pregnant",
-    labelKey: "aiConsultation.form.fields.isPregnant",
-  },
-  {
-    key: "isSmoker",
-    label: "Smoker",
-    labelKey: "aiConsultation.form.fields.isSmoker",
-  },
-];
+export const MEDICAL_HISTORY_FIELDS = [];
 
 export function getInputPlaceholder(fieldKey) {
   const placeholders = {
-    age: "e.g. 29",
-    weightKg: "e.g. 68.5",
-    heightCm: "e.g. 172",
-    systolicBp: "e.g. 120",
-    diastolicBp: "e.g. 80",
-    temperatureCelsius: "e.g. 37.0",
-    heartRateBpm: "e.g. 72",
-    severityScore: "e.g. 6",
-    symptomDurationDays: "e.g. 3",
+    weightKg: "aiConsultation.form.placeholders.weightKg",
+    heightCm: "aiConsultation.form.placeholders.heightCm",
+    systolicBp: "aiConsultation.form.placeholders.systolicBp",
+    diastolicBp: "aiConsultation.form.placeholders.diastolicBp",
+    temperatureCelsius: "aiConsultation.form.placeholders.temperatureCelsius",
+    heartRateBpm: "aiConsultation.form.placeholders.heartRateBpm",
+    severityScore: "aiConsultation.form.placeholders.severityScore",
+    symptomDurationDays: "aiConsultation.form.placeholders.symptomDurationDays",
   };
 
   return placeholders[fieldKey] || "";

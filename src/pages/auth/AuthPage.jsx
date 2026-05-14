@@ -4,26 +4,28 @@ import Login from "../../components/auth/Login";
 import Register from "../../components/auth/Register";
 import { FaCircleCheck } from "react-icons/fa6";
 import AuthPageLayout from "../../components/auth/AuthPageLayout";
+import { useTranslation } from "react-i18next";
 
 function AuthPage() {
+  const { t } = useTranslation();
   const [isLogin, setIsLogin] = useState(true);
   const [successMsg, setSuccessMsg] = useState(null);
 
   return (
     <AuthPageLayout
-      title={isLogin ? "Welcome back" : "Create an account"}
+      title={isLogin ? t("auth.login.title") : t("auth.register.title")}
       subtitle={
         isLogin
-          ? "Please enter your details to continue"
-          : "Join us to start your natural wellness journey"
+          ? t("auth.login.subtitle")
+          : t("auth.register.subtitle")
       }
     >
       <Link
         to="/"
         className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition-colors hover:text-primary"
       >
-        <span aria-hidden="true">←</span>
-        Back to Home
+        <span aria-hidden="true" className="rtl:rotate-180">←</span>
+        {t("auth.login.backToHome")}
       </Link>
 
       <div className="flex bg-slate-50 p-1.5 rounded-2xl mb-8">
@@ -35,7 +37,7 @@ function AuthPage() {
           }}
           className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all ${isLogin ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
         >
-          Sign In
+          {t("auth.login.submit")}
         </button>
         <button
           type="button"
@@ -45,7 +47,7 @@ function AuthPage() {
           }}
           className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all ${!isLogin ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
         >
-          Create Account
+          {t("auth.register.submit")}
         </button>
       </div>
 

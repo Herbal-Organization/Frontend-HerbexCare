@@ -11,8 +11,10 @@ import {
   fetchCatalogById,
 } from "../../../../api/aiConsultations";
 import { toast } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 function HerbCatalog() {
+  const { t } = useTranslation();
   const [catalog, setCatalog] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,7 +37,7 @@ function HerbCatalog() {
       const message =
         err?.response?.data?.message ||
         err?.message ||
-        "Failed to load catalog";
+        t("aiConsultation.catalog.messages.loadError");
       setError(message);
       toast.error(message);
       console.error("Failed to load catalog:", err);
@@ -54,7 +56,7 @@ function HerbCatalog() {
       const message =
         err?.response?.data?.message ||
         err?.message ||
-        "Failed to load catalog details";
+        t("aiConsultation.catalog.messages.detailError");
       toast.error(message);
       console.error("Failed to load catalog detail:", err);
     } finally {
@@ -84,40 +86,40 @@ function HerbCatalog() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-slate-900">
-              AI Consultation Catalog
+              {t("aiConsultation.catalog.title")}
             </h1>
             <p className="text-slate-600">
-              Browse consultation types and health recommendations
+              {t("aiConsultation.catalog.subtitle")}
             </p>
           </div>
         </div>
 
         {/* Search */}
         <div className="relative">
-          <FaSearch className="absolute left-3 top-3.5 text-slate-400" />
+          <FaSearch className="absolute start-3 top-3.5 text-slate-400" />
           <input
             type="text"
-            placeholder="Search consultations by name or type..."
+            placeholder={t("aiConsultation.catalog.searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+            className="w-full ps-10 pe-4 py-3 rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
           />
         </div>
       </div>
 
       {/* Error State */}
       {error && !loading && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 flex items-center gap-3">
+        <div className="mb-6 rounded-lg border border-eed-200 bg-red-50 p-4 flex items-center gap-3">
           <FaExclamationTriangle className="text-red-600 text-lg" />
           <div>
-            <p className="font-semibold text-red-900">Failed to load catalog</p>
+            <p className="font-semibold text-red-900">{t("aiConsultation.catalog.messages.loadError")}</p>
             <p className="text-sm text-red-700 mt-1">{error}</p>
           </div>
           <button
             onClick={loadCatalog}
-            className="ml-auto px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-500 transition text-sm"
+            className="ms-auto px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-500 transition text-sm"
           >
-            Retry
+            {t("aiConsultation.catalog.actions.retry")}
           </button>
         </div>
       )}
@@ -126,7 +128,7 @@ function HerbCatalog() {
         <div className="flex justify-center py-12">
           <div className="text-center">
             <FaSpinner className="text-4xl text-emerald-600 animate-spin mx-auto mb-4" />
-            <p className="text-slate-600">Loading consultation catalog...</p>
+            <p className="text-slate-600">{t("aiConsultation.catalog.loading")}</p>
           </div>
         </div>
       ) : !error ? (
@@ -145,7 +147,7 @@ function HerbCatalog() {
                   </h3>
                   {item.type && (
                     <p className="text-xs text-slate-500 font-medium mt-1">
-                      Type: {item.type}
+                      {t("aiConsultation.myConsultations.type")}: {item.type}
                     </p>
                   )}
                 </div>
@@ -155,7 +157,7 @@ function HerbCatalog() {
                   {item.description && (
                     <div>
                       <p className="text-xs font-bold uppercase tracking-widest text-slate-600 mb-2">
-                        Description
+                        {t("aiConsultation.myConsultations.description")}
                       </p>
                       <p className="text-sm text-slate-700 line-clamp-2">
                         {item.description}
@@ -166,7 +168,7 @@ function HerbCatalog() {
                   {item.focusAreas && (
                     <div>
                       <p className="text-xs font-bold uppercase tracking-widest text-slate-600 mb-2">
-                        Focus Areas
+                        {t("aiConsultation.catalog.focusAreas")}
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {(Array.isArray(item.focusAreas)
@@ -187,7 +189,7 @@ function HerbCatalog() {
                   {item.duration && (
                     <div className="rounded-lg bg-slate-50 p-3">
                       <p className="text-xs font-bold text-slate-600 mb-1">
-                        Duration
+                        {t("aiConsultation.catalog.duration")}
                       </p>
                       <p className="text-sm text-slate-700">{item.duration}</p>
                     </div>
@@ -199,7 +201,7 @@ function HerbCatalog() {
             <div className="col-span-full text-center py-12">
               <FaLeaf className="text-6xl text-slate-300 mx-auto mb-4" />
               <p className="text-slate-600 text-lg font-medium">
-                No consultations found matching your search
+                {t("aiConsultation.catalog.noResults")}
               </p>
             </div>
           )}
@@ -226,7 +228,7 @@ function HerbCatalog() {
                 </h2>
                 {selectedCatalog.type && (
                   <p className="text-emerald-100 mt-1">
-                    Type: {selectedCatalog.type}
+                    {t("aiConsultation.myConsultations.type")}: {selectedCatalog.type}
                   </p>
                 )}
               </div>
@@ -250,7 +252,7 @@ function HerbCatalog() {
                 {selectedCatalog.description && (
                   <div>
                     <h3 className="font-bold text-slate-900 mb-2">
-                      Description
+                      {t("aiConsultation.myConsultations.description")}
                     </h3>
                     <p className="text-slate-700">
                       {selectedCatalog.description}
@@ -261,7 +263,7 @@ function HerbCatalog() {
                 {catalogDetail?.focusAreas && (
                   <div>
                     <h3 className="font-bold text-slate-900 mb-2">
-                      Focus Areas
+                      {t("aiConsultation.catalog.focusAreas")}
                     </h3>
                     <div className="flex flex-wrap gap-2">
                       {(Array.isArray(catalogDetail.focusAreas)
@@ -279,26 +281,26 @@ function HerbCatalog() {
                   </div>
                 )}
 
-                {catalogDetail?.duration && (
+                 {catalogDetail?.duration && (
                   <div className="bg-blue-50 rounded-lg p-4">
-                    <h3 className="font-bold text-blue-900 mb-2">Duration</h3>
+                    <h3 className="font-bold text-blue-900 mb-2">{t("aiConsultation.catalog.duration")}</h3>
                     <p className="text-blue-800">{catalogDetail.duration}</p>
                   </div>
                 )}
 
-                {catalogDetail?.benefits && (
+                 {catalogDetail?.benefits && (
                   <div className="bg-emerald-50 rounded-lg p-4">
                     <h3 className="font-bold text-emerald-900 mb-2">
-                      Benefits
+                      {t("aiConsultation.catalog.benefits")}
                     </h3>
                     <p className="text-emerald-800">{catalogDetail.benefits}</p>
                   </div>
                 )}
 
-                {catalogDetail?.recommendations && (
+                 {catalogDetail?.recommendations && (
                   <div className="bg-yellow-50 rounded-lg p-4">
                     <h3 className="font-bold text-yellow-900 mb-2">
-                      Recommendations
+                      {t("aiConsultation.myConsultations.recommendations")}
                     </h3>
                     <p className="text-yellow-800">
                       {catalogDetail.recommendations}
@@ -307,15 +309,15 @@ function HerbCatalog() {
                 )}
 
                 {/* Add to Consultation Button */}
-                <button
+                 <button
                   className="w-full mt-6 rounded-lg bg-emerald-600 px-4 py-2.5 font-semibold text-white hover:bg-emerald-500 transition"
                   onClick={() => {
-                    toast.success("Consultation selected!");
+                    toast.success(t("aiConsultation.catalog.messages.selected"));
                     setSelectedCatalog(null);
                     setCatalogDetail(null);
                   }}
                 >
-                  Use This Consultation
+                  {t("aiConsultation.catalog.actions.use")}
                 </button>
               </div>
             )}

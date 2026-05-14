@@ -42,13 +42,13 @@ export default function DiseasesTable({ diseases, isLoading, onAddClick }) {
         <table className="w-full">
           <thead>
             <tr className="border-b border-slate-100 bg-slate-50">
-              <th className="px-6 py-4 text-left text-xs font-black uppercase tracking-wider text-slate-600">
+              <th className="px-6 py-4 text-start text-xs font-black uppercase tracking-wider text-slate-600">
                 Disease Name
               </th>
-              <th className="px-6 py-4 text-left text-xs font-black uppercase tracking-wider text-slate-600">
+              <th className="px-6 py-4 text-start text-xs font-black uppercase tracking-wider text-slate-600">
                 Type
               </th>
-              <th className="px-6 py-4 text-left text-xs font-black uppercase tracking-wider text-slate-600">
+              <th className="px-6 py-4 text-start text-xs font-black uppercase tracking-wider text-slate-600">
                 Description
               </th>
             </tr>

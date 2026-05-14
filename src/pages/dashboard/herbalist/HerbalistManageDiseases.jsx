@@ -165,7 +165,7 @@ function HerbalistManageDiseases() {
             {!showCreateForm && (
               <>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+                  <div className="absolute inset-y-0 start-0 ps-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
                     <FaSearch className="text-sm" />
                   </div>
                   <input
@@ -173,7 +173,7 @@ function HerbalistManageDiseases() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search diseases..."
-                    className="pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all w-48 md:w-64"
+                    className="ps-10 pe-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all w-48 md:w-64"
                   />
                 </div>
                 <button
@@ -191,7 +191,7 @@ function HerbalistManageDiseases() {
         {error && (
           <motion.div
             variants={itemVariants}
-            className="rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-600"
+            className="rounded-2xl border border-eed-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-600"
           >
             {error}
           </motion.div>

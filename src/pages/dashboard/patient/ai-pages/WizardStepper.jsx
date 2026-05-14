@@ -1,6 +1,8 @@
 import { WIZARD_STEPS } from "./aiConsultationConfig";
+import { useTranslation } from "react-i18next";
 
 function WizardStepper({ currentStep }) {
+  const { t } = useTranslation();
   const currentStepIndex = WIZARD_STEPS.findIndex((s) => s.id === currentStep);
 
   return (
@@ -8,9 +10,9 @@ function WizardStepper({ currentStep }) {
       {/* Step indicators */}
       <div className="flex items-center justify-between relative">
         {/* Connector lines background */}
-        <div className="absolute top-6 left-0 right-0 h-1 bg-slate-200 z-0" />
+        <div className="absolute top-6 start-0 end-0 h-1 bg-slate-200 z-0" />
         <div
-          className="absolute top-6 left-0 h-1 bg-emerald-600 transition-all duration-300 z-0"
+          className="absolute top-6 start-0 h-1 bg-emerald-600 transition-all duration-300 z-0"
           style={{
             width: `${currentStepIndex > 0 ? (currentStepIndex / (WIZARD_STEPS.length - 1)) * 100 : 0}%`,
           }}
@@ -41,7 +43,7 @@ function WizardStepper({ currentStep }) {
                   : "text-slate-400"
               }`}
             >
-              {step.label}
+              {t(step.labelKey)}
             </span>
           </div>
         ))}

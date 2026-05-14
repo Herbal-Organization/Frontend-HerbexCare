@@ -63,7 +63,7 @@ function PatientNavbar() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
-                {navItems.map((item) => (
+            {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -73,7 +73,7 @@ function PatientNavbar() {
                     : "text-slate-600 hover:text-primary hover:bg-slate-50"
                 }`}
               >
-                    {item.label}
+                {item.label}
               </Link>
             ))}
           </nav>
@@ -87,7 +87,7 @@ function PatientNavbar() {
             >
               <FaShoppingCart className="text-lg" />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-white">
+                <span className="absolute -top-1 -end-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-white">
                   {cartCount}
                 </span>
               )}
@@ -99,8 +99,8 @@ function PatientNavbar() {
             </button>
 
             {/* User Profile Dropdown */}
-            <div className="hidden sm:flex items-center gap-3 pl-4 border-l border-slate-200">
-                <div className="text-right">
+            <div className="hidden sm:flex items-center gap-3 ps-4 border-s border-slate-200">
+              <div className="text-end">
                 <p className="text-sm font-medium text-slate-900">
                   {user?.name || t("navbar.user")}
                 </p>
@@ -157,20 +157,22 @@ function PatientNavbar() {
                   {item.label}
                 </Link>
               ))}
-                <Link
+              <Link
                 to="/patient/dashboard/cart"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="flex items-center gap-2 w-full px-3 py-2 rounded-md text-sm font-medium text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-colors"
               >
                 <FaShoppingCart className="text-lg" />
-                <span>{t("navbar.myCart")} ({cartCount})</span>
+                <span>
+                  {t("navbar.myCart")} ({cartCount})
+                </span>
               </Link>
               <button
                 onClick={() => {
                   setIsMobileMenuOpen(false);
                   handleLogout();
                 }}
-                className="flex items-center gap-2 w-full px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-colors text-left"
+                className="flex items-center gap-2 w-full px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-colors text-start"
               >
                 <FaSignOutAlt className="text-lg" />
                 <span>{t("navbar.logout")}</span>

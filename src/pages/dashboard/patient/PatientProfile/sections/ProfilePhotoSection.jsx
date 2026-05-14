@@ -1,5 +1,6 @@
 import { FaCamera } from "react-icons/fa";
 import { motion } from "motion/react";
+import { useTranslation } from "react-i18next";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -11,6 +12,7 @@ const itemVariants = {
 };
 
 function ProfilePhotoSection({ profile, setProfile, user }) {
+  const { t } = useTranslation();
   return (
     <motion.div
       variants={itemVariants}
@@ -28,7 +30,7 @@ function ProfilePhotoSection({ profile, setProfile, user }) {
             (user?.fullName || user?.name || "P").charAt(0).toUpperCase()
           )}
         </div>
-        <label className="absolute bottom-0 right-0 p-2 bg-white rounded-full shadow-lg border border-slate-100 text-primary cursor-pointer hover:scale-110 hover:bg-emerald-50 transition-transform">
+        <label className="absolute bottom-0 end-0 p-2 bg-white rounded-full shadow-lg border border-slate-100 text-primary cursor-pointer hover:scale-110 hover:bg-emerald-50 transition-transform">
           <FaCamera className="text-sm" />
           <input
             type="file"
@@ -43,17 +45,16 @@ function ProfilePhotoSection({ profile, setProfile, user }) {
           />
         </label>
       </div>
-      <div className="flex-1 text-center md:text-left flex flex-col items-center md:items-start md:justify-between gap-4">
+      <div className="flex-1 text-center md:text-start flex flex-col items-center md:items-start md:justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-800">Profile Picture</h2>
+          <h2 className="text-xl font-bold text-slate-800">{t("profile.sections.photo.title")}</h2>
           <p className="text-sm text-slate-500 mt-1 max-w-sm">
-            Upload a professional photo to help your doctors identify you
-            easily. JPG or PNG.
+            {t("profile.sections.photo.description")}
           </p>
         </div>
         <div className="flex flex-wrap gap-3 mt-2">
           <label className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 text-sm font-semibold transition-colors cursor-pointer">
-            Upload New Image
+            {t("profile.sections.photo.change")}
             <input
               type="file"
               accept="image/*"
@@ -72,7 +73,7 @@ function ProfilePhotoSection({ profile, setProfile, user }) {
               onClick={() => setProfile((prev) => ({ ...prev, photoUrl: "" }))}
               className="inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-slate-500 hover:text-red-600 hover:bg-red-50 text-sm font-semibold transition-colors"
             >
-              Remove
+              {t("profile.sections.photo.remove")}
             </button>
           )}
         </div>

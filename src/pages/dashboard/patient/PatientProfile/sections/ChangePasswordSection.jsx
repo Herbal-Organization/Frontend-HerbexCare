@@ -1,5 +1,6 @@
 import { FaLock } from "react-icons/fa";
 import { motion } from "motion/react";
+import { useTranslation } from "react-i18next";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -11,6 +12,7 @@ const itemVariants = {
 };
 
 function ChangePasswordSection({ onOpenModal }) {
+  const { t } = useTranslation();
   return (
     <motion.div
       variants={itemVariants}
@@ -21,9 +23,9 @@ function ChangePasswordSection({ onOpenModal }) {
           <FaLock className="text-lg" />
         </div>
         <div>
-          <h2 className="text-lg font-bold text-slate-900">Change Password</h2>
+          <h2 className="text-lg font-bold text-slate-900">{t("profile.sections.security.changePassword")}</h2>
           <p className="text-xs text-slate-500 font-medium">
-            Update your password to keep your account secure
+            {t("profile.sections.security.changePasswordDescription")}
           </p>
         </div>
       </div>
@@ -33,8 +35,8 @@ function ChangePasswordSection({ onOpenModal }) {
         onClick={onOpenModal}
         className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold shadow-sm hover:-translate-y-0.5 shadow-primary/30 hover:shadow-primary/50 transition-all"
       >
-        <FaLock className="mr-2" />
-        Change Password
+        <FaLock className="me-2" />
+        {t("profile.sections.security.changePassword")}
       </button>
     </motion.div>
   );

@@ -4,10 +4,10 @@ import { useTranslation } from "react-i18next";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { type: "spring", stiffness: 300, damping: 24 }
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 300, damping: 24 },
   },
 };
 
@@ -32,7 +32,7 @@ function AddressRow({ icon, label, value, t }) {
 function PatientAddressCard({ profile }) {
   const { t } = useTranslation();
   return (
-    <motion.section 
+    <motion.section
       variants={itemVariants}
       className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
     >
@@ -41,7 +41,9 @@ function PatientAddressCard({ profile }) {
           <FaMapMarkedAlt className="text-xl" />
         </div>
         <div>
-          <h2 className="text-2xl font-extrabold text-slate-900">{t("dashboard.address.title")}</h2>
+          <h2 className="text-2xl font-extrabold text-slate-900">
+            {t("dashboard.address.title")}
+          </h2>
           <p className="mt-1 text-sm font-medium text-slate-500">
             {t("dashboard.address.subtitle")}
           </p>
@@ -55,15 +57,15 @@ function PatientAddressCard({ profile }) {
           value={profile?.governorate}
           t={t}
         />
-        <AddressRow 
-          icon={<FaCity className="text-lg" />} 
-          label={t("dashboard.address.city")} 
+        <AddressRow
+          icon={<FaCity className="text-lg" />}
+          label={t("dashboard.address.city")}
           value={profile?.city}
           t={t}
         />
-        <AddressRow 
-          icon={<FaRoad className="text-lg" />} 
-          label={t("dashboard.address.street")} 
+        <AddressRow
+          icon={<FaRoad className="text-lg" />}
+          label={t("dashboard.address.street")}
           value={profile?.street}
           t={t}
         />

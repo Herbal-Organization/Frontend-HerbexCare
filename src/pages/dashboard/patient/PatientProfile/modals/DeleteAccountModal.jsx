@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "motion/react";
+import { useTranslation } from "react-i18next";
 
 function DeleteAccountModal({
   isOpen,
@@ -10,6 +11,7 @@ function DeleteAccountModal({
   onEmailChange,
   user,
 }) {
+  const { t } = useTranslation();
   return (
     <AnimatePresence>
       {isOpen && (
@@ -27,38 +29,36 @@ function DeleteAccountModal({
             className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="border-b border-red-200 bg-red-50 px-6 py-4">
-              <h3 className="text-lg font-bold text-red-900">Delete Account</h3>
+            <div className="border-b border-eed-200 bg-red-50 px-6 py-4">
+              <h3 className="text-lg font-bold text-red-900">{t("profile.modals.deleteAccount.title")}</h3>
               <p className="text-sm text-red-800 mt-1">
-                This action cannot be undone
+                {t("profile.modals.deleteAccount.description")}
               </p>
             </div>
 
             <div className="p-6 space-y-4">
               {error && (
-                <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+                <div className="rounded-xl border border-eed-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
                   {error}
                 </div>
               )}
 
               <p className="text-sm text-slate-700">
-                ⚠️ Deleting your account will permanently remove all your data,
-                including medical history, orders, and preferences. This action
-                cannot be undone.
+                {t("profile.modals.deleteAccount.warning")}
               </p>
 
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">
-                  Type your email to confirm:{" "}
+                  {t("profile.modals.deleteAccount.confirmLabel")}
                   <span className="text-red-600">{user?.email}</span>
                 </label>
                 <input
                   type="text"
-                  placeholder={`Enter ${user?.email} to confirm`}
+                  placeholder={t("profile.modals.deleteAccount.placeholder", { email: user?.email })}
                   value={deleteEmailConfirm}
                   onChange={onEmailChange}
                   disabled={isLoading}
-                  className="block w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 text-slate-900 text-sm font-medium transition-all disabled:opacity-50"
+                  className="block w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-eed-500 focus:ring-2 focus:ring-red-500/20 text-slate-900 text-sm font-medium transition-all disabled:opacity-50"
                 />
               </div>
 
@@ -69,7 +69,7 @@ function DeleteAccountModal({
                   disabled={isLoading}
                   className="flex-1 rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-50"
                 >
-                  Cancel
+                  {t("profile.actions.cancel")}
                 </button>
                 <button
                   type="button"
@@ -80,7 +80,7 @@ function DeleteAccountModal({
                   {isLoading && (
                     <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   )}
-                  {isLoading ? "Deleting..." : "Delete Account"}
+                  {isLoading ? t("profile.modals.deleteAccount.submitting") : t("profile.modals.deleteAccount.submit")}
                 </button>
               </div>
             </div>

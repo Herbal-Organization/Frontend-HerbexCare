@@ -244,28 +244,28 @@ function HerbalistDashboardHome({
                 <button
                   type="button"
                   onClick={() => navigate("/herbalist/dashboard/herbs")}
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm font-semibold text-slate-700 hover:bg-slate-100"
+                  className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-start text-sm font-semibold text-slate-700 hover:bg-slate-100"
                 >
                   Manage Herbs
                 </button>
                 <button
                   type="button"
                   onClick={() => navigate("/herbalist/dashboard/recipes")}
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm font-semibold text-slate-700 hover:bg-slate-100"
+                  className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-start text-sm font-semibold text-slate-700 hover:bg-slate-100"
                 >
                   Manage Recipes
                 </button>
                 <button
                   type="button"
                   onClick={() => navigate("/herbalist/dashboard/inventory")}
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm font-semibold text-slate-700 hover:bg-slate-100"
+                  className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-start text-sm font-semibold text-slate-700 hover:bg-slate-100"
                 >
                   Manage Inventory
                 </button>
                 <button
                   type="button"
                   onClick={() => navigate("/herbalist/dashboard/profile")}
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm font-semibold text-slate-700 hover:bg-slate-100"
+                  className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-start text-sm font-semibold text-slate-700 hover:bg-slate-100"
                 >
                   Update Profile
                 </button>

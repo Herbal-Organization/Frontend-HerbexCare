@@ -57,12 +57,12 @@ export default function RecipesList({
                     <div className="h-12 w-12 bg-emerald-50 text-emerald-600 rounded-[1rem] flex items-center justify-center text-lg shadow-inner group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500">
                       <FaLeaf />
                     </div>
-                    <div className="text-right">
+                    <div className="text-end">
                       <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest leading-none mb-1">
                         Price Point
                       </p>
                       <p className="text-xl font-black text-slate-900">
-                        <span className="text-xs text-slate-400 mr-0.5 font-bold">
+                        <span className="text-xs text-slate-400 me-0.5 font-bold">
                           EGP
                         </span>
                         {recipe.price || 0}
@@ -109,7 +109,7 @@ export default function RecipesList({
                     type="button"
                     onClick={() => handleToggleAvailability(recipe)}
                     disabled={isDeleting}
-                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-black text-sm transition-colors disabled:opacity-50 ${recipe.isActive === false ? "border border-emerald-100 bg-emerald-50 text-emerald-700 hover:bg-emerald-100" : "border border-rose-100 bg-rose-50 text-rose-700 hover:bg-rose-100"}`}
+                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-black text-sm transition-colors disabled:opacity-50 ${recipe.isActive === false ? "border border-emerald-100 bg-emerald-50 text-emerald-700 hover:bg-emerald-100" : "border border-eose-100 bg-rose-50 text-rose-700 hover:bg-rose-100"}`}
                     title={
                       recipe.isActive === false
                         ? "Activate Recipe"

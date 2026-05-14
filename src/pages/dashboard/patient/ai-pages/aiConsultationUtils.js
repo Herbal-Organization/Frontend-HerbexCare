@@ -1,3 +1,4 @@
+import i18n from "../../../../i18n/config";
 export const parseSymptoms = (value) => {
   return Array.from(
     new Set(
@@ -150,6 +151,7 @@ export const normalizeGeneratedRecipe = (result) => {
     root.recipe,
     root.generatedRecipe,
     root.consultation,
+    Array.isArray(root.items) ? root.items[0] : null,
   ]
     .map((item) =>
       typeof item === "string"
@@ -202,17 +204,25 @@ export const normalizeGeneratedRecipe = (result) => {
   return {
     title:
       pickFirst(
+        merged.recommendedRecipeName,
         merged.recipeTitle,
         merged.recipeName,
         merged.title,
         merged.name,
         root.recipeTitle,
-      ) || "AI Herbal Recipe",
+      ) || i18n.t("aiConsultation.result.defaultTitle"),
+    condition: pickFirst(merged.condition, merged.medicalCondition, merged.focusArea),
+    cautionWarning: pickFirst(
+      merged.cautionWarning,
+      merged.precautions,
+      merged.warnings,
+      merged.contraindications,
+    ),
     ingredients,
     preparationInstructions,
     confidenceScore:
       Number(merged.confidenceScore ?? root.confidenceScore ?? 0) || null,
-    raw: root,
+    raw: merged,
   };
 };
 
@@ -234,6 +244,6 @@ export const parseApiError = (error) => {
   return (
     responseData?.message ||
     responseData?.title ||
-    "Failed to generate AI consultation. Please try again."
+    i18n.t("aiConsultation.result.messages.generateError")
   );
 };

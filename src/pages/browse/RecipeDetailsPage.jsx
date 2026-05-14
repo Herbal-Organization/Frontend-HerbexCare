@@ -223,7 +223,9 @@ function RecipeDetailsPage() {
         return;
       }
 
-      const currentRecipeId = Number(recipe?.recipeId || recipe?.id || recipeId || 0);
+      const currentRecipeId = Number(
+        recipe?.recipeId || recipe?.id || recipeId || 0,
+      );
       if (!currentRecipeId) return;
 
       try {
@@ -272,7 +274,9 @@ function RecipeDetailsPage() {
 
       setIsRecipeSaved((prev) => !prev);
       toast.success(
-        isRecipeSaved ? "Recipe removed from saved recipes." : "Recipe saved successfully.",
+        isRecipeSaved
+          ? "Recipe removed from saved recipes."
+          : "Recipe saved successfully.",
       );
     } catch (error) {
       const message =
@@ -449,8 +453,16 @@ function RecipeDetailsPage() {
                       : "border-slate-200 bg-white text-slate-700 hover:border-emerald-200 hover:text-emerald-700"
                   } ${isSavingRecipe ? "opacity-60 cursor-not-allowed" : ""}`}
                 >
-                  {isRecipeSaved ? <FaBookmark className="text-[11px]" /> : <FaRegBookmark className="text-[11px]" />}
-                  {isSavingRecipe ? "Saving..." : isRecipeSaved ? "Saved" : "Save Recipe"}
+                  {isRecipeSaved ? (
+                    <FaBookmark className="text-[11px]" />
+                  ) : (
+                    <FaRegBookmark className="text-[11px]" />
+                  )}
+                  {isSavingRecipe
+                    ? "Saving..."
+                    : isRecipeSaved
+                      ? "Saved"
+                      : "Save Recipe"}
                 </button>
               </div>
 

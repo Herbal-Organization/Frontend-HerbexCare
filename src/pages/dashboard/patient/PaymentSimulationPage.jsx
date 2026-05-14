@@ -152,7 +152,7 @@ function PaymentSimulationPage() {
         </div>
 
         {error ? (
-          <div className="mt-6 rounded-2xl border border-red-100 bg-red-50 p-4 text-sm font-semibold text-red-700">
+          <div className="mt-6 rounded-2xl border border-eed-100 bg-red-50 p-4 text-sm font-semibold text-red-700">
             <div className="flex items-center gap-2">
               <FaExclamationCircle />
               <span>{error}</span>

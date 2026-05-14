@@ -1,388 +1,560 @@
 import { useState, useEffect } from "react";
+import { toast } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import {
   FaBrain,
   FaSpinner,
-  FaSearch,
-  FaExclamationTriangle,
-  FaTimes,
   FaClock,
+  FaArrowLeft,
+  FaSearch,
+  FaPlus,
+  FaLeaf,
+  FaBookmark,
+  FaRegBookmark,
+  FaExclamationTriangle,
 } from "react-icons/fa";
 import {
-  fetchMyConsultations,
+  myAllConsultations,
   fetchMyConsultationById,
 } from "../../../../api/aiConsultations";
-import { toast } from "react-hot-toast";
+import { toggleFavorite } from "../../../../api/favorites";
+import { normalizeGeneratedRecipe } from "./aiConsultationUtils";
+import { useNavigate } from "react-router-dom";
 
 function MyConsultations() {
-  const [consultations, setConsultations] = useState([]);
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
-  const [selectedConsultation, setSelectedConsultation] = useState(null);
-  const [consultationDetail, setConsultationDetail] = useState(null);
-  const [detailLoading, setDetailLoading] = useState(false);
+
+  // Pagination States
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize] = useState(6);
+
+  // Detail States
+  const [viewMode, setViewMode] = useState("list"); // "list" or "detail"
+  const [selectedDetail, setSelectedDetail] = useState(null);
+  const [loadingDetail, setLoadingDetail] = useState(false);
+  const [isSavedRecipe, setIsSavedRecipe] = useState(false);
+  const [savingRecipe, setSavingRecipe] = useState(false);
 
   useEffect(() => {
-    loadConsultations();
-  }, []);
+    loadHistory(currentPage);
+  }, [currentPage]);
 
-  const loadConsultations = async () => {
+  const loadHistory = async (page) => {
     setLoading(true);
-    setError(null);
+    setViewMode("list");
     try {
-      const data = await fetchMyConsultations();
-      setConsultations(
-        Array.isArray(data) ? data : data?.items ? data.items : []
-      );
-    } catch (err) {
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Failed to load consultations";
-      setError(message);
-      toast.error(message);
-      console.error("Failed to load consultations:", err);
+      const data = await myAllConsultations(page, pageSize);
+      const list = Array.isArray(data) ? data : data?.items || [];
+      setHistory(list);
+      setTotalPages(data?.totalPages || 1);
+    } catch (error) {
+      console.error("Failed to load history:", error);
+      toast.error(t("aiConsultation.result.messages.historyError"));
     } finally {
       setLoading(false);
     }
   };
 
-  const loadConsultationDetail = async (id) => {
-    if (!id) return;
-    setDetailLoading(true);
+  const handleItemClick = async (id) => {
+    setLoadingDetail(true);
     try {
-      const data = await fetchMyConsultationById(id);
-      setConsultationDetail(data);
-    } catch (err) {
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Failed to load consultation details";
-      toast.error(message);
-      console.error("Failed to load consultation detail:", err);
+      const detail = await fetchMyConsultationById(id);
+      setSelectedDetail(detail);
+      setIsSavedRecipe(
+        Boolean(detail?.isFavorite || detail?.isSaved || detail?.saved),
+      );
+      setViewMode("detail");
+    } catch (error) {
+      console.error("Failed to load consultation detail:", error);
+      toast.error(t("aiConsultation.myConsultations.messages.detailError"));
     } finally {
-      setDetailLoading(false);
+      setLoadingDetail(false);
     }
   };
 
-  const handleSelectConsultation = (item) => {
-    setSelectedConsultation(item);
-    loadConsultationDetail(item.id || item.consultationId);
+  const handleSaveRecipe = async (data) => {
+    if (savingRecipe) return;
+    setSavingRecipe(true);
+    try {
+      const targetId = Number(
+        data?.aiRecipeId ||
+          data?.recipeId ||
+          data?.id ||
+          data?.consultationId ||
+          0,
+      );
+      if (!targetId) {
+        throw new Error("Invalid AI recipe id");
+      }
+
+      const payload = {
+        targetId,
+        type: "AiRecipe",
+      };
+      await toggleFavorite(payload);
+      setIsSavedRecipe((prev) => !prev);
+      toast.success(
+        isSavedRecipe
+          ? t("aiConsultation.result.messages.removeSuccess")
+          : t("aiConsultation.result.messages.saveSuccess"),
+      );
+    } catch (error) {
+      toast.error(t("aiConsultation.result.messages.saveError"));
+      console.error(error);
+    } finally {
+      setSavingRecipe(false);
+    }
   };
 
-  const filteredConsultations = consultations.filter(
-    (item) =>
-      item.title?.toLowerCase().includes(search.toLowerCase()) ||
-      item.description?.toLowerCase().includes(search.toLowerCase()) ||
-      item.type?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredHistory = history.filter((item) => {
+    const term = search.toLowerCase();
+    const title = (
+      item.recommendedRecipeName ||
+      item.recipeName ||
+      item.title ||
+      ""
+    ).toLowerCase();
+    return title.includes(term);
+  });
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "Date unknown";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
+  const renderInstructions = (instructions) => {
+    if (!instructions) return null;
+
+    let instructionsList = [];
+
+    if (Array.isArray(instructions)) {
+      instructionsList = instructions;
+    } else if (typeof instructions === "string") {
+      instructionsList = instructions
+        .split(/[\n]/)
+        .map((i) => i.trim())
+        .filter((i) => i.length > 0);
+    }
+
+    return (
+      <div className="space-y-4">
+        {instructionsList.map((instruction, idx) => (
+          <div key={idx} className="flex items-start gap-4">
+            <div className="flex items-center justify-center h-7 w-7 rounded-lg bg-blue-100 text-blue-600 font-bold shrink-0 text-xs shadow-xs border border-blue-200">
+              {idx + 1}
+            </div>
+            <span className="text-slate-700 text-sm leading-relaxed pt-0.5">
+              {instruction.replace(/^\d+\.\s*/, "")}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderRecipeContent = (data) => {
+    const structured = normalizeGeneratedRecipe(data);
+    const recipeData = structured.raw || {};
+
+    return (
+      <div className="grid gap-8 lg:grid-cols-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        {/* Main Recipe */}
+        <div className="lg:col-span-2 space-y-8">
+          <div className="rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-200/50 overflow-hidden border-b-4 border-b-emerald-500">
+            <div className="p-8 sm:p-10 space-y-10">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <h3 className="text-3xl font-black text-slate-900 tracking-tight">
+                    {structured.title}
+                  </h3>
+                </div>
+                <button
+                  onClick={() => handleSaveRecipe(selectedDetail)}
+                  disabled={savingRecipe}
+                  className={`inline-flex items-center gap-2 rounded-2xl px-5 py-3 font-bold text-sm transition-all transform hover:scale-105 active:scale-95 ${
+                    isSavedRecipe
+                      ? "bg-amber-100 text-amber-700 border-2 border-amber-200 shadow-lg shadow-amber-100"
+                      : "bg-white border-2 border-slate-100 text-slate-700 hover:border-emerald-200 hover:bg-emerald-50 shadow-md"
+                  } ${savingRecipe ? "opacity-60 cursor-not-allowed" : ""}`}
+                >
+                  {savingRecipe ? (
+                    <>
+                      <FaSpinner className="text-amber-500 animate-spin" />
+                      {t("aiConsultation.result.actions.saving")}
+                    </>
+                  ) : isSavedRecipe ? (
+                    <>
+                      <FaBookmark className="text-amber-500" />
+                      {t("aiConsultation.result.actions.saved")}
+                    </>
+                  ) : (
+                    <>
+                      <FaRegBookmark />
+                      {t("aiConsultation.result.actions.save")}
+                    </>
+                  )}
+                </button>
+              </div>
+              {/* Recipe Header */}
+              <div className="mb-8">
+                <div className="flex flex-wrap items-center gap-3 mb-3">
+                  {structured.condition && (
+                    <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-black text-emerald-700 uppercase tracking-widest border border-emerald-200">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                      {structured.condition}
+                    </div>
+                  )}
+                </div>
+                <p className="text-slate-500 text-sm font-semibold tracking-wide uppercase">
+                  {t("aiConsultation.result.sections.recipeSubtitle")}
+                </p>
+              </div>
+
+              {/* Instructions Section */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-black text-slate-900 flex items-center gap-3">
+                  <div className="h-9 w-9 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center border border-blue-100">
+                    <FaPlus className="text-sm" />
+                  </div>
+                  {t("aiConsultation.result.sections.instructions")}
+                </h3>
+                <div className="bg-slate-50/50 rounded-2xl p-6 sm:p-8 border border-slate-100 shadow-inner">
+                  {structured.preparationInstructions.length > 0 ? (
+                    renderInstructions(structured.preparationInstructions)
+                  ) : (
+                    <p className="text-slate-400 text-sm italic font-medium">
+                      {t("aiConsultation.result.empty.instructions")}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Caution Section */}
+              {structured.cautionWarning && (
+                <div className="rounded-2xl border-s-8 border-red-500 bg-red-50/50 p-8 shadow-sm group">
+                  <h4 className="flex items-center gap-2 text-[10px] font-black text-red-900 uppercase tracking-[0.2em] mb-4">
+                    <FaExclamationTriangle className="text-red-500 text-sm" />
+                    {t("aiConsultation.result.sections.precautions")}
+                  </h4>
+                  <p className="text-base font-bold text-red-800 leading-relaxed">
+                    {structured.cautionWarning}
+                  </p>
+                </div>
+              )}
+
+              {/* Dosage & Benefits Grid */}
+              {(recipeData.dosage ||
+                recipeData.usage ||
+                recipeData.duration ||
+                recipeData.benefits ||
+                recipeData.expectedBenefits) && (
+                <div className="grid gap-6 sm:grid-cols-2">
+                  {(recipeData.dosage ||
+                    recipeData.usage ||
+                    recipeData.duration) && (
+                    <div className="rounded-3xl border border-purple-100 bg-purple-50/30 p-6 hover:bg-purple-50/50 transition-colors">
+                      <h4 className="text-[10px] font-black text-purple-900 uppercase tracking-[0.2em] mb-4">
+                        {t("aiConsultation.result.sections.usage")}
+                      </h4>
+                      <div className="space-y-3 text-sm text-purple-800 font-bold">
+                        {recipeData.dosage && (
+                          <p className="flex gap-2">
+                            <span>•</span> {recipeData.dosage}
+                          </p>
+                        )}
+                        {recipeData.usage && (
+                          <p className="flex gap-2">
+                            <span>•</span> {recipeData.usage}
+                          </p>
+                        )}
+                        {recipeData.duration && (
+                          <p className="flex gap-2">
+                            <span>•</span> {recipeData.duration}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {(recipeData.benefits || recipeData.expectedBenefits) && (
+                    <div className="rounded-3xl border border-amber-100 bg-amber-50/30 p-6 hover:bg-amber-50/50 transition-colors">
+                      <h4 className="text-[10px] font-black text-amber-900 uppercase tracking-[0.2em] mb-4">
+                        {t("aiConsultation.result.sections.benefits")}
+                      </h4>
+                      <div className="space-y-3 text-sm text-amber-800 font-bold">
+                        {Array.isArray(
+                          recipeData.benefits || recipeData.expectedBenefits,
+                        ) ? (
+                          (
+                            recipeData.benefits || recipeData.expectedBenefits
+                          ).map((b, i) => (
+                            <p key={i} className="flex gap-2">
+                              <span>•</span> {b}
+                            </p>
+                          ))
+                        ) : (
+                          <p className="flex gap-2">
+                            <span>•</span>{" "}
+                            {recipeData.benefits || recipeData.expectedBenefits}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-8">
+          {/* Confidence Score */}
+          <div className="rounded-[2.5rem] border border-slate-200 bg-white p-10 shadow-xl shadow-slate-200/50 text-center relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+              <FaBrain className="text-8xl text-emerald-600" />
+            </div>
+
+            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-8">
+              {t("aiConsultation.result.sidebar.confidence")}
+            </h3>
+
+            <div className="relative inline-flex items-center justify-center">
+              <svg className="h-40 w-40 transform -rotate-90">
+                <circle
+                  className="text-slate-50"
+                  strokeWidth="10"
+                  stroke="currentColor"
+                  fill="transparent"
+                  r="70"
+                  cx="80"
+                  cy="80"
+                />
+                <circle
+                  className="text-emerald-500 transition-all duration-[1500ms] ease-out"
+                  strokeWidth="10"
+                  strokeDasharray={439.8}
+                  strokeDashoffset={
+                    439.8 - (439.8 * (structured.confidenceScore || 78)) / 100
+                  }
+                  strokeLinecap="round"
+                  stroke="currentColor"
+                  fill="transparent"
+                  r="70"
+                  cx="80"
+                  cy="80"
+                />
+              </svg>
+              <div className="absolute flex flex-col items-center">
+                <span className="text-5xl font-black text-slate-900 tabular-nums">
+                  {structured.confidenceScore || 78}
+                </span>
+                <span className="text-xs font-black text-slate-400 mt-1">
+                  %
+                </span>
+              </div>
+            </div>
+
+            <p className="text-xs font-black text-slate-400 mt-8 leading-relaxed px-4">
+              {t("aiConsultation.result.sidebar.reliability")}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="rounded-2xl bg-linear-to-br from-blue-500 to-purple-500 p-4 text-white shadow-lg">
+      <div className="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
+        <div className="flex items-center gap-6">
+          <div className="rounded-[2rem] bg-linear-to-br from-indigo-500 to-purple-600 p-5 text-white shadow-2xl shadow-indigo-200">
             <FaBrain className="text-3xl" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">
-              My Consultations
+            <h1 className="text-4xl font-black text-slate-900 tracking-tight">
+              {t("aiConsultation.myConsultations.title")}
             </h1>
-            <p className="text-slate-600">Review your past AI consultations</p>
+            <p className="text-slate-500 font-bold mt-1 tracking-wide uppercase text-xs">
+              {t("aiConsultation.myConsultations.subtitle")}
+            </p>
           </div>
         </div>
 
-        {/* Search */}
-        <div className="relative">
-          <FaSearch className="absolute left-3 top-3.5 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search consultations by title or type..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-          />
-        </div>
+        {viewMode === "list" && (
+          <div className="relative group max-w-md w-full">
+            <FaSearch className="absolute start-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+            <input
+              type="text"
+              placeholder={t(
+                "aiConsultation.myConsultations.searchPlaceholder",
+              )}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full ps-12 pe-6 py-4 rounded-2xl border-2 border-slate-100 bg-white text-slate-900 font-bold placeholder-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all shadow-sm"
+            />
+          </div>
+        )}
       </div>
 
-      {/* Error State */}
-      {error && !loading && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 flex items-center gap-3">
-          <FaExclamationTriangle className="text-red-600 text-lg" />
-          <div>
-            <p className="font-semibold text-red-900">Failed to load consultations</p>
-            <p className="text-sm text-red-700 mt-1">{error}</p>
-          </div>
-          <button
-            onClick={loadConsultations}
-            className="ml-auto px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-500 transition text-sm"
-          >
-            Retry
-          </button>
-        </div>
-      )}
-
-      {loading ? (
-        <div className="flex justify-center py-12">
-          <div className="text-center">
-            <FaSpinner className="text-4xl text-blue-600 animate-spin mx-auto mb-4" />
-            <p className="text-slate-600">Loading your consultations...</p>
-          </div>
-        </div>
-      ) : !error ? (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredConsultations.length > 0 ? (
-            filteredConsultations.map((item) => (
-              <div
-                key={item.id || item.consultationId}
-                className="rounded-lg border border-slate-200 bg-white shadow-sm hover:shadow-md transition cursor-pointer overflow-hidden hover:border-blue-300"
-                onClick={() => handleSelectConsultation(item)}
-              >
-                {/* Header */}
-                <div className="bg-linear-to-r from-blue-50 to-purple-50 p-4 border-b border-slate-200">
-                  <h3 className="font-bold text-slate-900 text-lg">
-                    {item.title || item.consultationType}
-                  </h3>
-                  {item.type && (
-                    <p className="text-xs text-slate-500 font-medium mt-1">
-                      Type: {item.type}
-                    </p>
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="p-4 space-y-3">
-                  {item.description && (
-                    <div>
-                      <p className="text-xs font-bold uppercase tracking-widest text-slate-600 mb-2">
-                        Description
-                      </p>
-                      <p className="text-sm text-slate-700 line-clamp-2">
-                        {item.description}
-                      </p>
-                    </div>
-                  )}
-
-                  {item.createdAt && (
-                    <div className="flex items-center gap-2 text-slate-600">
-                      <FaClock className="text-sm" />
-                      <p className="text-sm">{formatDate(item.createdAt)}</p>
-                    </div>
-                  )}
-
-                  {item.confidenceScore && (
-                    <div className="rounded-lg bg-blue-50 p-2">
-                      <p className="text-xs font-bold text-blue-900 mb-1">
-                        Confidence
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 h-2 bg-blue-200 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-blue-600"
-                            style={{
-                              width: `${(item.confidenceScore || 0) * 100}%`,
-                            }}
-                          />
+      {/* Main Content Area */}
+      <div className="min-h-[600px]">
+        {viewMode === "list" ? (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-32 gap-6 bg-white rounded-[3rem] border-2 border-slate-50 shadow-sm">
+                <FaSpinner className="text-6xl text-indigo-600 animate-spin" />
+                <p className="text-sm font-black text-slate-400 uppercase tracking-[0.3em]">
+                  {t("aiConsultation.myConsultations.loading")}
+                </p>
+              </div>
+            ) : filteredHistory.length > 0 ? (
+              <div className="space-y-12">
+                <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                  {filteredHistory.map((item, idx) => (
+                    <div
+                      key={item.id || item.consultationId || idx}
+                      onClick={() =>
+                        handleItemClick(
+                          item.recipeId || item.id || item.consultationId,
+                        )
+                      }
+                      className="group relative rounded-[2.5rem] border-2 border-slate-100 bg-white p-10 hover:border-indigo-500 hover:bg-indigo-50/30 transition-all cursor-pointer flex flex-col gap-8 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="h-16 w-16 rounded-[1.5rem] bg-slate-50 flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white transition-all duration-500 transform group-hover:rotate-12 group-hover:scale-110 shadow-inner">
+                          <FaBrain className="text-3xl" />
                         </div>
-                        <span className="text-xs font-semibold text-blue-900">
-                          {Math.round((item.confidenceScore || 0) * 100)}%
-                        </span>
+                        <div className="flex flex-col items-end">
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">
+                            Score
+                          </span>
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-3xl font-black text-indigo-600 tabular-nums">
+                              {item.score || item.confidenceScore || 0}
+                            </span>
+                            <span className="text-xs font-black text-indigo-400">
+                              %
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <FaBrain className="text-6xl text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-600 text-lg font-medium">
-                No consultations found matching your search
-              </p>
-              <p className="text-slate-500 mt-2">
-                Start by generating a new consultation using the AI Recipe Generator
-              </p>
-            </div>
-          )}
-        </div>
-      ) : null}
 
-      {/* Detailed View Modal */}
-      {selectedConsultation && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-          onClick={() => {
-            setSelectedConsultation(null);
-            setConsultationDetail(null);
-          }}
-        >
-          <div
-            className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="bg-linear-to-r from-blue-500 to-purple-500 text-white p-6 sticky top-0 flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">
-                  {selectedConsultation.title || selectedConsultation.consultationType}
-                </h2>
-                {selectedConsultation.type && (
-                  <p className="text-blue-100 mt-1">
-                    Type: {selectedConsultation.type}
-                  </p>
-                )}
-                {selectedConsultation.createdAt && (
-                  <p className="text-blue-100 text-sm mt-1">
-                    Created: {formatDate(selectedConsultation.createdAt)}
-                  </p>
-                )}
-              </div>
-              <button
-                onClick={() => {
-                  setSelectedConsultation(null);
-                  setConsultationDetail(null);
-                }}
-                className="text-white hover:bg-white hover:bg-opacity-20 p-2 rounded-lg transition"
-              >
-                <FaTimes className="text-xl" />
-              </button>
-            </div>
-
-            {detailLoading ? (
-              <div className="p-6 flex justify-center">
-                <FaSpinner className="text-3xl text-blue-600 animate-spin" />
-              </div>
-            ) : (
-              <div className="p-6 space-y-4">
-                {selectedConsultation.description && (
-                  <div>
-                    <h3 className="font-bold text-slate-900 mb-2">
-                      Description
-                    </h3>
-                    <p className="text-slate-700">
-                      {selectedConsultation.description}
-                    </p>
-                  </div>
-                )}
-
-                {consultationDetail?.symptoms && (
-                  <div className="bg-red-50 rounded-lg p-4">
-                    <h3 className="font-bold text-red-900 mb-2">Symptoms</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {(Array.isArray(consultationDetail.symptoms)
-                        ? consultationDetail.symptoms
-                        : consultationDetail.symptoms.split(",")
-                      ).map((symptom, idx) => (
-                        <span
-                          key={idx}
-                          className="px-3 py-1 rounded-full bg-red-100 text-red-700 text-sm font-semibold"
-                        >
-                          {typeof symptom === "string" ? symptom.trim() : symptom}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {consultationDetail?.recommendations && (
-                  <div className="bg-emerald-50 rounded-lg p-4">
-                    <h3 className="font-bold text-emerald-900 mb-2">
-                      Recommendations
-                    </h3>
-                    <p className="text-emerald-800">
-                      {consultationDetail.recommendations}
-                    </p>
-                  </div>
-                )}
-
-                {consultationDetail?.preparationInstructions && (
-                  <div className="bg-blue-50 rounded-lg p-4">
-                    <h3 className="font-bold text-blue-900 mb-3">
-                      Preparation Instructions
-                    </h3>
-                    <ol className="space-y-2 list-decimal list-inside">
-                      {(Array.isArray(consultationDetail.preparationInstructions)
-                        ? consultationDetail.preparationInstructions
-                        : consultationDetail.preparationInstructions.split("\n")
-                      ).map((instruction, idx) => (
-                        <li
-                          key={idx}
-                          className="text-blue-800 text-sm"
-                        >
-                          {typeof instruction === "string"
-                            ? instruction.trim()
-                            : instruction}
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                )}
-
-                {selectedConsultation.confidenceScore && (
-                  <div className="bg-slate-50 rounded-lg p-4">
-                    <h3 className="font-bold text-slate-900 mb-3">
-                      Confidence Score
-                    </h3>
-                    <div className="flex items-center gap-4">
                       <div className="flex-1">
-                        <div className="h-3 bg-slate-200 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-linear-to-r from-blue-500 to-purple-500"
-                            style={{
-                              width: `${
-                                (selectedConsultation.confidenceScore || 0) * 100
-                              }%`,
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <span className="text-lg font-bold text-slate-900">
-                        {Math.round(
-                          (selectedConsultation.confidenceScore || 0) * 100
-                        )}
-                        %
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {consultationDetail?.relatedHerbs && (
-                  <div>
-                    <h3 className="font-bold text-slate-900 mb-3">
-                      Related Herbs
-                    </h3>
-                    <div className="grid grid-cols-2 gap-2">
-                      {(Array.isArray(consultationDetail.relatedHerbs)
-                        ? consultationDetail.relatedHerbs
-                        : consultationDetail.relatedHerbs.split(",")
-                      ).map((herb, idx) => (
-                        <div
-                          key={idx}
-                          className="p-2 rounded-lg border border-emerald-200 bg-emerald-50"
-                        >
-                          <p className="text-sm font-semibold text-emerald-900">
-                            {typeof herb === "string" ? herb.trim() : herb}
+                        <p className="text-xl font-black text-slate-900 leading-tight group-hover:text-indigo-700 transition-colors line-clamp-2">
+                          {item.recommendedRecipeName ||
+                            item.recipeName ||
+                            item.title ||
+                            `Consultation #${idx + 1}`}
+                        </p>
+                        <div className="flex items-center gap-2 mt-4">
+                          <div className="h-2 w-2 rounded-full bg-indigo-400 animate-pulse" />
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            {new Date(
+                              item.createdAt || item.date,
+                            ).toLocaleDateString()}
                           </p>
                         </div>
-                      ))}
+                      </div>
+
+                      <div className="pt-6 border-t border-slate-100 flex items-center justify-between group-hover:border-indigo-200 transition-colors">
+                        <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em]">
+                          Open Analysis
+                        </span>
+                        <FaArrowLeft className="text-indigo-500 transform rotate-180 group-hover:translate-x-2 transition-transform duration-300" />
+                      </div>
                     </div>
+                  ))}
+                </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-3 pt-8">
+                    <button
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="h-12 w-12 flex items-center justify-center rounded-2xl border-2 border-slate-100 bg-white text-slate-400 hover:border-indigo-500 hover:text-indigo-600 disabled:opacity-30 disabled:hover:border-slate-100 disabled:hover:text-slate-400 transition-all shadow-sm"
+                    >
+                      <FaArrowLeft />
+                    </button>
+
+                    <div className="flex items-center gap-2">
+                      {[...Array(totalPages)].map((_, i) => {
+                        const pageNum = i + 1;
+                        const isCurrent = currentPage === pageNum;
+                        return (
+                          <button
+                            key={pageNum}
+                            onClick={() => setCurrentPage(pageNum)}
+                            className={`h-12 w-12 flex items-center justify-center rounded-2xl font-black transition-all shadow-sm ${
+                              isCurrent
+                                ? "bg-indigo-600 text-white shadow-indigo-100"
+                                : "border-2 border-slate-100 bg-white text-slate-600 hover:border-indigo-500 hover:text-indigo-600"
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <button
+                      onClick={() =>
+                        setCurrentPage((p) => Math.min(totalPages, p + 1))
+                      }
+                      disabled={currentPage === totalPages}
+                      className="h-12 w-12 flex items-center justify-center rounded-2xl border-2 border-slate-100 bg-white text-slate-400 hover:border-indigo-500 hover:text-indigo-600 disabled:opacity-30 disabled:hover:border-slate-100 disabled:hover:text-slate-400 transition-all shadow-sm"
+                    >
+                      <FaArrowLeft className="transform rotate-180" />
+                    </button>
                   </div>
                 )}
+              </div>
+            ) : (
+              <div className="text-center py-32 bg-white rounded-[3rem] border-2 border-slate-50 shadow-sm">
+                <div className="inline-flex h-24 w-24 items-center justify-center rounded-[2rem] bg-slate-50 text-slate-200 mb-8 shadow-inner">
+                  <FaClock className="text-5xl" />
+                </div>
+                <p className="text-2xl font-black text-slate-900 mb-3">
+                  {t("aiConsultation.result.messages.noHistory")}
+                </p>
+                <p className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] mb-8">
+                  {t("aiConsultation.myConsultations.startNew")}
+                </p>
+                <button
+                  onClick={() => navigate("/patient/dashboard/ai-consultation")}
+                  className="inline-flex items-center gap-3 bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-100"
+                >
+                  <FaPlus />
+                  New Consultation
+                </button>
               </div>
             )}
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <button
+              onClick={() => setViewMode("list")}
+              className="group inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-white border-2 border-slate-100 text-slate-600 hover:text-indigo-600 hover:border-indigo-500 transition-all font-black uppercase tracking-widest text-xs shadow-sm"
+            >
+              <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
+              Back to Analysis List
+            </button>
+
+            {loadingDetail ? (
+              <div className="flex flex-col items-center justify-center py-48 gap-6 bg-white rounded-[3rem] border-2 border-slate-50 shadow-sm">
+                <FaSpinner className="text-6xl text-indigo-600 animate-spin" />
+                <p className="text-sm font-black text-slate-400 uppercase tracking-[0.3em]">
+                  Processing Analysis Data...
+                </p>
+              </div>
+            ) : selectedDetail ? (
+              renderRecipeContent(selectedDetail)
+            ) : null}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

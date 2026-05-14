@@ -9,6 +9,7 @@ import {
   FaHome,
   FaReceipt,
   FaBrain,
+  FaCog,
 } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -20,8 +21,16 @@ function PatientSidebar({ user, onLogout }) {
   const displayName = user?.email || t("patientSidebar.patient");
 
   const navigation = [
-    { name: t("patientSidebar.dashboard"), href: "/patient/dashboard", icon: FaSpa },
-    { name: t("patientSidebar.myCart"), href: "/patient/dashboard/cart", icon: FaShoppingCart },
+    {
+      name: t("patientSidebar.dashboard"),
+      href: "/patient/dashboard",
+      icon: FaSpa,
+    },
+    {
+      name: t("patientSidebar.myCart"),
+      href: "/patient/dashboard/cart",
+      icon: FaShoppingCart,
+    },
     {
       name: t("patientSidebar.myOrders"),
       href: "/patient/dashboard/orders",
@@ -52,10 +61,15 @@ function PatientSidebar({ user, onLogout }) {
       href: "/patient/dashboard/profile",
       icon: FaUser,
     },
+    {
+      name: t("patientSidebar.settings"),
+      href: "/patient/dashboard/settings",
+      icon: FaCog,
+    },
   ];
 
   return (
-    <aside className="w-72 bg-white border-r border-slate-200 flex flex-col fixed h-full">
+    <aside className="w-72 bg-white border-e border-slate-200 flex flex-col fixed h-full">
       <div className="p-6 flex items-center gap-3">
         <div className="bg-primary rounded-lg p-2 text-white flex items-center justify-center">
           <FaSpa className="text-2xl" />
@@ -70,7 +84,7 @@ function PatientSidebar({ user, onLogout }) {
         </div>
       </div>
 
-      <nav className="flex-1 px-4 py-6 space-y-2">
+      <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto custom-scrollbar">
         {navigation.map((item) => {
           const isCurrent =
             item.href === "/patient/dashboard"
@@ -82,7 +96,7 @@ function PatientSidebar({ user, onLogout }) {
               key={item.name}
               type="button"
               onClick={() => navigate(item.href)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-sm font-semibold transition-colors cursor-pointer ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-start text-sm font-semibold transition-colors cursor-pointer ${
                 isCurrent
                   ? "bg-primary/10 text-primary"
                   : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
@@ -101,7 +115,7 @@ function PatientSidebar({ user, onLogout }) {
             <button
               type="button"
               onClick={() => navigate("/patient/home")}
-              className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 cursor-pointer"
+              className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-start text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 cursor-pointer"
             >
               <FaHome className="text-primary" />
               <span>{t("patientSidebar.home")}</span>

@@ -18,6 +18,7 @@ import HerbalistManageDiseases from "./HerbalistManageDiseases";
 import HerbalistInventory from "./HerbalistInventory";
 import HerbalistDashboardHome from "./HerbalistDashboardHome";
 import HerbalistProfile from "./HerbalistProfile";
+import HerbalistSettings from "./HerbalistSettings";
 import HerbalistSubOrders from "./HerbalistSubOrders";
 import SubOrderDetails from "./SubOrderDetails";
 import Sidebar from "../../../components/herbalist/Sidebar";
@@ -128,7 +129,7 @@ function HerbalistDashboard() {
       <main className="flex-1 overflow-y-auto">
         <div className="p-8 max-w-7xl mx-auto">
           {dashboardError ? (
-            <div className="mb-6 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+            <div className="mb-6 rounded-2xl border border-eed-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
               {dashboardError}
             </div>
           ) : null}
@@ -155,6 +156,10 @@ function HerbalistDashboard() {
                   onProfileUpdated={reloadDashboard}
                 />
               }
+            />
+            <Route
+              path="/settings"
+              element={<HerbalistSettings user={user} />}
             />
             <Route
               path="/herbs"

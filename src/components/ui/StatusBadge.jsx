@@ -6,7 +6,7 @@ const statusClasses = {
   Preparing: "bg-indigo-100 text-indigo-800 border-indigo-200",
   Ready: "bg-emerald-100 text-emerald-800 border-emerald-200",
   Delivered: "bg-slate-100 text-slate-700 border-slate-200",
-  Cancelled: "bg-rose-100 text-rose-800 border-rose-200",
+  Cancelled: "bg-rose-100 text-rose-800 border-eose-200",
 };
 
 const StatusBadge = ({ status, size = "sm", className = "" }) => {

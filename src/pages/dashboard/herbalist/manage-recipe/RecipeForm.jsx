@@ -76,7 +76,7 @@ export default function RecipeForm({
               <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-600 flex items-center gap-3"
+                className="rounded-2xl border border-eed-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-600 flex items-center gap-3"
               >
                 <div className="w-1.5 h-1.5 rounded-full bg-red-600" />
                 {error}
@@ -122,7 +122,7 @@ export default function RecipeForm({
                     Price
                   </label>
                   <div className="relative">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-5 text-slate-400 group-focus-within:text-primary transition-colors">
+                    <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-5 text-slate-400 group-focus-within:text-primary transition-colors">
                       <FaDollarSign />
                     </div>
                     <input
@@ -131,9 +131,9 @@ export default function RecipeForm({
                       min="0"
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
-                      className="block w-full rounded-2xl border-slate-200 bg-slate-50/50 py-4 pl-12 pr-16 outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 text-slate-900 text-lg border font-black transition-all hover:bg-white"
+                      className="block w-full rounded-2xl border-slate-200 bg-slate-50/50 py-4 ps-12 pe-16 outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 text-slate-900 text-lg border font-black transition-all hover:bg-white"
                     />
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-5 border-l border-slate-200 ml-4 pl-4 uppercase text-[10px] font-black text-slate-400">
+                    <div className="pointer-events-none absolute inset-y-0 end-0 flex items-center pe-5 border-s border-slate-200 ms-4 ps-4 uppercase text-[10px] font-black text-slate-400">
                       EGP
                     </div>
                   </div>
@@ -173,7 +173,7 @@ export default function RecipeForm({
                         onChange={(e) =>
                           updateHerbRow(index, "herbId", e.target.value)
                         }
-                        className="block w-full rounded-xl border-slate-200 bg-white py-3 pl-4 pr-10 outline-none focus:border-primary text-slate-900 text-sm border font-bold cursor-pointer appearance-none shadow-sm"
+                        className="block w-full rounded-xl border-slate-200 bg-white py-3 ps-4 pe-10 outline-none focus:border-primary text-slate-900 text-sm border font-bold cursor-pointer appearance-none shadow-sm"
                       >
                         <option value="">Select an ingredient...</option>
                         {herbs.map((h) => (
@@ -182,7 +182,7 @@ export default function RecipeForm({
                           </option>
                         ))}
                       </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400">
+                      <div className="pointer-events-none absolute inset-y-0 end-0 flex items-center pe-4 text-slate-400">
                         <FaChevronRight className="rotate-90 text-[10px]" />
                       </div>
                     </div>
@@ -203,7 +203,7 @@ export default function RecipeForm({
                     <button
                       type="button"
                       onClick={() => removeHerbRow(index)}
-                      className="flex-none h-11 w-11 flex items-center justify-center rounded-xl text-slate-300 hover:bg-red-50 hover:text-red-500 transition-all border border-transparent hover:border-red-100"
+                      className="flex-none h-11 w-11 flex items-center justify-center rounded-xl text-slate-300 hover:bg-red-50 hover:text-red-500 transition-all border border-transparent hover:border-eed-100"
                     >
                       <FaTrashAlt />
                     </button>

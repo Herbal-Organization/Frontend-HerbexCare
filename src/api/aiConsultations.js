@@ -29,8 +29,10 @@ export const fetchCatalogById = async (id) => {
  * Fetch the current user's consultation history.
  * GET /api/AiConsultations/myConsultations
  */
-export const fetchMyConsultations = async () => {
-  const { data } = await httpClient.get("/api/AiConsultations/myConsultations");
+export const fetchMyConsultations = async (pageNumber = 1, pageSize = 6) => {
+  const { data } = await httpClient.get("/api/AiConsultations/myConsultations", {
+    params: { pageNumber, pageSize },
+  });
   return data;
 };
 

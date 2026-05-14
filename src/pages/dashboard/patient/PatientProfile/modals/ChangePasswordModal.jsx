@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "motion/react";
+import { useTranslation } from "react-i18next";
 
 function ChangePasswordModal({
   isOpen,
@@ -11,6 +12,7 @@ function ChangePasswordModal({
   handleSubmit,
   errors,
 }) {
+  const { t } = useTranslation();
   return (
     <AnimatePresence>
       {isOpen && (
@@ -30,27 +32,27 @@ function ChangePasswordModal({
           >
             <div className="border-b border-slate-200 bg-slate-50 px-6 py-4">
               <h3 className="text-lg font-bold text-slate-900">
-                Change Password
+                {t("profile.modals.changePassword.title")}
               </h3>
               <p className="text-sm text-slate-600 mt-1">
-                Enter your current password and new password
+                {t("profile.modals.changePassword.description")}
               </p>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
               {error && (
-                <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+                <div className="rounded-xl border border-eed-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
                   {error}
                 </div>
               )}
 
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">
-                  Email
+                  {t("profile.sections.personalInfo.email")}
                 </label>
                 <input
                   type="email"
-                  {...register("email", { required: "Email is required" })}
+                  {...register("email", { required: t("auth.login.validation.emailRequired") })}
                   readOnly
                   className="block w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 text-sm font-medium"
                 />
@@ -58,13 +60,13 @@ function ChangePasswordModal({
 
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">
-                  Current Password
+                  {t("profile.modals.changePassword.currentPassword")}
                 </label>
                 <input
                   type="password"
                   placeholder="••••••••"
                   {...register("oldPassword", {
-                    required: "Current password is required",
+                    required: t("profile.modals.changePassword.validation.currentRequired"),
                   })}
                   className="block w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-slate-900 text-sm font-medium transition-all"
                 />
@@ -77,25 +79,25 @@ function ChangePasswordModal({
 
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">
-                  New Password
+                  {t("profile.modals.changePassword.newPassword")}
                 </label>
                 <input
                   type="password"
                   placeholder="••••••••"
                   {...register("newPassword", {
-                    required: "New password is required",
+                    required: t("profile.modals.changePassword.validation.newRequired"),
                     minLength: {
                       value: 8,
-                      message: "Password must be at least 8 characters",
+                      message: t("profile.modals.changePassword.validation.minLength"),
                     },
                     validate: (value) => {
                       if (!value) return true;
                       if (!/[A-Z]/.test(value))
-                        return "Must contain at least one uppercase letter";
+                        return t("profile.modals.changePassword.validation.uppercase");
                       if (!/[a-z]/.test(value))
-                        return "Must contain at least one lowercase letter";
+                        return t("profile.modals.changePassword.validation.lowercase");
                       if (!/[0-9]/.test(value))
-                        return "Must contain at least one number";
+                        return t("profile.modals.changePassword.validation.number");
                       return true;
                     },
                   })}
@@ -110,15 +112,15 @@ function ChangePasswordModal({
 
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">
-                  Confirm New Password
+                  {t("profile.modals.changePassword.confirmPassword")}
                 </label>
                 <input
                   type="password"
                   placeholder="••••••••"
                   {...register("confirmNewPassword", {
-                    required: "Please confirm your new password",
+                    required: t("profile.modals.changePassword.validation.confirmRequired"),
                     validate: (value) =>
-                      value === newPassword || "Passwords do not match",
+                      value === newPassword || t("profile.modals.changePassword.validation.mismatch"),
                   })}
                   className="block w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-slate-900 text-sm font-medium transition-all"
                 />
@@ -136,7 +138,7 @@ function ChangePasswordModal({
                   disabled={isLoading}
                   className="flex-1 rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-50"
                 >
-                  Cancel
+                  {t("profile.actions.cancel")}
                 </button>
                 <button
                   type="submit"
@@ -146,7 +148,7 @@ function ChangePasswordModal({
                   {isLoading && (
                     <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   )}
-                  {isLoading ? "Updating..." : "Update Password"}
+                  {isLoading ? t("profile.modals.changePassword.submitting") : t("profile.modals.changePassword.submit")}
                 </button>
               </div>
             </form>

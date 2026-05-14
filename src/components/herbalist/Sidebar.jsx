@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   MdEco,
   MdDashboard,
@@ -9,21 +10,42 @@ import {
   MdShoppingCart,
   MdPerson,
   MdLogout,
+  MdSettings,
 } from "react-icons/md";
 
 function Sidebar({ currentPath, onNavigate, user, onLogout, ordersCount }) {
+  const { t } = useTranslation();
   const navigation = [
-    { name: "Dashboard", href: "/herbalist/dashboard" },
-    { name: "Manage Herbs", href: "/herbalist/dashboard/herbs" },
-    { name: "Manage Recipes", href: "/herbalist/dashboard/recipes" },
-    { name: "Manage Diseases", href: "/herbalist/dashboard/diseases" },
-    { name: "Inventory", href: "/herbalist/dashboard/inventory" },
+    { name: t("herbalistSidebar.dashboard"), href: "/herbalist/dashboard" },
     {
-      name: "Orders",
+      name: t("herbalistSidebar.manageHerbs"),
+      href: "/herbalist/dashboard/herbs",
+    },
+    {
+      name: t("herbalistSidebar.manageRecipes"),
+      href: "/herbalist/dashboard/recipes",
+    },
+    {
+      name: t("herbalistSidebar.manageDiseases"),
+      href: "/herbalist/dashboard/diseases",
+    },
+    {
+      name: t("herbalistSidebar.inventory"),
+      href: "/herbalist/dashboard/inventory",
+    },
+    {
+      name: t("herbalistSidebar.orders"),
       href: "/herbalist/dashboard/orders",
       badge: Number.isFinite(ordersCount) ? String(ordersCount) : null,
     },
-    { name: "Profile", href: "/herbalist/dashboard/profile" },
+    {
+      name: t("herbalistSidebar.profile"),
+      href: "/herbalist/dashboard/profile",
+    },
+    {
+      name: t("herbalistSidebar.settings"),
+      href: "/herbalist/dashboard/settings",
+    },
   ];
 
   const handleClick = (event, href) => {
@@ -34,7 +56,7 @@ function Sidebar({ currentPath, onNavigate, user, onLogout, ordersCount }) {
   };
 
   return (
-    <aside className="w-72 flex flex-col bg-white border-r border-slate-200 shrink-0">
+    <aside className="w-72 flex flex-col bg-white border-e border-slate-200 shrink-0">
       <div className="p-6 flex items-center gap-3">
         <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-white">
           <MdEco className="w-6 h-6" />
@@ -46,7 +68,7 @@ function Sidebar({ currentPath, onNavigate, user, onLogout, ordersCount }) {
           <p className="text-slate-500 text-xs mt-1">Practitioner Portal</p>
         </div>
       </div>
-      <nav className="flex-1 px-4 space-y-1 mt-4">
+      <nav className="flex-1 px-4 space-y-1 mt-4 overflow-y-auto custom-scrollbar">
         {navigation.map((item) => {
           const isActive =
             item.href === "/herbalist/dashboard"
@@ -65,22 +87,33 @@ function Sidebar({ currentPath, onNavigate, user, onLogout, ordersCount }) {
                   : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
               }`}
             >
-              {item.name === "Dashboard" && <MdDashboard className="w-5 h-5" />}
-              {item.name === "Manage Herbs" && (
+              {item.name === t("herbalistSidebar.dashboard") && (
+                <MdDashboard className="w-5 h-5" />
+              )}
+              {item.name === t("herbalistSidebar.manageHerbs") && (
                 <MdLocalFlorist className="w-5 h-5" />
               )}
-              {item.name === "Manage Recipes" && (
+              {item.name === t("herbalistSidebar.manageRecipes") && (
                 <MdMenuBook className="w-5 h-5" />
               )}
-              {item.name === "Manage Diseases" && (
+              {item.name === t("herbalistSidebar.manageDiseases") && (
                 <MdBiotech className="w-5 h-5" />
               )}
-              {item.name === "Inventory" && <MdInventory className="w-5 h-5" />}
-              {item.name === "Orders" && <MdShoppingCart className="w-5 h-5" />}
-              {item.name === "Profile" && <MdPerson className="w-5 h-5" />}
+              {item.name === t("herbalistSidebar.inventory") && (
+                <MdInventory className="w-5 h-5" />
+              )}
+              {item.name === t("herbalistSidebar.orders") && (
+                <MdShoppingCart className="w-5 h-5" />
+              )}
+              {item.name === t("herbalistSidebar.profile") && (
+                <MdPerson className="w-5 h-5" />
+              )}
+              {item.name === t("herbalistSidebar.settings") && (
+                <MdSettings className="w-5 h-5" />
+              )}
               <span>{item.name}</span>
               {item.badge && (
-                <span className="ml-auto bg-primary text-white text-[10px] px-1.5 py-0.5 rounded-full">
+                <span className="ms-auto bg-primary text-white text-[10px] px-1.5 py-0.5 rounded-full">
                   {item.badge}
                 </span>
               )}
@@ -98,13 +131,13 @@ function Sidebar({ currentPath, onNavigate, user, onLogout, ordersCount }) {
               {user?.name || "Herbalist"}
             </p>
             <p className="text-xs text-slate-500 truncate">
-              {user?.role || "Practitioner"}
+              {user?.role || t("herbalistSidebar.member")}
             </p>
           </div>
           <button
             type="button"
             onClick={onLogout}
-            className="ml-auto flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-white bg-primary rounded-md shadow-md hover:bg-primary-hover hover:scale-105 transition-all duration-300 transform hover:-translate-y-0.5"
+            className="ms-auto flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-white bg-primary rounded-md shadow-md hover:bg-primary-hover hover:scale-105 transition-all duration-300 transform hover:-translate-y-0.5"
           >
             <MdLogout className="w-4 h-4" />
             <span>Logout</span>

@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { FaBrain, FaLeaf, FaHeart, FaHistory } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
+import { FaBrain, FaHeart, FaHistory } from "react-icons/fa";
 import PatientAiConsultation from "./PatientAiConsultation";
-import HerbCatalog from "./AiCatalog";
 import FavoriteRecipes from "./FavoriteRecipes";
 import MyConsultations from "./MyConsultations";
 
 function AiConsultationPage() {
-  const [activeView, setActiveView] = useState("consultation");
+  const { t } = useTranslation();
+  const [activeView, setActiveView] = useState("consultations");
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100">
@@ -23,29 +24,7 @@ function AiConsultationPage() {
               }`}
             >
               <FaBrain className="text-lg" />
-              AI Recipe Generator
-            </button>
-            <button
-              onClick={() => setActiveView("catalog")}
-              className={`px-6 py-4 font-semibold text-sm transition border-b-2 whitespace-nowrap flex items-center gap-2 ${
-                activeView === "catalog"
-                  ? "border-emerald-600 text-emerald-600"
-                  : "border-transparent text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              <FaLeaf className="text-lg" />
-              Herb Catalog
-            </button>
-            <button
-              onClick={() => setActiveView("consultations")}
-              className={`px-6 py-4 font-semibold text-sm transition border-b-2 whitespace-nowrap flex items-center gap-2 ${
-                activeView === "consultations"
-                  ? "border-emerald-600 text-emerald-600"
-                  : "border-transparent text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              <FaHistory className="text-lg" />
-              My Consultations
+              {t("aiConsultation.nav.generator")}
             </button>
             <button
               onClick={() => setActiveView("favorites")}
@@ -56,7 +35,18 @@ function AiConsultationPage() {
               }`}
             >
               <FaHeart className="text-lg" />
-              Saved Recipes
+              {t("aiConsultation.nav.favorites")}
+            </button>
+            <button
+              onClick={() => setActiveView("consultations")}
+              className={`px-6 py-4 font-semibold text-sm transition border-b-2 whitespace-nowrap flex items-center gap-2 ${
+                activeView === "consultations"
+                  ? "border-emerald-600 text-emerald-600"
+                  : "border-transparent text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <FaHistory className="text-lg" />
+              {t("aiConsultation.nav.consultations")}
             </button>
           </div>
         </div>
@@ -65,9 +55,8 @@ function AiConsultationPage() {
       {/* Content */}
       <div className="mx-auto max-w-7xl">
         {activeView === "consultation" && <PatientAiConsultation />}
-        {activeView === "catalog" && <HerbCatalog />}
-        {activeView === "consultations" && <MyConsultations />}
         {activeView === "favorites" && <FavoriteRecipes />}
+        {activeView === "consultations" && <MyConsultations />}
       </div>
     </div>
   );

@@ -330,7 +330,7 @@ function HerbDetailsPage() {
               <div className="min-h-70 bg-[#EAF3DE] p-8">
                 <Skeleton height="100%" borderRadius={24} />
               </div>
-              <div className="p-8 lg:p-10 border-t lg:border-t-0 lg:border-l border-slate-100 flex flex-col justify-center space-y-4">
+              <div className="p-8 lg:p-10 border-t lg:border-t-0 lg:border-s border-slate-100 flex flex-col justify-center space-y-4">
                 <div className="flex flex-wrap gap-2">
                   <Skeleton width={110} height={24} borderRadius={9999} />
                   <Skeleton width={128} height={24} borderRadius={9999} />
@@ -374,7 +374,7 @@ function HerbDetailsPage() {
 
         {/* Error */}
         {!isLoading && error && (
-          <div className="rounded-2xl border border-red-100 bg-red-50 p-14 text-center">
+          <div className="rounded-2xl border border-eed-100 bg-red-50 p-14 text-center">
             <h2 className="text-lg font-medium text-red-800 mb-2">
               Unable to load herb details
             </h2>
@@ -458,7 +458,7 @@ function HerbDetailsPage() {
               </div>
 
               {/* Info panel */}
-              <div className="p-8 lg:p-10 border-t lg:border-t-0 lg:border-l border-slate-100 flex flex-col justify-center">
+              <div className="p-8 lg:p-10 border-t lg:border-t-0 lg:border-s border-slate-100 flex flex-col justify-center">
                 <div className="flex flex-wrap gap-2 mb-5">
                   <span className="text-[10px] font-medium uppercase tracking-wider bg-slate-100 text-slate-500 rounded-full px-3 py-1">
                     Herb document

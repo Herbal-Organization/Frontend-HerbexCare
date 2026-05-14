@@ -246,8 +246,8 @@ function HerbalistInventory() {
   return (
     <div className="space-y-8 relative min-h-full overflow-x-hidden overflow-y-visible">
       {/* Dynamic Background Blur Effects */}
-      <div className="pointer-events-none absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-emerald-400/10 blur-[120px] mix-blend-multiply"></div>
-      <div className="pointer-events-none absolute top-40 -left-20 h-[400px] w-[400px] rounded-full bg-teal-400/10 blur-[100px] mix-blend-multiply"></div>
+      <div className="pointer-events-none absolute -top-40 -end-40 h-[500px] w-[500px] rounded-full bg-emerald-400/10 blur-[120px] mix-blend-multiply"></div>
+      <div className="pointer-events-none absolute top-40 -start-20 h-[400px] w-[400px] rounded-full bg-teal-400/10 blur-[100px] mix-blend-multiply"></div>
 
       {/* Form Section */}
       <div className="relative z-10">
@@ -272,7 +272,7 @@ function HerbalistInventory() {
             {/* Herb Selection */}
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">
-                <FaLeaf className="inline mr-2 text-emerald-600" />
+                <FaLeaf className="inline me-2 text-emerald-600" />
                 Select Herb
               </label>
               <select
@@ -301,7 +301,7 @@ function HerbalistInventory() {
             {/* Price Per Kilo */}
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">
-                <FaTags className="inline mr-2 text-emerald-600" />
+                <FaTags className="inline me-2 text-emerald-600" />
                 Price Per Kilogram (EGP)
               </label>
               <input
@@ -327,7 +327,7 @@ function HerbalistInventory() {
               className="h-5 w-5 cursor-pointer rounded-lg border-2 border-slate-200 accent-emerald-600 focus:ring-2 focus:ring-emerald-500/20"
             />
             <label className="text-sm font-bold text-slate-700 cursor-pointer">
-              <FaCheckCircle className="inline mr-2 text-emerald-600" />
+              <FaCheckCircle className="inline me-2 text-emerald-600" />
               Mark as Active
             </label>
           </div>
@@ -341,7 +341,7 @@ function HerbalistInventory() {
             >
               {isSaving ? (
                 <>
-                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent mr-2" />
+                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent me-2" />
                   {editingItem ? "Updating..." : "Adding..."}
                 </>
               ) : editingItem ? (
@@ -357,7 +357,7 @@ function HerbalistInventory() {
                 onClick={resetForm}
                 className="flex-1 rounded-lg border-2 border-slate-200 px-6 py-3 font-bold text-slate-700 transition-all hover:bg-slate-50"
               >
-                <FaTimes className="inline mr-2" />
+                <FaTimes className="inline me-2" />
                 Cancel
               </button>
             )}
@@ -481,7 +481,7 @@ function HerbalistInventory() {
                         type="button"
                         onClick={() => handleDelete(item)}
                         disabled={isDeleting}
-                        className="flex items-center justify-center rounded-xl bg-white border-2 border-red-50 p-3 text-red-500 shadow-sm transition-all hover:bg-red-50 hover:border-red-100 hover:text-red-600 disabled:opacity-50"
+                        className="flex items-center justify-center rounded-xl bg-white border-2 border-eed-50 p-3 text-red-500 shadow-sm transition-all hover:bg-red-50 hover:border-eed-100 hover:text-red-600 disabled:opacity-50"
                         title="Delete listing"
                       >
                         <FaTrashAlt />

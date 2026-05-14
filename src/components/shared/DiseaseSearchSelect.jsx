@@ -95,7 +95,7 @@ export default function DiseaseSearchSelect({
   return (
     <div className="space-y-3">
       <div className="relative">
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-5 text-slate-400">
+        <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-5 text-slate-400">
           <FaSearch className="text-sm" />
         </div>
         <input
@@ -105,7 +105,7 @@ export default function DiseaseSearchSelect({
           onFocus={() => setShowDropdown(true)}
           placeholder="Search diseases..."
           disabled={disabled || isLoading || isLoadingDiseases}
-          className="block w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-3 pl-12 pr-4 outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 text-slate-900 text-sm font-medium transition-all hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+          className="block w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-3 ps-12 pe-4 outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 text-slate-900 text-sm font-medium transition-all hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
         />
       </div>
 
@@ -154,7 +154,7 @@ export default function DiseaseSearchSelect({
                       key={disease.diseaseId}
                       type="button"
                       onClick={() => handleToggle(disease.diseaseId)}
-                      className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors border-l-2 ${isSelected ? "border-l-primary bg-primary/5 text-primary" : "border-l-transparent text-slate-900 hover:bg-slate-50"}`}
+                      className={`w-full text-start px-4 py-2.5 text-sm font-medium transition-colors border-s-2 ${isSelected ? "border-s-primary bg-primary/5 text-primary" : "border-s-transparent text-slate-900 hover:bg-slate-50"}`}
                     >
                       <span className="flex items-center justify-between">
                         {disease.diseaseName}

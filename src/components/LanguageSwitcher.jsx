@@ -17,7 +17,10 @@ function LanguageSwitcher() {
       aria-label="Toggle language"
     >
       <GrLanguage className="text-lg" />
-      <span className="text-sm font-medium">
+      <span 
+        className="text-sm font-medium"
+        style={{fontFamily: i18n.language === "en" ? "'Alexandria', sans-serif" : "'Alexandria', sans-serif"}}
+      >
         {i18n.language === "en" ? "العربية" : "English"}
       </span>
     </button>

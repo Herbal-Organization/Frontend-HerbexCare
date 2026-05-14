@@ -22,8 +22,8 @@ function HeroSection() {
       className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24 overflow-hidden"
       dir={isRTL ? "rtl" : "ltr"}
     >
-      <div className="pointer-events-none absolute -left-16 top-16 h-52 w-52 rounded-full bg-primary/10 blur-3xl" />
-      <div className="pointer-events-none absolute -right-24 bottom-8 h-72 w-72 rounded-full bg-emerald-200/30 blur-3xl" />
+      <div className="pointer-events-none absolute -start-16 top-16 h-52 w-52 rounded-full bg-primary/10 blur-3xl" />
+      <div className="pointer-events-none absolute -end-24 bottom-8 h-72 w-72 rounded-full bg-emerald-200/30 blur-3xl" />
       <div className="grid md:grid-cols-2 gap-12 items-center">
         <MotionDiv
           className="flex flex-col items-start gap-6"
@@ -110,7 +110,7 @@ function HeroSection() {
             />
           </div>
           <MotionDiv
-            className="absolute -left-5 top-8 rounded-2xl bg-white/90 px-4 py-3 shadow-xl backdrop-blur"
+            className="absolute -start-5 top-8 rounded-2xl bg-white/90 px-4 py-3 shadow-xl backdrop-blur"
             animate={{ y: [0, -6, 0] }}
             transition={{
               duration: 3.2,
@@ -126,7 +126,7 @@ function HeroSection() {
             </p>
           </MotionDiv>
           <MotionDiv
-            className="absolute -right-5 bottom-8 rounded-2xl bg-white/90 px-4 py-3 shadow-xl backdrop-blur"
+            className="absolute -end-5 bottom-8 rounded-2xl bg-white/90 px-4 py-3 shadow-xl backdrop-blur"
             animate={{ y: [0, 7, 0] }}
             transition={{
               duration: 3.6,

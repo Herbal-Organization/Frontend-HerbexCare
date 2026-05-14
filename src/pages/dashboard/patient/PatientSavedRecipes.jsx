@@ -51,7 +51,10 @@ function PatientSavedRecipes() {
 
           return recipes.map((recipe) => ({
             recipeId: recipe.recipeId || recipe.id,
-            recipeName: recipe.recipeName || recipe.title || `Recipe #${recipe.recipeId || recipe.id}`,
+            recipeName:
+              recipe.recipeName ||
+              recipe.title ||
+              `Recipe #${recipe.recipeId || recipe.id}`,
             description: recipe.description || "",
             savedDate: orderDate,
             rating: recipe.rating ?? recipe.averageRating,
@@ -150,7 +153,8 @@ function PatientSavedRecipes() {
                 ) : null}
                 {recipe.rating != null ? (
                   <p>
-                    <span className="font-semibold">Rating:</span> {recipe.rating}
+                    <span className="font-semibold">Rating:</span>{" "}
+                    {recipe.rating}
                   </p>
                 ) : null}
               </div>

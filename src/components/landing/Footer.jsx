@@ -67,12 +67,12 @@ function Footer() {
           transition={{ duration: 0.4, delay: 0.06, ease: "easeOut" }}
         >
           <p className="text-slate-400 text-sm mb-4 md:mb-0">
-            © {new Date().getFullYear()}
+            {t("footer.copyright")}
             <span className="font-medium text-slate-600">
               {" "}
               {t("footer.author")}
             </span>
-            . {t("footer.copyright")}
+            © {new Date().getFullYear()}
           </p>
 
           <LanguageSwitcher />

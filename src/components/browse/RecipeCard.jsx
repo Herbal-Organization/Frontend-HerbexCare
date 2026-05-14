@@ -42,7 +42,7 @@ function RecipeCard({
       whileHover={{ y: -6 }}
       type="button"
       onClick={() => navigate(`/patient/home/recipes/${id || recipeId}`)}
-      className="group flex flex-col overflow-hidden rounded-[20px] border border-black/8 bg-[#faf9f6] text-left h-full w-full transition-shadow duration-300 hover:shadow-2xl"
+      className="group flex flex-col overflow-hidden rounded-[20px] border border-black/8 bg-[#faf9f6] text-start h-full w-full transition-shadow duration-300 hover:shadow-2xl"
     >
       {/* Hero */}
       <div
@@ -51,14 +51,14 @@ function RecipeCard({
       >
         {/* Ambient orb */}
         <div
-          className="absolute -right-5 -bottom-8 w-32.5 h-32.5 rounded-full pointer-events-none"
+          className="absolute -end-5 -bottom-8 w-32.5 h-32.5 rounded-full pointer-events-none"
           style={{
             background: `radial-gradient(circle, ${theme.orb}, transparent 70%)`,
           }}
         />
         {/* Leaf decoration */}
         <svg
-          className="absolute top-4 right-14 opacity-[0.07] pointer-events-none"
+          className="absolute top-4 end-14 opacity-[0.07] pointer-events-none"
           width="60"
           height="80"
           viewBox="0 0 60 80"

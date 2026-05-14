@@ -24,6 +24,10 @@ i18n.use(initReactI18next).init({
   },
 });
 
+// Set initial direction and language on the html tag
+document.documentElement.lang = savedLanguage;
+document.documentElement.dir = savedLanguage === "ar" ? "rtl" : "ltr";
+
 // Save language to localStorage when it changes
 i18n.on("languageChanged", (lng) => {
   localStorage.setItem("language", lng);

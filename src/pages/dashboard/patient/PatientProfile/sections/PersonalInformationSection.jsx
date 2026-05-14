@@ -1,5 +1,6 @@
 import { FaUser } from "react-icons/fa";
 import { motion } from "motion/react";
+import { useTranslation } from "react-i18next";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -11,6 +12,7 @@ const itemVariants = {
 };
 
 function PersonalInformationSection({ user }) {
+  const { t } = useTranslation();
   return (
     <motion.div
       variants={itemVariants}
@@ -22,10 +24,10 @@ function PersonalInformationSection({ user }) {
         </div>
         <div>
           <h2 className="text-lg font-bold text-slate-900">
-            Personal Information
+            {t("profile.sections.personalInfo.title")}
           </h2>
           <p className="text-xs text-slate-500 font-medium">
-            Your primary account details
+            {t("profile.sections.personalInfo.description")}
           </p>
         </div>
       </div>
@@ -33,34 +35,34 @@ function PersonalInformationSection({ user }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
         <div className="group">
           <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 group-hover:text-primary transition-colors">
-            Full Name
+            {t("profile.sections.personalInfo.fullName")}
           </label>
           <div className="px-4 py-3 bg-slate-50 border border-slate-200/60 rounded-xl text-slate-700 font-medium group-hover:bg-white group-hover:border-slate-300 transition-all">
-            {user?.fullName || user?.name || "N/A"}
+            {user?.fullName || user?.name || t("profile.messages.noData")}
           </div>
         </div>
         <div className="group">
           <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 group-hover:text-primary transition-colors">
-            Email Address
+            {t("profile.sections.personalInfo.email")}
           </label>
           <div className="px-4 py-3 bg-slate-50 border border-slate-200/60 rounded-xl text-slate-700 font-medium group-hover:bg-white group-hover:border-slate-300 transition-all">
-            {user?.email || "N/A"}
+            {user?.email || t("profile.messages.noData")}
           </div>
         </div>
         <div className="group">
           <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 group-hover:text-primary transition-colors">
-            Username
+            {t("profile.sections.personalInfo.username")}
           </label>
           <div className="px-4 py-3 bg-slate-50 border border-slate-200/60 rounded-xl text-slate-700 font-medium group-hover:bg-white group-hover:border-slate-300 transition-all">
-            {user?.userName || user?.username || "N/A"}
+            {user?.userName || user?.username || t("profile.messages.noData")}
           </div>
         </div>
         <div className="group">
           <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 group-hover:text-primary transition-colors">
-            Phone Number
+            {t("profile.sections.personalInfo.phone")}
           </label>
           <div className="px-4 py-3 bg-slate-50 border border-slate-200/60 rounded-xl text-slate-700 font-medium group-hover:bg-white group-hover:border-slate-300 transition-all">
-            {user?.phone || "N/A"}
+            {user?.phone || t("profile.messages.noData")}
           </div>
         </div>
       </div>

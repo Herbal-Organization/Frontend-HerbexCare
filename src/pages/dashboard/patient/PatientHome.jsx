@@ -60,7 +60,9 @@ function PatientHome() {
                 {t("patientHome.badge")}
               </span>
               <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-                {t("patientHome.welcome", { name: user?.name || t("patientHome.patient") })}
+                {t("patientHome.welcome", {
+                  name: user?.name || t("patientHome.patient"),
+                })}
               </h1>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
                 {t("patientHome.description")}
@@ -107,7 +109,9 @@ function PatientHome() {
                         {t(`patientHome.facilities.${facility.key}.title`)}
                       </h3>
                       <p className="mt-2 text-sm leading-6 text-slate-600">
-                        {t(`patientHome.facilities.${facility.key}.description`)}
+                        {t(
+                          `patientHome.facilities.${facility.key}.description`,
+                        )}
                       </p>
                       <span className="mt-4 inline-flex text-sm font-semibold">
                         {t(`patientHome.facilities.${facility.key}.cta`)} →

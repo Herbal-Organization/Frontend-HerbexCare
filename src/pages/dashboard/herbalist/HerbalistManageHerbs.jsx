@@ -354,7 +354,7 @@ function HerbalistManageHerbs({ user, dashboardData }) {
                 type="button"
                 onClick={() => handleDelete(herb.herbId, herb.herbName)}
                 disabled={isDeleting}
-                className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-white border border-red-100 px-3 py-2.5 text-xs font-bold text-red-600 shadow-sm transition-colors hover:bg-red-50 disabled:opacity-50"
+                className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-white border border-eed-100 px-3 py-2.5 text-xs font-bold text-red-600 shadow-sm transition-colors hover:bg-red-50 disabled:opacity-50"
               >
                 <FaTrash className="text-[10px]" /> Delete
               </button>
@@ -416,8 +416,8 @@ function HerbalistManageHerbs({ user, dashboardData }) {
 
           <form onSubmit={handleSubmit}>
             {error ? (
-              <div className="mb-6 rounded-2xl border border-red-100 bg-red-50/80 backdrop-blur-sm px-5 py-4 text-sm font-bold text-red-700 shadow-sm">
-                <FaTimes className="inline mr-2" /> {error}
+              <div className="mb-6 rounded-2xl border border-eed-100 bg-red-50/80 backdrop-blur-sm px-5 py-4 text-sm font-bold text-red-700 shadow-sm">
+                <FaTimes className="inline me-2" /> {error}
               </div>
             ) : null}
 
@@ -703,7 +703,7 @@ function HerbalistManageHerbs({ user, dashboardData }) {
                     Selling Price / Kg
                   </label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-extrabold text-slate-400">
+                    <span className="absolute start-4 top-1/2 -translate-y-1/2 font-extrabold text-slate-400">
                       EGP
                     </span>
                     <input
@@ -714,7 +714,7 @@ function HerbalistManageHerbs({ user, dashboardData }) {
                       value={pricePerKilo}
                       onChange={(e) => setPricePerKilo(e.target.value)}
                       placeholder="Pricing estimate..."
-                      className="block w-full rounded-2xl border-2 border-slate-200/50 pl-14 pr-4 py-4 text-lg font-black text-slate-900 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 placeholder:font-medium placeholder:text-slate-300"
+                      className="block w-full rounded-2xl border-2 border-slate-200/50 ps-14 pe-4 py-4 text-lg font-black text-slate-900 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 placeholder:font-medium placeholder:text-slate-300"
                       disabled={isAddingToInventory}
                     />
                   </div>

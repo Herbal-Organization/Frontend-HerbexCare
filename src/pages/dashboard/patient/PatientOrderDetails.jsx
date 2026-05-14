@@ -293,7 +293,10 @@ function PatientOrderDetails() {
                         )}
                         {subOrder.status && (
                           <p className="mt-0.5 text-xs font-semibold text-slate-500">
-                            Status: <span className="capitalize">{subOrder.status}</span>
+                            Status:{" "}
+                            <span className="capitalize">
+                              {subOrder.status}
+                            </span>
                           </p>
                         )}
                       </div>

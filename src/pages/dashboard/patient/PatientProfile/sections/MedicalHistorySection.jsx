@@ -1,5 +1,6 @@
 import { FaHeartbeat } from "react-icons/fa";
 import { motion } from "motion/react";
+import { useTranslation } from "react-i18next";
 import { MEDICAL_CONDITIONS } from "../../../../../services/patientProfile";
 
 const itemVariants = {
@@ -12,6 +13,7 @@ const itemVariants = {
 };
 
 function MedicalHistorySection({ profile, updateField }) {
+  const { t } = useTranslation();
   return (
     <motion.div
       variants={itemVariants}
@@ -22,9 +24,9 @@ function MedicalHistorySection({ profile, updateField }) {
           <FaHeartbeat className="text-lg" />
         </div>
         <div>
-          <h2 className="text-lg font-bold text-slate-900">Medical History</h2>
+          <h2 className="text-lg font-bold text-slate-900">{t("profile.sections.medicalHistory.title")}</h2>
           <p className="text-xs text-slate-500 font-medium">
-            Select any pre-existing conditions
+            {t("profile.sections.medicalHistory.description")}
           </p>
         </div>
       </div>
@@ -50,20 +52,20 @@ function MedicalHistorySection({ profile, updateField }) {
                   className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent transition-colors"
                 />
               </div>
-              <span className="text-sm flex-1">{condition.label}</span>
+              <span className="text-sm flex-1">{t(`profile.sections.medicalHistory.conditions.${condition.name}`)}</span>
             </label>
           );
         })}
 
         <div className="col-span-1 sm:col-span-2 lg:col-span-3 mt-4 group">
           <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 group-focus-within:text-primary transition-colors">
-            Other Notes
+            {t("profile.sections.medicalHistory.otherNotes")}
           </label>
           <textarea
             name="otherNotes"
             value={profile.otherNotes}
             onChange={updateField}
-            placeholder="Describe any other medical conditions, allergies, or relevant notes..."
+            placeholder={t("profile.sections.medicalHistory.notesPlaceholder")}
             className="block w-full rounded-xl border-slate-200 bg-slate-50/50 px-4 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-slate-900 text-sm border font-medium transition-all hover:bg-white hover:border-slate-300 resize-none group-hover:shadow-sm"
             rows="4"
           />

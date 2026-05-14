@@ -32,7 +32,7 @@ function HerbCartItem({ herb, onDecrease, onIncrease, onRemove }) {
         <button
           type="button"
           onClick={onRemove}
-          className="ml-auto rounded-full p-2 text-emerald-600 shadow-sm transition-all hover:bg-white hover:text-rose-600 sm:ml-0"
+          className="ms-auto rounded-full p-2 text-emerald-600 shadow-sm transition-all hover:bg-white hover:text-rose-600 sm:ms-0"
           title="Remove from cart"
         >
           <FaTrash />

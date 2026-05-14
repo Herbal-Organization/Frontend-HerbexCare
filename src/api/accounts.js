@@ -42,10 +42,7 @@ export const forgotPasswordAccount = async (payload) => {
 };
 
 export const googleLoginAccount = async (payload) => {
-  const { data } = await httpClient.post(
-    "/api/Accounts/google-login",
-    payload,
-  );
+  const { data } = await httpClient.post("/api/Accounts/google-login", payload);
   return data;
 };
 

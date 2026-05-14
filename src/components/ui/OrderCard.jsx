@@ -215,7 +215,7 @@ const OrderCard = ({
           </select>
           <Link
             to={`/herbalist/dashboard/orders/${id}`}
-            className="ml-2 inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition-all duration-200 hover:bg-slate-50 hover:shadow-sm"
+            className="ms-2 inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition-all duration-200 hover:bg-slate-50 hover:shadow-sm"
           >
             <FaChevronRight />
           </Link>

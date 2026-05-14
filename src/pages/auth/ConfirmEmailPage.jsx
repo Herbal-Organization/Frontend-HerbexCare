@@ -36,22 +36,9 @@ function ConfirmEmailPage() {
         if (!isActive) return;
 
         setStatus("error");
-
-        // Map backend "User not found" to a friendly localized message
-        const serverMessage =
-          error?.response?.data?.message || error?.response?.data?.title || "";
-
-        if (
-          serverMessage &&
-          String(serverMessage).toLowerCase().includes("user not found")
-        ) {
-          setMessage(t("auth.confirmEmail.emailNotFound"));
-        } else if (error?.response?.status === 404) {
-          // Generic 404 -> treat as not found
-          setMessage(t("auth.confirmEmail.emailNotFound"));
-        } else {
-          setMessage(serverMessage || t("auth.confirmEmail.errorMessage"));
-        }
+        setMessage(
+          error?.response?.data?.message || t("auth.confirmEmail.errorMessage"),
+        );
       }
     };
 

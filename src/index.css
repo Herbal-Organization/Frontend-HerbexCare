@@ -4,14 +4,23 @@
   --color-primary: #059669; /* Emerald 600 */
   --color-primary-hover: #047857; /* Emerald 700 */
   --color-primary-light: #d1fae5; /* Emerald 100 */
-  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
-  --font-ar: "Rubik", ui-sans-serif, system-ui, sans-serif;
+  --font-outfit: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-harmattan: "Readex Pro", ui-sans-serif, system-ui, sans-serif;
+  --font-cairo: "Cairo", ui-sans-serif, system-ui, sans-serif;
+  --font-alexandria: "Alexandria", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-outfit);
+}
+
+/* Dynamic Font Switching based on language */
+html[lang="ar"] {
+  --font-sans: var(--font-harmattan);
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
   }
+
   body {
     font-family: var(--font-sans);
     background-color: #fafafa;
@@ -19,7 +28,47 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  html[lang="ar"] body {
-    font-family: var(--font-ar);
+  /* Global inheritance to prevent browser/component overrides */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  button,
+  input,
+  optgroup,
+  select,
+  textarea {
+    font-family: inherit;
   }
+
+  /* Specific fix for inputs and buttons which sometimes resist inheritance */
+  input,
+  button {
+    font-family: var(--font-sans) !important;
+  }
+}
+
+/* Custom Scrollbar for sidebars */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0; /* slate-200 */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1; /* slate-300 */
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #e2e8f0 transparent;
 }

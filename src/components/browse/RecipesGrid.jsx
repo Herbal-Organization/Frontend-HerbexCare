@@ -69,7 +69,7 @@ function RecipesGrid({ recipes, isLoading, error, onRetry }) {
 
   if (error) {
     return (
-      <div className="rounded-[2.5rem] border border-red-100 bg-red-50 p-16 text-center shadow-sm max-w-2xl mx-auto mt-12">
+      <div className="rounded-[2.5rem] border border-eed-100 bg-red-50 p-16 text-center shadow-sm max-w-2xl mx-auto mt-12">
         <h3 className="text-xl font-extrabold text-red-800">
           Unable to load recipes
         </h3>

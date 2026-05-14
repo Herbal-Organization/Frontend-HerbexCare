@@ -9,8 +9,10 @@ import AuthInput from "../../components/auth/AuthInput";
 import AuthPageLayout from "../../components/auth/AuthPageLayout";
 import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
 import useAsyncAction from "../../hooks/useAsyncAction";
+import { useTranslation } from "react-i18next";
 
 function ForgetPassword() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState("");
   const {
@@ -39,7 +41,7 @@ function ForgetPassword() {
     execute: submitForgotPassword,
     clearError,
   } = useAsyncAction(forgotPasswordAccount, {
-    defaultErrorMessage: "Password reset failed. Please try again.",
+    defaultErrorMessage: t("auth.forgotPassword.error"),
     onSuccess: () => {
       setSuccessMessage(
         "Password reset successful. You can now sign in using your new password.",
@@ -66,16 +68,16 @@ function ForgetPassword() {
 
   return (
     <AuthPageLayout
-      title="Forgot Password"
-      subtitle="Enter your email and choose a new password for your account."
-      sideDescription="Recover access to your herbal care account and get back to your wellness journey."
+      title={t("auth.forgotPassword.title")}
+      subtitle={t("auth.forgotPassword.subtitle")}
+      sideDescription={t("auth.forgotPassword.sideDescription")}
     >
       <AuthAlert message={error} type="error" />
       <AuthAlert message={successMessage} type="success" />
 
       <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
         <AuthInput
-          label="Email Address"
+          label={t("auth.login.emailLabel")}
           type="email"
           placeholder="name@example.com"
           autoComplete="email"
@@ -145,8 +147,8 @@ function ForgetPassword() {
         <div className="pt-2">
           <AuthSubmitButton
             isLoading={isLoading}
-            label="Reset Password"
-            loadingLabel="Resetting Password"
+            label={t("auth.forgotPassword.submit")}
+            loadingLabel={t("auth.forgotPassword.loading")}
             className="cursor-pointer"
           />
         </div>
@@ -157,7 +159,7 @@ function ForgetPassword() {
           to="/auth"
           className="text-sm font-bold text-primary hover:text-primary-hover"
         >
-          Back to Sign In
+          {t("auth.forgotPassword.backToLogin")}
         </Link>
       </div>
     </AuthPageLayout>

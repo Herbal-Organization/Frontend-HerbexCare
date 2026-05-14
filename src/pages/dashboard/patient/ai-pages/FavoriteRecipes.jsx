@@ -30,7 +30,7 @@ function FavoriteRecipes() {
   const navigate = useNavigate();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Detail States
   const [viewMode, setViewMode] = useState("list"); // "list" or "detail"
   const [selectedDetail, setSelectedDetail] = useState(null);
@@ -176,17 +176,35 @@ function FavoriteRecipes() {
               )}
 
               {/* Dosage & Benefits Grid */}
-              {(recipeData.dosage || recipeData.usage || recipeData.duration || recipeData.benefits || recipeData.expectedBenefits) && (
+              {(recipeData.dosage ||
+                recipeData.usage ||
+                recipeData.duration ||
+                recipeData.benefits ||
+                recipeData.expectedBenefits) && (
                 <div className="grid gap-6 sm:grid-cols-2">
-                  {(recipeData.dosage || recipeData.usage || recipeData.duration) && (
+                  {(recipeData.dosage ||
+                    recipeData.usage ||
+                    recipeData.duration) && (
                     <div className="rounded-3xl border border-purple-100 bg-purple-50/30 p-6 hover:bg-purple-50/50 transition-colors">
                       <h4 className="text-[10px] font-black text-purple-900 uppercase tracking-[0.2em] mb-4">
                         {t("aiConsultation.result.sections.usage")}
                       </h4>
                       <div className="space-y-3 text-sm text-purple-800 font-bold">
-                        {recipeData.dosage && <p className="flex gap-2"><span>•</span> {recipeData.dosage}</p>}
-                        {recipeData.usage && <p className="flex gap-2"><span>•</span> {recipeData.usage}</p>}
-                        {recipeData.duration && <p className="flex gap-2"><span>•</span> {recipeData.duration}</p>}
+                        {recipeData.dosage && (
+                          <p className="flex gap-2">
+                            <span>•</span> {recipeData.dosage}
+                          </p>
+                        )}
+                        {recipeData.usage && (
+                          <p className="flex gap-2">
+                            <span>•</span> {recipeData.usage}
+                          </p>
+                        )}
+                        {recipeData.duration && (
+                          <p className="flex gap-2">
+                            <span>•</span> {recipeData.duration}
+                          </p>
+                        )}
                       </div>
                     </div>
                   )}
@@ -197,12 +215,21 @@ function FavoriteRecipes() {
                         {t("aiConsultation.result.sections.benefits")}
                       </h4>
                       <div className="space-y-3 text-sm text-amber-800 font-bold">
-                        {Array.isArray(recipeData.benefits || recipeData.expectedBenefits) ? (
-                          (recipeData.benefits || recipeData.expectedBenefits).map((b, i) => (
-                            <p key={i} className="flex gap-2"><span>•</span> {b}</p>
+                        {Array.isArray(
+                          recipeData.benefits || recipeData.expectedBenefits,
+                        ) ? (
+                          (
+                            recipeData.benefits || recipeData.expectedBenefits
+                          ).map((b, i) => (
+                            <p key={i} className="flex gap-2">
+                              <span>•</span> {b}
+                            </p>
                           ))
                         ) : (
-                          <p className="flex gap-2"><span>•</span> {recipeData.benefits || recipeData.expectedBenefits}</p>
+                          <p className="flex gap-2">
+                            <span>•</span>{" "}
+                            {recipeData.benefits || recipeData.expectedBenefits}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -231,11 +258,11 @@ function FavoriteRecipes() {
             <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
               <FaBrain className="text-8xl text-emerald-600" />
             </div>
-            
+
             <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-8">
               {t("aiConsultation.result.sidebar.confidence")}
             </h3>
-            
+
             <div className="relative inline-flex items-center justify-center">
               <svg className="h-40 w-40 transform -rotate-90">
                 <circle
@@ -251,7 +278,9 @@ function FavoriteRecipes() {
                   className="text-emerald-500 transition-all duration-[1500ms] ease-out"
                   strokeWidth="10"
                   strokeDasharray={439.8}
-                  strokeDashoffset={439.8 - (439.8 * (structured.confidenceScore || 78)) / 100}
+                  strokeDashoffset={
+                    439.8 - (439.8 * (structured.confidenceScore || 78)) / 100
+                  }
                   strokeLinecap="round"
                   stroke="currentColor"
                   fill="transparent"
@@ -264,10 +293,12 @@ function FavoriteRecipes() {
                 <span className="text-5xl font-black text-slate-900 tabular-nums">
                   {structured.confidenceScore || 78}
                 </span>
-                <span className="text-xs font-black text-slate-400 mt-1">%</span>
+                <span className="text-xs font-black text-slate-400 mt-1">
+                  %
+                </span>
               </div>
             </div>
-            
+
             <p className="text-xs font-black text-slate-400 mt-8 leading-relaxed px-4">
               {t("aiConsultation.result.sidebar.reliability")}
             </p>
@@ -313,8 +344,8 @@ function FavoriteRecipes() {
                   <div
                     key={recipe.targetId || recipe.recipeId || recipe.id || idx}
                     onClick={() => {
-                        setSelectedDetail(recipe);
-                        setViewMode("detail");
+                      setSelectedDetail(recipe);
+                      setViewMode("detail");
                     }}
                     className="group relative rounded-[2.5rem] border-2 border-slate-100 bg-white p-10 hover:border-red-500 hover:bg-red-50/30 transition-all cursor-pointer flex flex-col gap-8 shadow-sm hover:shadow-2xl hover:shadow-red-500/10"
                   >
@@ -323,31 +354,43 @@ function FavoriteRecipes() {
                         <FaHeart className="text-3xl" />
                       </div>
                       <div className="flex flex-col items-end">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Score</span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">
+                          Score
+                        </span>
                         <div className="flex items-baseline gap-1">
                           <span className="text-3xl font-black text-red-600 tabular-nums">
                             {recipe.confidenceScore || 0}
                           </span>
-                          <span className="text-xs font-black text-red-400">%</span>
+                          <span className="text-xs font-black text-red-400">
+                            %
+                          </span>
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="flex-1">
                       <p className="text-xl font-black text-slate-900 leading-tight group-hover:text-red-700 transition-colors line-clamp-2">
-                        {recipe.name || recipe.recipeName || recipe.title || "Favorite Recipe"}
+                        {recipe.name ||
+                          recipe.recipeName ||
+                          recipe.title ||
+                          "Favorite Recipe"}
                       </p>
                       <div className="flex items-center gap-2 mt-4">
                         <FaClock className="text-slate-300 text-xs" />
                         {(() => {
-                          const savedDate = recipe.createdAt || recipe.savedAt || recipe.date;
-                          if (!savedDate || Number.isNaN(new Date(savedDate).getTime())) {
+                          const savedDate =
+                            recipe.createdAt || recipe.savedAt || recipe.date;
+                          if (
+                            !savedDate ||
+                            Number.isNaN(new Date(savedDate).getTime())
+                          ) {
                             return null;
                           }
 
                           return (
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                              Saved on {new Date(savedDate).toLocaleDateString()}
+                              Saved on{" "}
+                              {new Date(savedDate).toLocaleDateString()}
                             </p>
                           );
                         })()}
@@ -356,12 +399,19 @@ function FavoriteRecipes() {
 
                     <div className="pt-6 border-t border-slate-100 flex items-center justify-between group-hover:border-red-200 transition-colors">
                       <button
-                        onClick={(e) => handleRemoveFavorite(recipe.targetId || recipe.recipeId || recipe.id, e)}
+                        onClick={(e) =>
+                          handleRemoveFavorite(
+                            recipe.targetId || recipe.recipeId || recipe.id,
+                            e,
+                          )
+                        }
                         className="text-[10px] font-black text-red-600 uppercase tracking-[0.2em] hover:underline"
                       >
                         Remove
                       </button>
-                      <span className="text-[10px] font-black text-red-600 uppercase tracking-widest">View Recipe</span>
+                      <span className="text-[10px] font-black text-red-600 uppercase tracking-widest">
+                        View Recipe
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -371,8 +421,12 @@ function FavoriteRecipes() {
                 <div className="inline-flex h-24 w-24 items-center justify-center rounded-4xl bg-slate-50 text-slate-200 mb-8 shadow-inner">
                   <FaHeart className="text-5xl" />
                 </div>
-                <p className="text-2xl font-black text-slate-900 mb-3">No favorite recipes yet</p>
-                <p className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] mb-8">Save recipes from your AI consultations to see them here.</p>
+                <p className="text-2xl font-black text-slate-900 mb-3">
+                  No favorite recipes yet
+                </p>
+                <p className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] mb-8">
+                  Save recipes from your AI consultations to see them here.
+                </p>
                 <button
                   onClick={() => navigate("/patient/dashboard/ai-consultation")}
                   className="inline-flex items-center gap-3 bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-100"
@@ -392,10 +446,8 @@ function FavoriteRecipes() {
               <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
               Back to Favorites
             </button>
-            
-            {selectedDetail ? (
-              renderRecipeContent(selectedDetail)
-            ) : null}
+
+            {selectedDetail ? renderRecipeContent(selectedDetail) : null}
           </div>
         )}
       </div>

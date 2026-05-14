@@ -31,7 +31,7 @@ function CheckoutPanel({
       </div>
 
       {error && (
-        <div className="mb-6 rounded-2xl border border-red-100 bg-red-50 p-4 text-sm font-bold text-red-600">
+        <div className="mb-6 rounded-2xl border border-eed-100 bg-red-50 p-4 text-sm font-bold text-red-600">
           {error}
         </div>
       )}
