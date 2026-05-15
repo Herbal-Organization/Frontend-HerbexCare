@@ -29,3 +29,5 @@ swagger.json
 # Ignore markdown files except the main root README
 *.md
 !README.md
+
+.github

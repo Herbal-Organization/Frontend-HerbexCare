@@ -6,6 +6,7 @@ function usePatientDashboardData(userId) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const safeUserId = userId ? String(userId) : null;
   const loadDashboardData = useCallback(async () => {
     if (!userId) {
       setData(null);
@@ -28,7 +29,7 @@ function usePatientDashboardData(userId) {
     } finally {
       setIsLoading(false);
     }
-  }, [userId]);
+  }, [safeUserId]);
 
   useEffect(() => {
     loadDashboardData();

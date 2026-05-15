@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   Routes,
   Route,
@@ -57,25 +57,22 @@ function HerbalistDashboard() {
     await logout();
   };
 
+  const safeUserId = user?.userId || user?.id;
   const {
     data: dashboardData,
     isLoading: isDashboardLoading,
     error: dashboardError,
     reload: reloadDashboard,
-  } = useHerbalistDashboardData(user?.userId || user?.id);
+  } = useHerbalistDashboardData(safeUserId);
 
-  useEffect(() => {
-    if (!dashboardData?.userDetails) {
-      return;
-    }
-
-    setUser((currentUser) =>
-      normalizeHerbalistUser({
-        ...(currentUser || {}),
-        ...dashboardData.userDetails,
-      }),
-    );
-  }, [dashboardData?.userDetails]);
+  const displayUser = useMemo(() => {
+    if (!user) return null;
+    if (!dashboardData?.userDetails) return user;
+    return normalizeHerbalistUser({
+      ...(user || {}),
+      ...dashboardData.userDetails,
+    });
+  }, [user, dashboardData?.userDetails]);
 
   useEffect(() => {
     let isMounted = true;
@@ -105,7 +102,7 @@ function HerbalistDashboard() {
     };
   }, [user]);
 
-  if (!user) {
+  if (!displayUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary" />
@@ -122,7 +119,7 @@ function HerbalistDashboard() {
       <Sidebar
         currentPath={location.pathname}
         onNavigate={handleNavigate}
-        user={user}
+        user={displayUser}
         onLogout={handleLogout}
         ordersCount={ordersCount}
       />
@@ -139,7 +136,7 @@ function HerbalistDashboard() {
               path="/"
               element={
                 <HerbalistDashboardHome
-                  user={user}
+                  user={displayUser}
                   dashboardData={dashboardData}
                   isLoadingDashboard={isDashboardLoading}
                   onRetryDashboard={reloadDashboard}
@@ -150,7 +147,7 @@ function HerbalistDashboard() {
               path="/profile"
               element={
                 <HerbalistProfile
-                  user={user}
+                  user={displayUser}
                   dashboardData={dashboardData}
                   isLoading={isDashboardLoading}
                   onProfileUpdated={reloadDashboard}
@@ -159,13 +156,13 @@ function HerbalistDashboard() {
             />
             <Route
               path="/settings"
-              element={<HerbalistSettings user={user} />}
+              element={<HerbalistSettings user={displayUser} />}
             />
             <Route
               path="/herbs"
               element={
                 <HerbalistManageHerbs
-                  user={user}
+                  user={displayUser}
                   dashboardData={dashboardData}
                 />
               }

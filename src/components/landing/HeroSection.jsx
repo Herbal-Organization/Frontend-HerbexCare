@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import heroImg from "../../assets/hero_herbal_wellness.png";
+import ProfileProgress from "./ProfileProgress.jsx";
 
 const MotionDiv = motion.div;
 const MotionH1 = motion.h1;
@@ -110,20 +111,12 @@ function HeroSection() {
             />
           </div>
           <MotionDiv
-            className="absolute -start-5 top-8 rounded-2xl bg-white/90 px-4 py-3 shadow-xl backdrop-blur"
-            animate={{ y: [0, -6, 0] }}
-            transition={{
-              duration: 3.2,
-              repeat: Number.POSITIVE_INFINITY,
-              ease: "easeInOut",
-            }}
+            className="absolute -start-5 top-8 rounded-2xl bg-white/90 px-4 py-3 shadow-xl backdrop-blur w-56"
+            initial={{ opacity: 0, y: 0 }}
+            animate={{ opacity: 1, y: -4 }}
+            transition={{ duration: 0.6 }}
           >
-            <p className="text-xs font-semibold text-slate-500">
-              Personalized Results
-            </p>
-            <p className="text-sm font-bold text-slate-900">
-              Based on your goals
-            </p>
+            <ProfileProgress />
           </MotionDiv>
           <MotionDiv
             className="absolute -end-5 bottom-8 rounded-2xl bg-white/90 px-4 py-3 shadow-xl backdrop-blur"
@@ -134,9 +127,11 @@ function HeroSection() {
               ease: "easeInOut",
             }}
           >
-            <p className="text-xs font-semibold text-slate-500">Safety First</p>
+            <p className="text-xs font-semibold text-slate-500">
+              {t("hero.card2.title")}
+            </p>
             <p className="text-sm font-bold text-slate-900">
-              Evidence-backed herbs
+              {t("hero.card2.subtitle")}
             </p>
           </MotionDiv>
         </MotionDiv>

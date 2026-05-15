@@ -21,6 +21,19 @@
       "guidedPlans": "Guided Plans",
       "activeUsers": "Active Users",
       "aiMatches": "AI Matches"
+    },
+    "card1": {
+      "title": "Personalized Results",
+      "subtitle": "Based on your goals"
+    },
+    "card2": {
+      "title": "Safety First",
+      "subtitle": "Evidence-backed herbs"
+    }
+    ,
+    "profileProgress": {
+      "title": "Profile Completion",
+      "subtitle": "{{percent}} complete"
     }
   },
   "steps": {

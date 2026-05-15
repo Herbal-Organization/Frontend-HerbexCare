@@ -281,7 +281,6 @@ function Register({ setIsLogin, setSuccessMsg }) {
           </div>
         </div>
 
-
         <div className="grid grid-cols-2 gap-4">
           <AuthInput
             label="Password"
@@ -312,7 +311,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
           />
           <AuthInput
             label="Confirm Password"
-              label={t("auth.register.confirmPassword")}
+            label={t("auth.register.confirmPassword")}
             type="password"
             placeholder="••••••••"
             autoComplete="new-password"

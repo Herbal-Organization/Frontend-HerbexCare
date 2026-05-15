@@ -21,6 +21,19 @@
       "guidedPlans": "خطط موجهة",
       "activeUsers": "مستخدم نشط",
       "aiMatches": "توصيات الذكاء الاصطناعي"
+    },
+    "card1": {
+      "title": "نتائج مخصصة",
+      "subtitle": "مبنية على أهدافك"
+    },
+    "card2": {
+      "title": "السلامة أولاً",
+      "subtitle": "أعشاب مدعومة بالأدلة"
+    }
+    ,
+    "profileProgress": {
+      "title": "إكمال الملف الشخصي",
+      "subtitle": "{{percent}} مكتمل"
     }
   },
   "steps": {

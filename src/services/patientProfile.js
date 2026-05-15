@@ -107,7 +107,7 @@ const normalizeGender = (value) => {
   return String(value);
 };
 
-const getStoredPatientInfo = () => {
+export const getStoredPatientInfo = () => {
   try {
     const rawValue = localStorage.getItem(PATIENT_INFO_STORAGE_KEY);
 
@@ -177,6 +177,37 @@ export const getPersistedPatientUser = () => {
   }
 
   return normalizePatientUser(persistedUser);
+};
+
+// Compute a simple profile completion percentage based on commonly used fields.
+export const getProfileCompletionPercentage = () => {
+  try {
+    const user = getPersistedPatientUser() || {};
+    const info = getStoredPatientInfo() || {};
+
+    const fields = [
+      user.fullName,
+      user.email,
+      user.phone,
+      info.birthDate,
+      info.gender,
+      user.governorate,
+      user.city,
+      user.street,
+    ];
+
+    const total = fields.length;
+    const filled = fields.reduce((acc, v) => {
+      if (v !== undefined && v !== null && String(v).trim() !== "") {
+        return acc + 1;
+      }
+      return acc;
+    }, 0);
+
+    return Math.round((filled / total) * 100);
+  } catch (err) {
+    return 0;
+  }
 };
 
 export const buildPatientDashboardUser = ({ authUser, userDetails }) => {

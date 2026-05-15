@@ -6,6 +6,7 @@ function useHerbalistDashboardData(userId) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const safeUserId = userId ? String(userId) : null;
   const loadDashboardData = useCallback(async () => {
     if (!userId) {
       setData(null);
@@ -23,12 +24,12 @@ function useHerbalistDashboardData(userId) {
       const message =
         err.response?.data?.message ||
         err.response?.data?.title ||
-        "Failed to load your herbalist dashboard data.";
+        "Failed to load your dashboard data.";
       setError(message);
     } finally {
       setIsLoading(false);
     }
-  }, [userId]);
+  }, [safeUserId]);
 
   useEffect(() => {
     loadDashboardData();

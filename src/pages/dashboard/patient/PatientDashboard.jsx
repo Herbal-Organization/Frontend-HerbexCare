@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import {
   isAuthenticated,
@@ -24,13 +24,17 @@ import {
   isProfileComplete,
   markProfileAsComplete,
 } from "../../../services/patientProfile";
+import { FaBars, FaSpa } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 const PROFILE_COMPLETION_KEY = "patient_profile_completed";
 
 function PatientDashboard() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [user, setUser] = useState(() => getPersistedPatientUser());
   const [needsProfileCompletion, setNeedsProfileCompletion] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -64,25 +68,21 @@ function PatientDashboard() {
     await logout();
   };
 
+  const safeUserId = user?.userId || user?.id;
   const {
     data: dashboardData,
     isLoading: isDashboardLoading,
     error: dashboardError,
     reload: reloadDashboard,
-  } = usePatientDashboardData(user?.userId || user?.id);
+  } = usePatientDashboardData(safeUserId);
 
-  useEffect(() => {
-    if (!dashboardData?.userDetails) {
-      return;
-    }
-
-    setUser((currentUser) =>
-      buildPatientDashboardUser({
-        authUser: currentUser,
-        userDetails: dashboardData.userDetails,
-      }),
-    );
-  }, [dashboardData?.userDetails]);
+  const displayUser = React.useMemo(() => {
+    if (!dashboardData?.userDetails) return user;
+    return buildPatientDashboardUser({
+      authUser: user,
+      userDetails: dashboardData.userDetails,
+    });
+  }, [user, dashboardData?.userDetails]);
 
   // Check if user needs to complete profile (set gender/birthdate on first login)
   useEffect(() => {
@@ -98,7 +98,7 @@ function PatientDashboard() {
     }
   }, [needsProfileCompletion, navigate]);
 
-  if (!user) {
+  if (!displayUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
@@ -108,16 +108,41 @@ function PatientDashboard() {
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-900">
-      <PatientSidebar user={user} onLogout={handleLogout} />
+      <PatientSidebar
+        user={displayUser}
+        onLogout={handleLogout}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
 
-      <div className="flex-1 ms-72 flex flex-col min-h-screen">
+      <div className="flex-1 md:ms-72 flex flex-col min-h-screen">
+        {/* Mobile top bar */}
+        <div className="sticky top-0 z-30 flex items-center gap-3 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-3 md:hidden">
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
+            aria-label="Open menu"
+          >
+            <FaBars className="w-5 h-5" />
+          </button>
+          <div className="flex items-center gap-2">
+            <div className="bg-primary rounded-lg p-1.5 text-white">
+              <FaSpa className="text-lg" />
+            </div>
+            <span className="font-bold text-slate-900">
+              {t("patientSidebar.brand")}
+            </span>
+          </div>
+        </div>
+
         <main className="flex-1 bg-slate-50">
           <Routes>
             <Route
               path="/"
               element={
                 <PatientDashboardOverview
-                  user={user}
+                  user={displayUser}
                   dashboardData={dashboardData}
                   isLoading={isDashboardLoading}
                   error={dashboardError}
@@ -129,14 +154,14 @@ function PatientDashboard() {
               path="/profile"
               element={
                 <PatientProfile
-                  user={user}
+                  user={displayUser}
                   dashboardData={dashboardData}
                   isLoading={isDashboardLoading}
                   onProfileUpdated={reloadDashboard}
                 />
               }
             />
-            <Route path="/settings" element={<PatientSettings user={user} />} />
+            <Route path="/settings" element={<PatientSettings user={displayUser} />} />
             <Route path="/cart" element={<PatientCart />} />
             <Route path="/orders" element={<PatientOrders />} />
             <Route path="/orders/success" element={<OrderSuccessPage />} />
@@ -153,7 +178,7 @@ function PatientDashboard() {
             />
           </Routes>
 
-          <div className="border-t border-slate-200 px-8 py-4 text-xs text-slate-400">
+          <div className="border-t border-slate-200 px-4 sm:px-8 py-4 text-xs text-slate-400">
             Herbal Care AI &copy; {new Date().getFullYear()}
           </div>
         </main>
