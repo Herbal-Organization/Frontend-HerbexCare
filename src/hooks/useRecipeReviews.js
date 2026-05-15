@@ -16,7 +16,11 @@ const normalizeReview = (review, fallbackKey) => ({
   comment: review?.comment || "",
   ratingValue: Number(review?.ratingValue ?? review?.rating ?? 0),
   createdDate:
-    review?.createdDate || review?.createdAt || review?.dateCreated || null,
+    review?.ratingDate ||
+    review?.createdDate ||
+    review?.createdAt ||
+    review?.dateCreated ||
+    null,
   patientName:
     review?.patientName ||
     review?.patient?.fullName ||
@@ -49,15 +53,21 @@ function useRecipeReviews(recipeId) {
     setError("");
 
     try {
-      const [allReviews, currentUserReview] = await Promise.all([
+      const [allReviewsRaw, currentUserReview] = await Promise.all([
         getRecipeReviews(recipeId).catch(() => []),
         getMyRecipeReview(recipeId).catch(() => null),
       ]);
 
+      const allReviews = Array.isArray(allReviewsRaw)
+        ? allReviewsRaw
+        : Array.isArray(allReviewsRaw?.items)
+          ? allReviewsRaw.items
+          : Array.isArray(allReviewsRaw?.data)
+            ? allReviewsRaw.data
+            : [];
+
       setReviews(
-        Array.isArray(allReviews)
-          ? allReviews.map((review, index) => normalizeReview(review, index))
-          : [],
+        allReviews.map((review, index) => normalizeReview(review, index)),
       );
       setMyReview(
         currentUserReview ? normalizeReview(currentUserReview, "me") : null,

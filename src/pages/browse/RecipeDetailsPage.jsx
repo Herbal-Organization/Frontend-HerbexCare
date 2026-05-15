@@ -153,44 +153,50 @@ function HerbItem({ herb }) {
 /* ── Review card ── */
 function ReviewCard({ review }) {
   return (
-    <div className="border border-slate-100 rounded-xl p-4 bg-white mb-3 last:mb-0">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-[#EAF3DE] flex items-center justify-center text-[#27500A] text-sm font-medium shrink-0">
-            {review.patientName?.charAt(0).toUpperCase()}
+    <div className="border border-slate-100 rounded-2xl p-5 bg-white mb-4 last:mb-0 shadow-sm transition-all hover:shadow-md hover:border-emerald-100">
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-700 text-sm font-bold shrink-0 shadow-inner">
+            {review.patientName?.charAt(0).toUpperCase() || "P"}
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-900">
-              {review.patientName}
+            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-0.5">
+              Patient Name:
             </p>
-            <p className="text-[11px] text-slate-400">
-              {review.createdDate
-                ? new Date(review.createdDate).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })
-                : "Patient"}
+            <p className="text-sm font-bold text-slate-900 leading-none">
+              {review.patientName || "Anonymous Patient"}
             </p>
           </div>
         </div>
-        <div className="flex gap-0.5">
-          {[...Array(5)].map((_, i) => (
-            <FaStar
-              key={i}
-              className={`text-[10px] ${i < review.ratingValue ? "text-[#BA7517]" : "text-slate-200"}`}
-            />
-          ))}
+        <div className="flex flex-col items-end">
+          <div className="flex gap-0.5 mb-1">
+            {[...Array(5)].map((_, i) => (
+              <FaStar
+                key={i}
+                className={`text-[10px] ${i < review.ratingValue ? "text-amber-400" : "text-slate-200"}`}
+              />
+            ))}
+          </div>
+          <p className="text-[10px] text-slate-400 font-medium italic">
+            {review.createdDate
+              ? new Date(review.createdDate).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })
+              : "Recent"}
+          </p>
         </div>
       </div>
-      <div className="flex items-center gap-2 text-[11px] font-medium text-slate-500 mb-2">
-        <span className="rounded-full bg-[#FAEEDA] px-2.5 py-1 text-[#854F0B]">
-          Rating: {review.ratingValue}/5
-        </span>
+
+      <div className="bg-slate-50 border border-slate-100 rounded-xl p-4">
+        <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-2">
+          Patient Comment:
+        </p>
+        <p className="text-xs leading-relaxed text-slate-600 font-medium italic">
+          "{review.comment || "No specific feedback was provided with this rating."}"
+        </p>
       </div>
-      <p className="text-xs leading-relaxed text-slate-500 bg-slate-50 rounded-lg p-3">
-        {review.comment || "No comment provided."}
-      </p>
     </div>
   );
 }
@@ -690,17 +696,13 @@ function RecipeDetailsPage() {
                         Community feedback
                       </p>
                       <p className="text-[11px] text-slate-400">
-                        Share your experience
+                        {reviews.length === 0 
+                          ? "No reviews yet. Be the first to share your experience!" 
+                          : "Share your experience"}
                       </p>
                     </div>
-                    <div className="text-end bg-slate-50 border border-slate-100 rounded-2xl px-6 py-5 shadow-sm">
-                      <p
-                        style={{ fontFamily: "'Instrument Serif', serif" }}
-                        className="text-5xl font-black text-slate-900 leading-none tracking-tight"
-                      >
-                        {averageFromReviews ? `${averageFromReviews} ★` : "—"}
-                      </p>
-                      <p className="text-[12px] font-bold text-slate-400 mt-2 uppercase tracking-widest">
+                    <div className="text-end pt-2">
+                      <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">
                         {reviews.length} {reviews.length === 1 ? "Review" : "Reviews"}
                       </p>
                     </div>
