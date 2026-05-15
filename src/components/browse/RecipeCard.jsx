@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { FaHeart, FaStar } from "react-icons/fa";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import useDiseases from "../../hooks/useDiseases";
+import DiseaseDetailsModal from "./DiseaseDetailsModal";
 
 const HERO_THEMES = [
   {
@@ -33,14 +37,31 @@ function RecipeCard({
 }) {
   const navigate = useNavigate();
   const theme = HERO_THEMES[0];
+  const { diseases } = useDiseases();
+  const [selectedDisease, setSelectedDisease] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleDiseaseClick = (e, diseaseId) => {
+    e.stopPropagation(); // Prevent navigating to recipe details
+    if (!Array.isArray(diseases)) {
+      toast.error("Disease data is not available yet.");
+      return;
+    }
+    const fullDisease = diseases.find((d) => d.diseaseId == diseaseId);
+    if (fullDisease) {
+      setSelectedDisease(fullDisease);
+      setIsModalOpen(true);
+    } else {
+      toast.error("Disease details not found.");
+    }
+  };
 
   return (
-    <motion.button
+    <motion.div
       variants={itemVariants}
       whileHover={{ y: -6 }}
-      type="button"
       onClick={() => navigate(`/patient/home/recipes/${id || recipeId}`)}
-      className="group flex flex-col overflow-hidden rounded-[20px] border border-slate-200 bg-white text-start h-full w-full transition-all duration-300 hover:shadow-xl hover:border-emerald-200"
+      className="group flex flex-col overflow-hidden rounded-[20px] border border-slate-200 bg-white text-start h-full w-full transition-all duration-300 hover:shadow-xl hover:border-emerald-200 cursor-pointer"
     >
       {/* Hero Header */}
       <div className="relative p-5 bg-slate-50 border-b border-slate-100">
@@ -48,10 +69,15 @@ function RecipeCard({
           <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 bg-white px-2 py-0.5 rounded border border-slate-200">
             {createdDate || "Recent"}
           </span>
-          <span className="flex items-center gap-1 rounded-full border border-amber-100 bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-700 shadow-sm">
-            <FaStar className="text-amber-400 text-[10px]" />
-            {averageRating != null ? Number(averageRating).toFixed(1) : "New"}
-          </span>
+          <div className="flex items-center gap-1.5">
+            <span className="flex items-center gap-1 rounded-full border border-amber-100 bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-700 shadow-sm">
+              <FaStar className="text-amber-400 text-[10px]" />
+              {averageRating != null ? Number(averageRating).toFixed(1) : "New"}
+            </span>
+            <span className="rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700 shadow-sm">
+              ${Number(price || 0).toFixed(0)}
+            </span>
+          </div>
         </div>
 
         <h3 className="text-lg font-bold text-slate-900 leading-snug group-hover:text-emerald-700 transition-colors">
@@ -69,12 +95,15 @@ function RecipeCard({
           <div className="flex flex-wrap gap-1.5">
             {targetedDiseases?.length ? (
               targetedDiseases.map((disease) => (
-                <span
+                <button
                   key={disease.diseaseId}
-                  className="rounded-full border border-sky-100 bg-sky-50 px-2 py-0.5 text-[10px] font-bold text-sky-700 whitespace-nowrap"
+                  type="button"
+                  onClick={(e) => handleDiseaseClick(e, disease.diseaseId)}
+                  className="rounded-full border border-sky-100 bg-sky-50 px-2 py-0.5 text-[10px] font-bold text-sky-700 whitespace-nowrap hover:bg-sky-100 hover:border-sky-200 transition-all active:scale-95 z-20 relative"
+                  title="Click for details"
                 >
                   {disease.diseaseName}
-                </span>
+                </button>
               ))
             ) : (
               <span className="text-[10px] text-slate-400 italic">
@@ -94,13 +123,18 @@ function RecipeCard({
               ${Number(price || 0).toFixed(0)}
             </span>
           </div>
-          
+
           <div className="h-8 w-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
             <FaHeart className="text-sm" />
           </div>
         </div>
       </div>
-    </motion.button>
+      <DiseaseDetailsModal
+        disease={selectedDisease}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+    </motion.div>
   );
 }
 

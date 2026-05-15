@@ -70,7 +70,7 @@ function StatCard({ label, value, hint, accent }) {
         {label}
       </p>
       <p
-        className={`font-['Instrument_Serif',serif] text-2xl leading-none mb-1 ${valueColor[accent] ?? valueColor.default}`}
+        className={`font-['Instrument_Serif',serif] text-3xl leading-none mb-1 ${valueColor[accent] ?? valueColor.default}`}
       >
         {value}
       </p>
@@ -82,45 +82,68 @@ function StatCard({ label, value, hint, accent }) {
 /* ── Herb item ── */
 function HerbItem({ herb }) {
   return (
-    <div className="border border-slate-100 rounded-xl p-4 mb-3 last:mb-0 transition-colors hover:bg-slate-50">
-      <div className="flex items-start justify-between gap-3 mb-2">
+    <div className="border border-slate-100 rounded-xl p-5 mb-4 last:mb-0 transition-colors hover:bg-slate-50 bg-white">
+      <div className="flex items-start justify-between gap-3 mb-4">
         <div>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-1">
+            Herb Name:
+          </p>
           <p
             style={{ fontFamily: "'Instrument Serif', serif" }}
-            className="text-base text-slate-900"
+            className="text-xl text-slate-900 leading-none"
           >
             {herb.herbName}
           </p>
-          <p
-            style={{ fontFamily: "'Instrument Serif', serif" }}
-            className="text-xs italic text-slate-400 mt-0.5"
-          >
-            {herb.scientificName}
-          </p>
         </div>
-        <span className="text-[11px] font-medium bg-[#EAF3DE] text-[#27500A] border border-[#97C459] rounded-full px-3 py-1 shrink-0">
+        <span className="text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-3 py-1 shrink-0">
           {herb.quantity}g
         </span>
       </div>
-      <p className="text-xs leading-relaxed text-slate-500 mb-3">
-        {herb.description}
-      </p>
-      <div className="grid grid-cols-2 gap-2">
-        <div className="bg-slate-50 border border-slate-100 rounded-lg p-2.5">
-          <p className="text-[10px] uppercase tracking-wider text-slate-400 font-medium mb-1">
-            Benefits
+
+      <div className="space-y-4">
+        <div>
+          <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">
+            Scientific Name:
           </p>
-          <p className="text-xs font-medium text-slate-700">
-            {herb.benefits || "—"}
+          <p className="text-sm font-medium italic text-slate-600">
+            {herb.scientificName || "N/A"}
           </p>
         </div>
-        <div className="bg-slate-50 border border-slate-100 rounded-lg p-2.5">
-          <p className="text-[10px] uppercase tracking-wider text-slate-400 font-medium mb-1">
-            Dosage
+
+        <div>
+          <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">
+            Description:
           </p>
-          <p className="text-xs font-medium text-slate-700">
-            {herb.dosage || "—"}
+          <p className="text-xs leading-relaxed text-slate-500">
+            {herb.description || "No description available."}
           </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="bg-slate-50 border border-slate-100 rounded-xl p-3">
+            <p className="text-[9px] uppercase tracking-widest text-slate-400 font-bold mb-1.5">
+              Benefits
+            </p>
+            <p className="text-xs font-medium text-slate-700 leading-relaxed">
+              {herb.benefits || "—"}
+            </p>
+          </div>
+          <div className="bg-slate-50 border border-slate-100 rounded-xl p-3">
+            <p className="text-[9px] uppercase tracking-widest text-slate-400 font-bold mb-1.5">
+              Dosage
+            </p>
+            <p className="text-xs font-medium text-slate-700 leading-relaxed">
+              {herb.dosage || "—"}
+            </p>
+          </div>
+          <div className="bg-amber-50/50 border border-amber-100 rounded-xl p-3">
+            <p className="text-[9px] uppercase tracking-widest text-amber-600 font-bold mb-1.5">
+              Warnings
+            </p>
+            <p className="text-xs font-medium text-amber-800 leading-relaxed">
+              {herb.warnings || "No specific warnings."}
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -508,19 +531,12 @@ function RecipeDetailsPage() {
                 accent="amber"
               />
               <StatCard
-                label="Herbalist rating"
-                value={
-                  recipe.herbalistAverageRatingLabel
-                    ? `${recipe.herbalistAverageRatingLabel} ★`
-                    : "N/A"
-                }
-                hint={
-                  recipe.herbalistTotalRatings != null
-                    ? `${recipe.herbalistTotalRatings} pro reviews`
-                    : undefined
-                }
+                label="Recipe price"
+                value={`$${Number(recipe.price || 0).toFixed(0)}`}
+                hint="Total cost"
                 accent="green"
               />
+
               <StatCard
                 label="Created"
                 value={recipe.createdDate}
@@ -677,15 +693,15 @@ function RecipeDetailsPage() {
                         Share your experience
                       </p>
                     </div>
-                    <div className="text-end bg-slate-50 border border-slate-100 rounded-xl px-4 py-3">
+                    <div className="text-end bg-slate-50 border border-slate-100 rounded-2xl px-6 py-5 shadow-sm">
                       <p
                         style={{ fontFamily: "'Instrument Serif', serif" }}
-                        className="text-2xl text-slate-900 leading-none"
+                        className="text-5xl font-black text-slate-900 leading-none tracking-tight"
                       >
                         {averageFromReviews ? `${averageFromReviews} ★` : "—"}
                       </p>
-                      <p className="text-[11px] text-slate-400 mt-1">
-                        {reviews.length} review{reviews.length !== 1 ? "s" : ""}
+                      <p className="text-[12px] font-bold text-slate-400 mt-2 uppercase tracking-widest">
+                        {reviews.length} {reviews.length === 1 ? "Review" : "Reviews"}
                       </p>
                     </div>
                   </div>
