@@ -31,3 +31,4 @@ swagger.json
 !README.md
 
 .github
+verify_endpoints.cjs
