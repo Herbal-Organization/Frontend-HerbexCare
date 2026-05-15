@@ -20,6 +20,51 @@ import PatientDetailsSection from "./sections/PatientDetailsSection";
 import AddressInformationSection from "./sections/AddressInformationSection";
 import MedicalHistorySection from "./sections/MedicalHistorySection";
 
+const medicalHistoryFields = [
+  "diabetes",
+  "hypertension",
+  "asthma",
+  "heartDisease",
+  "kidneyDisease",
+  "liverDisease",
+  "smoker",
+  "pregnancy",
+  "allergies",
+];
+
+const completionFields = [
+  (profile, user) => user?.fullName || user?.name,
+  (profile, user) => user?.email,
+  (profile, user) => user?.userName || user?.username,
+  (profile, user) => user?.phone,
+  (profile) => profile?.birthDate,
+  (profile) => profile?.gender,
+  (profile) => profile?.governorate,
+  (profile) => profile?.city,
+  (profile) => profile?.street,
+  (profile) => profile?.otherNotes,
+  ...medicalHistoryFields.map((field) => (profile) => profile?.[field]),
+];
+
+const PROFILE_COMPLETION_SEGMENTS = 20;
+
+function getProfileCompletionPercent(profile, user) {
+  const filled = completionFields.reduce((count, getValue) => {
+    const value = getValue(profile, user);
+    if (typeof value === "boolean") {
+      return count + (value ? 1 : 0);
+    }
+
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      return count + 1;
+    }
+
+    return count;
+  }, 0);
+
+  return Math.round((filled / completionFields.length) * 100);
+}
+
 // Framer Motion variants
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -69,6 +114,14 @@ function PatientProfile({ user, dashboardData, isLoading, onProfileUpdated }) {
         onProfileUpdated?.();
       },
     });
+
+  const profileCompletion = useMemo(
+    () => getProfileCompletionPercent(profile, user),
+    [profile, user],
+  );
+  const completedSegments = Math.round(
+    (profileCompletion / 100) * PROFILE_COMPLETION_SEGMENTS,
+  );
 
   useEffect(() => {
     setProfile(initialProfile);
@@ -138,6 +191,39 @@ function PatientProfile({ user, dashboardData, isLoading, onProfileUpdated }) {
           {saveError}
         </motion.div>
       ) : null}
+
+      <motion.section
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+      >
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-bold text-slate-900">
+              {t("profile.completion.title")}
+            </p>
+            <p className="text-xs text-slate-500">
+              {t("profile.completion.helper")}
+            </p>
+          </div>
+          <p className="text-sm font-semibold text-primary">
+            {t("profile.completion.subtitle", { percent: profileCompletion })}
+          </p>
+        </div>
+
+        <div className="mt-4 flex gap-1.5">
+          {Array.from({ length: PROFILE_COMPLETION_SEGMENTS }).map(
+            (_, index) => (
+              <div
+                key={index}
+                className={`h-2 flex-1 rounded-full transition-colors duration-300 ${
+                  index < completedSegments ? "bg-emerald-500" : "bg-slate-200"
+                }`}
+              />
+            ),
+          )}
+        </div>
+      </motion.section>
 
       <motion.div
         variants={containerVariants}

@@ -30,11 +30,6 @@
       "title": "Safety First",
       "subtitle": "Evidence-backed herbs"
     }
-    ,
-    "profileProgress": {
-      "title": "Profile Completion",
-      "subtitle": "{{percent}} complete"
-    }
   },
   "steps": {
     "title": "Simple Steps to Natural Care",
@@ -212,6 +207,11 @@
   "profile": {
     "title": "My Profile",
     "subtitle": "Manage your personal information and medical history",
+    "completion": {
+      "title": "Profile completion",
+      "subtitle": "{{percent}}% complete",
+      "helper": "Fill in your profile details to complete your account."
+    },
     "sections": {
       "personalInfo": {
         "title": "Personal Information",
