@@ -17,6 +17,7 @@ import OrderSuccessPage from "./OrderSuccessPage";
 import PatientSavedRecipes from "./PatientSavedRecipes";
 import PatientSettings from "./PatientSettings";
 import AiConsultationPage from "./ai-pages/AiConsultationPage";
+import AiChatPage from "./ai-chat/AiChatPage";
 import usePatientDashboardData from "../../../hooks/usePatientDashboardData";
 import {
   buildPatientDashboardUser,
@@ -175,6 +176,7 @@ function PatientDashboard() {
             <Route path="/orders/:orderId" element={<PatientOrderDetails />} />
             <Route path="/recipes" element={<PatientSavedRecipes />} />
             <Route path="/ai-consultation" element={<AiConsultationPage />} />
+            <Route path="/ai-chat" element={<AiChatPage />} />
             <Route
               path="*"
               element={<Navigate to="/patient/dashboard" replace />}

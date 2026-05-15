@@ -9,6 +9,7 @@ import {
   FaHome,
   FaReceipt,
   FaBrain,
+  FaComments,
   FaCog,
   FaTimes,
 } from "react-icons/fa";
@@ -46,6 +47,11 @@ function PatientSidebar({ user, onLogout, isOpen, onClose }) {
       name: t("patientSidebar.aiConsultation"),
       href: "/patient/dashboard/ai-consultation",
       icon: FaBrain,
+    },
+    {
+      name: "AI Chat", // Or t("patientSidebar.aiChat") if translations were added
+      href: "/patient/dashboard/ai-chat",
+      icon: FaComments,
     },
     {
       name: t("patientSidebar.herbLibrary"),
