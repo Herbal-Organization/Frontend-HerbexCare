@@ -1,5 +1,7 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion as Motion } from "motion/react";
+import { getHerbWithHerbalist } from "../../api/herbs";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -18,6 +20,19 @@ const itemVariants = {
 
 function HerbCard({ herb }) {
   const navigate = useNavigate();
+  const [herbalistName, setHerbalistName] = useState(null);
+
+  useEffect(() => {
+    if (herb?.herbId) {
+      getHerbWithHerbalist(herb.herbId)
+        .then((data) => {
+          if (data && data.herbalistName) {
+            setHerbalistName(data.herbalistName);
+          }
+        })
+        .catch((err) => console.error("Failed to fetch herbalist info", err));
+    }
+  }, [herb?.herbId]);
 
   return (
     <Motion.button
@@ -59,15 +74,7 @@ function HerbCard({ herb }) {
             </svg>
           </div>
         )}
-        <span
-          className={`absolute top-3 end-3 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
-            herb.isApproved
-              ? "bg-[#EAF3DE] text-[#27500A] border-[#97C459]"
-              : "bg-[#FAEEDA] text-[#633806] border-[#EF9F27]"
-          }`}
-        >
-          {herb.isApproved ? "Approved" : "Pending"}
-        </span>
+
       </div>
 
       {/* Body */}
@@ -75,17 +82,22 @@ function HerbCard({ herb }) {
         {/* Name */}
         <div>
           <h3
-            className="text-[17px] font-medium text-slate-900 leading-snug"
+            className="text-lg font-semibold text-slate-900 leading-snug"
             style={{ fontFamily: "'Lora', serif" }}
           >
             {herb.herbName}
           </h3>
           <p
-            className="mt-0.5 text-[11px] italic text-slate-400"
+            className="mt-1 text-xs italic text-slate-500"
             style={{ fontFamily: "'Lora', serif" }}
           >
-            {herb.scientificName}
+            <span className="font-semibold not-italic text-slate-700">Scientific Name:</span> {herb.scientificName}
           </p>
+          {herbalistName && (
+            <p className="mt-1.5 text-xs font-medium text-slate-500">
+              <span className="text-slate-400">By:</span> {herbalistName}
+            </p>
+          )}
         </div>
 
         {/* Use tags */}
@@ -104,8 +116,8 @@ function HerbCard({ herb }) {
 
         {/* Short description if available */}
         {herb.description && (
-          <p className="text-sm text-slate-600 line-clamp-2 mt-2">
-            {herb.description}
+          <p className="text-sm text-slate-600 leading-relaxed line-clamp-3 mt-2">
+            <span className="font-semibold text-slate-700">Description:</span> {herb.description}
           </p>
         )}
 

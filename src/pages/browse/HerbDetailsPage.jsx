@@ -461,16 +461,7 @@ function HerbDetailsPage() {
               <div className="p-8 lg:p-10 border-t lg:border-t-0 lg:border-s border-slate-100 flex flex-col justify-center">
                 <div className="flex flex-wrap gap-2 mb-5">
                   <span className="text-[10px] font-medium uppercase tracking-wider bg-slate-100 text-slate-500 rounded-full px-3 py-1">
-                    Herb document
-                  </span>
-                  <span
-                    className={`text-[10px] font-medium uppercase tracking-wider rounded-full px-3 py-1 border ${
-                      herb.isApproved
-                        ? "bg-[#EAF3DE] text-[#27500A] border-[#97C459]"
-                        : "bg-[#FAEEDA] text-[#633806] border-[#EF9F27]"
-                    }`}
-                  >
-                    {herb.isApproved ? "Approved" : "Pending approval"}
+                    Added By: {herb.herbalistName || "Unknown"}
                   </span>
                 </div>
 
@@ -478,9 +469,15 @@ function HerbDetailsPage() {
                   {herb.herbName}
                 </h1>
                 <p className="text-base italic text-slate-400 mb-5">
+                  <span className="font-semibold not-italic text-slate-700">
+                    Scientific Name:
+                  </span>{" "}
                   {herb.scientificName}
                 </p>
                 <p className="text-sm leading-relaxed text-slate-500 max-w-lg">
+                  <span className="font-semibold text-slate-700">
+                    Description:
+                  </span>{" "}
                   {herb.description || "No description provided."}
                 </p>
               </div>
@@ -544,50 +541,6 @@ function HerbDetailsPage() {
               {/* Right column */}
               <div className="space-y-5">
                 <AddToCartForm providers={uniqueProviders} herb={herb} />
-
-                <SectionCard
-                  title="Record details"
-                  icon={<FaStamp className="text-slate-500 text-sm" />}
-                >
-                  <div className="divide-y divide-slate-100">
-                    {[
-                      {
-                        label: "Approval status",
-                        value:
-                          herb.isApproved == null
-                            ? "Under review"
-                            : herb.isApproved
-                              ? "Officially approved"
-                              : "Pending approval",
-                        pill: herb.isApproved,
-                      },
-                    ].map(({ label, value, pill }) => (
-                      <div
-                        key={label}
-                        className="flex items-center justify-between py-3 first:pt-0 last:pb-0"
-                      >
-                        <span className="text-[11px] uppercase tracking-wider text-slate-400 font-medium">
-                          {label}
-                        </span>
-                        {pill != null ? (
-                          <span
-                            className={`text-[11px] font-medium rounded-full px-3 py-1 border ${
-                              pill
-                                ? "bg-[#EAF3DE] text-[#27500A] border-[#97C459]"
-                                : "bg-[#FAEEDA] text-[#633806] border-[#EF9F27]"
-                            }`}
-                          >
-                            {value}
-                          </span>
-                        ) : (
-                          <span className="text-xs font-medium text-slate-700">
-                            {value}
-                          </span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </SectionCard>
               </div>
             </motion.div>
           </motion.div>

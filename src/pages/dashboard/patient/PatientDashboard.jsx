@@ -161,7 +161,10 @@ function PatientDashboard() {
                 />
               }
             />
-            <Route path="/settings" element={<PatientSettings user={displayUser} />} />
+            <Route
+              path="/settings"
+              element={<PatientSettings user={displayUser} />}
+            />
             <Route path="/cart" element={<PatientCart />} />
             <Route path="/orders" element={<PatientOrders />} />
             <Route path="/orders/success" element={<OrderSuccessPage />} />
