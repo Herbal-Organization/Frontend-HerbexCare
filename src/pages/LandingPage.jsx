@@ -6,7 +6,7 @@ import StepsSection from "../components/landing/StepsSection.jsx";
 import RecipesSection from "../components/landing/RecipesSection.jsx";
 import NewsletterSection from "../components/landing/NewsletterSection.jsx";
 import Footer from "../components/landing/Footer.jsx";
-import { FaArrowUp } from "react-icons/fa";
+import { FaArrowUp, FaWhatsapp } from "react-icons/fa";
 
 function LandingPage() {
   const { i18n } = useTranslation();
@@ -62,6 +62,18 @@ function LandingPage() {
           <FaArrowUp className="w-5 h-5" />
         </button>
       )}
+
+      <a
+        href="https://wa.me/201556223681"
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`fixed bottom-8 ${
+          isRTL ? "right-8" : "left-8"
+        } z-50 p-3 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 hover:scale-110 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center`}
+        aria-label="Contact us on WhatsApp"
+      >
+        <FaWhatsapp className="w-6 h-6" />
+      </a>
     </>
   );
 }
