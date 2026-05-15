@@ -432,15 +432,14 @@ function RecipeDetailsPage() {
                 )}
               </div>
 
-              <h1
-                style={{ fontFamily: "'Instrument Serif', serif" }}
-                className="text-4xl lg:text-5xl text-slate-900 leading-tight mb-4"
-              >
-                {recipe.title}
-              </h1>
-              <p className="text-sm leading-relaxed text-slate-500 max-w-2xl mb-6">
-                {recipe.description}
-              </p>
+              <div className="space-y-4 mb-6">
+                <p className="text-sm leading-relaxed text-slate-500 max-w-2xl">
+                  <span className="font-bold text-slate-700">Description:</span> {recipe.title}
+                </p>
+                <p className="text-sm leading-relaxed text-slate-500 max-w-2xl">
+                  <span className="font-bold text-slate-700">Instructions:</span> {recipe.description}
+                </p>
+              </div>
 
               <div className="mb-4">
                 <button
@@ -466,21 +465,26 @@ function RecipeDetailsPage() {
                 </button>
               </div>
 
-              <div className="flex flex-wrap gap-2">
-                {recipe.targetedDiseases?.length ? (
-                  recipe.targetedDiseases.map((d) => (
-                    <span
-                      key={d.diseaseId}
-                      className="text-xs font-medium bg-slate-50 border border-slate-200 rounded-full px-4 py-1.5 text-slate-700"
-                    >
-                      {d.diseaseName}
+              <div className="flex flex-col gap-2">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">
+                  Target Diseases:
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {recipe.targetedDiseases?.length ? (
+                    recipe.targetedDiseases.map((d) => (
+                      <span
+                        key={d.diseaseId}
+                        className="text-xs font-medium bg-slate-50 border border-slate-200 rounded-full px-4 py-1.5 text-slate-700"
+                      >
+                        {d.diseaseName}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-xs font-medium bg-slate-50 border border-slate-200 rounded-full px-4 py-1.5 text-slate-700">
+                      General wellness
                     </span>
-                  ))
-                ) : (
-                  <span className="text-xs font-medium bg-slate-50 border border-slate-200 rounded-full px-4 py-1.5 text-slate-700">
-                    General wellness
-                  </span>
-                )}
+                  )}
+                </div>
               </div>
             </motion.div>
 
@@ -660,53 +664,7 @@ function RecipeDetailsPage() {
                   </div>
                 </SectionCard>
 
-                <SectionCard
-                  title="Advantages"
-                  icon={<FaCheckCircle className="text-[#3B6D11] text-xs" />}
-                  iconBg="bg-[#EAF3DE]"
-                >
-                  <div className="bg-[#EAF3DE] border border-[#C0DD97] rounded-xl p-4 space-y-3">
-                    {recipe.advantages?.length ? (
-                      recipe.advantages.map((item) => (
-                        <div key={item} className="flex items-start gap-2.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#3B6D11] shrink-0 mt-1.5" />
-                          <span className="text-xs leading-relaxed text-[#27500A]">
-                            {item}
-                          </span>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-xs text-[#3B6D11] italic">
-                        No noted advantages.
-                      </p>
-                    )}
-                  </div>
-                </SectionCard>
 
-                <SectionCard
-                  title="Disadvantages"
-                  icon={
-                    <FaExclamationTriangle className="text-[#854F0B] text-xs" />
-                  }
-                  iconBg="bg-[#FAEEDA]"
-                >
-                  <div className="bg-[#FAEEDA] border border-[#FAC775] rounded-xl p-4 space-y-3">
-                    {recipe.disadvantages?.length ? (
-                      recipe.disadvantages.map((item) => (
-                        <div key={item} className="flex items-start gap-2.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#854F0B] shrink-0 mt-1.5" />
-                          <span className="text-xs leading-relaxed text-[#412402]">
-                            {item}
-                          </span>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-xs text-[#412402] italic">
-                        No noted disadvantages.
-                      </p>
-                    )}
-                  </div>
-                </SectionCard>
 
                 {/* Reviews */}
                 <div className="rounded-2xl border border-slate-100 bg-white p-6">
