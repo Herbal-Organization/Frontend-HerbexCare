@@ -9,12 +9,11 @@ import {
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "motion/react";
-import { getMyAIRecipesFavorites } from "@api/favorites";
+import { fetchConsultationCatalog } from "@api/aiConsultations";
 import {
   addInventoryAIRecipes,
   getMyInventoryAIRecipes,
 } from "@api/inventoryAIRecipes";
-import { normalizeGeneratedRecipe } from "@features/patient/pages/ai-pages/aiConsultationUtils";
 
 const extractArray = (payload) => {
   if (Array.isArray(payload)) return payload;
@@ -25,10 +24,24 @@ const extractArray = (payload) => {
 
 const getAiRecipeId = (recipe) => {
   const candidate = Number(
-    recipe?.aiRecipeId || recipe?.targetId || recipe?.recipeId || recipe?.id || 0,
+    recipe?.aiRecipeId ||
+      recipe?.consultationId ||
+      recipe?.targetId ||
+      recipe?.recipeId ||
+      recipe?.id ||
+      0,
   );
   return Number.isFinite(candidate) && candidate > 0 ? candidate : null;
 };
+
+const getConsultationTitle = (item) =>
+  item?.name || item?.title || item?.recipeName || "AI Consultation";
+
+const getConsultationSubtitle = (item) =>
+  item?.type || item?.condition || item?.focusArea || "Consultation";
+
+const getConsultationPreview = (item) =>
+  item?.description || item?.benefits || item?.recommendations || "";
 
 function HerbalistManageAIRecipes() {
   const [recipes, setRecipes] = useState([]);
@@ -47,12 +60,12 @@ function HerbalistManageAIRecipes() {
     setError("");
 
     try {
-      const [favoritesResponse, inventoryResponse] = await Promise.all([
-        getMyAIRecipesFavorites(),
+      const [catalogResponse, inventoryResponse] = await Promise.all([
+        fetchConsultationCatalog(),
         getMyInventoryAIRecipes(),
       ]);
 
-      const favoriteItems = extractArray(favoritesResponse);
+      const catalogItems = extractArray(catalogResponse);
       const inventoryItems = extractArray(inventoryResponse);
 
       const recipeIdsInInventory = new Set(
@@ -69,13 +82,13 @@ function HerbalistManageAIRecipes() {
           .filter((value) => Number.isFinite(value) && value > 0),
       );
 
-      setRecipes(favoriteItems);
+      setRecipes(catalogItems);
       setInventoryRecipeIds(recipeIdsInInventory);
     } catch (err) {
       const message =
         err.response?.data?.message ||
         err.response?.data?.title ||
-        "Failed to load AI recipes.";
+        "Failed to load AI consultations catalog.";
       setError(message);
     } finally {
       setIsLoading(false);
@@ -91,10 +104,14 @@ function HerbalistManageAIRecipes() {
     const query = searchQuery.toLowerCase().trim();
 
     return recipes.filter((recipe) => {
-      const normalized = normalizeGeneratedRecipe(recipe);
-      const title = (normalized.title || "").toLowerCase();
-      const condition = (normalized.condition || "").toLowerCase();
-      return title.includes(query) || condition.includes(query);
+      const title = getConsultationTitle(recipe).toLowerCase();
+      const subtitle = getConsultationSubtitle(recipe).toLowerCase();
+      const description = getConsultationPreview(recipe).toLowerCase();
+      return (
+        title.includes(query) ||
+        subtitle.includes(query) ||
+        description.includes(query)
+      );
     });
   }, [recipes, searchQuery]);
 
@@ -146,9 +163,13 @@ function HerbalistManageAIRecipes() {
   };
 
   const renderRecipeCard = (recipe, index) => {
-    const normalized = normalizeGeneratedRecipe(recipe);
     const aiRecipeId = getAiRecipeId(recipe);
-    const isInInventory = aiRecipeId ? inventoryRecipeIds.has(aiRecipeId) : false;
+    const isInInventory = aiRecipeId
+      ? inventoryRecipeIds.has(aiRecipeId)
+      : false;
+    const title = getConsultationTitle(recipe);
+    const subtitle = getConsultationSubtitle(recipe);
+    const preview = getConsultationPreview(recipe);
 
     return (
       <motion.div
@@ -167,11 +188,11 @@ function HerbalistManageAIRecipes() {
               </div>
               <div className="min-w-0">
                 <h3 className="truncate text-lg font-extrabold text-slate-900">
-                  {normalized.title || "AI Recipe"}
+                  {title}
                 </h3>
-                {normalized.condition ? (
+                {subtitle ? (
                   <p className="mt-1 truncate text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    {normalized.condition}
+                    {subtitle}
                   </p>
                 ) : null}
               </div>
@@ -186,19 +207,15 @@ function HerbalistManageAIRecipes() {
 
           <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
             <p className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-              Preparation Steps
+              Description
             </p>
-            {normalized.preparationInstructions.length > 0 ? (
-              <ul className="space-y-2 text-sm font-medium leading-relaxed text-slate-700">
-                {normalized.preparationInstructions.slice(0, 3).map((step, idx) => (
-                  <li key={idx} className="line-clamp-1">
-                    {idx + 1}. {step}
-                  </li>
-                ))}
-              </ul>
+            {preview ? (
+              <p className="line-clamp-3 text-sm font-medium leading-relaxed text-slate-700">
+                {preview}
+              </p>
             ) : (
               <p className="text-sm font-medium text-slate-500">
-                No preparation steps available.
+                No description available.
               </p>
             )}
           </div>
@@ -230,7 +247,8 @@ function HerbalistManageAIRecipes() {
             </h1>
           </div>
           <p className="mt-2 max-w-2xl text-sm font-medium text-slate-500">
-            Review your available AI recipes and publish them to inventory with a custom price.
+            Browse AI consultations from catalog and publish them to inventory
+            with a custom price.
           </p>
         </div>
 
@@ -242,7 +260,7 @@ function HerbalistManageAIRecipes() {
             type="text"
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
-            placeholder="Search AI recipes..."
+            placeholder="Search consultations..."
             className="block w-full rounded-2xl border-2 border-slate-200 bg-white px-12 py-4 text-sm font-bold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
           />
         </div>
@@ -258,20 +276,24 @@ function HerbalistManageAIRecipes() {
         <div className="flex flex-col items-center justify-center gap-4 rounded-4xl border-2 border-slate-100 bg-white py-20">
           <div className="h-12 w-12 animate-spin rounded-full border-4 border-emerald-500/30 border-t-emerald-500" />
           <p className="text-sm font-bold uppercase tracking-widest text-slate-400">
-            Loading AI recipes...
+            Loading consultations...
           </p>
         </div>
       ) : filteredRecipes.length === 0 ? (
         <div className="rounded-4xl border-2 border-dashed border-slate-200 bg-slate-50 py-20 text-center">
           <FaRobot className="mx-auto mb-4 text-5xl text-slate-300" />
-          <p className="text-xl font-bold text-slate-700">No AI recipes found</p>
+          <p className="text-xl font-bold text-slate-700">
+            No consultations found
+          </p>
           <p className="mt-2 text-sm font-medium text-slate-500">
-            Add AI recipes to your favorites first, then manage and list them here.
+            No consultations matched your search.
           </p>
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {filteredRecipes.map((recipe, index) => renderRecipeCard(recipe, index))}
+          {filteredRecipes.map((recipe, index) =>
+            renderRecipeCard(recipe, index),
+          )}
         </div>
       )}
 
@@ -290,7 +312,9 @@ function HerbalistManageAIRecipes() {
               className="w-full max-w-md overflow-hidden rounded-[2.5rem] bg-white shadow-2xl"
             >
               <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/60 px-8 py-5">
-                <h3 className="text-xl font-extrabold text-slate-900">Add AI Recipe to Inventory</h3>
+                <h3 className="text-xl font-extrabold text-slate-900">
+                  Add AI Recipe to Inventory
+                </h3>
                 <button
                   type="button"
                   onClick={closeInventoryModal}
@@ -304,10 +328,10 @@ function HerbalistManageAIRecipes() {
               <form onSubmit={handleAddToInventory} className="p-8">
                 <div className="mb-6 rounded-3xl border border-emerald-100 bg-emerald-50/60 p-5">
                   <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-emerald-700/70">
-                    Selected Recipe
+                    Selected Consultation
                   </p>
                   <p className="truncate text-lg font-black text-slate-900">
-                    {normalizeGeneratedRecipe(selectedRecipeForInventory).title}
+                    {getConsultationTitle(selectedRecipeForInventory)}
                   </p>
                 </div>
 
@@ -343,7 +367,8 @@ function HerbalistManageAIRecipes() {
                       <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-white" />
                     ) : (
                       <>
-                        <FaPlus className="text-xs text-emerald-400" /> Confirm Listing
+                        <FaPlus className="text-xs text-emerald-400" /> Confirm
+                        Listing
                       </>
                     )}
                   </button>
