@@ -2,6 +2,14 @@ import React from "react";
 import { motion } from "motion/react";
 import { FaVirus, FaPlus, FaEye } from "react-icons/fa";
 
+const parseSymptoms = (symptomsString) => {
+  if (!symptomsString) return [];
+  return symptomsString
+    .split(/[,\n]+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
+};
+
 export default function DiseasesTable({
   diseases,
   isLoading,
@@ -102,13 +110,29 @@ export default function DiseasesTable({
                   </p>
                 </td>
                 <td className="px-6 py-4">
-                  <p className="text-sm text-slate-600 line-clamp-2">
-                    {disease.symptoms || (
-                      <span className="text-slate-400 italic">
-                        No symptoms listed
-                      </span>
-                    )}
-                  </p>
+                  {disease.symptoms ? (
+                    <div className="flex flex-wrap gap-1.5">
+                      {parseSymptoms(disease.symptoms)
+                        .slice(0, 3)
+                        .map((symptom, idx) => (
+                          <span
+                            key={idx}
+                            className="inline-flex items-center rounded-full bg-amber-50 border border-amber-200 px-2.5 py-1 text-[11px] font-bold text-amber-700"
+                          >
+                            {symptom}
+                          </span>
+                        ))}
+                      {parseSymptoms(disease.symptoms).length > 3 && (
+                        <span className="inline-flex items-center rounded-full bg-slate-100 border border-slate-200 px-2.5 py-1 text-[11px] font-bold text-slate-600">
+                          +{parseSymptoms(disease.symptoms).length - 3}
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="text-xs text-slate-400 italic">
+                      No symptoms
+                    </span>
+                  )}
                 </td>
                 <td className="px-6 py-4 text-end">
                   <button

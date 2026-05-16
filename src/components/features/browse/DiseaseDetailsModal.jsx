@@ -1,6 +1,14 @@
 import { motion, AnimatePresence } from "motion/react";
 import { FaTimes, FaStethoscope, FaInfoCircle, FaTags } from "react-icons/fa";
 
+const parseSymptoms = (symptomsString) => {
+  if (!symptomsString) return [];
+  return symptomsString
+    .split(/[,\n]+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
+};
+
 export default function DiseaseDetailsModal({ disease, isOpen, onClose }) {
   if (!isOpen || !disease) return null;
 
@@ -68,7 +76,8 @@ export default function DiseaseDetailsModal({ disease, isOpen, onClose }) {
                 </h3>
               </div>
               <p className="text-sm leading-relaxed text-slate-600 font-medium bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                {disease.description || "No description available for this condition."}
+                {disease.description ||
+                  "No description available for this condition."}
               </p>
             </div>
 
@@ -80,11 +89,24 @@ export default function DiseaseDetailsModal({ disease, isOpen, onClose }) {
                   Symptoms
                 </h3>
               </div>
-              <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/50">
-                <p className="text-sm leading-relaxed text-emerald-900 font-medium">
-                  {disease.symptoms || "Commonly recognized symptoms for this condition."}
-                </p>
-              </div>
+              {disease.symptoms ? (
+                <div className="flex flex-wrap gap-2">
+                  {parseSymptoms(disease.symptoms).map((symptom, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center rounded-full bg-amber-50 border border-amber-200 px-3 py-1.5 text-xs font-bold text-amber-700"
+                    >
+                      {symptom}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/50">
+                  <p className="text-sm leading-relaxed text-emerald-900 font-medium">
+                    Commonly recognized symptoms for this condition.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
