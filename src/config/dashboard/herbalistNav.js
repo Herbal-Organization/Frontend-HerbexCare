@@ -20,13 +20,6 @@ export const getHerbalistNavConfig = (t, { ordersCount } = {}) => [
     name: t("herbalistSidebar.manageHerbs"),
     href: "/herbalist/dashboard/herbs",
     icon: MdLocalFlorist,
-    children: [
-      {
-        name: t("herbalistSidebar.globalRegistry"),
-        href: "/herbalist/dashboard/herbs/all",
-        icon: MdBiotech,
-      },
-    ],
   },
   {
     name: t("herbalistSidebar.manageRecipes"),

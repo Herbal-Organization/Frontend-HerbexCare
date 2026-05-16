@@ -9,17 +9,13 @@ import {
   FaBookOpen,
   FaGlobe,
   FaPlus,
+  FaSearch,
   FaTimes,
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "motion/react";
 import ProfileLayout from "@components/common/ProfileLayout";
-import {
-  createHerb,
-  getAllHerbs,
-  updateHerb,
-  deleteHerb,
-} from "@api/herbs";
+import { createHerb, getAllHerbs, updateHerb, deleteHerb } from "@api/herbs";
 import { addHerbToInventory } from "@api/inventory";
 import { normalizeHerb } from "@features/browse/services/herbs";
 
@@ -62,6 +58,7 @@ const extractHerbsArray = (responseData) => {
 
 function HerbalistManageHerbs({ user, dashboardData }) {
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("my-herbs"); // "my-herbs" or "global-registry"
   const [form, setForm] = useState(INITIAL_FORM);
   const [editingHerbId, setEditingHerbId] = useState(null);
   const [myHerbs, setMyHerbs] = useState([]);
@@ -70,6 +67,7 @@ function HerbalistManageHerbs({ user, dashboardData }) {
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState("");
+  const [globalSearchQuery, setGlobalSearchQuery] = useState("");
 
   // Add to Inventory Modal States
   const [selectedHerbForInventory, setSelectedHerbForInventory] =
@@ -306,14 +304,25 @@ function HerbalistManageHerbs({ user, dashboardData }) {
     }
   };
 
+  // Filter other herbs for global registry
+  const filteredGlobalHerbs = useMemo(() => {
+    if (!globalSearchQuery.trim()) return otherHerbs;
+    const query = globalSearchQuery.toLowerCase().trim();
+    return otherHerbs.filter(
+      (herb) =>
+        herb.herbName?.toLowerCase().includes(query) ||
+        herb.scientificName?.toLowerCase().includes(query),
+    );
+  }, [otherHerbs, globalSearchQuery]);
+
   const renderHerbCard = (herb, isMine) => (
     <motion.div
       key={herb.herbId || herb.id}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="group relative flex flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm transition-all hover:shadow-[0_10px_40px_rgb(0,0,0,0.06)] hover:border-emerald-200"
+      className="group relative flex flex-col overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-[0_10px_40px_rgb(0,0,0,0.06)] hover:border-emerald-200"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/20 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+      <div className="absolute inset-0 bg-linear-to-br from-emerald-50/20 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
 
       <div className="relative p-6 flex flex-col h-full">
         <div className="flex items-start gap-4">
@@ -356,7 +365,7 @@ function HerbalistManageHerbs({ user, dashboardData }) {
                 type="button"
                 onClick={() => handleDelete(herb.herbId, herb.herbName)}
                 disabled={isDeleting}
-                className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-white border border-eed-100 px-3 py-2.5 text-xs font-bold text-red-600 shadow-sm transition-colors hover:bg-red-50 disabled:opacity-50"
+                className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-white border border-red-100 px-3 py-2.5 text-xs font-bold text-red-600 shadow-sm transition-colors hover:bg-red-50 disabled:opacity-50"
               >
                 <FaTrash className="text-[10px]" /> Delete
               </button>
@@ -377,15 +386,57 @@ function HerbalistManageHerbs({ user, dashboardData }) {
   );
 
   return (
-    <div className="space-y-12 relative min-h-screen">
-      {/* Creation/Edit Form Section */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="relative z-10"
-      >
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6">
-            <div className="flex flex-col gap-2">
+    <div className="space-y-8 relative min-h-screen">
+      {/* Tab Navigation */}
+      <div className="flex items-center gap-4 border-b border-slate-200">
+        <button
+          onClick={() => {
+            setActiveTab("my-herbs");
+            setError("");
+          }}
+          className={`px-6 py-3 font-bold text-lg transition-all border-b-2 ${
+            activeTab === "my-herbs"
+              ? "border-emerald-600 text-emerald-600"
+              : "border-transparent text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            <FaLeaf className="text-lg" />
+            My Herbs
+          </div>
+        </button>
+        <button
+          onClick={() => {
+            setActiveTab("global-registry");
+            setGlobalSearchQuery("");
+          }}
+          className={`px-6 py-3 font-bold text-lg transition-all border-b-2 ${
+            activeTab === "global-registry"
+              ? "border-emerald-600 text-emerald-600"
+              : "border-transparent text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            <FaGlobe className="text-lg" />
+            Global Registry
+          </div>
+        </button>
+      </div>
+
+      {/* My Herbs Tab Content */}
+      {activeTab === "my-herbs" && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-12"
+        >
+          {/* Creation/Edit Form Section */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="relative z-10"
+          >
+            <div className="flex flex-col gap-2 mb-6">
               <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 drop-shadow-sm">
                 Registry Configuration
               </h1>
@@ -394,241 +445,300 @@ function HerbalistManageHerbs({ user, dashboardData }) {
                 catalog.
               </p>
             </div>
-            <button
-              onClick={() => navigate("/herbalist/dashboard/herbs/all")}
-              className="flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white font-bold rounded-2xl shadow-lg hover:bg-emerald-700 hover:shadow-xl transition-all transform hover:-translate-y-0.5"
-            >
-              <FaGlobe className="text-lg" />
-              Browse Global Registry
-            </button>
-          </div>
 
-        <motion.div
-          layout
-          className="overflow-hidden rounded-[2rem] border border-white/60 bg-white/60 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-2xl"
-        >
-          <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="rounded-xl bg-emerald-100 p-3 shadow-inner text-emerald-600">
-                <FaLeaf className="text-xl" />
+            <motion.div
+              layout
+              className="overflow-hidden rounded-4xl border border-white/60 bg-white/60 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-2xl"
+            >
+              <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-xl bg-emerald-100 p-3 shadow-inner text-emerald-600">
+                    <FaLeaf className="text-xl" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-slate-800">
+                      {editingHerbId ? "Edit Custom Herb" : "Create New Herb"}
+                    </h2>
+                    <p className="mt-1 text-sm font-medium text-slate-500">
+                      {editingHerbId
+                        ? "Update the details of your authored herb entry."
+                        : "Contribute a new herb configuration to the system registry."}
+                    </p>
+                  </div>
+                </div>
               </div>
+
+              <form onSubmit={handleSubmit}>
+                {error ? (
+                  <div className="mb-6 rounded-2xl border border-red-100 bg-red-50/80 backdrop-blur-sm px-5 py-4 text-sm font-bold text-red-700 shadow-sm">
+                    <FaTimes className="inline me-2" /> {error}
+                  </div>
+                ) : null}
+
+                {editingHerbId ? (
+                  <div className="mb-6 flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50/80 backdrop-blur-sm px-6 py-5 text-sm shadow-sm">
+                    <span className="font-bold flex items-center gap-2 text-emerald-800 tracking-wide">
+                      <FaPen className="text-emerald-500" /> Active Edit Session
+                    </span>
+                    <button
+                      type="button"
+                      onClick={resetForm}
+                      className="font-bold text-emerald-600 flex items-center gap-2 bg-white px-4 py-2 rounded-xl shadow-sm border border-emerald-100 transition-all hover:bg-emerald-500 hover:text-white"
+                    >
+                      <FaTimes /> Override & Cancel
+                    </button>
+                  </div>
+                ) : null}
+
+                <div className="mb-8">
+                  <h3 className="mb-4 text-xs font-black text-slate-400 uppercase tracking-widest">
+                    General Information
+                  </h3>
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
+                        Herb Name
+                      </label>
+                      <input
+                        type="text"
+                        name="herbName"
+                        value={form.herbName}
+                        onChange={handleChange}
+                        placeholder="e.g. Ginseng"
+                        className="block w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-bold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
+                        Scientific Name
+                      </label>
+                      <input
+                        type="text"
+                        name="scientificName"
+                        value={form.scientificName}
+                        onChange={handleChange}
+                        placeholder="e.g. Panax ginseng"
+                        className="block w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-bold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-8 space-y-2">
+                  <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
+                    Detailed Description
+                  </label>
+                  <textarea
+                    name="description"
+                    value={form.description}
+                    onChange={handleChange}
+                    placeholder="Share the origins, appearance, and standard implementations..."
+                    className="block min-h-35 w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-semibold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                  />
+                </div>
+
+                <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
+                      Medicinal Benefits
+                    </label>
+                    <textarea
+                      name="benefits"
+                      value={form.benefits}
+                      onChange={handleChange}
+                      placeholder="e.g. Boosts energy, lowers blood sugar..."
+                      className="block min-h-30 w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-semibold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
+                      Clinical Warnings
+                    </label>
+                    <textarea
+                      name="warnings"
+                      value={form.warnings}
+                      onChange={handleChange}
+                      placeholder="e.g. Not recommended for pregnant women..."
+                      className="block min-h-30 w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-semibold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-amber-500 focus:bg-white focus:ring-4 focus:ring-amber-500/10"
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
+                      Dosage Instructions
+                    </label>
+                    <input
+                      type="text"
+                      name="dosage"
+                      value={form.dosage}
+                      onChange={handleChange}
+                      placeholder="e.g. 1-3 grams daily"
+                      className="block w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-bold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
+                      Visual Media Target
+                    </label>
+                    <label className="flex h-14 w-full cursor-pointer items-center justify-between overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 px-5 text-sm text-slate-600 transition-all hover:bg-slate-100 hover:border-emerald-400">
+                      <span className="truncate font-semibold text-slate-500">
+                        {imageName || "Assign High-Res Imagery"}
+                      </span>
+                      <span className="shrink-0 inline-flex items-center gap-2 font-black text-emerald-700 bg-emerald-100 shadow-sm px-4 py-1.5 rounded-xl">
+                        <FaUpload /> Attach File
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageChange}
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <div className="border-t border-slate-200/50 flex justify-end">
+                  <button
+                    type="submit"
+                    disabled={isSaving}
+                    className="group relative flex h-14 w-full md:w-auto min-w-50 md:float-right items-center justify-center gap-2 overflow-hidden rounded-2xl bg-slate-900 px-8 font-bold text-white transition-all hover:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 hover:shadow-[0_8px_20px_rgb(15,23,42,0.3)] hover:-translate-y-0.5"
+                  >
+                    {isSaving ? (
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+                    ) : (
+                      <>
+                        <FaCheckCircle className="text-emerald-400" />
+                        <span>
+                          {editingHerbId
+                            ? "Finalize Edits"
+                            : "Deploy Configuration"}
+                        </span>
+                      </>
+                    )}
+                  </button>
+                  {/* Clear float block */}
+                  <div className="clear-both"></div>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+
+          {/* My Herbs Section */}
+          <section className="relative z-10">
+            <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-bold text-slate-800">
-                  {editingHerbId ? "Edit Custom Herb" : "Create New Herb"}
+                <h2 className="text-2xl font-extrabold text-slate-900 flex items-center gap-3">
+                  <div className="p-2 bg-emerald-100 text-emerald-600 rounded-xl shadow-inner">
+                    <FaCheckCircle className="text-xl" />
+                  </div>
+                  My Managed Herbs
                 </h2>
-                <p className="mt-1 text-sm font-medium text-slate-500">
-                  {editingHerbId
-                    ? "Update the details of your authored herb entry."
-                    : "Contribute a new herb configuration to the system registry."}
+                <p className="mt-2 text-sm text-slate-500 max-w-lg leading-relaxed">
+                  Herbs natively configured and managed by you. You retain full
+                  editing privileges over their details.
                 </p>
               </div>
-            </div>
-          </div>
-
-          <form onSubmit={handleSubmit}>
-            {error ? (
-              <div className="mb-6 rounded-2xl border border-eed-100 bg-red-50/80 backdrop-blur-sm px-5 py-4 text-sm font-bold text-red-700 shadow-sm">
-                <FaTimes className="inline me-2" /> {error}
-              </div>
-            ) : null}
-
-            {editingHerbId ? (
-              <div className="mb-6 flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50/80 backdrop-blur-sm px-6 py-5 text-sm shadow-sm">
-                <span className="font-bold flex items-center gap-2 text-emerald-800 tracking-wide">
-                  <FaPen className="text-emerald-500" /> Active Edit Session
-                </span>
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="font-bold text-emerald-600 flex items-center gap-2 bg-white px-4 py-2 rounded-xl shadow-sm border border-emerald-100 transition-all hover:bg-emerald-500 hover:text-white"
-                >
-                  <FaTimes /> Override & Cancel
-                </button>
-              </div>
-            ) : null}
-
-            <div className="mb-8">
-              <h3 className="mb-4 text-xs font-black text-slate-400 uppercase tracking-widest">
-                General Information
-              </h3>
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div className="space-y-2">
-                  <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
-                    Herb Name
-                  </label>
-                  <input
-                    type="text"
-                    name="herbName"
-                    value={form.herbName}
-                    onChange={handleChange}
-                    placeholder="e.g. Ginseng"
-                    className="block w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-bold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
-                  />
+              {myHerbs.length > 0 && (
+                <div className="text-xs font-bold uppercase tracking-widest text-slate-400 bg-white shadow-sm border border-slate-200 px-4 py-2 rounded-full">
+                  {myHerbs.length} Record{myHerbs.length === 1 ? "" : "s"}
                 </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
-                    Scientific Name
-                  </label>
-                  <input
-                    type="text"
-                    name="scientificName"
-                    value={form.scientificName}
-                    onChange={handleChange}
-                    placeholder="e.g. Panax ginseng"
-                    className="block w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-bold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
-                  />
-                </div>
-              </div>
+              )}
             </div>
 
-            <div className="mb-8 space-y-2">
-              <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
-                Detailed Description
-              </label>
-              <textarea
-                name="description"
-                value={form.description}
-                onChange={handleChange}
-                placeholder="Share the origins, appearance, and standard implementations..."
-                className="block min-h-[140px] w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-semibold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+            {isLoading ? (
+              <div className="py-12 flex justify-center">
+                <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-500/30 border-t-emerald-500" />
+              </div>
+            ) : myHerbs.length === 0 ? (
+              <div className="py-16 text-center rounded-4xl border-2 border-dashed border-slate-200 bg-slate-50">
+                <FaLeaf className="mx-auto text-4xl text-slate-300 mb-4" />
+                <p className="text-lg font-bold text-slate-600">
+                  No Custom Herbs
+                </p>
+                <p className="text-sm text-slate-500 mt-1 max-w-sm mx-auto">
+                  You have not created any proprietary herbs. Use the form above
+                  to deploy your initial formulas.
+                </p>
+              </div>
+            ) : (
+              <div className="grid gap-6 md:grid-cols-2 xlg:grid-cols-3">
+                {myHerbs.map((herb) => renderHerbCard(herb, true))}
+              </div>
+            )}
+          </section>
+        </motion.div>
+      )}
+
+      {/* Global Registry Tab Content */}
+      {activeTab === "global-registry" && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-8"
+        >
+          {/* Header and Search */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="flex flex-col gap-2">
+              <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">
+                Global Herb Registry
+              </h1>
+              <p className="text-lg text-slate-500 font-medium">
+                Explore and search the complete system catalog to expand your
+                practice.
+              </p>
+            </div>
+
+            {/* Search Bar */}
+            <div className="relative w-full md:w-96 group">
+              <div className="absolute inset-y-0 inset-s-0 flex items-center ps-5 text-slate-400 group-focus-within:text-emerald-500 transition-colors">
+                <FaSearch />
+              </div>
+              <input
+                type="text"
+                value={globalSearchQuery}
+                onChange={(e) => setGlobalSearchQuery(e.target.value)}
+                placeholder="Search herbs or scientific names..."
+                className="block w-full rounded-2xl border-2 border-slate-200 bg-white px-12 py-4 text-sm font-bold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
               />
             </div>
+          </div>
 
-            <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
-                  Medicinal Benefits
-                </label>
-                <textarea
-                  name="benefits"
-                  value={form.benefits}
-                  onChange={handleChange}
-                  placeholder="e.g. Boosts energy, lowers blood sugar..."
-                  className="block min-h-[120px] w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-semibold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
-                />
+          {/* Grid Section */}
+          <div className="relative z-10">
+            {isLoading ? (
+              <div className="py-24 flex flex-col items-center justify-center gap-4">
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-emerald-500/30 border-t-emerald-500" />
+                <p className="text-slate-500 font-bold animate-pulse">
+                  Synchronizing with registry...
+                </p>
               </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
-                  Clinical Warnings
-                </label>
-                <textarea
-                  name="warnings"
-                  value={form.warnings}
-                  onChange={handleChange}
-                  placeholder="e.g. Not recommended for pregnant women..."
-                  className="block min-h-[120px] w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-semibold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-amber-500 focus:bg-white focus:ring-4 focus:ring-amber-500/10"
-                />
+            ) : filteredGlobalHerbs.length === 0 ? (
+              <div className="py-24 text-center rounded-4xl border-2 border-dashed border-slate-200 bg-slate-50">
+                <FaLeaf className="mx-auto text-5xl text-slate-200 mb-4" />
+                <p className="text-xl font-bold text-slate-600">
+                  No Herbs Found
+                </p>
+                <p className="text-sm text-slate-400 mt-2">
+                  {otherHerbs.length === 0
+                    ? "No additional herbs are available in the global registry."
+                    : "We couldn't find any herbs matching your search criteria."}
+                </p>
               </div>
-            </div>
-
-            <div className="mb-10 grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
-                  Dosage Instructions
-                </label>
-                <input
-                  type="text"
-                  name="dosage"
-                  value={form.dosage}
-                  onChange={handleChange}
-                  placeholder="e.g. 1-3 grams daily"
-                  className="block w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-bold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
-                />
+            ) : (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {filteredGlobalHerbs.map((herb) => renderHerbCard(herb, false))}
               </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
-                  Visual Media Target
-                </label>
-                <label className="flex h-[56px] w-full cursor-pointer items-center justify-between overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 px-5 text-sm text-slate-600 transition-all hover:bg-slate-100 hover:border-emerald-400">
-                  <span className="truncate font-semibold text-slate-500">
-                    {imageName || "Assign High-Res Imagery"}
-                  </span>
-                  <span className="shrink-0 inline-flex items-center gap-2 font-black text-emerald-700 bg-emerald-100 shadow-sm px-4 py-1.5 rounded-xl">
-                    <FaUpload /> Attach File
-                  </span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleImageChange}
-                  />
-                </label>
-              </div>
-            </div>
-
-            <div className="border-t border-slate-200/50 pt-8 flexjustify-end">
-              <button
-                type="submit"
-                disabled={isSaving}
-                className="group relative flex h-14 w-full md:w-auto min-w-[200px] md:float-right items-center justify-center gap-2 overflow-hidden rounded-2xl bg-slate-900 px-8 font-bold text-white transition-all hover:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 hover:shadow-[0_8px_20px_rgb(15,23,42,0.3)] hover:-translate-y-0.5"
-              >
-                {isSaving ? (
-                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-white" />
-                ) : (
-                  <>
-                    <FaCheckCircle className="text-emerald-400" />
-                    <span>
-                      {editingHerbId
-                        ? "Finalize Edits"
-                        : "Deploy Configuration"}
-                    </span>
-                  </>
-                )}
-              </button>
-              {/* Clear float block */}
-              <div className="clear-both"></div>
-            </div>
-          </form>
+            )}
+          </div>
         </motion.div>
-      </motion.div>
+      )}
 
-      {/* My Herbs Section */}
-      <section className="relative z-10">
-        <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-extrabold text-slate-900 flex items-center gap-3">
-              <div className="p-2 bg-emerald-100 text-emerald-600 rounded-xl shadow-inner">
-                <FaCheckCircle className="text-xl" />
-              </div>
-              My Managed Herbs
-            </h2>
-            <p className="mt-2 text-sm text-slate-500 max-w-lg leading-relaxed">
-              Herbs natively configured and managed by you. You retain full
-              editing privileges over their details.
-            </p>
-          </div>
-          {myHerbs.length > 0 && (
-            <div className="text-xs font-bold uppercase tracking-widest text-slate-400 bg-white shadow-sm border border-slate-200 px-4 py-2 rounded-full">
-              {myHerbs.length} Record{myHerbs.length === 1 ? "" : "s"}
-            </div>
-          )}
-        </div>
-
-        {isLoading ? (
-          <div className="py-12 flex justify-center">
-            <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-500/30 border-t-emerald-500" />
-          </div>
-        ) : myHerbs.length === 0 ? (
-          <div className="py-16 text-center rounded-[3rem] border-2 border-dashed border-slate-200 bg-slate-50">
-            <FaLeaf className="mx-auto text-4xl text-slate-300 mb-4" />
-            <p className="text-lg font-bold text-slate-600">No Custom Herbs</p>
-            <p className="text-sm text-slate-500 mt-1 max-w-sm mx-auto">
-              You have not created any proprietary herbs. Use the form above to
-              deploy your initial formulas.
-            </p>
-          </div>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 xlg:grid-cols-3">
-            {myHerbs.map((herb) => renderHerbCard(herb, true))}
-          </div>
-        )}
-      </section>
-
-
-      {/* Inventory Modal Focus Box */}
+      {/* Inventory Modal */}
       <AnimatePresence>
         {selectedHerbForInventory && (
           <motion.div
@@ -675,7 +785,7 @@ function HerbalistManageHerbs({ user, dashboardData }) {
                     Selling Price / Kg
                   </label>
                   <div className="relative">
-                    <span className="absolute start-4 top-1/2 -translate-y-1/2 font-extrabold text-slate-400">
+                    <span className="absolute inset-s-4 top-1/2 -translate-y-1/2 font-extrabold text-slate-400">
                       EGP
                     </span>
                     <input
