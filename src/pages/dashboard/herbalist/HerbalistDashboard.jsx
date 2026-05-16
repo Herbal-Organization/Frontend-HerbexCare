@@ -13,6 +13,7 @@ import {
   logout,
 } from "../../../utils/auth";
 import HerbalistManageHerbs from "./HerbalistManageHerbs";
+import HerbalistAllHerbs from "./HerbalistAllHerbs";
 import HerbalistManageRecipes from "./HerbalistManageRecipes";
 import HerbalistManageDiseases from "./HerbalistManageDiseases";
 import HerbalistInventory from "./HerbalistInventory";
@@ -167,6 +168,7 @@ function HerbalistDashboard() {
                 />
               }
             />
+            <Route path="/herbs/all" element={<HerbalistAllHerbs />} />
             <Route
               path="/recipes"
               element={

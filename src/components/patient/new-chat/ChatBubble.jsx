@@ -7,15 +7,15 @@ const ChatBubble = ({ message }) => {
 
   return (
     <div className={`flex w-full ${isUser ? "justify-end" : "justify-start"} mb-6`}>
-      <div className={`flex max-w-[85%] md:max-w-[75%] gap-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}>
+      <div className={`flex w-full max-w-[95%] sm:max-w-[85%] md:max-w-[75%] gap-2 sm:gap-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}>
         {/* Avatar */}
         <div className="flex-shrink-0">
           <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm ${
+            className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shadow-sm ${
               isUser ? "bg-primary text-white" : "bg-white border border-slate-200 text-primary"
             }`}
           >
-            {isUser ? <FaUser className="w-5 h-5" /> : <FaRobot className="w-6 h-6" />}
+            {isUser ? <FaUser className="w-4 h-4 sm:w-5 sm:h-5" /> : <FaRobot className="w-5 h-5 sm:w-6 sm:h-6" />}
           </div>
         </div>
 
@@ -37,17 +37,17 @@ const ChatBubble = ({ message }) => {
 
             {/* Render Structured AI Data if it exists */}
             {message.data && !isUser && (
-              <div className="mt-2 space-y-4 w-full min-w-[280px] sm:min-w-[350px]">
-                <div className="flex justify-between items-start border-b border-slate-100 pb-3">
-                  <div>
+              <div className="mt-2 space-y-4 w-full">
+                <div className="flex flex-col sm:flex-row sm:justify-between items-start border-b border-slate-100 pb-3 gap-3">
+                  <div className="flex-1">
                     {message.data.recommendedRecipeName && (
-                      <h3 className="text-lg font-bold text-slate-900 mb-1">
+                      <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-1 leading-tight">
                         {message.data.recommendedRecipeName}
                       </h3>
                     )}
                     {message.data.mainHerb && (
-                      <div className="flex items-center text-primary text-sm font-semibold">
-                        <FaLeaf className="w-3.5 h-3.5 mr-1.5" />
+                      <div className="flex flex-wrap items-center text-primary text-xs sm:text-sm font-semibold">
+                        <FaLeaf className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1.5" />
                         {message.data.mainHerb}
                         {message.data.scientificName && (
                           <span className="text-slate-400 italic ml-1 font-normal">
@@ -57,13 +57,13 @@ const ChatBubble = ({ message }) => {
                       </div>
                     )}
                     {message.data.category && (
-                      <span className="inline-block mt-2 px-2.5 py-0.5 bg-primary/10 text-primary text-xs font-medium rounded-full">
+                      <span className="inline-block mt-2 px-2.5 py-0.5 bg-primary/10 text-primary text-[10px] sm:text-xs font-medium rounded-full">
                         {message.data.category}
                       </span>
                     )}
                   </div>
                   {message.data.matchPercentage !== undefined && (
-                    <div className="ml-4 flex-shrink-0">
+                    <div className="sm:ml-4 flex-shrink-0 self-end sm:self-auto">
                       <MatchPercentageGauge percentage={message.data.matchPercentage} />
                     </div>
                   )}

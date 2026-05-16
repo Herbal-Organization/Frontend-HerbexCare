@@ -52,8 +52,8 @@ const AiChatPage = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto h-full flex flex-col">
-      <div className="mb-2">
+    <div className="p-2 sm:p-4 lg:p-6 max-w-7xl mx-auto h-full flex flex-col">
+      <div className="hidden md:block mb-2">
         <h1 className="text-2xl font-bold text-slate-800">AI Herbal Chat</h1>
         <p className="text-slate-500 text-sm mt-1">Get personalized herbal recommendations instantly.</p>
       </div>

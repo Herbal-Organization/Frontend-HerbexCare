@@ -167,6 +167,7 @@
   "herbalistSidebar": {
     "dashboard": "لوحة التحكم",
     "manageHerbs": "إدارة الأعشاب",
+    "globalRegistry": "السجل العالمي للأعشاب",
     "manageRecipes": "إدارة الوصفات",
     "manageDiseases": "إدارة الأمراض",
     "inventory": "المخزون",

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FaLeaf,
   FaUpload,
@@ -60,6 +61,7 @@ const extractHerbsArray = (responseData) => {
 };
 
 function HerbalistManageHerbs({ user, dashboardData }) {
+  const navigate = useNavigate();
   const [form, setForm] = useState(INITIAL_FORM);
   const [editingHerbId, setEditingHerbId] = useState(null);
   const [myHerbs, setMyHerbs] = useState([]);
@@ -382,15 +384,24 @@ function HerbalistManageHerbs({ user, dashboardData }) {
         animate={{ opacity: 1, y: 0 }}
         className="relative z-10"
       >
-        <div className="flex flex-col gap-2 mb-6">
-          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 drop-shadow-sm">
-            Registry Configuration
-          </h1>
-          <p className="text-lg text-slate-500 font-medium">
-            Draft, edit, and formulate proprietary blends for your active
-            catalog.
-          </p>
-        </div>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6">
+            <div className="flex flex-col gap-2">
+              <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 drop-shadow-sm">
+                Registry Configuration
+              </h1>
+              <p className="text-lg text-slate-500 font-medium">
+                Draft, edit, and formulate proprietary blends for your active
+                catalog.
+              </p>
+            </div>
+            <button
+              onClick={() => navigate("/herbalist/dashboard/herbs/all")}
+              className="flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white font-bold rounded-2xl shadow-lg hover:bg-emerald-700 hover:shadow-xl transition-all transform hover:-translate-y-0.5"
+            >
+              <FaGlobe className="text-lg" />
+              Browse Global Registry
+            </button>
+          </div>
 
         <motion.div
           layout
@@ -616,45 +627,6 @@ function HerbalistManageHerbs({ user, dashboardData }) {
         )}
       </section>
 
-      {/* Global Herbs Section */}
-      <section className="relative z-10 pt-8 border-t-2 border-dashed border-slate-200">
-        <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-extrabold text-slate-900 flex items-center gap-3">
-              <div className="p-2 bg-indigo-100 text-indigo-600 rounded-xl shadow-inner">
-                <FaGlobe className="text-xl" />
-              </div>
-              Global Registry
-            </h2>
-            <p className="mt-2 text-sm text-slate-500 max-w-lg leading-relaxed">
-              Standardized herbs deployed by the central medical board or other
-              practitioners. Review the catalog and instantly import items to
-              your inventory.
-            </p>
-          </div>
-          {otherHerbs.length > 0 && (
-            <div className="text-xs font-bold uppercase tracking-widest text-indigo-400 bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-full shadow-sm">
-              Read Only Viewer
-            </div>
-          )}
-        </div>
-
-        {isLoading ? (
-          <div className="py-12 flex justify-center">
-            <div className="h-10 w-10 animate-spin rounded-full border-4 border-indigo-500/30 border-t-indigo-500" />
-          </div>
-        ) : otherHerbs.length === 0 ? (
-          <div className="py-16 text-center rounded-[3rem] border-2 border-dashed border-slate-200 bg-slate-50">
-            <p className="text-sm font-semibold text-slate-500">
-              Global registry is currently empty.
-            </p>
-          </div>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 xlg:grid-cols-3 opacity-90 transition-opacity hover:opacity-100">
-            {otherHerbs.map((herb) => renderHerbCard(herb, false))}
-          </div>
-        )}
-      </section>
 
       {/* Inventory Modal Focus Box */}
       <AnimatePresence>

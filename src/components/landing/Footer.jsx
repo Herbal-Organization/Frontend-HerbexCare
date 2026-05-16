@@ -1,6 +1,6 @@
 import React from "react";
 import { MdPhotoCamera } from "react-icons/md";
-import { FaLeaf, FaShareAltSquare } from "react-icons/fa";
+import { FaLeaf, FaTwitter, FaGithub, FaLinkedin } from "react-icons/fa";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../LanguageSwitcher";
@@ -42,17 +42,33 @@ function Footer() {
             {/* Social Icons */}
             <div className="flex gap-4">
               <a
-                href="#"
+                href="https://x.com/karim_safan11"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group w-11 h-11 rounded-full bg-primary-light/40 flex items-center justify-center text-primary hover:bg-primary transition-all duration-300 shadow-sm hover:shadow-md"
+                aria-label="X (Twitter)"
               >
-                <FaShareAltSquare className="text-lg group-hover:text-white transition-colors" />
+                <FaTwitter className="text-lg group-hover:text-white transition-colors" />
               </a>
 
               <a
-                href="#"
+                href="https://github.com/karim1safan"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group w-11 h-11 rounded-full bg-primary-light/40 flex items-center justify-center text-primary hover:bg-primary transition-all duration-300 shadow-sm hover:shadow-md"
+                aria-label="GitHub"
               >
-                <MdPhotoCamera className="text-lg group-hover:text-white transition-colors" />
+                <FaGithub className="text-lg group-hover:text-white transition-colors" />
+              </a>
+
+              <a
+                href="https://linkedin.com/in/karimsafan"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group w-11 h-11 rounded-full bg-primary-light/40 flex items-center justify-center text-primary hover:bg-primary transition-all duration-300 shadow-sm hover:shadow-md"
+                aria-label="LinkedIn"
+              >
+                <FaLinkedin className="text-lg group-hover:text-white transition-colors" />
               </a>
             </div>
           </div>

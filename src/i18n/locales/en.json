@@ -148,6 +148,7 @@
   "herbalistSidebar": {
     "dashboard": "Dashboard",
     "manageHerbs": "Manage Herbs",
+    "globalRegistry": "Global Registry",
     "manageRecipes": "Manage Recipes",
     "manageDiseases": "Manage Diseases",
     "inventory": "Inventory",
