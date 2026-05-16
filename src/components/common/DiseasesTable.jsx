@@ -1,8 +1,13 @@
 import React from "react";
 import { motion } from "motion/react";
-import { FaVirus, FaPlus } from "react-icons/fa";
+import { FaVirus, FaPlus, FaEye } from "react-icons/fa";
 
-export default function DiseasesTable({ diseases, isLoading, onAddClick }) {
+export default function DiseasesTable({
+  diseases,
+  isLoading,
+  onAddClick,
+  onViewDetails,
+}) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-96">
@@ -51,6 +56,12 @@ export default function DiseasesTable({ diseases, isLoading, onAddClick }) {
               <th className="px-6 py-4 text-start text-xs font-black uppercase tracking-wider text-slate-600">
                 Description
               </th>
+              <th className="px-6 py-4 text-start text-xs font-black uppercase tracking-wider text-slate-600">
+                Symptoms
+              </th>
+              <th className="px-6 py-4 text-end text-xs font-black uppercase tracking-wider text-slate-600">
+                Details
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -89,6 +100,25 @@ export default function DiseasesTable({ diseases, isLoading, onAddClick }) {
                       </span>
                     )}
                   </p>
+                </td>
+                <td className="px-6 py-4">
+                  <p className="text-sm text-slate-600 line-clamp-2">
+                    {disease.symptoms || (
+                      <span className="text-slate-400 italic">
+                        No symptoms listed
+                      </span>
+                    )}
+                  </p>
+                </td>
+                <td className="px-6 py-4 text-end">
+                  <button
+                    type="button"
+                    onClick={() => onViewDetails?.(disease)}
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-black uppercase tracking-widest text-slate-600 transition-all hover:border-indigo-500 hover:text-indigo-600"
+                  >
+                    <FaEye className="text-[10px]" />
+                    View
+                  </button>
                 </td>
               </motion.tr>
             ))}

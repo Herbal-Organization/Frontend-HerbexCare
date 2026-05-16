@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "motion/react";
 import DiseasesTable from "@components/common/DiseasesTable";
 import DiseaseForm from "@components/common/DiseaseForm";
+import DiseaseDetailsModal from "@components/features/browse/DiseaseDetailsModal";
 import { getAllDiseases, createDisease } from "@api/diseases";
 
 // Framer Motion variants
@@ -36,6 +37,8 @@ function HerbalistManageDiseases() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [formError, setFormError] = useState("");
+  const [selectedDisease, setSelectedDisease] = useState(null);
+  const [showDiseaseDetails, setShowDiseaseDetails] = useState(false);
 
   // Load diseases on mount
   useEffect(() => {
@@ -138,6 +141,16 @@ function HerbalistManageDiseases() {
     }
   };
 
+  const handleViewDiseaseDetails = (disease) => {
+    setSelectedDisease(disease);
+    setShowDiseaseDetails(true);
+  };
+
+  const handleCloseDiseaseDetails = () => {
+    setShowDiseaseDetails(false);
+    setSelectedDisease(null);
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-8">
       <motion.div
@@ -219,8 +232,17 @@ function HerbalistManageDiseases() {
             diseases={filteredDiseases}
             isLoading={isLoading}
             onAddClick={() => setShowCreateForm(true)}
+            onViewDetails={handleViewDiseaseDetails}
           />
         </motion.div>
+
+        <AnimatePresence>
+          <DiseaseDetailsModal
+            disease={selectedDisease}
+            isOpen={showDiseaseDetails}
+            onClose={handleCloseDiseaseDetails}
+          />
+        </AnimatePresence>
       </motion.div>
     </div>
   );
