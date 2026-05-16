@@ -24,7 +24,9 @@ function MedicalHistorySection({ profile, updateField }) {
           <FaHeartbeat className="text-lg" />
         </div>
         <div>
-          <h2 className="text-lg font-bold text-slate-900">{t("profile.sections.medicalHistory.title")}</h2>
+          <h2 className="text-lg font-bold text-slate-900">
+            {t("profile.sections.medicalHistory.title")}
+          </h2>
           <p className="text-xs text-slate-500 font-medium">
             {t("profile.sections.medicalHistory.description")}
           </p>
@@ -52,7 +54,11 @@ function MedicalHistorySection({ profile, updateField }) {
                   className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent transition-colors"
                 />
               </div>
-              <span className="text-sm flex-1">{t(`profile.sections.medicalHistory.conditions.${condition.name}`)}</span>
+              <span className="text-sm flex-1">
+                {t(
+                  `profile.sections.medicalHistory.conditions.${condition.name}`,
+                )}
+              </span>
             </label>
           );
         })}

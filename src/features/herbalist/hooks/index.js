@@ -1,2 +1,2 @@
 // Herbalist feature hooks
-export { useHerbalistDashboardData } from './useHerbalistDashboardData';
+export { useHerbalistDashboardData } from "./useHerbalistDashboardData";

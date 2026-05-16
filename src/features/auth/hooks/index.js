@@ -1,2 +1,2 @@
 // Auth feature hooks
-export { useAuth } from './useAuth';
+export { useAuth } from "./useAuth";

@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { getHerbById, getHerbWithHerbalist, getHerbalistsForHerb } from "@api/herbs";
+import {
+  getHerbById,
+  getHerbWithHerbalist,
+  getHerbalistsForHerb,
+} from "@api/herbs";
 import { normalizeHerb } from "@features/browse/services/herbs";
 
 function useHerbDetails(herbId) {
@@ -30,7 +34,11 @@ function useHerbDetails(herbId) {
           ...(herbalistData || {}),
         }),
       );
-      setProviders(Array.isArray(providersData) ? providersData : (providersData?.herbalists || providersData?.items || []));
+      setProviders(
+        Array.isArray(providersData)
+          ? providersData
+          : providersData?.herbalists || providersData?.items || [],
+      );
     } catch (err) {
       const message =
         err.response?.data?.message ||
