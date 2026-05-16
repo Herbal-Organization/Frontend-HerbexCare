@@ -1,7 +1,7 @@
 import { formatCurrency } from "./cartUtils";
 
-function TotalsBlock({ herbsTotal, recipesTotal }) {
-  const allItemsTotal = herbsTotal + recipesTotal;
+function TotalsBlock({ herbsTotal, recipesTotal, aiRecipesTotal }) {
+  const allItemsTotal = herbsTotal + recipesTotal + aiRecipesTotal;
 
   return (
     <div className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-slate-100">
@@ -19,6 +19,14 @@ function TotalsBlock({ herbsTotal, recipesTotal }) {
         </span>
         <span className="text-lg font-bold text-emerald-600">
           {formatCurrency(herbsTotal)}
+        </span>
+      </div>
+      <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <span className="text-sm font-semibold text-slate-700">
+          Subtotal (AI Recipes)
+        </span>
+        <span className="text-lg font-bold text-emerald-600">
+          {formatCurrency(aiRecipesTotal)}
         </span>
       </div>
       <div className="mb-3 flex flex-col gap-1 border-t border-slate-100 pt-3 sm:flex-row sm:items-center sm:justify-between">

@@ -16,9 +16,15 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(() => {
     try {
       const saved = localStorage.getItem("herbal_patient_cart");
-      return saved ? JSON.parse(saved) : { herbs: [], recipes: [] };
+      if (!saved) return { herbs: [], recipes: [], aiRecipes: [] };
+      const parsed = JSON.parse(saved);
+      return {
+        herbs: Array.isArray(parsed?.herbs) ? parsed.herbs : [],
+        recipes: Array.isArray(parsed?.recipes) ? parsed.recipes : [],
+        aiRecipes: Array.isArray(parsed?.aiRecipes) ? parsed.aiRecipes : [],
+      };
     } catch {
-      return { herbs: [], recipes: [] };
+      return { herbs: [], recipes: [], aiRecipes: [] };
     }
   });
 
@@ -170,12 +176,111 @@ export const CartProvider = ({ children }) => {
     }));
   };
 
+  const addAiRecipeToCart = (aiRecipeItem) => {
+    const isExisting = cart.aiRecipes.some(
+      (item) =>
+        Number(item.aiRecipeId) === Number(aiRecipeItem.aiRecipeId) &&
+        Number(item.herbalistId) === Number(aiRecipeItem.herbalistId),
+    );
+
+    if (isExisting) {
+      toast.success(`Updated quantity of ${aiRecipeItem._previewName} in cart!`);
+    } else {
+      toast.success(`Added ${aiRecipeItem._previewName} to cart!`);
+    }
+
+    setCart((prev) => {
+      const existingIdx = prev.aiRecipes.findIndex(
+        (item) =>
+          Number(item.aiRecipeId) === Number(aiRecipeItem.aiRecipeId) &&
+          Number(item.herbalistId) === Number(aiRecipeItem.herbalistId),
+      );
+
+      if (existingIdx >= 0) {
+        const updatedAiRecipes = [...prev.aiRecipes];
+        const nextQuantity =
+          Number(updatedAiRecipes[existingIdx].quantity || 0) +
+          Number(aiRecipeItem.quantity || 0);
+        const unitPrice = Number(
+          aiRecipeItem.unitPrice ??
+            updatedAiRecipes[existingIdx].unitPrice ??
+            aiRecipeItem.price ??
+            updatedAiRecipes[existingIdx].price ??
+            0,
+        );
+
+        updatedAiRecipes[existingIdx] = {
+          ...updatedAiRecipes[existingIdx],
+          ...aiRecipeItem,
+          unitPrice,
+          quantity: nextQuantity,
+          totalPrice: unitPrice * nextQuantity,
+        };
+
+        return { ...prev, aiRecipes: updatedAiRecipes };
+      }
+
+      const unitPrice = Number(aiRecipeItem.unitPrice ?? aiRecipeItem.price ?? 0);
+
+      return {
+        ...prev,
+        aiRecipes: [
+          ...prev.aiRecipes,
+          {
+            ...aiRecipeItem,
+            unitPrice,
+            totalPrice: unitPrice * Number(aiRecipeItem.quantity || 0),
+          },
+        ],
+      };
+    });
+  };
+
+  const removeAiRecipeFromCart = (aiRecipeId, herbalistId) => {
+    setCart((prev) => ({
+      ...prev,
+      aiRecipes: prev.aiRecipes.filter(
+        (item) =>
+          !(
+            Number(item.aiRecipeId) === Number(aiRecipeId) &&
+            Number(item.herbalistId) === Number(herbalistId)
+          ),
+      ),
+    }));
+    toast.success("AI recipe removed from cart");
+  };
+
+  const updateAiRecipeQuantity = (aiRecipeId, herbalistId, newQuantity) => {
+    if (newQuantity <= 0) {
+      return removeAiRecipeFromCart(aiRecipeId, herbalistId);
+    }
+
+    setCart((prev) => ({
+      ...prev,
+      aiRecipes: prev.aiRecipes.map((item) => {
+        if (
+          Number(item.aiRecipeId) !== Number(aiRecipeId) ||
+          Number(item.herbalistId) !== Number(herbalistId)
+        ) {
+          return item;
+        }
+
+        const unitPrice = Number(item.unitPrice ?? item.price ?? 0);
+        return {
+          ...item,
+          quantity: newQuantity,
+          totalPrice: unitPrice * Number(newQuantity || 0),
+        };
+      }),
+    }));
+  };
+
   const clearCart = () => {
-    setCart({ herbs: [], recipes: [] });
+    setCart({ herbs: [], recipes: [], aiRecipes: [] });
   };
 
   const getCartCount = () => {
-    return cart.herbs.length + cart.recipes.length;
+    return cart.herbs.length + cart.recipes.length + cart.aiRecipes.length;
   };
 
   return (
@@ -186,8 +291,11 @@ export const CartProvider = ({ children }) => {
         removeHerbFromCart,
         addRecipeToCart,
         removeRecipeFromCart,
+        addAiRecipeToCart,
+        removeAiRecipeFromCart,
         updateHerbQuantity,
         updateRecipeQuantity,
+        updateAiRecipeQuantity,
         clearCart,
         getCartCount,
       }}

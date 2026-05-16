@@ -122,8 +122,10 @@ function PatientCart() {
     cart,
     removeHerbFromCart,
     removeRecipeFromCart,
+    removeAiRecipeFromCart,
     updateHerbQuantity,
     updateRecipeQuantity,
+    updateAiRecipeQuantity,
     clearCart,
     getCartCount,
   } = useCart();
@@ -149,6 +151,14 @@ function PatientCart() {
     () => cart.recipes.reduce((sum, recipe) => sum + getRecipeTotal(recipe), 0),
     [cart.recipes],
   );
+  const aiRecipesTotal = useMemo(
+    () =>
+      (cart.aiRecipes || []).reduce(
+        (sum, recipe) => sum + getRecipeTotal(recipe),
+        0,
+      ),
+    [cart.aiRecipes],
+  );
 
   const handleCheckout = async (e) => {
     e.preventDefault();
@@ -163,6 +173,19 @@ function PatientCart() {
     if (invalidHerbSelections) {
       setError(
         "Please select a valid herbalist and price for each herb before placing the order.",
+      );
+      return;
+    }
+
+    const invalidAiRecipeSelections = (cart.aiRecipes || []).some(
+      (item) =>
+        !item.herbalistId ||
+        Number(item.unitPrice ?? item.price) <= 0 ||
+        Number(item.quantity) <= 0,
+    );
+    if (invalidAiRecipeSelections) {
+      setError(
+        "Please select a valid herbalist and price for each AI recipe before placing the order.",
       );
       return;
     }
@@ -193,7 +216,7 @@ function PatientCart() {
     setError("");
 
     try {
-      const orderTotal = herbsTotal + recipesTotal;
+      const orderTotal = herbsTotal + recipesTotal + aiRecipesTotal;
       const herbsArray = cart.herbs.map((herb) => ({
         herbId: Number(herb.herbId) || 0,
         herbalistId: Number(herb.herbalistId) || 0,
@@ -208,6 +231,12 @@ function PatientCart() {
       const recipesArray = cart.recipes.map((recipe) => ({
         recipeId: Number(recipe.recipeId) || 0,
         quantity: Number(recipe.quantity) || 0,
+      }));
+
+      const aiRecipesArray = (cart.aiRecipes || []).map((item) => ({
+        herbalistId: Number(item.herbalistId) || 0,
+        aiRecipeId: Number(item.aiRecipeId) || 0,
+        quantity: Number(item.quantity) || 0,
       }));
 
       const orderPayload = {
@@ -238,6 +267,10 @@ function PatientCart() {
 
       if (recipesArray.length > 0) {
         orderPayload.recipes = recipesArray;
+      }
+
+      if (aiRecipesArray.length > 0) {
+        orderPayload.aiRecipes = aiRecipesArray;
       }
 
       const createdOrder = await createOrder(orderPayload);
@@ -335,18 +368,23 @@ function PatientCart() {
             <CartItemsCard
               herbs={cart.herbs}
               recipes={cart.recipes}
+              aiRecipes={cart.aiRecipes || []}
               onRemoveHerb={removeHerbFromCart}
               onUpdateHerb={updateHerbQuantity}
               onRemoveRecipe={removeRecipeFromCart}
               onUpdateRecipe={updateRecipeQuantity}
+              onRemoveAiRecipe={removeAiRecipeFromCart}
+              onUpdateAiRecipe={updateAiRecipeQuantity}
             />
 
             <div className="space-y-5 xl:sticky xl:top-6 xl:self-start xl:space-y-6">
               <OrderSummaryCard
                 herbs={cart.herbs}
                 recipes={cart.recipes}
+                aiRecipes={cart.aiRecipes || []}
                 herbsTotal={herbsTotal}
                 recipesTotal={recipesTotal}
+                aiRecipesTotal={aiRecipesTotal}
               />
 
               <CheckoutPanel

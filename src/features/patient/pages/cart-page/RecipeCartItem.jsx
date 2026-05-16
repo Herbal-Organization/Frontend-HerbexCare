@@ -8,6 +8,11 @@ function RecipeCartItem({ recipe, onDecrease, onIncrease, onRemove }) {
         <p className="truncate font-bold text-emerald-900">
           {recipe._previewName}
         </p>
+        {recipe._providerName ? (
+          <p className="mt-1 text-xs text-emerald-700">
+            By: <span className="font-semibold">{recipe._providerName}</span>
+          </p>
+        ) : null}
         <p className="mt-1 text-xs text-emerald-700">
           {formatCurrency(Number(recipe.unitPrice ?? recipe.price ?? 0))} each
         </p>

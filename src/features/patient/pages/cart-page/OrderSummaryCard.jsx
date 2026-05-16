@@ -1,7 +1,14 @@
 import SummaryRows from "./SummaryRows";
 import TotalsBlock from "./TotalsBlock";
 
-function OrderSummaryCard({ herbs, recipes, herbsTotal, recipesTotal }) {
+function OrderSummaryCard({
+  herbs,
+  recipes,
+  aiRecipes,
+  herbsTotal,
+  recipesTotal,
+  aiRecipesTotal,
+}) {
   return (
     <div className="overflow-hidden rounded-4xl border border-slate-200 bg-white/95 p-4 shadow-sm backdrop-blur sm:p-6 lg:rounded-[2.5rem] lg:p-8">
       <div className="mb-6 border-b border-slate-100 pb-4">
@@ -13,8 +20,12 @@ function OrderSummaryCard({ herbs, recipes, herbsTotal, recipesTotal }) {
         </p>
       </div>
       <div className="space-y-4">
-        <SummaryRows herbs={herbs} recipes={recipes} />
-        <TotalsBlock herbsTotal={herbsTotal} recipesTotal={recipesTotal} />
+        <SummaryRows herbs={herbs} recipes={recipes} aiRecipes={aiRecipes} />
+        <TotalsBlock
+          herbsTotal={herbsTotal}
+          recipesTotal={recipesTotal}
+          aiRecipesTotal={aiRecipesTotal}
+        />
       </div>
     </div>
   );

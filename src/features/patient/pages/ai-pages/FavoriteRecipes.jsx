@@ -17,6 +17,7 @@ import {
 } from "@api/favorites";
 import { normalizeGeneratedRecipe } from "./aiConsultationUtils";
 import { useNavigate } from "react-router-dom";
+import AiRecipeAddToCartAction from "./AiRecipeAddToCartAction";
 
 function extractFavoritesArray(payload) {
   if (Array.isArray(payload)) return payload;
@@ -239,13 +240,20 @@ function FavoriteRecipes() {
 
               {/* Detail Removal Action */}
               <div className="pt-8 flex justify-center">
-                <button
-                  onClick={() => handleRemoveFavorite(data.id)}
-                  className="flex items-center gap-2 rounded-2xl bg-red-50 px-8 py-4 text-sm font-black text-red-600 hover:bg-red-100 transition-all uppercase tracking-widest border-2 border-red-100"
-                >
-                  <FaTrash />
-                  {t("aiConsultation.favorites.actions.remove")}
-                </button>
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  <AiRecipeAddToCartAction
+                    recipe={data}
+                    recipeTitle={structured.title}
+                    buttonClassName="flex items-center gap-2 rounded-2xl bg-emerald-600 px-8 py-4 text-sm font-black text-white hover:bg-emerald-500 transition-all uppercase tracking-widest"
+                  />
+                  <button
+                    onClick={() => handleRemoveFavorite(data.id)}
+                    className="flex items-center gap-2 rounded-2xl bg-red-50 px-8 py-4 text-sm font-black text-red-600 hover:bg-red-100 transition-all uppercase tracking-widest border-2 border-red-100"
+                  >
+                    <FaTrash />
+                    {t("aiConsultation.favorites.actions.remove")}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -275,7 +283,7 @@ function FavoriteRecipes() {
                   cy="80"
                 />
                 <circle
-                  className="text-emerald-500 transition-all duration-[1500ms] ease-out"
+                  className="text-emerald-500 transition-all duration-1500 ease-out"
                   strokeWidth="10"
                   strokeDasharray={439.8}
                   strokeDashoffset={
@@ -313,7 +321,7 @@ function FavoriteRecipes() {
       {/* Header */}
       <div className="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
         <div className="flex items-center gap-6">
-          <div className="rounded-[2rem] bg-linear-to-br from-red-500 to-pink-600 p-5 text-white shadow-2xl shadow-red-200">
+          <div className="rounded-4xl bg-linear-to-br from-red-500 to-pink-600 p-5 text-white shadow-2xl shadow-red-200">
             <FaHeart className="text-3xl" />
           </div>
           <div>
@@ -328,7 +336,7 @@ function FavoriteRecipes() {
       </div>
 
       {/* Main Content Area */}
-      <div className="min-h-[600px]">
+      <div className="min-h-150">
         {viewMode === "list" ? (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             {loading ? (
@@ -350,7 +358,7 @@ function FavoriteRecipes() {
                     className="group relative rounded-[2.5rem] border-2 border-slate-100 bg-white p-10 hover:border-red-500 hover:bg-red-50/30 transition-all cursor-pointer flex flex-col gap-8 shadow-sm hover:shadow-2xl hover:shadow-red-500/10"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="h-16 w-16 rounded-[1.5rem] bg-slate-50 flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition-all duration-500 transform group-hover:rotate-12 group-hover:scale-110 shadow-inner">
+                      <div className="h-16 w-16 rounded-3xl bg-slate-50 flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition-all duration-500 transform group-hover:rotate-12 group-hover:scale-110 shadow-inner">
                         <FaHeart className="text-3xl" />
                       </div>
                       <div className="flex flex-col items-end">

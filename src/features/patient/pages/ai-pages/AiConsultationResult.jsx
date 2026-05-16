@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import { toggleFavorite } from "@api/favorites";
 import { normalizeGeneratedRecipe } from "./aiConsultationUtils";
+import AiRecipeAddToCartAction from "./AiRecipeAddToCartAction";
 
 function AiConsultationResult({ result, onNewConsultation }) {
   const { t } = useTranslation();
@@ -105,32 +106,39 @@ function AiConsultationResult({ result, onNewConsultation }) {
             </p>
           </div>
         </div>
-        <button
-          onClick={handleSaveRecipe}
-          disabled={savingRecipe}
-          className={`flex items-center justify-center gap-2 rounded-2xl px-6 py-3 font-bold text-sm transition-all transform hover:scale-105 active:scale-95 ${
-            isSaved
-              ? "bg-amber-100 text-amber-700 border-2 border-amber-200 shadow-lg shadow-amber-100"
-              : "bg-white border-2 border-slate-100 text-slate-700 hover:border-emerald-200 hover:bg-emerald-50 shadow-md"
-          } ${savingRecipe ? "opacity-60 cursor-not-allowed" : ""}`}
-        >
-          {savingRecipe ? (
-            <>
-              <FaSpinner className="text-amber-500 animate-spin" />
-              {t("aiConsultation.result.actions.saving")}
-            </>
-          ) : isSaved ? (
-            <>
-              <FaBookmark className="text-amber-500" />
-              {t("aiConsultation.result.actions.saved")}
-            </>
-          ) : (
-            <>
-              <FaRegBookmark />
-              {t("aiConsultation.result.actions.save")}
-            </>
-          )}
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <AiRecipeAddToCartAction
+            recipe={result}
+            recipeTitle={structured.title}
+            buttonClassName="flex items-center justify-center gap-2 rounded-2xl px-6 py-3 font-bold text-sm bg-emerald-600 text-white transition hover:bg-emerald-500"
+          />
+          <button
+            onClick={handleSaveRecipe}
+            disabled={savingRecipe}
+            className={`flex items-center justify-center gap-2 rounded-2xl px-6 py-3 font-bold text-sm transition-all transform hover:scale-105 active:scale-95 ${
+              isSaved
+                ? "bg-amber-100 text-amber-700 border-2 border-amber-200 shadow-lg shadow-amber-100"
+                : "bg-white border-2 border-slate-100 text-slate-700 hover:border-emerald-200 hover:bg-emerald-50 shadow-md"
+            } ${savingRecipe ? "opacity-60 cursor-not-allowed" : ""}`}
+          >
+            {savingRecipe ? (
+              <>
+                <FaSpinner className="text-amber-500 animate-spin" />
+                {t("aiConsultation.result.actions.saving")}
+              </>
+            ) : isSaved ? (
+              <>
+                <FaBookmark className="text-amber-500" />
+                {t("aiConsultation.result.actions.saved")}
+              </>
+            ) : (
+              <>
+                <FaRegBookmark />
+                {t("aiConsultation.result.actions.save")}
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Result Display */}
@@ -278,7 +286,7 @@ function AiConsultationResult({ result, onNewConsultation }) {
                   cy="80"
                 />
                 <circle
-                  className="text-emerald-500 transition-all duration-[1500ms] ease-out"
+                  className="text-emerald-500 transition-all duration-1500 ease-out"
                   strokeWidth="10"
                   strokeDasharray={439.8}
                   strokeDashoffset={

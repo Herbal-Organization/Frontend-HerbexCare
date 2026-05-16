@@ -20,6 +20,7 @@ import {
 import { toggleFavorite } from "@api/favorites";
 import { normalizeGeneratedRecipe } from "./aiConsultationUtils";
 import { useNavigate } from "react-router-dom";
+import AiRecipeAddToCartAction from "./AiRecipeAddToCartAction";
 
 function MyConsultations() {
   const { t } = useTranslation();
@@ -168,32 +169,39 @@ function MyConsultations() {
                     {structured.title}
                   </h3>
                 </div>
-                <button
-                  onClick={() => handleSaveRecipe(selectedDetail)}
-                  disabled={savingRecipe}
-                  className={`inline-flex items-center gap-2 rounded-2xl px-5 py-3 font-bold text-sm transition-all transform hover:scale-105 active:scale-95 ${
-                    isSavedRecipe
-                      ? "bg-amber-100 text-amber-700 border-2 border-amber-200 shadow-lg shadow-amber-100"
-                      : "bg-white border-2 border-slate-100 text-slate-700 hover:border-emerald-200 hover:bg-emerald-50 shadow-md"
-                  } ${savingRecipe ? "opacity-60 cursor-not-allowed" : ""}`}
-                >
-                  {savingRecipe ? (
-                    <>
-                      <FaSpinner className="text-amber-500 animate-spin" />
-                      {t("aiConsultation.result.actions.saving")}
-                    </>
-                  ) : isSavedRecipe ? (
-                    <>
-                      <FaBookmark className="text-amber-500" />
-                      {t("aiConsultation.result.actions.saved")}
-                    </>
-                  ) : (
-                    <>
-                      <FaRegBookmark />
-                      {t("aiConsultation.result.actions.save")}
-                    </>
-                  )}
-                </button>
+                <div className="inline-flex flex-wrap items-center gap-3">
+                  <AiRecipeAddToCartAction
+                    recipe={data}
+                    recipeTitle={structured.title}
+                    buttonClassName="inline-flex items-center gap-2 rounded-2xl px-5 py-3 font-bold text-sm bg-emerald-600 text-white transition hover:bg-emerald-500"
+                  />
+                  <button
+                    onClick={() => handleSaveRecipe(selectedDetail)}
+                    disabled={savingRecipe}
+                    className={`inline-flex items-center gap-2 rounded-2xl px-5 py-3 font-bold text-sm transition-all transform hover:scale-105 active:scale-95 ${
+                      isSavedRecipe
+                        ? "bg-amber-100 text-amber-700 border-2 border-amber-200 shadow-lg shadow-amber-100"
+                        : "bg-white border-2 border-slate-100 text-slate-700 hover:border-emerald-200 hover:bg-emerald-50 shadow-md"
+                    } ${savingRecipe ? "opacity-60 cursor-not-allowed" : ""}`}
+                  >
+                    {savingRecipe ? (
+                      <>
+                        <FaSpinner className="text-amber-500 animate-spin" />
+                        {t("aiConsultation.result.actions.saving")}
+                      </>
+                    ) : isSavedRecipe ? (
+                      <>
+                        <FaBookmark className="text-amber-500" />
+                        {t("aiConsultation.result.actions.saved")}
+                      </>
+                    ) : (
+                      <>
+                        <FaRegBookmark />
+                        {t("aiConsultation.result.actions.save")}
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
               {/* Recipe Header */}
               <div className="mb-8">
@@ -331,7 +339,7 @@ function MyConsultations() {
                   cy="80"
                 />
                 <circle
-                  className="text-emerald-500 transition-all duration-[1500ms] ease-out"
+                  className="text-emerald-500 transition-all duration-1500 ease-out"
                   strokeWidth="10"
                   strokeDasharray={439.8}
                   strokeDashoffset={
@@ -369,7 +377,7 @@ function MyConsultations() {
       {/* Header */}
       <div className="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
         <div className="flex items-center gap-6">
-          <div className="rounded-[2rem] bg-linear-to-br from-indigo-500 to-purple-600 p-5 text-white shadow-2xl shadow-indigo-200">
+          <div className="rounded-4xl bg-linear-to-br from-indigo-500 to-purple-600 p-5 text-white shadow-2xl shadow-indigo-200">
             <FaBrain className="text-3xl" />
           </div>
           <div>
@@ -384,7 +392,7 @@ function MyConsultations() {
 
         {viewMode === "list" && (
           <div className="relative group max-w-md w-full">
-            <FaSearch className="absolute start-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+            <FaSearch className="absolute inset-s-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
             <input
               type="text"
               placeholder={t(
@@ -399,7 +407,7 @@ function MyConsultations() {
       </div>
 
       {/* Main Content Area */}
-      <div className="min-h-[600px]">
+      <div className="min-h-150">
         {viewMode === "list" ? (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             {loading ? (
@@ -423,7 +431,7 @@ function MyConsultations() {
                       className="group relative rounded-[2.5rem] border-2 border-slate-100 bg-white p-10 hover:border-indigo-500 hover:bg-indigo-50/30 transition-all cursor-pointer flex flex-col gap-8 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10"
                     >
                       <div className="flex items-start justify-between">
-                        <div className="h-16 w-16 rounded-[1.5rem] bg-slate-50 flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white transition-all duration-500 transform group-hover:rotate-12 group-hover:scale-110 shadow-inner">
+                        <div className="h-16 w-16 rounded-3xl bg-slate-50 flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white transition-all duration-500 transform group-hover:rotate-12 group-hover:scale-110 shadow-inner">
                           <FaBrain className="text-3xl" />
                         </div>
                         <div className="flex flex-col items-end">
@@ -513,7 +521,7 @@ function MyConsultations() {
               </div>
             ) : (
               <div className="text-center py-32 bg-white rounded-[3rem] border-2 border-slate-50 shadow-sm">
-                <div className="inline-flex h-24 w-24 items-center justify-center rounded-[2rem] bg-slate-50 text-slate-200 mb-8 shadow-inner">
+                <div className="inline-flex h-24 w-24 items-center justify-center rounded-4xl bg-slate-50 text-slate-200 mb-8 shadow-inner">
                   <FaClock className="text-5xl" />
                 </div>
                 <p className="text-2xl font-black text-slate-900 mb-3">

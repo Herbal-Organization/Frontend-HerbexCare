@@ -4,10 +4,13 @@ import RecipeCartItem from "./RecipeCartItem";
 function CartItemsCard({
   herbs,
   recipes,
+  aiRecipes,
   onRemoveHerb,
   onUpdateHerb,
   onRemoveRecipe,
   onUpdateRecipe,
+  onRemoveAiRecipe,
+  onUpdateAiRecipe,
 }) {
   return (
     <div className="overflow-hidden rounded-4xl border border-slate-200 bg-white/95 p-4 shadow-sm backdrop-blur sm:p-6 lg:rounded-[2.5rem] lg:p-8">
@@ -71,6 +74,39 @@ function CartItemsCard({
                   onUpdateRecipe(recipe.recipeId, recipe.quantity + 1)
                 }
                 onRemove={() => onRemoveRecipe(recipe.recipeId)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {aiRecipes.length > 0 && (
+        <div className="mb-2">
+          <h3 className="mb-4 border-b border-slate-100 pb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+            AI Prescriptions
+          </h3>
+          <div className="space-y-4">
+            {aiRecipes.map((item, index) => (
+              <RecipeCartItem
+                key={`ai-rec-${item.aiRecipeId}-${item.herbalistId ?? index}`}
+                recipe={item}
+                onDecrease={() =>
+                  onUpdateAiRecipe(
+                    item.aiRecipeId,
+                    item.herbalistId,
+                    Math.max(0, item.quantity - 1),
+                  )
+                }
+                onIncrease={() =>
+                  onUpdateAiRecipe(
+                    item.aiRecipeId,
+                    item.herbalistId,
+                    item.quantity + 1,
+                  )
+                }
+                onRemove={() =>
+                  onRemoveAiRecipe(item.aiRecipeId, item.herbalistId)
+                }
               />
             ))}
           </div>
