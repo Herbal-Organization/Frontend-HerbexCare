@@ -5,7 +5,10 @@ import { motion, AnimatePresence } from "motion/react";
 import DiseasesTable from "@components/common/DiseasesTable";
 import DiseaseForm from "@components/common/DiseaseForm";
 import DiseaseDetailsModal from "@components/features/browse/DiseaseDetailsModal";
+import { Pagination } from "@components/common";
 import { getAllDiseases, createDisease } from "@api/diseases";
+
+const DISEASES_PER_PAGE = 10;
 
 // Framer Motion variants
 const containerVariants = {
@@ -39,6 +42,7 @@ function HerbalistManageDiseases() {
   const [formError, setFormError] = useState("");
   const [selectedDisease, setSelectedDisease] = useState(null);
   const [showDiseaseDetails, setShowDiseaseDetails] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Load diseases on mount
   useEffect(() => {
@@ -99,6 +103,18 @@ function HerbalistManageDiseases() {
         disease.description?.toLowerCase().includes(query),
     );
   }, [diseases, searchQuery]);
+
+  // Paginate diseases
+  const paginatedDiseases = useMemo(() => {
+    const startIndex = (currentPage - 1) * DISEASES_PER_PAGE;
+    const endIndex = startIndex + DISEASES_PER_PAGE;
+    return filteredDiseases.slice(startIndex, endIndex);
+  }, [filteredDiseases, currentPage]);
+
+  // Reset to page 1 when search query changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   // Handle disease creation
   const handleCreateDisease = async (payload) => {
@@ -229,12 +245,24 @@ function HerbalistManageDiseases() {
         {/* Diseases Table */}
         <motion.div variants={itemVariants}>
           <DiseasesTable
-            diseases={filteredDiseases}
+            diseases={paginatedDiseases}
             isLoading={isLoading}
             onAddClick={() => setShowCreateForm(true)}
             onViewDetails={handleViewDiseaseDetails}
           />
         </motion.div>
+
+        {/* Pagination */}
+        {filteredDiseases.length > 0 && (
+          <motion.div variants={itemVariants} className="flex justify-center">
+            <Pagination
+              totalItems={filteredDiseases.length}
+              itemsPerPage={DISEASES_PER_PAGE}
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+            />
+          </motion.div>
+        )}
 
         <AnimatePresence>
           <DiseaseDetailsModal
