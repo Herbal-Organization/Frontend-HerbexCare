@@ -10,8 +10,10 @@ import httpClient from "./httpClient";
  * Fetch all available consultation types.
  * GET /api/AiConsultations/catalog
  */
-export const fetchConsultationCatalog = async () => {
-  const { data } = await httpClient.get("/api/AiConsultations/catalog");
+export const fetchConsultationCatalog = async (params = {}) => {
+  const { data } = await httpClient.get("/api/AiConsultations/catalog", {
+    params,
+  });
   return data;
 };
 
