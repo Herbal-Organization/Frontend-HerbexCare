@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion as Motion } from "motion/react";
 import RecipeCard from "./RecipeCard";
 import Skeleton from "react-loading-skeleton";
 
@@ -10,7 +10,15 @@ const containerVariants = {
   },
 };
 
-function RecipesGrid({ recipes, isLoading, error, onRetry }) {
+function RecipesGrid({
+  recipes,
+  isLoading,
+  error,
+  onRetry,
+  favoriteRecipeIds = new Set(),
+  onToggleRecipeFavorite,
+  favoriteUpdatingRecipeIds = new Set(),
+}) {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 gap-8 px-4 pb-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -99,16 +107,26 @@ function RecipesGrid({ recipes, isLoading, error, onRetry }) {
   }
 
   return (
-    <motion.div
+    <Motion.div
       variants={containerVariants}
       initial="hidden"
       animate="visible"
       className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-4 pb-12"
     >
       {recipes.map((recipe) => (
-        <RecipeCard key={recipe.id || recipe.recipeId} {...recipe} />
+        <RecipeCard
+          key={recipe.id || recipe.recipeId}
+          {...recipe}
+          isFavorite={favoriteRecipeIds.has(
+            Number(recipe.id || recipe.recipeId || 0),
+          )}
+          isFavoriteUpdating={favoriteUpdatingRecipeIds.has(
+            Number(recipe.id || recipe.recipeId || 0),
+          )}
+          onToggleFavorite={onToggleRecipeFavorite}
+        />
       ))}
-    </motion.div>
+    </Motion.div>
   );
 }
 

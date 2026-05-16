@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import PatientNavbar from "@components/features/browse/PatientNavbar";
 import BrowseFilters from "@components/features/browse/BrowseFilters";
 import HerbsGrid from "@components/features/browse/HerbsGrid";
@@ -6,6 +6,8 @@ import HerbsPagination from "@components/features/browse/HerbsPagination";
 import Footer from "@components/features/landing/Footer";
 import useHerbs from "@features/browse/hooks/useHerbs";
 import HerbFilters from "@components/features/browse/HerbFilters";
+import { getMyHerbsFavorites, toggleFavorite } from "@api/favorites";
+import { toast } from "react-hot-toast";
 
 const HERBS_PER_PAGE = 8;
 
@@ -15,6 +17,38 @@ function HerbsPage() {
   const [selectedBenefits, setSelectedBenefits] = useState([]);
   const [approvalFilter, setApprovalFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [favoriteHerbIds, setFavoriteHerbIds] = useState(new Set());
+  const [favoriteUpdatingHerbIds, setFavoriteUpdatingHerbIds] = useState(
+    new Set(),
+  );
+
+  useEffect(() => {
+    const loadFavorites = async () => {
+      try {
+        const response = await getMyHerbsFavorites();
+        const items = Array.isArray(response)
+          ? response
+          : Array.isArray(response?.items)
+            ? response.items
+            : Array.isArray(response?.data)
+              ? response.data
+              : [];
+
+        const ids = new Set(
+          items
+            .map((item) =>
+              Number(item?.herbId || item?.id || item?.targetId || 0),
+            )
+            .filter(Boolean),
+        );
+        setFavoriteHerbIds(ids);
+      } catch {
+        setFavoriteHerbIds(new Set());
+      }
+    };
+
+    loadFavorites();
+  }, []);
 
   // Extract unique benefits from all herbs
   const availableBenefits = useMemo(() => {
@@ -104,6 +138,53 @@ function HerbsPage() {
   const hasActiveFilters =
     searchTerm || selectedBenefits.length > 0 || approvalFilter !== "all";
 
+  const handleToggleHerbFavorite = async (herbId) => {
+    const id = Number(herbId || 0);
+    if (!id) return;
+
+    const isBusy = favoriteUpdatingHerbIds.has(id);
+    if (isBusy) return;
+
+    setFavoriteUpdatingHerbIds((current) => new Set(current).add(id));
+
+    try {
+      await toggleFavorite({
+        targetId: id,
+        type: "Herb",
+      });
+
+      setFavoriteHerbIds((current) => {
+        const next = new Set(current);
+        const wasFavorite = next.has(id);
+        if (wasFavorite) {
+          next.delete(id);
+        } else {
+          next.add(id);
+        }
+        return next;
+      });
+
+      const wasFavorite = favoriteHerbIds.has(id);
+      toast.success(
+        wasFavorite
+          ? "Herb removed from favorites."
+          : "Herb added to favorites.",
+      );
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        err?.response?.data?.title ||
+        "Unable to update favorite herb.";
+      toast.error(message);
+    } finally {
+      setFavoriteUpdatingHerbIds((current) => {
+        const next = new Set(current);
+        next.delete(id);
+        return next;
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
       <PatientNavbar />
@@ -133,6 +214,9 @@ function HerbsPage() {
           isLoading={isLoading}
           error={error}
           onRetry={reload}
+          favoriteHerbIds={favoriteHerbIds}
+          onToggleHerbFavorite={handleToggleHerbFavorite}
+          favoriteUpdatingHerbIds={favoriteUpdatingHerbIds}
         />
 
         <HerbsPagination

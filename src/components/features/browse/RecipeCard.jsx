@@ -1,20 +1,10 @@
 import { useState } from "react";
-import { FaHeart, FaStar } from "react-icons/fa";
-import { motion } from "motion/react";
+import { FaHeart, FaRegHeart, FaStar } from "react-icons/fa";
+import { motion as Motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import useDiseases from "@hooks/useDiseases";
 import DiseaseDetailsModal from "./DiseaseDetailsModal";
-
-const HERO_THEMES = [
-  {
-    bg: "#1a2e1a",
-    orb: "rgba(100,160,60,0.22)",
-    accentText: "#a8d878",
-    accentBg: "rgba(130,200,80,0.12)",
-    accentBorder: "rgba(130,200,80,0.25)",
-  },
-];
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -29,14 +19,15 @@ function RecipeCard({
   id,
   recipeId,
   title, // This is JSON 'description' from normalizeRecipe
-  herbs,
   targetedDiseases,
   createdDate,
   averageRating,
   price,
+  isFavorite = false,
+  onToggleFavorite,
+  isFavoriteUpdating = false,
 }) {
   const navigate = useNavigate();
-  const theme = HERO_THEMES[0];
   const { diseases } = useDiseases();
   const [selectedDisease, setSelectedDisease] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,8 +47,14 @@ function RecipeCard({
     }
   };
 
+  const handleFavoriteClick = (e) => {
+    e.stopPropagation();
+    if (!onToggleFavorite || isFavoriteUpdating) return;
+    onToggleFavorite(id || recipeId);
+  };
+
   return (
-    <motion.div
+    <Motion.div
       variants={itemVariants}
       whileHover={{ y: -6 }}
       onClick={() => navigate(`/patient/home/recipes/${id || recipeId}`)}
@@ -124,9 +121,24 @@ function RecipeCard({
             </span>
           </div>
 
-          <div className="h-8 w-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
-            <FaHeart className="text-sm" />
-          </div>
+          <button
+            type="button"
+            onClick={handleFavoriteClick}
+            disabled={isFavoriteUpdating}
+            className={`h-8 w-8 rounded-full border flex items-center justify-center transition-all duration-300 ${
+              isFavorite
+                ? "border-rose-200 bg-rose-50 text-rose-600"
+                : "border-emerald-100 bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white"
+            } ${isFavoriteUpdating ? "opacity-60 cursor-not-allowed" : ""}`}
+            aria-label={isFavorite ? "Unfavorite recipe" : "Favorite recipe"}
+            title={isFavorite ? "Unfavorite" : "Favorite"}
+          >
+            {isFavorite ? (
+              <FaHeart className="text-sm" />
+            ) : (
+              <FaRegHeart className="text-sm" />
+            )}
+          </button>
         </div>
       </div>
       <DiseaseDetailsModal
@@ -134,7 +146,7 @@ function RecipeCard({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
-    </motion.div>
+    </Motion.div>
   );
 }
 

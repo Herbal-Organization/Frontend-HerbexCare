@@ -28,8 +28,8 @@ export const getPatientNavConfig = (t) => [
     icon: FaShoppingBag,
   },
   {
-    name: t("patientSidebar.savedRecipes"),
-    href: "/patient/dashboard/recipes",
+    name: t("patientSidebar.favorites"),
+    href: "/patient/dashboard/favorites",
     icon: FaBookOpen,
   },
   {

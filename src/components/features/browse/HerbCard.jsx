@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion as Motion } from "motion/react";
 import { getHerbWithHerbalist } from "@api/herbs";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -18,7 +19,12 @@ const itemVariants = {
 // herb.forms: string[]            e.g. ["Capsule", "Powder", "Tea"]
 // herb.caution: string            e.g. "May interact with blood thinners"
 
-function HerbCard({ herb }) {
+function HerbCard({
+  herb,
+  isFavorite = false,
+  onToggleFavorite,
+  isFavoriteUpdating = false,
+}) {
   const navigate = useNavigate();
   const [herbalistName, setHerbalistName] = useState(null);
 
@@ -33,6 +39,12 @@ function HerbCard({ herb }) {
         .catch((err) => console.error("Failed to fetch herbalist info", err));
     }
   }, [herb?.herbId]);
+
+  const handleToggleFavorite = (e) => {
+    e.stopPropagation();
+    if (!onToggleFavorite || isFavoriteUpdating) return;
+    onToggleFavorite(herb.herbId);
+  };
 
   return (
     <Motion.button
@@ -74,7 +86,6 @@ function HerbCard({ herb }) {
             </svg>
           </div>
         )}
-
       </div>
 
       {/* Body */}
@@ -91,7 +102,10 @@ function HerbCard({ herb }) {
             className="mt-1 text-xs italic text-slate-500"
             style={{ fontFamily: "'Lora', serif" }}
           >
-            <span className="font-semibold not-italic text-slate-700">Scientific Name:</span> {herb.scientificName}
+            <span className="font-semibold not-italic text-slate-700">
+              Scientific Name:
+            </span>{" "}
+            {herb.scientificName}
           </p>
           {herbalistName && (
             <p className="mt-1.5 text-xs font-medium text-slate-500">
@@ -117,7 +131,8 @@ function HerbCard({ herb }) {
         {/* Short description if available */}
         {herb.description && (
           <p className="text-sm text-slate-600 leading-relaxed line-clamp-3 mt-2">
-            <span className="font-semibold text-slate-700">Description:</span> {herb.description}
+            <span className="font-semibold text-slate-700">Description:</span>{" "}
+            {herb.description}
           </p>
         )}
 
@@ -135,27 +150,24 @@ function HerbCard({ herb }) {
           </button>
           <button
             type="button"
-            onClick={(e) => e.stopPropagation()}
-            className="w-8 h-8 rounded-lg border border-slate-100 bg-slate-50 flex items-center justify-center hover:bg-slate-100 transition-colors"
-            aria-label="Save herb"
+            onClick={handleToggleFavorite}
+            disabled={isFavoriteUpdating}
+            className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-colors ${
+              isFavorite
+                ? "border-rose-200 bg-rose-50 text-rose-600"
+                : "border-slate-100 bg-slate-50 text-slate-500 hover:bg-slate-100"
+            } ${isFavoriteUpdating ? "opacity-60 cursor-not-allowed" : ""}`}
+            aria-label={isFavorite ? "Unfavorite herb" : "Favorite herb"}
           >
-            <HeartIcon />
+            {isFavorite ? (
+              <FaHeart className="text-sm" />
+            ) : (
+              <FaRegHeart className="text-sm" />
+            )}
           </button>
         </div>
       </div>
     </Motion.button>
-  );
-}
-
-function HeartIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-      <path
-        d="M7 12L2 7.5C1 6.5 1 4.5 2.5 3.5C4 2.5 5.5 3 7 5C8.5 3 10 2.5 11.5 3.5C13 4.5 13 6.5 12 7.5L7 12Z"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-    </svg>
   );
 }
 

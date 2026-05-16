@@ -13,7 +13,7 @@ import PatientOrders from "./PatientOrders";
 import PatientOrderDetails from "./PatientOrderDetails";
 import PatientPaymentSimulation from "./PaymentSimulationPage";
 import OrderSuccessPage from "./OrderSuccessPage";
-import PatientSavedRecipes from "./PatientSavedRecipes";
+import PatientFavorites from "./PatientFavorites";
 import PatientSettings from "./PatientSettings";
 import AiConsultationPage from "./ai-pages/AiConsultationPage";
 import AiChatPage from "./ai-chat/AiChatPage";
@@ -151,7 +151,11 @@ function PatientDashboard() {
           element={<PatientPaymentSimulation />}
         />
         <Route path="/orders/:orderId" element={<PatientOrderDetails />} />
-        <Route path="/recipes" element={<PatientSavedRecipes />} />
+        <Route path="/favorites" element={<PatientFavorites />} />
+        <Route
+          path="/recipes"
+          element={<Navigate to="/patient/dashboard/favorites" replace />}
+        />
         <Route path="/ai-consultation" element={<AiConsultationPage />} />
         <Route path="/ai-chat" element={<AiChatPage />} />
         <Route
@@ -164,4 +168,3 @@ function PatientDashboard() {
 }
 
 export default PatientDashboard;
-

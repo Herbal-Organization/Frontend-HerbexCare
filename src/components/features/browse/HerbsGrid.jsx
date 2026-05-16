@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion as Motion } from "motion/react";
 import HerbCard from "./HerbCard";
 import Skeleton from "react-loading-skeleton";
 
@@ -10,7 +10,15 @@ const containerVariants = {
   },
 };
 
-function HerbsGrid({ herbs, isLoading, error, onRetry }) {
+function HerbsGrid({
+  herbs,
+  isLoading,
+  error,
+  onRetry,
+  favoriteHerbIds = new Set(),
+  onToggleHerbFavorite,
+  favoriteUpdatingHerbIds = new Set(),
+}) {
   if (isLoading) {
     return (
       <div className="grid gap-8 px-4 pb-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -111,16 +119,24 @@ function HerbsGrid({ herbs, isLoading, error, onRetry }) {
   }
 
   return (
-    <motion.div
+    <Motion.div
       variants={containerVariants}
       initial="hidden"
       animate="visible"
       className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-4 pb-12"
     >
       {herbs.map((herb) => (
-        <HerbCard key={herb.id || herb.herbId} herb={herb} />
+        <HerbCard
+          key={herb.id || herb.herbId}
+          herb={herb}
+          isFavorite={favoriteHerbIds.has(Number(herb.id || herb.herbId || 0))}
+          isFavoriteUpdating={favoriteUpdatingHerbIds.has(
+            Number(herb.id || herb.herbId || 0),
+          )}
+          onToggleFavorite={onToggleHerbFavorite}
+        />
       ))}
-    </motion.div>
+    </Motion.div>
   );
 }
 

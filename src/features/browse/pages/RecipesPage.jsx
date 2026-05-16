@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import PatientNavbar from "@components/features/browse/PatientNavbar";
 import BrowseFilters from "@components/features/browse/BrowseFilters";
 import RecipeFilters from "@components/features/browse/RecipeFilters";
@@ -7,6 +7,8 @@ import RecipesPagination from "@components/features/browse/RecipesPagination";
 import Footer from "@components/features/landing/Footer";
 import useRecipes from "@features/browse/hooks/useRecipes";
 import { filterRecipes } from "@features/browse/services/recipes";
+import { getMyRecipesFavorites, toggleFavorite } from "@api/favorites";
+import { toast } from "react-hot-toast";
 
 const RECIPES_PER_PAGE = 8;
 
@@ -17,7 +19,39 @@ function RecipesPage() {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [favoriteRecipeIds, setFavoriteRecipeIds] = useState(new Set());
+  const [favoriteUpdatingRecipeIds, setFavoriteUpdatingRecipeIds] = useState(
+    new Set(),
+  );
   const { recipes, isLoading, error, reload } = useRecipes();
+
+  useEffect(() => {
+    const loadFavorites = async () => {
+      try {
+        const response = await getMyRecipesFavorites();
+        const items = Array.isArray(response)
+          ? response
+          : Array.isArray(response?.items)
+            ? response.items
+            : Array.isArray(response?.data)
+              ? response.data
+              : [];
+
+        const ids = new Set(
+          items
+            .map((item) =>
+              Number(item?.recipeId || item?.id || item?.targetId || 0),
+            )
+            .filter(Boolean),
+        );
+        setFavoriteRecipeIds(ids);
+      } catch {
+        setFavoriteRecipeIds(new Set());
+      }
+    };
+
+    loadFavorites();
+  }, []);
 
   const availableDiseases = useMemo(() => {
     const diseaseNames = new Set();
@@ -125,6 +159,53 @@ function RecipesPage() {
     minPrice !== "" ||
     maxPrice !== "";
 
+  const handleToggleRecipeFavorite = async (recipeId) => {
+    const id = Number(recipeId || 0);
+    if (!id) return;
+
+    const isBusy = favoriteUpdatingRecipeIds.has(id);
+    if (isBusy) return;
+
+    setFavoriteUpdatingRecipeIds((current) => new Set(current).add(id));
+
+    try {
+      await toggleFavorite({
+        targetId: id,
+        type: "Recipe",
+      });
+
+      setFavoriteRecipeIds((current) => {
+        const next = new Set(current);
+        const wasFavorite = next.has(id);
+        if (wasFavorite) {
+          next.delete(id);
+        } else {
+          next.add(id);
+        }
+        return next;
+      });
+
+      const wasFavorite = favoriteRecipeIds.has(id);
+      toast.success(
+        wasFavorite
+          ? "Recipe removed from favorites."
+          : "Recipe added to favorites.",
+      );
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        err?.response?.data?.title ||
+        "Unable to update favorite recipe.";
+      toast.error(message);
+    } finally {
+      setFavoriteUpdatingRecipeIds((current) => {
+        const next = new Set(current);
+        next.delete(id);
+        return next;
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
       <PatientNavbar />
@@ -156,6 +237,9 @@ function RecipesPage() {
           isLoading={isLoading}
           error={error}
           onRetry={reload}
+          favoriteRecipeIds={favoriteRecipeIds}
+          onToggleRecipeFavorite={handleToggleRecipeFavorite}
+          favoriteUpdatingRecipeIds={favoriteUpdatingRecipeIds}
         />
         <RecipesPagination
           currentPage={currentPage}
