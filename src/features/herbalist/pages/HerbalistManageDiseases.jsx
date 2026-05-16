@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { FaLeaf, FaPlus, FaSearch } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "motion/react";
-import DiseasesTable from "@components/shared/DiseasesTable";
-import DiseaseForm from "@components/shared/DiseaseForm";
+import DiseasesTable from "@components/common/DiseasesTable";
+import DiseaseForm from "@components/common/DiseaseForm";
 import { getAllDiseases, createDisease } from "@api/diseases";
 
 // Framer Motion variants

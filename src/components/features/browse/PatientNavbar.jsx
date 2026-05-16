@@ -10,7 +10,7 @@ import {
   FaShoppingCart,
 } from "react-icons/fa";
 import { getUserFromToken, logout } from "@utils/auth";
-import { useCart } from "../../context/CartContext";
+import { useCart } from "@context/CartContext";
 import { useTranslation } from "react-i18next";
 
 function PatientNavbar() {

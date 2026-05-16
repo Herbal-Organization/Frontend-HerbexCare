@@ -13,7 +13,7 @@ import {
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "motion/react";
-import ProfileLayout from "@components/shared/ProfileLayout";
+import ProfileLayout from "@components/common/ProfileLayout";
 import {
   createHerb,
   getAllHerbs,
@@ -21,7 +21,7 @@ import {
   deleteHerb,
 } from "@api/herbs";
 import { addHerbToInventory } from "@api/inventory";
-import { normalizeHerb } from "@services/herbs";
+import { normalizeHerb } from "@features/browse/services/herbs";
 
 const INITIAL_FORM = {
   herbName: "",

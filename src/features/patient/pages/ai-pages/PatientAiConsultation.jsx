@@ -10,7 +10,7 @@ import WizardStepper from "./WizardStepper";
 import { INITIAL_FORM, WIZARD_STEPS } from "./aiConsultationConfig";
 import { parseApiError, toNumber } from "./aiConsultationUtils";
 import { getUserFromToken } from "@utils/auth";
-import usePatientDashboardData from "@hooks/usePatientDashboardData";
+import usePatientDashboardData from "@features/patient/hooks/usePatientDashboardData";
 
 const calculateAge = (birthDate) => {
   if (!birthDate) return null;

@@ -3,15 +3,15 @@ import { useSearchParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
-import ProfileLayout from "@components/shared/ProfileLayout";
+import ProfileLayout from "@components/common/ProfileLayout";
 import PatientDashboardState from "@features/patient/components/PatientDashboardState";
-import usePatientProfileForm from "@hooks/usePatientProfileForm";
+import usePatientProfileForm from "@features/patient/hooks/usePatientProfileForm";
 import {
   DEFAULT_ADDRESS,
   DEFAULT_MEDICAL_HISTORY,
   DEFAULT_PATIENT_INFO,
   markProfileAsComplete,
-} from "@services/patientProfile";
+} from "@features/patient/services/patientProfile";
 
 // Import section components
 import ProfilePhotoSection from "./sections/ProfilePhotoSection";

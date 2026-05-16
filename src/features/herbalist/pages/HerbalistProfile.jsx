@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FaUser, FaIdCard, FaStar, FaClock } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { motion } from "motion/react";
-import ProfileLayout from "@components/shared/ProfileLayout";
+import ProfileLayout from "@components/common/ProfileLayout";
 import { saveHerbalistProfile } from "@features/herbalist/services/herbalistProfile";
 
 const DEFAULT_PROFILE = {

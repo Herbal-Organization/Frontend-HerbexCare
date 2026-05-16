@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { FaSearch, FaTimes } from "react-icons/fa";
-import { getAllDiseaseNames } from "../../api/diseases";
+import { getAllDiseaseNames } from "@api/diseases";
 import { toast } from "react-hot-toast";
 
 /**

@@ -1,9 +1,9 @@
-import { resetPasswordAccount, deleteAccount } from "../api/accounts";
+import { resetPasswordAccount, deleteAccount } from "@api/accounts";
 import {
   deleteMyHerbalistAccount,
   resetMyHerbalistAccount,
-} from "../api/herbalists";
-import { endAuthSession } from "./authSession";
+} from "@api/herbalists";
+import { endAuthSession } from "@features/auth/services/authSession";
 
 export const changePassword = async (email, oldPassword, newPassword) => {
   const payload = {

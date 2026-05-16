@@ -10,7 +10,7 @@ import {
   FaSearch,
   FaSave,
 } from "react-icons/fa";
-import DiseaseSearchSelect from "@components/shared/DiseaseSearchSelect";
+import DiseaseSearchSelect from "@components/common/DiseaseSearchSelect";
 
 export default function RecipeForm({
   show,

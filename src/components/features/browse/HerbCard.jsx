@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion as Motion } from "motion/react";
-import { getHerbWithHerbalist } from "../../api/herbs";
+import { getHerbWithHerbalist } from "@api/herbs";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },

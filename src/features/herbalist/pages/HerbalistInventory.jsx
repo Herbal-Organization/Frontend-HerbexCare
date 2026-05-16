@@ -18,7 +18,7 @@ import {
   getMyInventory,
   updateInventoryHerb,
 } from "@api/inventory";
-import { normalizeHerb } from "@services/herbs";
+import { normalizeHerb } from "@features/browse/services/herbs";
 import { normalizeInventoryList } from "@features/herbalist/services/inventory";
 
 const INITIAL_FORM = {

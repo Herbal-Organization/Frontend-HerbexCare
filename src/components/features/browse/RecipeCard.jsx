@@ -3,7 +3,7 @@ import { FaHeart, FaStar } from "react-icons/fa";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import useDiseases from "../../hooks/useDiseases";
+import useDiseases from "@hooks/useDiseases";
 import DiseaseDetailsModal from "./DiseaseDetailsModal";
 
 const HERO_THEMES = [

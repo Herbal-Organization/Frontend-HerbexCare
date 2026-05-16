@@ -1,7 +1,7 @@
 import { FaHeartbeat } from "react-icons/fa";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
-import { MEDICAL_CONDITIONS } from "@../services/patientProfile";
+import { MEDICAL_CONDITIONS } from "@features/patient/services/patientProfile";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },

@@ -1,8 +1,8 @@
 import { motion as Motion } from "motion/react";
-import PatientAddressCard from "@components/patient/PatientAddressCard";
-import PatientDashboardState from "@components/patient/PatientDashboardState";
-import PatientMedicalSummary from "@components/patient/PatientMedicalSummary";
-import PatientOverviewHero from "@components/patient/PatientOverviewHero";
+import PatientAddressCard from "@features/patient/components/PatientAddressCard";
+import PatientDashboardState from "@features/patient/components/PatientDashboardState";
+import PatientMedicalSummary from "@features/patient/components/PatientMedicalSummary";
+import PatientOverviewHero from "@features/patient/components/PatientOverviewHero";
 import { useTranslation } from "react-i18next";
 
 const containerVariants = {

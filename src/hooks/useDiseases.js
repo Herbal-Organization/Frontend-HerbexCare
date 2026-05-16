@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAllDiseases } from "../api/diseases";
+import { getAllDiseases } from "@api/diseases";
 
 let cachedDiseases = null;
 let pendingPromise = null;

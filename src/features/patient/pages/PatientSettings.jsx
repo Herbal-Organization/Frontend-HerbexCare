@@ -1,4 +1,4 @@
-import DashboardSettingsPage from "@components/shared/DashboardSettingsPage";
+import DashboardSettingsPage from "@components/common/DashboardSettingsPage";
 import { updateUser } from "@api/users";
 import {
   changePassword,

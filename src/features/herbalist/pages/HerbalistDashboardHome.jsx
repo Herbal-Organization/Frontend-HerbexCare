@@ -10,9 +10,9 @@ import {
 import { getAllHerbs } from "@api/herbs";
 import { getMyInventory } from "@api/inventory";
 import { getRecipesByHerbalist } from "@api/recipes";
-import { normalizeHerb } from "@services/herbs";
+import { normalizeHerb } from "@features/browse/services/herbs";
 import { normalizeInventoryList } from "@features/herbalist/services/inventory";
-import { normalizeRecipe } from "@services/recipes";
+import { normalizeRecipe } from "@features/browse/services/recipes";
 
 const extractInventoryArray = (responseData) => {
   if (Array.isArray(responseData)) {

@@ -13,7 +13,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { getAllHerbs } from "@api/herbs";
 import { addHerbToInventory } from "@api/inventory";
-import { normalizeHerb } from "@services/herbs";
+import { normalizeHerb } from "@features/browse/services/herbs";
 
 const extractHerbsArray = (responseData) => {
   if (Array.isArray(responseData)) return responseData;
