@@ -3,6 +3,7 @@ import {
   MdDashboard,
   MdLocalFlorist,
   MdMenuBook,
+  MdAutoAwesome,
   MdBiotech,
   MdInventory,
   MdShoppingCart,
@@ -25,6 +26,11 @@ export const getHerbalistNavConfig = (t, { ordersCount } = {}) => [
     name: t("herbalistSidebar.manageRecipes"),
     href: "/herbalist/dashboard/recipes",
     icon: MdMenuBook,
+  },
+  {
+    name: t("herbalistSidebar.manageAIRecipes"),
+    href: "/herbalist/dashboard/ai-recipes",
+    icon: MdAutoAwesome,
   },
   {
     name: t("herbalistSidebar.manageDiseases"),

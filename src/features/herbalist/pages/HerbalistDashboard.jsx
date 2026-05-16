@@ -8,6 +8,7 @@ import {
 } from "@utils/auth";
 import HerbalistManageHerbs from "./HerbalistManageHerbs";
 import HerbalistManageRecipes from "./HerbalistManageRecipes";
+import HerbalistManageAIRecipes from "./HerbalistManageAIRecipes";
 import HerbalistManageDiseases from "./HerbalistManageDiseases";
 import HerbalistInventory from "./HerbalistInventory";
 import HerbalistDashboardHome from "./HerbalistDashboardHome";
@@ -165,6 +166,7 @@ function HerbalistDashboard() {
               />
             }
           />
+          <Route path="/ai-recipes" element={<HerbalistManageAIRecipes />} />
           <Route path="/diseases" element={<HerbalistManageDiseases />} />
           <Route path="/inventory" element={<HerbalistInventory />} />
           <Route path="/orders" element={<HerbalistSubOrders />} />
