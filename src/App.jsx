@@ -1,19 +1,18 @@
 import { Navigate, Routes, Route } from "react-router-dom";
-import AuthPage from "./pages/auth/AuthPage";
-import ConfirmEmailPage from "./pages/auth/ConfirmEmailPage";
-import ForgetPassword from "./components/auth/ForgetPassword";
-import ProtectedRoute from "./components/auth/ProtectedRoute";
-import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
-import PatientDashboard from "./pages/dashboard/patient/PatientDashboard";
-import HerbalistDashboard from "./pages/dashboard/herbalist/HerbalistDashboard";
+import AuthPage from "@features/auth/pages/AuthPage";
+import ConfirmEmailPage from "@features/auth/pages/ConfirmEmailPage";
+import { ForgetPassword, ProtectedRoute } from "@features/auth/components";
+import ResetPasswordPage from "@features/auth/pages/ResetPasswordPage";
+import PatientDashboard from "@features/patient/pages/PatientDashboard";
+import HerbalistDashboard from "@features/herbalist/pages/HerbalistDashboard";
 
-import PatientHome from "./pages/dashboard/patient/PatientHome";
-import RecipesPage from "./pages/browse/RecipesPage";
-import HerbsPage from "./pages/browse/HerbsPage";
-import RecipeDetailsPage from "./pages/browse/RecipeDetailsPage";
-import HerbDetailsPage from "./pages/browse/HerbDetailsPage";
-import LandingPage from "./pages/LandingPage";
-import { isAuthenticated } from "./utils/auth";
+import PatientHome from "@features/patient/pages/PatientHome";
+import RecipesPage from "@features/browse/pages/RecipesPage";
+import HerbsPage from "@features/browse/pages/HerbsPage";
+import RecipeDetailsPage from "@features/browse/pages/RecipeDetailsPage";
+import HerbDetailsPage from "@features/browse/pages/HerbDetailsPage";
+import LandingPage from "@features/landing/pages/LandingPage";
+import { isAuthenticated } from "@utils/auth";
 
 import { Toaster } from "react-hot-toast";
 

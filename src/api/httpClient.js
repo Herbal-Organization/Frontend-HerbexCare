@@ -4,7 +4,7 @@ import {
   clearAuthTokens,
   getAccessToken,
   refreshAuthSession,
-} from "../services/authSession";
+} from "@features/auth/services/authSession";
 
 const httpClient = axios.create({
   baseURL: API_BASE_URL,

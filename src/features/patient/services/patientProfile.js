@@ -1,0 +1,387 @@
+import { getMyProfile, updateMyProfile } from "@api/patients";
+import { getUserById, updateUsersAddress } from "@api/users";
+import {
+  getMyMedicalHistory,
+  saveMyMedicalHistory,
+} from "@api/medicalHistories";
+
+export const DEFAULT_MEDICAL_HISTORY = {
+  diabetes: false,
+  hypertension: false,
+  asthma: false,
+  heartDisease: false,
+  kidneyDisease: false,
+  liverDisease: false,
+  smoker: false,
+  pregnancy: false,
+  allergies: false,
+  otherNotes: "",
+};
+
+export const DEFAULT_ADDRESS = {
+  governorate: "",
+  city: "",
+  street: "",
+};
+
+export const DEFAULT_PATIENT_INFO = {
+  birthDate: "",
+  gender: "",
+};
+
+const PATIENT_INFO_STORAGE_KEY = "patient_profile_info";
+const PATIENT_USER_STORAGE_KEY = "patient_dashboard_user";
+const PROFILE_COMPLETION_KEY = "patient_profile_completed";
+
+export const MEDICAL_CONDITIONS = [
+  { name: "diabetes", label: "Diabetes" },
+  { name: "hypertension", label: "Hypertension" },
+  { name: "asthma", label: "Asthma" },
+  { name: "heartDisease", label: "Heart Disease" },
+  { name: "kidneyDisease", label: "Kidney Disease" },
+  { name: "liverDisease", label: "Liver Disease" },
+  { name: "smoker", label: "Smoker" },
+  { name: "pregnancy", label: "Pregnancy" },
+  { name: "allergies", label: "Known Allergies" },
+];
+
+// Check if user has explicitly set gender and birthdate
+export const isProfileComplete = (profile) => {
+  // Profile is considered incomplete if gender or birthDate are empty/not set by user
+  const hasGender = profile?.gender && profile.gender.trim() !== "";
+  const hasBirthDate = profile?.birthDate && profile.birthDate.trim() !== "";
+  return hasGender && hasBirthDate;
+};
+
+// Mark profile as completed after user fills in required fields
+export const markProfileAsComplete = () => {
+  try {
+    localStorage.setItem(PROFILE_COMPLETION_KEY, "true");
+  } catch {
+    return;
+  }
+};
+
+// Check if profile was already marked as complete
+export const wasProfileCompleted = () => {
+  try {
+    return localStorage.getItem(PROFILE_COMPLETION_KEY) === "true";
+  } catch {
+    return false;
+  }
+};
+
+const normalizeDateForInput = (value) => {
+  if (!value) {
+    return "";
+  }
+
+  if (typeof value === "string") {
+    return value.slice(0, 10);
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  return date.toISOString().slice(0, 10);
+};
+
+const normalizeGender = (value) => {
+  if (!value) {
+    return "";
+  }
+
+  const normalizedValue = String(value).toLowerCase();
+
+  if (normalizedValue === "male") {
+    return "Male";
+  }
+
+  if (normalizedValue === "female") {
+    return "Female";
+  }
+
+  return String(value);
+};
+
+export const getStoredPatientInfo = () => {
+  try {
+    const rawValue = localStorage.getItem(PATIENT_INFO_STORAGE_KEY);
+
+    if (!rawValue) {
+      return null;
+    }
+
+    return JSON.parse(rawValue);
+  } catch {
+    return null;
+  }
+};
+
+const storePatientInfo = (patientInfo) => {
+  try {
+    localStorage.setItem(PATIENT_INFO_STORAGE_KEY, JSON.stringify(patientInfo));
+  } catch {
+    return;
+  }
+};
+
+const getStoredPatientUser = () => {
+  try {
+    const rawValue = localStorage.getItem(PATIENT_USER_STORAGE_KEY);
+
+    if (!rawValue) {
+      return null;
+    }
+
+    return JSON.parse(rawValue);
+  } catch {
+    return null;
+  }
+};
+
+const storePatientUser = (patientUser) => {
+  try {
+    localStorage.setItem(PATIENT_USER_STORAGE_KEY, JSON.stringify(patientUser));
+  } catch {
+    return;
+  }
+};
+
+const pickFirstDefined = (...values) =>
+  values.find((value) => value !== undefined && value !== null && value !== "");
+
+export const normalizePatientUser = (user = {}) => ({
+  ...user,
+  id: pickFirstDefined(user.id, user.userId, user.userID),
+  userId: pickFirstDefined(user.userId, user.id, user.userID),
+  fullName: pickFirstDefined(user.fullName, user.name),
+  name: pickFirstDefined(user.name, user.fullName),
+  userName: pickFirstDefined(user.userName, user.username),
+  username: pickFirstDefined(user.username, user.userName),
+  email: pickFirstDefined(user.email, user.mail),
+  phone: pickFirstDefined(user.phone, user.phoneNumber),
+  governorate: pickFirstDefined(user.governorate),
+  city: pickFirstDefined(user.city),
+  street: pickFirstDefined(user.street),
+});
+
+export const getPersistedPatientUser = () => {
+  const persistedUser = getStoredPatientUser();
+
+  if (!persistedUser) {
+    return null;
+  }
+
+  return normalizePatientUser(persistedUser);
+};
+
+// Compute a simple profile completion percentage based on commonly used fields.
+export const getProfileCompletionPercentage = () => {
+  try {
+    const user = getPersistedPatientUser() || {};
+    const info = getStoredPatientInfo() || {};
+
+    const fields = [
+      user.fullName,
+      user.email,
+      user.phone,
+      info.birthDate,
+      info.gender,
+      user.governorate,
+      user.city,
+      user.street,
+    ];
+
+    const total = fields.length;
+    const filled = fields.reduce((acc, v) => {
+      if (v !== undefined && v !== null && String(v).trim() !== "") {
+        return acc + 1;
+      }
+      return acc;
+    }, 0);
+
+    return Math.round((filled / total) * 100);
+  } catch (err) {
+    return 0;
+  }
+};
+
+export const buildPatientDashboardUser = ({ authUser, userDetails }) => {
+  const persistedUser = getStoredPatientUser();
+  const resolvedUser = normalizePatientUser({
+    ...(persistedUser || {}),
+    ...(authUser || {}),
+    ...(userDetails || {}),
+  });
+
+  if (Object.keys(resolvedUser).length > 0) {
+    storePatientUser(resolvedUser);
+  }
+
+  return resolvedUser;
+};
+
+export const buildPatientProfileState = ({
+  userDetails,
+  medicalHistory,
+  patientInfo,
+}) => {
+  const persistedPatientInfo = getStoredPatientInfo();
+
+  // For new users: only use persisted (user-set) values, not backend defaults
+  // This ensures new users must explicitly set gender and birthDate
+  const birthDateValue = persistedPatientInfo?.birthDate || "";
+  const genderValue = persistedPatientInfo?.gender || "";
+
+  const resolvedPatientInfo = {
+    ...persistedPatientInfo,
+    birthDate: birthDateValue,
+    gender: genderValue,
+  };
+
+  return {
+    ...DEFAULT_PATIENT_INFO,
+    ...DEFAULT_ADDRESS,
+    ...DEFAULT_MEDICAL_HISTORY,
+    birthDate: normalizeDateForInput(resolvedPatientInfo?.birthDate),
+    gender: normalizeGender(resolvedPatientInfo?.gender),
+    governorate: userDetails?.governorate ?? "",
+    city: userDetails?.city ?? "",
+    street: userDetails?.street ?? "",
+    diabetes: medicalHistory?.diabetes ?? false,
+    hypertension: medicalHistory?.hypertension ?? false,
+    asthma: medicalHistory?.asthma ?? false,
+    heartDisease: medicalHistory?.heartDisease ?? false,
+    kidneyDisease: medicalHistory?.kidneyDisease ?? false,
+    liverDisease: medicalHistory?.liverDisease ?? false,
+    smoker: medicalHistory?.smoker ?? false,
+    pregnancy: medicalHistory?.pregnancy ?? false,
+    allergies: medicalHistory?.allergies ?? false,
+    otherNotes: medicalHistory?.otherNotes ?? "",
+  };
+};
+
+export const getPatientDashboardData = async (userId) => {
+  // Fetch medical history, and auto-create if doesn't exist (404 for new users)
+  let medicalHistory = null;
+  try {
+    medicalHistory = await getMyMedicalHistory();
+  } catch (err) {
+    // If 404 (not found), auto-initialize with default values for new users
+    if (err.response?.status === 404) {
+      try {
+        medicalHistory = await saveMyMedicalHistory(DEFAULT_MEDICAL_HISTORY);
+      } catch {
+        // If initialization also fails, continue with null
+        medicalHistory = null;
+      }
+    }
+  }
+
+  const [userDetails, patientInfo] = await Promise.all([
+    userId ? getUserById(userId).catch(() => null) : Promise.resolve(null),
+    getMyProfile().catch(() => null),
+  ]);
+
+  return {
+    userDetails: normalizePatientUser(userDetails || {}),
+    medicalHistory,
+    patientInfo,
+    profile: buildPatientProfileState({
+      userDetails,
+      medicalHistory,
+      patientInfo,
+    }),
+  };
+};
+
+export const savePatientProfile = async (profile) => {
+  // Build patient info payload - send only provided values to avoid backend null constraint issues.
+  const patientInfoPayload = {};
+  if (profile.birthDate && profile.birthDate.trim()) {
+    patientInfoPayload.birthDate = profile.birthDate.trim();
+  }
+  if (profile.gender && profile.gender.trim()) {
+    patientInfoPayload.gender = profile.gender.trim();
+  }
+
+  // Build address payload - send only provided values.
+  const addressPayload = {};
+  if (profile.governorate && profile.governorate.trim()) {
+    addressPayload.governorate = profile.governorate.trim();
+  }
+  if (profile.city && profile.city.trim()) {
+    addressPayload.city = profile.city.trim();
+  }
+  if (profile.street && profile.street.trim()) {
+    addressPayload.street = profile.street.trim();
+  }
+
+  // Build medical history payload
+  const medicalHistoryPayload = {
+    diabetes: !!profile.diabetes,
+    hypertension: !!profile.hypertension,
+    asthma: !!profile.asthma,
+    heartDisease: !!profile.heartDisease,
+    kidneyDisease: !!profile.kidneyDisease,
+    liverDisease: !!profile.liverDisease,
+    smoker: !!profile.smoker,
+    pregnancy: !!profile.pregnancy,
+    allergies: !!profile.allergies,
+    otherNotes:
+      profile.otherNotes && profile.otherNotes.trim()
+        ? profile.otherNotes.trim()
+        : "",
+  };
+
+  const operations = [
+    {
+      name: "medical history",
+      run: () => saveMyMedicalHistory(medicalHistoryPayload),
+    },
+  ];
+
+  if (Object.keys(patientInfoPayload).length > 0) {
+    operations.push({
+      name: "patient info",
+      run: () => updateMyProfile(patientInfoPayload),
+    });
+  }
+
+  if (Object.keys(addressPayload).length > 0) {
+    operations.push({
+      name: "address",
+      run: () => updateUsersAddress(addressPayload),
+    });
+  }
+
+  const results = await Promise.allSettled(
+    operations.map((operation) => operation.run()),
+  );
+  const failed = results
+    .map((result, index) => ({ result, name: operations[index].name }))
+    .filter(({ result }) => result.status === "rejected");
+
+  if (failed.length === operations.length) {
+    throw failed[0].result.reason;
+  }
+
+  if (Object.keys(patientInfoPayload).length > 0) {
+    storePatientInfo(patientInfoPayload);
+  }
+
+  return {
+    patientInfoPayload,
+    addressPayload,
+    medicalHistoryPayload,
+  };
+};
+
+export const getActiveConditions = (profile) =>
+  MEDICAL_CONDITIONS.filter((condition) => profile?.[condition.name]).map(
+    (condition) => condition.name,
+  );

@@ -1,4 +1,4 @@
-import { endAuthSession, getAccessToken } from "../services/authSession";
+import { endAuthSession, getAccessToken } from "@features/auth/services/authSession";
 
 // Auth utility functions
 export const decodeJWT = (token) => {
