@@ -80,5 +80,5 @@ export const isAuthenticated = () => {
 
 export const logout = async () => {
   await endAuthSession();
-  window.location.href = "/auth";
+  window.location.href = "/auth/login";
 };

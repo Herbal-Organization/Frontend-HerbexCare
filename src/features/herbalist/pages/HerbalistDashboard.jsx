@@ -33,7 +33,7 @@ function HerbalistDashboard() {
   useEffect(() => {
     const checkAuth = () => {
       if (!isAuthenticated()) {
-        navigate("/auth");
+        navigate("/auth/login");
         return;
       }
 
@@ -53,6 +53,7 @@ function HerbalistDashboard() {
 
   const handleLogout = async () => {
     await logout();
+    navigate("/auth/login");
   };
 
   const safeUserId = user?.userId || user?.id;

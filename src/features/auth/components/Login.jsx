@@ -129,9 +129,9 @@ function Login({ setSuccessMsg }) {
 
       <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
         <AuthInput
-          label="Email or Username"
+          label="Email"
           type="email"
-          placeholder="Enter your email or username"
+          placeholder="Enter your email"
           autoComplete="email"
           error={errors.email?.message}
           {...register("email", {

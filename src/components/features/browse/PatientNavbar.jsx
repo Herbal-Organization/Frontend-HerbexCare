@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FaLeaf,
   FaBell,
@@ -20,6 +20,7 @@ function PatientNavbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const user = getUserFromToken();
   const { getCartCount } = useCart();
   const cartCount = getCartCount();
@@ -49,6 +50,7 @@ function PatientNavbar() {
 
   const handleLogout = async () => {
     await logout();
+    navigate("/auth/login");
   };
 
   const toggleMobileMenu = () => {
