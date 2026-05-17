@@ -11,10 +11,7 @@ import {
   FaExclamationTriangle,
   FaClock,
 } from "react-icons/fa";
-import {
-  getMyAIRecipesFavorites,
-  toggleFavorite,
-} from "@api/favorites";
+import { getMyAIRecipesFavorites, toggleFavorite } from "@api/favorites";
 import { normalizeGeneratedRecipe } from "./aiConsultationUtils";
 import { useNavigate } from "react-router-dom";
 import AiRecipeAddToCartAction from "./AiRecipeAddToCartAction";

@@ -26,10 +26,12 @@ import {
 import { useTranslation } from "react-i18next";
 import DashboardLayout from "@components/layouts/DashboardLayout";
 import { getPatientNavConfig } from "@config/dashboard/patientNav";
+import { useCart } from "@context/CartContext";
 
 function PatientDashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { getCartCount } = useCart();
   const [user, setUser] = useState(() => getPersistedPatientUser());
   const [needsProfileCompletion, setNeedsProfileCompletion] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -103,7 +105,14 @@ function PatientDashboard() {
     );
   }
 
-  const navConfig = getPatientNavConfig(t);
+  const cartCount = getCartCount();
+
+  const navConfig = getPatientNavConfig(t).map((item) => {
+    if (item.href === "/patient/dashboard/cart") {
+      return { ...item, badge: cartCount > 0 ? cartCount : null };
+    }
+    return item;
+  });
 
   return (
     <DashboardLayout

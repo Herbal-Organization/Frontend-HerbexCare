@@ -13,7 +13,11 @@ const extractArray = (payload) => {
 
 const getAiRecipeId = (recipe) => {
   const candidate = Number(
-    recipe?.aiRecipeId || recipe?.recipeId || recipe?.id || recipe?.targetId || 0,
+    recipe?.aiRecipeId ||
+      recipe?.recipeId ||
+      recipe?.id ||
+      recipe?.targetId ||
+      0,
   );
   return Number.isFinite(candidate) && candidate > 0 ? candidate : null;
 };
@@ -45,7 +49,11 @@ const getProviderPrice = (provider) => {
   return Number.isFinite(parsed) ? parsed : 0;
 };
 
-function AiRecipeAddToCartAction({ recipe, recipeTitle, buttonClassName = "" }) {
+function AiRecipeAddToCartAction({
+  recipe,
+  recipeTitle,
+  buttonClassName = "",
+}) {
   const { addAiRecipeToCart } = useCart();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoadingProviders, setIsLoadingProviders] = useState(false);
@@ -68,7 +76,8 @@ function AiRecipeAddToCartAction({ recipe, recipeTitle, buttonClassName = "" }) 
   const selectedProvider = useMemo(
     () =>
       sortedProviders.find(
-        (provider) => String(getProviderId(provider)) === String(selectedProviderId),
+        (provider) =>
+          String(getProviderId(provider)) === String(selectedProviderId),
       ),
     [selectedProviderId, sortedProviders],
   );
@@ -150,7 +159,10 @@ function AiRecipeAddToCartAction({ recipe, recipeTitle, buttonClassName = "" }) 
       <button
         type="button"
         onClick={openModal}
-        className={buttonClassName || "inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-500"}
+        className={
+          buttonClassName ||
+          "inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-500"
+        }
       >
         <FaCartPlus /> Add to Cart
       </button>
@@ -159,7 +171,9 @@ function AiRecipeAddToCartAction({ recipe, recipeTitle, buttonClassName = "" }) 
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-extrabold text-slate-900">Add AI Recipe to Cart</h3>
+              <h3 className="text-lg font-extrabold text-slate-900">
+                Add AI Recipe to Cart
+              </h3>
               <button
                 type="button"
                 onClick={closeModal}
@@ -185,7 +199,9 @@ function AiRecipeAddToCartAction({ recipe, recipeTitle, buttonClassName = "" }) 
                   </label>
                   <select
                     value={selectedProviderId}
-                    onChange={(event) => setSelectedProviderId(event.target.value)}
+                    onChange={(event) =>
+                      setSelectedProviderId(event.target.value)
+                    }
                     className="w-full rounded-2xl border-2 border-slate-200 bg-white px-3 py-3 text-sm font-semibold text-slate-900 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
                   >
                     <option value="">
@@ -198,8 +214,12 @@ function AiRecipeAddToCartAction({ recipe, recipeTitle, buttonClassName = "" }) 
                       const providerName = getProviderName(provider);
                       const providerPrice = getProviderPrice(provider);
                       return (
-                        <option key={`${providerId}-${index}`} value={providerId}>
-                          {providerName} • {providerPrice ? `${providerPrice} EGP` : "Price N/A"}
+                        <option
+                          key={`${providerId}-${index}`}
+                          value={providerId}
+                        >
+                          {providerName} •{" "}
+                          {providerPrice ? `${providerPrice} EGP` : "Price N/A"}
                         </option>
                       );
                     })}

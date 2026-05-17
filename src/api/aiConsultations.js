@@ -32,9 +32,12 @@ export const fetchCatalogById = async (id) => {
  * GET /api/AiConsultations/myConsultations
  */
 export const fetchMyConsultations = async (pageNumber = 1, pageSize = 6) => {
-  const { data } = await httpClient.get("/api/AiConsultations/myConsultations", {
-    params: { pageNumber, pageSize },
-  });
+  const { data } = await httpClient.get(
+    "/api/AiConsultations/myConsultations",
+    {
+      params: { pageNumber, pageSize },
+    },
+  );
   return data;
 };
 
@@ -44,7 +47,9 @@ export const fetchMyConsultations = async (pageNumber = 1, pageSize = 6) => {
  */
 export const fetchMyConsultationById = async (id) => {
   if (!id) throw new Error("consultation id is required");
-  const { data } = await httpClient.get(`/api/AiConsultations/${id}/myConsultation`);
+  const { data } = await httpClient.get(
+    `/api/AiConsultations/${id}/myConsultation`,
+  );
   return data;
 };
 
@@ -53,8 +58,12 @@ export const fetchMyConsultationById = async (id) => {
  * POST /api/AiConsultations/generate
  */
 export const generateConsultation = async (payload) => {
-  if (!payload) throw new Error("payload is required to generate a consultation");
-  const { data } = await httpClient.post("/api/AiConsultations/generate", payload);
+  if (!payload)
+    throw new Error("payload is required to generate a consultation");
+  const { data } = await httpClient.post(
+    "/api/AiConsultations/generate",
+    payload,
+  );
   // Return both confidence score and preparation instructions (if present)
   return {
     confidenceScore: data.confidenceScore,

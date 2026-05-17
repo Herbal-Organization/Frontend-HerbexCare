@@ -64,7 +64,11 @@ export const CartProvider = ({ children }) => {
           ...herbItem,
           quantityPerGram: nextQuantity,
           totalPrice:
-            (Number(herbItem.pricePerKilo || updatedHerbs[existingIdx].pricePerKilo || 0) *
+            (Number(
+              herbItem.pricePerKilo ||
+                updatedHerbs[existingIdx].pricePerKilo ||
+                0,
+            ) *
               nextQuantity) /
             1000,
         };
@@ -184,7 +188,9 @@ export const CartProvider = ({ children }) => {
     );
 
     if (isExisting) {
-      toast.success(`Updated quantity of ${aiRecipeItem._previewName} in cart!`);
+      toast.success(
+        `Updated quantity of ${aiRecipeItem._previewName} in cart!`,
+      );
     } else {
       toast.success(`Added ${aiRecipeItem._previewName} to cart!`);
     }
@@ -220,7 +226,9 @@ export const CartProvider = ({ children }) => {
         return { ...prev, aiRecipes: updatedAiRecipes };
       }
 
-      const unitPrice = Number(aiRecipeItem.unitPrice ?? aiRecipeItem.price ?? 0);
+      const unitPrice = Number(
+        aiRecipeItem.unitPrice ?? aiRecipeItem.price ?? 0,
+      );
 
       return {
         ...prev,
