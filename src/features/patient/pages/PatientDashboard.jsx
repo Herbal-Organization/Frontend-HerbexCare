@@ -33,7 +33,6 @@ function PatientDashboard() {
   const { t } = useTranslation();
   const { getCartCount } = useCart();
   const [user, setUser] = useState(() => getPersistedPatientUser());
-  const [needsProfileCompletion, setNeedsProfileCompletion] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -84,18 +83,7 @@ function PatientDashboard() {
     });
   }, [user, dashboardData?.userDetails]);
 
-  // Check if user needs to complete profile
-  useEffect(() => {
-    if (dashboardData?.profile && !isProfileComplete(dashboardData.profile)) {
-      setNeedsProfileCompletion(true);
-    }
-  }, [dashboardData?.profile]);
 
-  useEffect(() => {
-    if (needsProfileCompletion) {
-      navigate("/patient/dashboard/profile?requireCompletion=true");
-    }
-  }, [needsProfileCompletion, navigate]);
 
   if (!displayUser) {
     return (

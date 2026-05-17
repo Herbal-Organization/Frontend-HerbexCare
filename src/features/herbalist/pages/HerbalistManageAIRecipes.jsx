@@ -8,11 +8,12 @@ import {
   FaListUl,
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "motion/react"; // eslint-disable-line no-unused-vars
 import { fetchConsultationCatalog } from "@api/aiConsultations";
 import {
   addInventoryAIRecipes,
   getMyInventoryAIRecipes,
+  removeInventoryAIRecipe,
 } from "@api/inventoryAIRecipes";
 import { normalizeGeneratedRecipe } from "@features/patient/pages/ai-pages/aiConsultationUtils";
 
@@ -51,7 +52,9 @@ const getRecipeSubtitle = (recipe) => {
 };
 
 function HerbalistManageAIRecipes() {
+  const [activeTab, setActiveTab] = useState("catalog");
   const [recipes, setRecipes] = useState([]);
+  const [inventoryItems, setInventoryItems] = useState([]);
   const [inventoryRecipeIds, setInventoryRecipeIds] = useState(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -90,6 +93,7 @@ function HerbalistManageAIRecipes() {
       );
 
       setRecipes(catalogItems);
+      setInventoryItems(inventoryItems);
       setInventoryRecipeIds(recipeIdsInInventory);
     } catch (err) {
       const message =
@@ -245,6 +249,27 @@ function HerbalistManageAIRecipes() {
     );
   };
 
+  const handleRemoveFromInventory = async (id) => {
+    if (!window.confirm("Are you sure you want to remove this recipe from your inventory?")) return;
+    try {
+      await removeInventoryAIRecipe(id);
+      toast.success("Removed from inventory.");
+      setInventoryItems(current => current.filter(item => item.id !== id));
+      setInventoryRecipeIds(current => {
+        const next = new Set(current);
+        const item = inventoryItems.find(i => i.id === id);
+        if (item) next.delete(item.aiRecipeId);
+        return next;
+      });
+    } catch (err) {
+      const message =
+        err.response?.data?.message ||
+        err.response?.data?.title ||
+        "Failed to remove from inventory.";
+      toast.error(message);
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
@@ -254,12 +279,11 @@ function HerbalistManageAIRecipes() {
               <FaListUl className="text-2xl" />
             </div>
             <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">
-              AI Recipe Catalog
+              AI Recipes
             </h1>
           </div>
           <p className="mt-2 max-w-2xl text-sm font-medium text-slate-500">
-            Browse all available AI recipes and publish selected ones to your
-            inventory with a custom price.
+            Browse the catalog or manage your listed AI recipes.
           </p>
         </div>
 
@@ -277,6 +301,29 @@ function HerbalistManageAIRecipes() {
         </div>
       </div>
 
+      <div className="flex gap-2 border-b border-slate-200">
+        <button
+          onClick={() => setActiveTab("catalog")}
+          className={`px-4 py-2 font-bold text-sm transition-colors border-b-2 ${
+            activeTab === "catalog"
+              ? "border-emerald-500 text-emerald-600"
+              : "border-transparent text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          Catalog ({recipes.length})
+        </button>
+        <button
+          onClick={() => setActiveTab("inventory")}
+          className={`px-4 py-2 font-bold text-sm transition-colors border-b-2 ${
+            activeTab === "inventory"
+              ? "border-emerald-500 text-emerald-600"
+              : "border-transparent text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          My Inventory ({inventoryItems.length})
+        </button>
+      </div>
+
       {error ? (
         <div className="rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-700">
           {error}
@@ -287,25 +334,111 @@ function HerbalistManageAIRecipes() {
         <div className="flex flex-col items-center justify-center gap-4 rounded-4xl border-2 border-slate-100 bg-white py-20">
           <div className="h-12 w-12 animate-spin rounded-full border-4 border-emerald-500/30 border-t-emerald-500" />
           <p className="text-sm font-bold uppercase tracking-widest text-slate-400">
-            Loading AI recipes...
+            Loading Data...
           </p>
         </div>
-      ) : filteredRecipes.length === 0 ? (
-        <div className="rounded-4xl border-2 border-dashed border-slate-200 bg-slate-50 py-20 text-center">
-          <FaRobot className="mx-auto mb-4 text-5xl text-slate-300" />
-          <p className="text-xl font-bold text-slate-700">
-            No AI recipes found
-          </p>
-          <p className="mt-2 text-sm font-medium text-slate-500">
-            Try a different search or reload the catalog.
-          </p>
-        </div>
+      ) : activeTab === "catalog" ? (
+        filteredRecipes.length === 0 ? (
+          <div className="rounded-4xl border-2 border-dashed border-slate-200 bg-slate-50 py-20 text-center">
+            <FaRobot className="mx-auto mb-4 text-5xl text-slate-300" />
+            <p className="text-xl font-bold text-slate-700">
+              No AI recipes found
+            </p>
+            <p className="mt-2 text-sm font-medium text-slate-500">
+              Try a different search or reload the catalog.
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {filteredRecipes.map((recipe, index) =>
+              renderRecipeCard(recipe, index),
+            )}
+          </div>
+        )
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {filteredRecipes.map((recipe, index) =>
-            renderRecipeCard(recipe, index),
-          )}
-        </div>
+        /* Inventory Tab */
+        inventoryItems.length === 0 ? (
+          <div className="rounded-4xl border-2 border-dashed border-slate-200 bg-slate-50 py-20 text-center">
+            <FaRobot className="mx-auto mb-4 text-5xl text-slate-300" />
+            <p className="text-xl font-bold text-slate-700">
+              Your inventory is empty
+            </p>
+            <p className="mt-2 text-sm font-medium text-slate-500">
+              Add AI recipes from the catalog to see them here.
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {inventoryItems.map((item, index) => {
+              // Find catalog details for this inventory item
+              const catalogItem = recipes.find(r => getAiRecipeId(r) === item.aiRecipeId);
+              const recipeTitle = catalogItem ? getRecipeTitle(catalogItem) : "AI Recipe";
+              const recipeSubtitle = catalogItem ? getRecipeSubtitle(catalogItem) : "";
+              
+              return (
+                <div
+                  key={item.id || index}
+                  className="group relative flex flex-col overflow-hidden rounded-4xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-emerald-200 hover:shadow-[0_10px_40px_rgb(0,0,0,0.06)]"
+                >
+                  <div className="relative flex h-full flex-col">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex min-w-0 items-start gap-3">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-100 bg-emerald-50 text-emerald-600">
+                          <FaRobot className="text-xl" />
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="truncate text-lg font-extrabold text-slate-900">
+                            {recipeTitle}
+                          </h3>
+                          {recipeSubtitle ? (
+                            <p className="mt-1 truncate text-xs font-semibold uppercase tracking-wide text-slate-500">
+                              {recipeSubtitle}
+                            </p>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 rounded-2xl bg-slate-50 p-4 border border-slate-100">
+                      <div className="flex items-baseline justify-between">
+                        <div>
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                            Price
+                          </p>
+                          <p className="text-2xl font-black text-emerald-600">
+                            {item.price} EGP
+                          </p>
+                        </div>
+                        <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${item.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
+                          {item.isActive ? 'Active' : 'Inactive'}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 flex gap-2">
+                      <button
+                        onClick={() => {
+                          setSelectedRecipeForInventory(catalogItem || { id: item.aiRecipeId });
+                          setPrice(String(item.price));
+                          // TODO: We need to handle edit in handleAddToInventory
+                        }}
+                        className="flex-1 flex h-10 items-center justify-center gap-1 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                      >
+                        Edit Price
+                      </button>
+                      <button
+                        onClick={() => handleRemoveFromInventory(item.id)}
+                        className="flex-1 flex h-10 items-center justify-center gap-1 rounded-lg border border-red-200 text-xs font-bold text-red-600 hover:bg-red-50"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )
       )}
 
       <AnimatePresence>

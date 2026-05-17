@@ -163,7 +163,7 @@ function PatientAiConsultation() {
             )}
           </p>
           <button
-            onClick={() => navigate("/patient/dashboard/profile")}
+            onClick={() => navigate("/patient/dashboard/profile?requireCompletion=true")}
             className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-8 py-3 text-sm font-bold text-white transition hover:bg-emerald-500 shadow-md"
           >
             <FaUserEdit />
