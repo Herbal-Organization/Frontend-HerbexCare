@@ -212,14 +212,6 @@ function MyConsultations() {
                             item.title ||
                             `Consultation #${idx + 1}`}
                         </p>
-                        <div className="flex items-center gap-2 mt-4">
-                          <div className="h-2 w-2 rounded-full bg-indigo-400 animate-pulse" />
-                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                            {new Date(
-                              item.createdAt || item.date,
-                            ).toLocaleDateString()}
-                          </p>
-                        </div>
                       </div>
 
                       <div className="pt-6 border-t border-slate-100 flex items-center justify-between group-hover:border-indigo-200 transition-colors">
