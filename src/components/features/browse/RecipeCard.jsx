@@ -71,9 +71,6 @@ function RecipeCard({
               <FaStar className="text-amber-400 text-[10px]" />
               {averageRating != null ? Number(averageRating).toFixed(1) : "New"}
             </span>
-            <span className="rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700 shadow-sm">
-              ${Number(price || 0).toFixed(0)}
-            </span>
           </div>
         </div>
 

@@ -14,8 +14,10 @@ import {
   toggleFavorite,
 } from "@api/favorites";
 import { getHerbById } from "@api/herbs";
-import { HerbCard } from "@components/features/browse";
+import { HerbCard, RecipeCard } from "@components/features/browse";
 import { normalizeHerb } from "@features/browse/services/herbs";
+import { getRecipeById } from "@api/recipes";
+import { normalizeRecipe } from "@features/browse/services/recipes";
 
 function extractItems(payload) {
   if (Array.isArray(payload)) return payload;
@@ -26,31 +28,23 @@ function extractItems(payload) {
 
 function normalizeRecipeFavorite(item) {
   const recipe = item?.recipe || item;
-  const recipeId = Number(
-    recipe?.recipeId || recipe?.id || item?.targetId || item?.recipeId || 0,
-  );
-
-  return {
-    recipeId,
-    title:
-      recipe?.recipeName ||
-      recipe?.title ||
-      recipe?.description ||
-      `Recipe #${recipeId || "-"}`,
-    description:
-      recipe?.instructions ||
-      recipe?.description ||
-      item?.description ||
-      "No preparation instructions available.",
-    averageRating:
-      recipe?.averageRating ?? recipe?.rating ?? item?.averageRating ?? null,
-    price: Number(recipe?.price ?? item?.price ?? 0),
+  
+  // Inject fallback dates so normalizeRecipe can format them
+  const recipeToNormalize = {
+    ...recipe,
     createdDate:
       recipe?.createdDate ||
       item?.createdDate ||
       item?.favoritedAt ||
       item?.savedDate ||
       null,
+  };
+  
+  const normalized = normalizeRecipe(recipeToNormalize);
+  
+  return {
+    ...normalized,
+    recipeId: normalized.id, // Ensure recipeId is available if needed
   };
 }
 
@@ -88,9 +82,26 @@ function PatientFavorites() {
           getMyHerbsFavorites(),
         ]);
 
-        const recipes = extractItems(recipesResponse)
+        const recipesList = extractItems(recipesResponse);
+        const detailedRecipes = await Promise.all(
+          recipesList.map(async (item) => {
+            const recipeId = item.targetId || item.recipeId;
+            if (recipeId) {
+              try {
+                const details = await getRecipeById(recipeId);
+                return { ...item, recipe: details };
+              } catch (err) {
+                console.error(`Failed to fetch details for recipe ${recipeId}:`, err);
+                return item;
+              }
+            }
+            return item;
+          })
+        );
+
+        const recipes = detailedRecipes
           .map(normalizeRecipeFavorite)
-          .filter((item) => item.recipeId);
+          .filter((item) => item.id || item.recipeId);
 
         const herbsList = extractItems(herbsResponse);
         const detailedHerbs = await Promise.all(
@@ -279,59 +290,22 @@ function PatientFavorites() {
             ) : (
               <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                 {sortedRecipes.map((recipe) => {
-                  const currentKey = `recipe-${recipe.recipeId}`;
+                  const currentKey = `recipe-${recipe.id || recipe.recipeId}`;
                   const isBusy = busyKey === currentKey;
                   return (
-                    <div
-                      key={recipe.recipeId}
-                      className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
-                    >
-                      <div className="mb-4 flex items-center justify-between">
-                        <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                          Recipe #{recipe.recipeId}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleRemoveRecipeFavorite(recipe.recipeId)
-                          }
-                          disabled={isBusy}
-                          className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-colors ${
-                            isBusy
-                              ? "border-slate-200 bg-slate-100 text-slate-400"
-                              : "border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100"
-                          }`}
-                        >
-                          <FaHeart className="text-[10px]" />
-                          {isBusy ? "Updating" : "Unfavorite"}
-                        </button>
-                      </div>
-
-                      <h3 className="line-clamp-2 text-lg font-bold text-slate-900">
-                        {recipe.title}
-                      </h3>
-                      <p className="mt-2 line-clamp-3 text-sm text-slate-500">
-                        {recipe.description}
-                      </p>
-
-                      <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
-                        <span>
-                          {recipe.averageRating != null
-                            ? `Rating: ${Number(recipe.averageRating).toFixed(1)}`
-                            : "No rating yet"}
-                        </span>
-                        <span>
-                          Price: ${Number(recipe.price || 0).toFixed(0)}
-                        </span>
-                      </div>
-
-                      <Link
-                        to={`/patient/home/recipes/${recipe.recipeId}`}
-                        className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800"
-                      >
-                        View Recipe
-                      </Link>
-                    </div>
+                    <RecipeCard
+                      key={recipe.id || recipe.recipeId}
+                      id={recipe.id}
+                      recipeId={recipe.recipeId}
+                      title={recipe.title}
+                      targetedDiseases={recipe.targetedDiseases}
+                      createdDate={recipe.createdDate}
+                      averageRating={recipe.averageRating}
+                      price={recipe.price}
+                      isFavorite={true}
+                      onToggleFavorite={() => handleRemoveRecipeFavorite(recipe.id || recipe.recipeId)}
+                      isFavoriteUpdating={isBusy}
+                    />
                   );
                 })}
               </div>
