@@ -6,7 +6,7 @@ import LanguageSwitcher from "@components/common/LanguageSwitcher";
 
 const MotionDiv = motion.div;
 
-function Navbar() {
+function Navbar({ isAuthPage, isLogin }) {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
 
@@ -32,12 +32,38 @@ function Navbar() {
 
       <div className="flex items-center gap-3">
         <LanguageSwitcher />
-        <Link
-          to="/auth"
-          className="inline-flex h-10 items-center justify-center rounded-xl bg-primary px-4 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 hover:shadow-primary/40"
-        >
-          {t("navbar.getStarted")}
-        </Link>
+
+        {isAuthPage ? (
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link
+              to="/auth/register"
+              className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all ${
+                !isLogin
+                  ? "bg-primary text-white shadow-md shadow-primary/20 hover:-translate-y-0.5"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+              }`}
+            >
+              Sign Up
+            </Link>
+            <Link
+              to="/auth/login"
+              className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all ${
+                isLogin
+                  ? "bg-primary text-white shadow-md shadow-primary/20 hover:-translate-y-0.5"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+              }`}
+            >
+              Log In
+            </Link>
+          </div>
+        ) : (
+          <Link
+            to="/auth/login"
+            className="inline-flex h-10 items-center justify-center rounded-xl bg-primary px-4 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 hover:shadow-primary/40"
+          >
+            {t("navbar.getStarted")}
+          </Link>
+        )}
       </div>
     </MotionDiv>
   );

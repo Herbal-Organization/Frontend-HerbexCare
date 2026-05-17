@@ -23,10 +23,13 @@ function App() {
 
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/auth" element={<Navigate to="/auth/login" replace />} />
+        <Route path="/auth/login" element={<AuthPage />} />
+        <Route path="/auth/register" element={<AuthPage />} />
+        <Route path="/auth/signup" element={<Navigate to="/auth/register" replace />} />
         <Route path="/confirm-email" element={<ConfirmEmailPage />} />
         <Route
-          path="/forget"
+          path="/forget-password"
           element={
             isAuthenticated() ? (
               <Navigate to="/reset-password" replace />
@@ -41,10 +44,11 @@ function App() {
             isAuthenticated() ? (
               <ResetPasswordPage />
             ) : (
-              <Navigate to="/forget" replace />
+              <Navigate to="/forget-password" replace />
             )
           }
         />
+        <Route path="/forget" element={<Navigate to="/forget-password" replace />} />
 
         <Route element={<ProtectedRoute allowedRoles={["Patient"]} />}>
           <Route path="/patient/home" element={<PatientHome />} />

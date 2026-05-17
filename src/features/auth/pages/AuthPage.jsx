@@ -1,70 +1,41 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Login from "@features/auth/components/Login";
 import Register from "@features/auth/components/Register";
-import { FaCircleCheck } from "react-icons/fa6";
 import AuthPageLayout from "@features/auth/components/AuthPageLayout";
 import { useTranslation } from "react-i18next";
+import { FaCircleCheck } from "react-icons/fa6";
 
 function AuthPage() {
   const { t } = useTranslation();
-  const [isLogin, setIsLogin] = useState(true);
+  const location = useLocation();
+  const isLogin = location.pathname === "/auth/login";
   const [successMsg, setSuccessMsg] = useState(null);
 
+  // We can pass these down or handle them inside the form components.
+  // The image shows "Welcome back" / "Sign in to your Herbalist AI account"
   return (
     <AuthPageLayout
-      title={isLogin ? t("auth.login.title") : t("auth.register.title")}
+      isLogin={isLogin}
+      title={isLogin ? t("auth.login.title", "Welcome back") : t("auth.register.title", "Create an account")}
       subtitle={
         isLogin
-          ? t("auth.login.subtitle")
-          : t("auth.register.subtitle")
+          ? t("auth.login.subtitle", "Sign in to your Herbalist AI account")
+          : t("auth.register.subtitle", "Join Herbalist AI to start your wellness journey")
       }
     >
-      <Link
-        to="/"
-        className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition-colors hover:text-primary"
-      >
-        <span aria-hidden="true" className="rtl:rotate-180">←</span>
-        {t("auth.login.backToHome")}
-      </Link>
-
-      <div className="flex bg-slate-50 p-1.5 rounded-2xl mb-8">
-        <button
-          type="button"
-          onClick={() => {
-            setIsLogin(true);
-            setSuccessMsg(null);
-          }}
-          className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all ${isLogin ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
-        >
-          {t("auth.login.submit")}
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setIsLogin(false);
-            setSuccessMsg(null);
-          }}
-          className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all ${!isLogin ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"}`}
-        >
-          {t("auth.register.submit")}
-        </button>
-      </div>
-
       {successMsg && (
-        <div className="mb-6 p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3 text-primary">
-          <FaCircleCheck className="text-primary" />
-          <p className="text-sm font-medium">{successMsg}</p>
+        <div className="mb-6 p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3 text-[#00E62E]">
+          <FaCircleCheck className="text-[#00E62E]" />
+          <p className="text-sm font-medium text-slate-800">{successMsg}</p>
         </div>
       )}
 
-      <div className="mt-2">
-        {isLogin ? (
-          <Login setSuccessMsg={setSuccessMsg} />
-        ) : (
-          <Register setIsLogin={setIsLogin} setSuccessMsg={setSuccessMsg} />
-        )}
-      </div>
+      {isLogin ? (
+        <Login setSuccessMsg={setSuccessMsg} />
+      ) : (
+        <Register setSuccessMsg={setSuccessMsg} />
+      )}
     </AuthPageLayout>
   );
 }

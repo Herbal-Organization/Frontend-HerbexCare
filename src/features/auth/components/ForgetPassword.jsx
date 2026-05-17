@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosMail } from "react-icons/io";
-import { FaLock } from "react-icons/fa";
 import { forgotPasswordAccount } from "@api/accounts";
 import AuthAlert from "@features/auth/components/AuthAlert";
 import AuthInput from "@features/auth/components/AuthInput";
@@ -19,20 +18,11 @@ function ForgetPassword() {
     register,
     handleSubmit,
     reset,
-    control,
     formState: { errors },
   } = useForm({
     defaultValues: {
       email: "",
-      newPassword: "",
-      confirmNewPassword: "",
     },
-  });
-
-  const newPassword = useWatch({
-    control,
-    name: "newPassword",
-    defaultValue: "",
   });
 
   const {
@@ -59,7 +49,6 @@ function ForgetPassword() {
     try {
       await submitForgotPassword({
         email: values.email,
-        newPassword: values.newPassword,
       });
     } catch {
       return;
@@ -92,51 +81,7 @@ function ForgetPassword() {
           })}
         />
 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <AuthInput
-            label="New Password"
-            type="password"
-            placeholder="••••••••"
-            autoComplete="new-password"
-            icon={<FaLock />}
-            inputClassName="font-sans"
-            isPassword={true}
-            error={errors.newPassword?.message}
-            {...register("newPassword", {
-              required: "New password is required",
-              minLength: {
-                value: 8,
-                message: "New password must be at least 8 characters",
-              },
-              validate: (value) => {
-                if (!value) return true;
-                if (!/[A-Z]/.test(value))
-                  return "Password must contain at least one uppercase letter";
-                if (!/[a-z]/.test(value))
-                  return "Password must contain at least one lowercase letter";
-                if (!/[0-9]/.test(value))
-                  return "Password must contain at least one number";
-                return true;
-              },
-            })}
-          />
 
-          <AuthInput
-            label="Confirm New Password"
-            type="password"
-            placeholder="••••••••"
-            autoComplete="new-password"
-            icon={<FaLock />}
-            inputClassName="font-sans"
-            isPassword={true}
-            error={errors.confirmNewPassword?.message}
-            {...register("confirmNewPassword", {
-              required: "Please confirm your new password",
-              validate: (value) =>
-                value === newPassword || "Passwords do not match",
-            })}
-          />
-        </div>
 
         {/* <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           This API currently asks for a new password directly. If the backend is
@@ -156,7 +101,7 @@ function ForgetPassword() {
 
       <div className="mt-8 text-center">
         <Link
-          to="/auth"
+          to="/auth/login"
           className="text-sm font-bold text-primary hover:text-primary-hover"
         >
           {t("auth.forgotPassword.backToLogin")}

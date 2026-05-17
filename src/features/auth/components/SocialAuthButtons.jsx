@@ -47,10 +47,10 @@ function SocialAuthButtons() {
     <div className="mt-8">
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-100"></div>
+          <div className="w-full border-t border-slate-200"></div>
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="bg-white px-4 text-slate-400 font-medium">
+          <span className="bg-[#F9F9F9] px-4 text-slate-400 font-medium">
             {t("auth.login.orContinueWith")}
           </span>
         </div>

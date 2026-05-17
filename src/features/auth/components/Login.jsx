@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { IoIosMail } from "react-icons/io";
-import { FaLock } from "react-icons/fa";
 import { loginAccount, resendConfirmationEmail } from "@api/accounts";
 import AuthAlert from "@features/auth/components/AuthAlert";
 import AuthInput from "@features/auth/components/AuthInput";
-import AuthSubmitButton from "@features/auth/components/AuthSubmitButton";
 import useAsyncAction from "@hooks/useAsyncAction";
-import { getPostLoginRoute, storeAuthTokens } from "@features/auth/services/authSession";
+import {
+  getPostLoginRoute,
+  storeAuthTokens,
+} from "@features/auth/services/authSession";
 import { getUserRole } from "@utils/auth";
 import { useTranslation } from "react-i18next";
+import { HiRefresh } from "react-icons/hi";
 import SocialAuthButtons from "./SocialAuthButtons";
+// SocialAuthButtons removed as it's not in the image, or we can keep it at the very bottom. Let's keep it just in case, or maybe remove if we strictly follow image. The image doesn't show it. Let's remove it to match exactly.
 
 function Login({ setSuccessMsg }) {
   const { t } = useTranslation();
@@ -27,6 +29,7 @@ function Login({ setSuccessMsg }) {
     defaultValues: {
       email: "",
       password: "",
+      rememberMe: false,
     },
   });
 
@@ -49,7 +52,6 @@ function Login({ setSuccessMsg }) {
       }, 1000);
     },
     onError: (err, message) => {
-      // Check if error is about email confirmation
       if (
         message?.includes("confirm") ||
         message?.includes("confirmation") ||
@@ -85,12 +87,10 @@ function Login({ setSuccessMsg }) {
   const onSubmit = async (values) => {
     clearError();
     try {
-      // Trim email and password to prevent whitespace issues
       const payload = {
         email: values.email?.trim().toLowerCase(),
         password: values.password,
       };
-      console.log("Login attempt with:", { email: payload.email });
       await submitLogin(payload);
     } catch (err) {
       console.error("Login error:", err?.response?.data);
@@ -99,16 +99,16 @@ function Login({ setSuccessMsg }) {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <AuthAlert message={error} type="error" />
       {resendSuccess && (
-        <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+        <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700">
           {resendSuccess}
         </div>
       )}
 
       {pendingEmail && (
-        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+        <div className="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-4">
           <p className="mb-3 text-sm text-blue-700">
             <strong>{t("auth.login.confirmationRequired")}</strong>
             <br />
@@ -120,18 +120,19 @@ function Login({ setSuccessMsg }) {
             disabled={isResending}
             className="inline-block rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white hover:bg-blue-700 disabled:opacity-50"
           >
-            {isResending ? t("auth.login.sending") : t("auth.login.resendConfirmation")}
+            {isResending
+              ? t("auth.login.sending")
+              : t("auth.login.resendConfirmation")}
           </button>
         </div>
       )}
 
       <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
         <AuthInput
-          label={t("auth.login.emailLabel")}
+          label="Email or Username"
           type="email"
-          placeholder="name@example.com"
+          placeholder="Enter your email or username"
           autoComplete="email"
-          icon={<IoIosMail />}
           error={errors.email?.message}
           {...register("email", {
             required: "Email is required",
@@ -142,44 +143,67 @@ function Login({ setSuccessMsg }) {
           })}
         />
 
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <label className="block text-sm font-bold text-slate-700">
-              {t("auth.login.passwordLabel")}
-            </label>
-            <Link
-              to="/forget"
-              className="text-xs font-bold text-primary hover:text-primary-hover"
-            >
-              {t("auth.login.forgotPassword")}
-            </Link>
-          </div>
-          <AuthInput
-            label=""
-            type="password"
-            placeholder="••••••••"
-            autoComplete="current-password"
-            icon={<FaLock />}
-            inputClassName="font-sans"
-            isPassword={true}
-            error={errors.password?.message}
-            {...register("password", {
-              required: "Password is required",
-            })}
-          />
+        <AuthInput
+          label="Password"
+          type="password"
+          placeholder="Enter your password"
+          autoComplete="current-password"
+          inputClassName="font-sans"
+          isPassword={true}
+          error={errors.password?.message}
+          {...register("password", {
+            required: "Password is required",
+          })}
+        />
+
+        <div className="flex items-center justify-between pt-1 pb-2">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary"
+              {...register("rememberMe")}
+            />
+            <span className="text-sm font-medium text-slate-700">
+              Remember Me
+            </span>
+          </label>
+          <Link
+            to="/forget-password"
+            className="text-sm font-medium text-primary hover:text-primary-hover transition-colors"
+          >
+            Forgot Password?
+          </Link>
         </div>
 
-        <div className="pt-2">
-          <AuthSubmitButton
-            isLoading={isLoading}
-            label={t("auth.login.submit")}
-            loadingLabel={t("auth.login.loading")}
-            className="cursor-pointer"
-          />
-        </div>
+        <button
+          disabled={isLoading}
+          type="submit"
+          className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3.5 text-base font-bold text-white shadow-md shadow-primary/20 transition-all hover:bg-primary-hover hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0"
+        >
+          {isLoading ? (
+            <>
+              <HiRefresh className="animate-spin text-xl" />
+              <span>{t("auth.login.loading", "Logging in...")}</span>
+            </>
+          ) : (
+            <span>Log In</span>
+          )}
+        </button>
       </form>
 
       <SocialAuthButtons />
+
+      <div className="pt-8 text-center">
+        <p className="text-sm font-medium text-slate-500">
+          Don't have an account?{" "}
+          <Link
+            to="/auth/register"
+            className="text-primary font-bold hover:underline"
+          >
+            Sign Up
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

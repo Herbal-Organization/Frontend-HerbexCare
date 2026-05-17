@@ -1,15 +1,14 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm, useWatch } from "react-hook-form";
-import { IoIosMail } from "react-icons/io";
-import { TiPhone } from "react-icons/ti";
+import { Link, useNavigate } from "react-router-dom";
 import { FaPerson } from "react-icons/fa6";
 import { MdLocalLibrary } from "react-icons/md";
-import { loginAccount, registerAccount } from "@api/accounts";
+import { registerAccount } from "@api/accounts";
 import useAsyncAction from "@hooks/useAsyncAction";
 import AuthAlert from "@features/auth/components/AuthAlert";
 import AuthInput from "@features/auth/components/AuthInput";
-import AuthSubmitButton from "@features/auth/components/AuthSubmitButton";
+import { HiRefresh } from "react-icons/hi";
 import SocialAuthButtons from "./SocialAuthButtons";
 
 // Map backend field names to friendly field names
@@ -45,8 +44,9 @@ const parseBackendErrors = (errorResponse) => {
   return messages.length > 0 ? messages.join(" | ") : null;
 };
 
-function Register({ setIsLogin, setSuccessMsg }) {
+function Register({ setSuccessMsg }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [role, setRole] = useState("Patient");
   const [generalError, setGeneralError] = useState("");
   const {
@@ -102,11 +102,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
         role,
       };
 
-      // Log payload for debugging
-      console.log("Registration payload:", payload);
-
       await submitRegistration(payload);
-      console.log("Registration successful!");
 
       const successMessage =
         "✓ Registration successful! Please check your email to confirm your account before logging in.";
@@ -115,7 +111,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
       setRole("Patient");
       setSuccessMsg(successMessage);
       window.setTimeout(() => {
-        setIsLogin(true);
+        navigate("/auth/login");
         setSuccessMsg(null);
       }, 4000);
     } catch (err) {
@@ -130,15 +126,15 @@ function Register({ setIsLogin, setSuccessMsg }) {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <AuthAlert message={error || generalError} type="error" />
 
       <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-2 gap-4">
           <AuthInput
-            label={t("auth.register.fullName")}
+            label="Full Name"
             type="text"
-            placeholder={t("auth.register.fullName")}
+            placeholder="John Doe"
             autoComplete="name"
             error={errors.fullName?.message}
             {...register("fullName", {
@@ -150,9 +146,9 @@ function Register({ setIsLogin, setSuccessMsg }) {
             })}
           />
           <AuthInput
-            label={t("auth.register.username")}
+            label="Username"
             type="text"
-            placeholder={t("auth.register.username")}
+            placeholder="johndoe"
             autoComplete="username"
             error={errors.userName?.message}
             {...register("userName", {
@@ -166,11 +162,10 @@ function Register({ setIsLogin, setSuccessMsg }) {
         </div>
 
         <AuthInput
-          label={t("auth.register.email")}
+          label="Email Address"
           type="email"
           placeholder="name@example.com"
           autoComplete="email"
-          icon={<IoIosMail />}
           error={errors.email?.message}
           {...register("email", {
             required: "Email is required",
@@ -182,11 +177,10 @@ function Register({ setIsLogin, setSuccessMsg }) {
         />
 
         <AuthInput
-          label={t("auth.register.phone")}
+          label="Phone Number"
           type="tel"
           placeholder="01203564652"
           autoComplete="tel"
-          icon={<TiPhone />}
           error={errors.phone?.message}
           {...register("phone", {
             required: "Phone number is required",
@@ -201,7 +195,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
             pattern: {
               value: /^[0-9+\-\s()]*$/,
               message:
-                "Phone number contains invalid characters (only 0-9, +, -, spaces, and parentheses allowed)",
+                "Phone number contains invalid characters",
             },
             validate: (value) => {
               if (!value) return true;
@@ -219,13 +213,13 @@ function Register({ setIsLogin, setSuccessMsg }) {
 
         <div>
           <label className="mb-2 block text-sm font-bold text-slate-700">
-            {t("auth.register.role")}
+            Account Role
           </label>
           <div className="grid grid-cols-2 gap-3">
             <label
-              className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-colors ${
+              className={`flex cursor-pointer items-center justify-center gap-3 rounded-xl border py-2.5 transition-colors ${
                 role === "Patient"
-                  ? "border-primary bg-primary-light/30"
+                  ? "border-primary bg-primary/10"
                   : "border-slate-200 bg-white hover:bg-slate-50"
               }`}
             >
@@ -247,13 +241,13 @@ function Register({ setIsLogin, setSuccessMsg }) {
                   role === "Patient" ? "text-primary" : "text-slate-600"
                 }`}
               >
-                {t("auth.register.patient")}
+                Patient
               </span>
             </label>
             <label
-              className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-colors ${
+              className={`flex cursor-pointer items-center justify-center gap-3 rounded-xl border py-2.5 transition-colors ${
                 role === "Herbalist"
-                  ? "border-primary bg-primary-light/30"
+                  ? "border-primary bg-primary/10"
                   : "border-slate-200 bg-white hover:bg-slate-50"
               }`}
             >
@@ -275,7 +269,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
                   role === "Herbalist" ? "text-primary" : "text-slate-600"
                 }`}
               >
-                {t("auth.register.herbalist")}
+                Herbalist
               </span>
             </label>
           </div>
@@ -283,7 +277,7 @@ function Register({ setIsLogin, setSuccessMsg }) {
 
         <div className="grid grid-cols-2 gap-4">
           <AuthInput
-            label={t("auth.register.password")}
+            label="Password"
             type="password"
             placeholder="••••••••"
             autoComplete="new-password"
@@ -299,17 +293,17 @@ function Register({ setIsLogin, setSuccessMsg }) {
               validate: (value) => {
                 if (!value) return true;
                 if (!/[A-Z]/.test(value))
-                  return "Password must contain at least one uppercase letter";
+                  return "Must contain uppercase";
                 if (!/[a-z]/.test(value))
-                  return "Password must contain at least one lowercase letter";
+                  return "Must contain lowercase";
                 if (!/[0-9]/.test(value))
-                  return "Password must contain at least one number";
+                  return "Must contain a number";
                 return true;
               },
             })}
           />
           <AuthInput
-            label={t("auth.register.confirmPassword")}
+            label="Confirm Password"
             type="password"
             placeholder="••••••••"
             autoComplete="new-password"
@@ -324,16 +318,37 @@ function Register({ setIsLogin, setSuccessMsg }) {
           />
         </div>
 
-        <div className="pt-2">
-          <AuthSubmitButton
-            isLoading={isLoading}
-            label={t("auth.register.submit")}
-            loadingLabel={t("auth.register.loading")}
-          />
+        <div className="pt-4">
+          <button
+            disabled={isLoading}
+            type="submit"
+            className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3.5 text-base font-bold text-white shadow-md shadow-primary/20 transition-all hover:bg-primary-hover hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0"
+          >
+            {isLoading ? (
+              <>
+                <HiRefresh className="animate-spin text-xl" />
+                <span>Creating account...</span>
+              </>
+            ) : (
+              <span>Sign Up</span>
+            )}
+          </button>
         </div>
       </form>
 
       <SocialAuthButtons />
+
+      <div className="pt-8 text-center">
+        <p className="text-sm font-medium text-slate-500">
+          Already have an account?{" "}
+          <Link 
+            to="/auth/login"
+            className="text-primary font-bold hover:underline"
+          >
+            Log In
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
