@@ -14,6 +14,7 @@ import {
 import { getMyAIRecipesFavorites, toggleFavorite } from "@api/favorites";
 import { normalizeGeneratedRecipe } from "./aiConsultationUtils";
 import { useNavigate } from "react-router-dom";
+import { fetchCatalogById } from "@api/aiConsultations";
 import AiRecipeAddToCartAction from "./AiRecipeAddToCartAction";
 
 function extractFavoritesArray(payload) {
@@ -24,7 +25,7 @@ function extractFavoritesArray(payload) {
 }
 
 function FavoriteRecipes() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,7 +43,25 @@ function FavoriteRecipes() {
     setViewMode("list");
     try {
       const data = await getMyAIRecipesFavorites();
-      setFavorites(extractFavoritesArray(data));
+      const favoritesList = extractFavoritesArray(data);
+      
+      const detailedFavorites = await Promise.all(
+        favoritesList.map(async (item) => {
+          const targetId = item.targetId;
+          if (targetId) {
+            try {
+              const details = await fetchCatalogById(targetId);
+              return { ...item, ...details }; // Merge details into the item
+            } catch (err) {
+              console.error(`Failed to fetch details for AI recipe ${targetId}:`, err);
+              return item;
+            }
+          }
+          return item;
+        })
+      );
+      
+      setFavorites(detailedFavorites);
     } catch (error) {
       console.error("Failed to load favorites:", error);
       toast.error(t("aiConsultation.favorites.messages.loadError"));
@@ -375,7 +394,8 @@ function FavoriteRecipes() {
 
                     <div className="flex-1">
                       <p className="text-xl font-black text-slate-900 leading-tight group-hover:text-red-700 transition-colors line-clamp-2">
-                        {recipe.name ||
+                        {recipe.recommendedRecipeName ||
+                          recipe.name ||
                           recipe.recipeName ||
                           recipe.title ||
                           "Favorite Recipe"}
@@ -410,11 +430,11 @@ function FavoriteRecipes() {
                             e,
                           )
                         }
-                        className="text-[10px] font-black text-red-600 uppercase tracking-[0.2em] hover:underline"
+                        className="flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-[11px] font-bold text-red-600 uppercase tracking-wider transition-colors hover:bg-red-100"
                       >
                         Remove
                       </button>
-                      <span className="text-[10px] font-black text-red-600 uppercase tracking-widest">
+                      <span className="flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-[11px] font-bold text-emerald-700 uppercase tracking-wider transition-colors hover:bg-emerald-100">
                         View Recipe
                       </span>
                     </div>
