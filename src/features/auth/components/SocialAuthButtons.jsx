@@ -57,7 +57,7 @@ function SocialAuthButtons() {
       </div>
 
       <div className="mt-6 flex justify-center">
-        <div className={`w-full max-w-sm ${isGoogleLoading ? "opacity-50 pointer-events-none" : ""}`}>
+        <div className={`w-full max-w-sm ${isGoogleLoading ? "opacity-50 pointer-events-none" : ""} flex justify-center items-center `}>
           <GoogleLogin
             onSuccess={handleSuccess}
             onError={handleError}

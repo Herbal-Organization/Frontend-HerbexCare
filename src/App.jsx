@@ -12,6 +12,7 @@ import HerbsPage from "@features/browse/pages/HerbsPage";
 import RecipeDetailsPage from "@features/browse/pages/RecipeDetailsPage";
 import HerbDetailsPage from "@features/browse/pages/HerbDetailsPage";
 import LandingPage from "@features/landing/pages/LandingPage";
+import NotFoundPage from "@features/landing/pages/NotFoundPage";
 import { isAuthenticated } from "@utils/auth";
 
 import { Toaster } from "react-hot-toast";
@@ -23,10 +24,8 @@ function App() {
 
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/auth" element={<Navigate to="/auth/login" replace />} />
         <Route path="/auth/login" element={<AuthPage />} />
         <Route path="/auth/register" element={<AuthPage />} />
-        <Route path="/auth/signup" element={<Navigate to="/auth/register" replace />} />
         <Route path="/confirm-email" element={<ConfirmEmailPage />} />
         <Route
           path="/forget-password"
@@ -48,7 +47,6 @@ function App() {
             )
           }
         />
-        <Route path="/forget" element={<Navigate to="/forget-password" replace />} />
 
         <Route element={<ProtectedRoute allowedRoles={["Patient"]} />}>
           <Route path="/patient/home" element={<PatientHome />} />
@@ -71,6 +69,7 @@ function App() {
             element={<HerbalistDashboard />}
           />
         </Route>
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>
   );
