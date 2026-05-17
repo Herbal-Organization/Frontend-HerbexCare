@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
-import { FaLeaf } from "react-icons/fa";
+import { FaLeaf, FaUserPlus, FaSignInAlt } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@components/common/LanguageSwitcher";
 
@@ -37,23 +37,25 @@ function Navbar({ isAuthPage, isLogin }) {
           <div className="flex items-center gap-2 sm:gap-3">
             <Link
               to="/auth/register"
-              className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all ${
+              className={`inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all ${
                 !isLogin
                   ? "bg-primary text-white shadow-md shadow-primary/20 hover:-translate-y-0.5"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200"
               }`}
             >
-              Sign Up
+              <FaUserPlus />
+              <span>Sign Up</span>
             </Link>
             <Link
               to="/auth/login"
-              className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all ${
+              className={`inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all ${
                 isLogin
                   ? "bg-primary text-white shadow-md shadow-primary/20 hover:-translate-y-0.5"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200"
               }`}
             >
-              Log In
+              <FaSignInAlt />
+              <span>Log In</span>
             </Link>
           </div>
         ) : (

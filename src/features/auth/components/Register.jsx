@@ -10,6 +10,8 @@ import AuthAlert from "@features/auth/components/AuthAlert";
 import AuthInput from "@features/auth/components/AuthInput";
 import { HiRefresh } from "react-icons/hi";
 import SocialAuthButtons from "./SocialAuthButtons";
+import { IoIosMail } from "react-icons/io";
+import { FaLock, FaUser, FaPhone, FaUserPlus } from "react-icons/fa";
 
 // Map backend field names to friendly field names
 const FIELD_ERROR_MAP = {
@@ -136,6 +138,7 @@ function Register({ setSuccessMsg }) {
             type="text"
             placeholder="John Doe"
             autoComplete="name"
+            icon={<FaUser />}
             error={errors.fullName?.message}
             {...register("fullName", {
               required: "Full name is required",
@@ -150,6 +153,7 @@ function Register({ setSuccessMsg }) {
             type="text"
             placeholder="johndoe"
             autoComplete="username"
+            icon={<FaUser />}
             error={errors.userName?.message}
             {...register("userName", {
               required: "Username is required",
@@ -166,6 +170,7 @@ function Register({ setSuccessMsg }) {
           type="email"
           placeholder="name@example.com"
           autoComplete="email"
+          icon={<IoIosMail />}
           error={errors.email?.message}
           {...register("email", {
             required: "Email is required",
@@ -181,6 +186,7 @@ function Register({ setSuccessMsg }) {
           type="tel"
           placeholder="01203564652"
           autoComplete="tel"
+          icon={<FaPhone />}
           error={errors.phone?.message}
           {...register("phone", {
             required: "Phone number is required",
@@ -283,6 +289,7 @@ function Register({ setSuccessMsg }) {
             autoComplete="new-password"
             inputClassName="font-sans"
             isPassword={true}
+            icon={<FaLock />}
             error={errors.password?.message}
             {...register("password", {
               required: "Password is required",
@@ -309,6 +316,7 @@ function Register({ setSuccessMsg }) {
             autoComplete="new-password"
             inputClassName="font-sans"
             isPassword={true}
+            icon={<FaLock />}
             error={errors.confirmPassword?.message}
             {...register("confirmPassword", {
               required: "Please confirm your password",
@@ -330,7 +338,10 @@ function Register({ setSuccessMsg }) {
                 <span>Creating account...</span>
               </>
             ) : (
+            <>
+              <FaUserPlus />
               <span>Sign Up</span>
+            </>
             )}
           </button>
         </div>

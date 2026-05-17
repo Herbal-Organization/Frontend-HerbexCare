@@ -12,6 +12,8 @@ import {
 import { getUserRole } from "@utils/auth";
 import { useTranslation } from "react-i18next";
 import { HiRefresh } from "react-icons/hi";
+import { IoIosMail } from "react-icons/io";
+import { FaLock, FaSignInAlt } from "react-icons/fa";
 import SocialAuthButtons from "./SocialAuthButtons";
 // SocialAuthButtons removed as it's not in the image, or we can keep it at the very bottom. Let's keep it just in case, or maybe remove if we strictly follow image. The image doesn't show it. Let's remove it to match exactly.
 
@@ -133,6 +135,7 @@ function Login({ setSuccessMsg }) {
           type="email"
           placeholder="Enter your email"
           autoComplete="email"
+          icon={<IoIosMail />}
           error={errors.email?.message}
           {...register("email", {
             required: "Email is required",
@@ -150,6 +153,7 @@ function Login({ setSuccessMsg }) {
           autoComplete="current-password"
           inputClassName="font-sans"
           isPassword={true}
+          icon={<FaLock />}
           error={errors.password?.message}
           {...register("password", {
             required: "Password is required",
@@ -186,7 +190,10 @@ function Login({ setSuccessMsg }) {
               <span>{t("auth.login.loading", "Logging in...")}</span>
             </>
           ) : (
-            <span>Log In</span>
+            <>
+              <FaSignInAlt />
+              <span>Log In</span>
+            </>
           )}
         </button>
       </form>
