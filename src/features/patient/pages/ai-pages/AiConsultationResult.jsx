@@ -314,6 +314,7 @@ function AiConsultationResult({ result, onNewConsultation }) {
               {t("aiConsultation.result.sidebar.reliability")}
             </p>
           </div>
+
         </div>
       </div>
 

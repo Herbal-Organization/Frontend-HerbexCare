@@ -28,9 +28,7 @@ export const normalizeRecipe = (recipe) => ({
   id: recipe.recipeId,
   herbalistId: recipe.herbalistId ?? null,
   title: recipe.description || "Untitled Recipe",
-  description:
-    recipe.instructions ||
-    "No preparation instructions available.",
+  description: recipe.instructions || "No preparation instructions available.",
   instructions: recipe.instructions || "No preparation instructions available.",
   price: recipe.price ?? 0,
   herbs: recipe.herbs ?? [],
@@ -88,7 +86,9 @@ export const buildRecipeAdvantages = (recipe, herbs) => {
   });
 
   if (recipe.createdByAI) {
-    advantages.push("AI-generated recipe structure may speed up personalized drafting.");
+    advantages.push(
+      "AI-generated recipe structure may speed up personalized drafting.",
+    );
   }
 
   return advantages;
@@ -104,7 +104,9 @@ export const buildRecipeDisadvantages = (recipe, herbs) => {
   });
 
   if (!recipe.targetedDiseases.length) {
-    disadvantages.push("This recipe does not list a specific target condition.");
+    disadvantages.push(
+      "This recipe does not list a specific target condition.",
+    );
   }
 
   if (!herbs.length) {
