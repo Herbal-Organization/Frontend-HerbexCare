@@ -9,14 +9,10 @@ import {
 
 function CheckoutPanel({
   shippingAddress,
-  contactName,
-  contactPhone,
   paymentMethod,
   isSubmitting,
   error,
   onAddressChange,
-  onContactNameChange,
-  onContactPhoneChange,
   onPaymentChange,
 }) {
   return (
@@ -37,35 +33,7 @@ function CheckoutPanel({
       )}
 
       <div className="space-y-6">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500">
-              <FaUser />
-              Contact Name
-            </label>
-            <input
-              value={contactName}
-              onChange={(event) => onContactNameChange(event.target.value)}
-              placeholder="Full name"
-              className="w-full rounded-2xl border-2 border-slate-200/50 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition-all placeholder:font-medium placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
-              disabled={isSubmitting}
-            />
-          </div>
 
-          <div>
-            <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500">
-              <FaPhone />
-              Contact Phone
-            </label>
-            <input
-              value={contactPhone}
-              onChange={(event) => onContactPhoneChange(event.target.value)}
-              placeholder="+20..."
-              className="w-full rounded-2xl border-2 border-slate-200/50 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition-all placeholder:font-medium placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
-              disabled={isSubmitting}
-            />
-          </div>
-        </div>
 
         <div>
           <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500">
@@ -109,8 +77,6 @@ function CheckoutPanel({
           type="submit"
           disabled={
             isSubmitting ||
-            !contactName.trim() ||
-            !contactPhone.trim() ||
             !shippingAddress.trim() ||
             !paymentMethod
           }

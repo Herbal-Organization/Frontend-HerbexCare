@@ -152,7 +152,7 @@ function PatientDashboard() {
           path="/settings"
           element={<PatientSettings user={displayUser} />}
         />
-        <Route path="/cart" element={<PatientCart />} />
+        <Route path="/cart" element={<PatientCart dashboardData={dashboardData} />} />
         <Route path="/orders" element={<PatientOrders />} />
         <Route path="/orders/success" element={<OrderSuccessPage />} />
         <Route

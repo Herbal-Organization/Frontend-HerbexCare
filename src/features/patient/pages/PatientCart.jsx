@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@context/CartContext";
 import { createOrder, getAllMyOrders } from "@api/orders";
@@ -117,7 +117,7 @@ const pickLatestOrderId = (orders) => {
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function PatientCart() {
+function PatientCart({ dashboardData }) {
   const {
     cart,
     removeHerbFromCart,
@@ -138,6 +138,27 @@ function PatientCart() {
   const [contactPhone, setContactPhone] = useState(
     () => getUserFromToken()?.phone || "",
   );
+
+  useEffect(() => {
+    if (dashboardData?.profile) {
+      const { governorate, city, street, phone } = dashboardData.profile;
+      
+      setShippingAddress((current) => {
+        if (!current) {
+          const addressParts = [governorate, city, street].filter(Boolean);
+          return addressParts.join(", ");
+        }
+        return current;
+      });
+      
+      setContactPhone((current) => {
+        if (!current) {
+          return phone || getUserFromToken()?.phone || "";
+        }
+        return current;
+      });
+    }
+  }, [dashboardData]);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -190,15 +211,7 @@ function PatientCart() {
       return;
     }
 
-    if (!contactName.trim()) {
-      setError("Please enter a contact name.");
-      return;
-    }
 
-    if (!contactPhone.trim()) {
-      setError("Please enter a contact phone number.");
-      return;
-    }
 
     if (!shippingAddress.trim()) {
       setError("Please enter a shipping address.");
@@ -221,11 +234,6 @@ function PatientCart() {
         herbId: Number(herb.herbId) || 0,
         herbalistId: Number(herb.herbalistId) || 0,
         quantityPerGram: Number(herb.quantityPerGram) || 0,
-        unitPrice: Number(herb.pricePerKilo) || 0,
-        itemPrice: Number(herb.pricePerKilo) || 0,
-        totalPrice:
-          (Number(herb.pricePerKilo) * Number(herb.quantityPerGram || 0)) /
-          1000,
       }));
 
       const recipesArray = cart.recipes.map((recipe) => ({
@@ -241,24 +249,7 @@ function PatientCart() {
 
       const orderPayload = {
         shippingAddress: shippingAddress.trim(),
-        contactName: contactName.trim(),
-        contactPhone: contactPhone.trim(),
         paymentMethod: normalizedPaymentMethod,
-        customerInformation: {
-          customerId: currentUser.userId || currentUser.id || null,
-          name: contactName.trim() || currentUser.name || "",
-          email: currentUser.email || "",
-          phone: contactPhone.trim() || currentUser.phone || "",
-        },
-        shippingDetails: {
-          address: shippingAddress.trim(),
-          contactName: contactName.trim(),
-          contactPhone: contactPhone.trim(),
-        },
-        totalPrice: orderTotal,
-        totalCost: orderTotal,
-        orderTimestamp: new Date().toISOString(),
-        status: "Pending",
       };
 
       if (herbsArray.length > 0) {
@@ -296,7 +287,7 @@ function PatientCart() {
             const myOrdersResponse = await getAllMyOrders();
             const myOrders = normalizeOrdersList(myOrdersResponse);
             orderId = pickLatestOrderId(myOrders);
-          } catch (_err) {
+          } catch {
             // ignore and retry
           }
 
