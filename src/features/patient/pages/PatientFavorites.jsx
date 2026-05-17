@@ -13,6 +13,9 @@ import {
   getMyRecipesFavorites,
   toggleFavorite,
 } from "@api/favorites";
+import { getHerbById } from "@api/herbs";
+import { HerbCard } from "@components/features/browse";
+import { normalizeHerb } from "@features/browse/services/herbs";
 
 function extractItems(payload) {
   if (Array.isArray(payload)) return payload;
@@ -53,17 +56,10 @@ function normalizeRecipeFavorite(item) {
 
 function normalizeHerbFavorite(item) {
   const herb = item?.herb || item;
-  const herbId = Number(
-    herb?.herbId || herb?.id || item?.targetId || item?.herbId || 0,
-  );
+  const normalized = normalizeHerb(herb);
 
   return {
-    herbId,
-    herbName: herb?.herbName || herb?.name || `Herb #${herbId || "-"}`,
-    scientificName: herb?.scientificName || "Scientific name not available",
-    description: herb?.description || "No description available.",
-    benefits: herb?.benefits || "",
-    imageURL: herb?.imageURL || herb?.imageUrl || "",
+    ...normalized,
     createdDate:
       herb?.createdDate ||
       item?.createdDate ||
@@ -96,7 +92,24 @@ function PatientFavorites() {
           .map(normalizeRecipeFavorite)
           .filter((item) => item.recipeId);
 
-        const herbs = extractItems(herbsResponse)
+        const herbsList = extractItems(herbsResponse);
+        const detailedHerbs = await Promise.all(
+          herbsList.map(async (item) => {
+            const herbId = item.targetId || item.herbId;
+            if (herbId) {
+              try {
+                const details = await getHerbById(herbId);
+                return { ...item, herb: details };
+              } catch (err) {
+                console.error(`Failed to fetch details for herb ${herbId}:`, err);
+                return item;
+              }
+            }
+            return item;
+          })
+        );
+
+        const herbs = detailedHerbs
           .map(normalizeHerbFavorite)
           .filter((item) => item.herbId);
 
@@ -348,64 +361,13 @@ function PatientFavorites() {
                   const currentKey = `herb-${herb.herbId}`;
                   const isBusy = busyKey === currentKey;
                   return (
-                    <div
+                    <HerbCard
                       key={herb.herbId}
-                      className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
-                    >
-                      {herb.imageURL ? (
-                        <img
-                          src={herb.imageURL}
-                          alt={herb.herbName}
-                          className="h-44 w-full object-cover"
-                        />
-                      ) : (
-                        <div className="h-44 w-full bg-[#EAF3DE]" />
-                      )}
-
-                      <div className="p-5">
-                        <div className="mb-3 flex items-center justify-between gap-2">
-                          <h3 className="text-lg font-bold text-slate-900">
-                            {herb.herbName}
-                          </h3>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleRemoveHerbFavorite(herb.herbId)
-                            }
-                            disabled={isBusy}
-                            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-colors ${
-                              isBusy
-                                ? "border-slate-200 bg-slate-100 text-slate-400"
-                                : "border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100"
-                            }`}
-                          >
-                            <FaRegHeart className="text-[10px]" />
-                            {isBusy ? "Updating" : "Unfavorite"}
-                          </button>
-                        </div>
-
-                        <p className="text-xs italic text-slate-500">
-                          {herb.scientificName}
-                        </p>
-                        <p className="mt-3 line-clamp-3 text-sm text-slate-600">
-                          {herb.description}
-                        </p>
-
-                        {herb.benefits ? (
-                          <p className="mt-3 line-clamp-2 text-xs text-emerald-700">
-                            <span className="font-bold">Benefits:</span>{" "}
-                            {herb.benefits}
-                          </p>
-                        ) : null}
-
-                        <Link
-                          to={`/patient/home/herbs/${herb.herbId}`}
-                          className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800"
-                        >
-                          View Herb
-                        </Link>
-                      </div>
-                    </div>
+                      herb={herb}
+                      isFavorite={true}
+                      onToggleFavorite={() => handleRemoveHerbFavorite(herb.herbId)}
+                      isFavoriteUpdating={isBusy}
+                    />
                   );
                 })}
               </div>
