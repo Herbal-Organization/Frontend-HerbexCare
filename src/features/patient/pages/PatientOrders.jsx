@@ -7,12 +7,57 @@ import {
   FaChevronRight,
 } from "react-icons/fa";
 import { getAllMyOrders } from "@api/orders";
+import { Pagination } from "@components/common";
+
+const ORDERS_PER_PAGE = 8;
 
 function extractOrdersArray(payload) {
   if (Array.isArray(payload)) return payload;
   if (Array.isArray(payload?.items)) return payload.items;
+  if (Array.isArray(payload?.results)) return payload.results;
   if (Array.isArray(payload?.data)) return payload.data;
+  if (Array.isArray(payload?.data?.items)) return payload.data.items;
   return [];
+}
+
+function getNumericValue(...values) {
+  for (const value of values) {
+    const numeric = Number(value);
+    if (Number.isFinite(numeric) && numeric > 0) {
+      return numeric;
+    }
+  }
+
+  return null;
+}
+
+function extractPaginationMeta(payload) {
+  const totalItems = getNumericValue(
+    payload?.totalItems,
+    payload?.totalCount,
+    payload?.count,
+    payload?.data?.totalItems,
+    payload?.data?.totalCount,
+  );
+
+  const totalPages = getNumericValue(
+    payload?.totalPages,
+    payload?.data?.totalPages,
+  );
+
+  const pageSize = getNumericValue(
+    payload?.pageSize,
+    payload?.PageSize,
+    payload?.data?.pageSize,
+    payload?.data?.PageSize,
+  );
+
+  return {
+    hasMeta: totalItems !== null || totalPages !== null,
+    totalItems,
+    totalPages,
+    pageSize,
+  };
 }
 
 const normalizeStatus = (status) => (status || "").trim().toLowerCase();
@@ -48,14 +93,56 @@ function PatientOrders() {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
   useEffect(() => {
     const loadOrders = async () => {
       try {
         setIsLoading(true);
         setError("");
-        const response = await getAllMyOrders();
-        setOrders(extractOrdersArray(response));
+        const response = await getAllMyOrders({
+          pageNumber: currentPage,
+          pageSize: ORDERS_PER_PAGE,
+        });
+        const extractedOrders = extractOrdersArray(response);
+        const paginationMeta = extractPaginationMeta(response);
+
+        // Fallback to client-side slicing when API returns an unpaginated list.
+        if (!paginationMeta.hasMeta) {
+          const safeTotalItems = extractedOrders.length;
+          const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
+          const endIndex = startIndex + ORDERS_PER_PAGE;
+
+          setOrders(extractedOrders.slice(startIndex, endIndex));
+          setTotalItems(safeTotalItems);
+          return;
+        }
+
+        const safePageSize = paginationMeta.pageSize ?? ORDERS_PER_PAGE;
+        const safeTotalPages = paginationMeta.totalPages ?? null;
+        const safeTotalItems =
+          paginationMeta.totalItems ??
+          (safeTotalPages
+            ? safeTotalPages * safePageSize
+            : extractedOrders.length);
+
+        setOrders(extractedOrders);
+        setTotalItems(safeTotalItems);
+
+        if (
+          safeTotalPages &&
+          currentPage > safeTotalPages &&
+          safeTotalPages >= 1
+        ) {
+          setCurrentPage(safeTotalPages);
+        }
+
+        // If the backend sends a page size different than the UI one, keep
+        // page buttons stable by projecting total items to the UI page size.
+        if (safePageSize !== ORDERS_PER_PAGE && safeTotalItems <= 0) {
+          setTotalItems(extractedOrders.length);
+        }
       } catch (err) {
         setError(
           err.response?.data?.message ||
@@ -68,7 +155,15 @@ function PatientOrders() {
     };
 
     loadOrders();
-  }, []);
+  }, [currentPage]);
+
+  const totalPages = Math.max(1, Math.ceil(totalItems / ORDERS_PER_PAGE));
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   if (isLoading) {
     return (
@@ -170,6 +265,17 @@ function PatientOrders() {
           );
         })}
       </div>
+
+      {totalPages > 1 && (
+        <div className="mt-8 flex justify-center">
+          <Pagination
+            totalItems={totalItems}
+            itemsPerPage={ORDERS_PER_PAGE}
+            currentPage={Math.min(currentPage, totalPages)}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      )}
     </div>
   );
 }

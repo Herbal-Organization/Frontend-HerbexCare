@@ -1,7 +1,20 @@
 import httpClient from "./httpClient";
 
-export const getAllMyOrders = async () => {
-  const { data } = await httpClient.get("/api/Orders/all-my-orders");
+export const getAllMyOrders = async (params = {}) => {
+  const { pageNumber, pageSize, searchValue, sortColumn, sortDirection } =
+    params;
+
+  const queryParams = {};
+
+  if (pageNumber != null) queryParams.PageNumber = pageNumber;
+  if (pageSize != null) queryParams.PageSize = pageSize;
+  if (searchValue) queryParams.SearchValue = searchValue;
+  if (sortColumn) queryParams.SortColumn = sortColumn;
+  if (sortDirection) queryParams.SortDirection = sortDirection;
+
+  const { data } = await httpClient.get("/api/Orders/all-my-orders", {
+    params: queryParams,
+  });
   return data;
 };
 
