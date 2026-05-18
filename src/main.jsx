@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import "./index.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import "./i18n/config.js"; // Initialize i18n
@@ -18,11 +19,13 @@ if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID.includes("your-google-client-id")) {
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <CartProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </CartProvider>
+      <ThemeProvider>
+        <CartProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </CartProvider>
+      </ThemeProvider>
     </GoogleOAuthProvider>
   </StrictMode>,
 );

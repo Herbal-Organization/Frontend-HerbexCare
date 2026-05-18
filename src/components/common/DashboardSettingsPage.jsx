@@ -9,7 +9,9 @@ import {
   FaShieldAlt,
   FaTrash,
   FaUserCircle,
+  FaPalette,
 } from "react-icons/fa";
+import { useTheme } from "@context/ThemeContext";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -72,6 +74,7 @@ function DashboardSettingsPage({
   onUpdateProfile,
 }) {
   const { t, i18n } = useTranslation();
+  const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const resolvedUserId = user?.userId || user?.id;
   const [profileForm, setProfileForm] = useState(() => buildProfileForm(user));
@@ -578,6 +581,56 @@ function DashboardSettingsPage({
                 <option value="en">English</option>
                 <option value="ar">العربية</option>
               </select>
+            </div>
+          </motion.section>
+
+          <motion.section
+            variants={itemVariants}
+            className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm"
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 text-purple-600">
+                <FaPalette className="text-lg" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-xl font-bold text-slate-900">
+                  {t("theme.title")}
+                </h2>
+                <p className="mt-1 text-sm text-slate-500">
+                  {t("theme.description")}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700">
+                    {isDark ? t("theme.dark") : t("theme.light")}
+                  </label>
+                  <p className="mt-1 text-xs text-slate-500">
+                    {isDark 
+                      ? t("theme.switchToLight")
+                      : t("theme.switchToDark")
+                    }
+                  </p>
+                </div>
+                <button
+                  onClick={toggleTheme}
+                  className="relative inline-flex h-8 w-14 items-center rounded-full bg-slate-300 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  style={{
+                    backgroundColor: isDark ? "#059669" : "#cbd5e1",
+                  }}
+                  aria-label={t("theme.switchToLight")}
+                >
+                  <span
+                    className="inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300"
+                    style={{
+                      transform: isDark ? "translateX(1.75rem)" : "translateX(0.25rem)",
+                    }}
+                  />
+                </button>
+              </div>
             </div>
           </motion.section>
 

@@ -28,6 +28,12 @@ html[lang="ar"] {
     -webkit-font-smoothing: antialiased;
   }
 
+  /* Dark Mode Support */
+  html.dark body {
+    background-color: #0f172a;
+    color: #e2e8f0;
+  }
+
   /* Global inheritance to prevent browser/component overrides */
   h1,
   h2,
@@ -71,4 +77,17 @@ html[lang="ar"] {
 .custom-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #e2e8f0 transparent;
+}
+
+/* Dark Mode Scrollbar */
+html.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #475569; /* slate-600 */
+}
+
+html.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #64748b; /* slate-500 */
+}
+
+html.dark .custom-scrollbar {
+  scrollbar-color: #475569 transparent;
 }

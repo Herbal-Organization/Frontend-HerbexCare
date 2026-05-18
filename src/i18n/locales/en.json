@@ -724,5 +724,13 @@
       "noDataDesc": "Once your profile data is available, it will appear here.",
       "retry": "Try Again"
     }
+  },
+  "theme": {
+    "switchToDark": "Switch to dark mode",
+    "switchToLight": "Switch to light mode",
+    "title": "Theme",
+    "description": "Choose your preferred display theme",
+    "light": "Light",
+    "dark": "Dark"
   }
 }
