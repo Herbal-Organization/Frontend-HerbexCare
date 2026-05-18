@@ -13,7 +13,7 @@ function Footer() {
 
   return (
     <footer
-      className="bg-gradient-to-b from-white to-slate-50 border-t border-slate-200 pt-16 pb-8 px-4 sm:px-6 lg:px-8"
+      className="bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 border-t border-slate-200 dark:border-slate-800 pt-16 pb-8 px-4 sm:px-6 lg:px-8"
       dir={isRTL ? "rtl" : "ltr"}
     >
       <div className="mx-auto max-w-7xl">
@@ -30,12 +30,12 @@ function Footer() {
               <div className="flex items-center justify-center bg-primary rounded-xl p-2 text-white shadow-md">
                 <FaLeaf className="text-xl" />
               </div>
-              <h2 className="text-slate-900 text-2xl font-bold tracking-tight">
+              <h2 className="text-slate-900 dark:text-slate-50 text-2xl font-bold tracking-tight">
                 {t("navbar.brand")}
               </h2>
             </div>
 
-            <p className="text-slate-500 text-sm leading-relaxed mb-6 max-w-md">
+            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6 max-w-md">
               {t("footer.tagline")}
             </p>
 
@@ -76,15 +76,15 @@ function Footer() {
 
         {/* Bottom Bar */}
         <MotionDiv
-          className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-slate-200"
+          className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-slate-200 dark:border-slate-800"
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.35 }}
           transition={{ duration: 0.4, delay: 0.06, ease: "easeOut" }}
         >
-          <p className="text-slate-400 text-sm mb-4 md:mb-0">
+          <p className="text-slate-400 dark:text-slate-500 text-sm mb-4 md:mb-0">
             {t("footer.copyright")}
-            <span className="font-medium text-slate-600">
+            <span className="font-medium text-slate-600 dark:text-slate-300">
               {" "}
               {t("footer.author")}
             </span>

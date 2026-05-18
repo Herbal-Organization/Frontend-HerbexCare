@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { FaLeaf, FaUserPlus, FaSignInAlt } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@components/common/LanguageSwitcher";
+import ThemeSwitcher from "@components/common/ThemeSwitcher";
 
 const MotionDiv = motion.div;
 
@@ -25,12 +26,13 @@ function Navbar({ isAuthPage, isLogin }) {
         <div className="flex items-center justify-center bg-primary rounded-lg p-1.5 text-white">
           <FaLeaf className="text-xl" />
         </div>
-        <h2 className="text-slate-900 text-xl font-bold leading-tight tracking-tight">
+        <h2 className="text-slate-900 dark:text-slate-50 text-xl font-bold leading-tight tracking-tight">
           {t("navbar.brand")}
         </h2>
       </Link>
 
-      <div className="flex items-center gap-3">
+      <motion.div className="flex items-center gap-2 sm:gap-3">
+        <ThemeSwitcher />
         <LanguageSwitcher />
 
         {isAuthPage ? (
@@ -40,7 +42,7 @@ function Navbar({ isAuthPage, isLogin }) {
               className={`inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all ${
                 !isLogin
                   ? "bg-primary text-white shadow-md shadow-primary/20 hover:-translate-y-0.5"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
               }`}
             >
               <FaUserPlus />
@@ -51,7 +53,7 @@ function Navbar({ isAuthPage, isLogin }) {
               className={`inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all ${
                 isLogin
                   ? "bg-primary text-white shadow-md shadow-primary/20 hover:-translate-y-0.5"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
               }`}
             >
               <FaSignInAlt />
@@ -66,7 +68,7 @@ function Navbar({ isAuthPage, isLogin }) {
             {t("navbar.getStarted")}
           </Link>
         )}
-      </div>
+      </motion.div>
     </MotionDiv>
   );
 }

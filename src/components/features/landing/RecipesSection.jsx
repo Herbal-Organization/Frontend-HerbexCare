@@ -58,10 +58,10 @@ function RecipesSection() {
         transition={{ duration: 0.45 }}
       >
         <div className="max-w-xl">
-          <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">
+          <h2 className="text-3xl font-extrabold text-slate-900 dark:text-slate-50 tracking-tight mb-2">
             {t("recipes.title")}
           </h2>
-          <p className="text-slate-600">{t("recipes.description")}</p>
+          <p className="text-slate-600 dark:text-slate-400">{t("recipes.description")}</p>
         </div>
       </MotionDiv>
 
@@ -69,7 +69,7 @@ function RecipesSection() {
         {recipes.map((recipe, idx) => (
           <MotionDiv
             key={idx}
-            className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 flex flex-col transition-shadow hover:shadow-md"
+            className="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col transition-shadow hover:shadow-md dark:hover:shadow-slate-900/50"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.22 }}
@@ -85,25 +85,25 @@ function RecipesSection() {
 
             <div className="p-6 flex flex-col flex-1">
               <div className="flex items-center justify-between mb-3">
-                <span className="bg-primary-light text-primary text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider">
+                <span className="bg-primary-light dark:bg-emerald-950/60 text-primary dark:text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider">
                   {t(recipe.tagKey)}
                 </span>
-                <div className="flex items-center text-slate-400 text-xs font-medium">
+                <div className="flex items-center text-slate-400 dark:text-slate-500 text-xs font-medium">
                   <MdSchedule className="text-sm mx-1" />
                   {t(recipe.timeKey)}
                 </div>
               </div>
 
-              <h3 className="text-lg font-bold text-slate-900 mb-2 leading-tight">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50 mb-2 leading-tight">
                 {t(recipe.titleKey)}
               </h3>
-              <p className="text-slate-500 text-sm mb-6 flex-1 line-clamp-2">
+              <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 flex-1 line-clamp-2">
                 {t(recipe.descriptionKey)}
               </p>
 
               <Link
                 to="/auth"
-                className="inline-flex w-full items-center justify-center py-2.5 bg-primary-light/50 hover:bg-primary-light text-primary font-bold text-sm rounded-xl transition-colors"
+                className="inline-flex w-full items-center justify-center py-2.5 bg-primary-light/50 dark:bg-emerald-950/40 hover:bg-primary-light dark:hover:bg-emerald-950/60 text-primary dark:text-emerald-400 font-bold text-sm rounded-xl transition-colors"
               >
                 {t("recipes.viewRecipe")}
               </Link>

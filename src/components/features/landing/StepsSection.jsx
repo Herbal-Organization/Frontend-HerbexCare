@@ -30,7 +30,7 @@ function StepsSection() {
   return (
     <section
       id="how-it-works"
-      className="bg-slate-100 py-20 px-4 sm:px-6 lg:px-8"
+      className="bg-slate-100 dark:bg-slate-900 py-20 px-4 sm:px-6 lg:px-8"
       dir={isRTL ? "rtl" : "ltr"}
     >
       <div className="mx-auto max-w-7xl">
@@ -41,29 +41,29 @@ function StepsSection() {
           viewport={{ once: true, amount: 0.35 }}
           transition={{ duration: 0.45 }}
         >
-          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-50 mb-4 tracking-tight">
             {t("steps.title")}
           </h2>
-          <p className="text-slate-600 text-lg">{t("steps.description")}</p>
+          <p className="text-slate-600 dark:text-slate-400 text-lg">{t("steps.description")}</p>
         </MotionDiv>
 
         <div className="grid md:grid-cols-3 gap-8">
           {steps.map((step, idx) => (
             <MotionDiv
               key={idx}
-              className="bg-white rounded-3xl p-8 shadow-sm flex flex-col items-center text-center transition-transform hover:-translate-y-1"
+              className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm dark:shadow-slate-900/50 flex flex-col items-center text-center transition-transform hover:-translate-y-1"
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.4, delay: idx * 0.12 }}
             >
-              <div className="w-14 h-14 bg-primary-light rounded-2xl flex items-center justify-center text-primary mb-6">
+              <div className="w-14 h-14 bg-primary-light dark:bg-emerald-950/60 rounded-2xl flex items-center justify-center text-primary dark:text-emerald-400 mb-6">
                 {step.icon}
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3 tracking-tight">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-50 mb-3 tracking-tight">
                 {t(step.titleKey)}
               </h3>
-              <p className="text-slate-500 leading-relaxed text-sm">
+              <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-sm">
                 {t(step.descriptionKey)}
               </p>
             </MotionDiv>

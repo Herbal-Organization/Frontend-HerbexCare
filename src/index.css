@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: #059669; /* Emerald 600 */
   --color-primary-hover: #047857; /* Emerald 700 */
@@ -26,12 +28,6 @@ html[lang="ar"] {
     background-color: #fafafa;
     color: #1e293b;
     -webkit-font-smoothing: antialiased;
-  }
-
-  /* Dark Mode Support */
-  html.dark body {
-    background-color: #0f172a;
-    color: #e2e8f0;
   }
 
   /* Global inheritance to prevent browser/component overrides */
@@ -77,17 +73,4 @@ html[lang="ar"] {
 .custom-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #e2e8f0 transparent;
-}
-
-/* Dark Mode Scrollbar */
-html.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #475569; /* slate-600 */
-}
-
-html.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #64748b; /* slate-500 */
-}
-
-html.dark .custom-scrollbar {
-  scrollbar-color: #475569 transparent;
 }

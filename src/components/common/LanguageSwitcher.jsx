@@ -13,7 +13,7 @@ function LanguageSwitcher() {
     <button
       type="button"
       onClick={toggleLanguage}
-      className="flex items-center gap-2 text-slate-600 hover:text-primary transition-colors rounded-lg px-3 py-2 hover:bg-slate-100"
+      className="flex items-center gap-2 text-slate-600 hover:text-primary transition-colors rounded-lg px-3 py-2 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-emerald-400"
       aria-label="Toggle language"
     >
       <GrLanguage className="text-lg" />

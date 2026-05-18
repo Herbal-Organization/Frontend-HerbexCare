@@ -1,23 +1,29 @@
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "@context/ThemeContext";
+import { FaMoon, FaSun } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
+import { useLandingTheme } from "@context/LandingThemeContext";
 
-export const ThemeSwitcher = ({ className = "" }) => {
-  const { isDark, toggleTheme } = useTheme();
+function ThemeSwitcher() {
   const { t } = useTranslation();
+  const theme = useLandingTheme();
+
+  if (!theme) return null;
+
+  const { isDark, toggleTheme } = theme;
 
   return (
     <button
+      type="button"
       onClick={toggleTheme}
-      className={`p-2 rounded-lg transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-gray-700 ${className}`}
-      title={isDark ? t("theme.switchToLight") : t("theme.switchToDark")}
-      aria-label={isDark ? t("theme.switchToLight") : t("theme.switchToDark")}
+      className="flex items-center justify-center rounded-lg p-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-primary dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-emerald-400"
+      aria-label={isDark ? t("theme.light") : t("theme.dark")}
     >
       {isDark ? (
-        <Sun size={20} className="text-yellow-400" />
+        <FaSun className="text-lg" aria-hidden />
       ) : (
-        <Moon size={20} className="text-gray-700" />
+        <FaMoon className="text-lg" aria-hidden />
       )}
     </button>
   );
-};
+}
+
+export default ThemeSwitcher;

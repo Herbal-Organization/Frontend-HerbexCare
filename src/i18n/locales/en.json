@@ -89,6 +89,10 @@
     "author": "Karim Safan",
     "language": "English (US)"
   },
+  "theme": {
+    "dark": "Switch to dark mode",
+    "light": "Switch to light mode"
+  },
   "patientHome": {
     "badge": "Patient Home",
     "welcome": "Welcome back, {{name}}",
@@ -724,13 +728,5 @@
       "noDataDesc": "Once your profile data is available, it will appear here.",
       "retry": "Try Again"
     }
-  },
-  "theme": {
-    "switchToDark": "Switch to dark mode",
-    "switchToLight": "Switch to light mode",
-    "title": "Theme",
-    "description": "Choose your preferred display theme",
-    "light": "Light",
-    "dark": "Dark"
   }
 }
