@@ -175,33 +175,47 @@ function PatientOrderDetails() {
         </div>
       )}
 
-      <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-start">
+      <div className="mb-8 flex flex-col justify-between gap-6 md:flex-row md:items-end">
         <div>
-          <h1 className="flex items-center gap-3 text-3xl font-extrabold tracking-tight text-slate-900">
-            <div className="rounded-xl border border-slate-200 bg-slate-100 p-3 text-slate-600 shadow-inner">
-              <FaReceipt className="text-xl" />
-            </div>
-            Order #{String(orderId).slice(0, 8)}
+          <div className="mb-3 flex items-center gap-2">
+            <span
+              className={`inline-flex rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-widest shadow-sm ${
+                isCanceled
+                  ? "border-rose-200 bg-rose-50 text-rose-700"
+                  : isPaid
+                    ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                    : normalizedStatus === "processing"
+                      ? "border-amber-200 bg-amber-50 text-amber-700"
+                      : "border-slate-200 bg-slate-50 text-slate-700"
+              }`}
+            >
+              {status}
+            </span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              ID: {orderId}
+            </span>
+          </div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+            Order Review
           </h1>
-          <p className="mt-3 flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-slate-400">
-            Placed {new Date(orderDate).toLocaleString()}
+          <p className="mt-2 flex items-center gap-2 text-sm font-semibold text-slate-500">
+            Placed on{" "}
+            {new Date(orderDate).toLocaleDateString(undefined, {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}{" "}
+            at{" "}
+            {new Date(orderDate).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <span
-            className={`inline-flex rounded-full border px-5 py-2 text-xs font-black uppercase tracking-widest shadow-sm ${
-              isCanceled
-                ? "border-rose-200 bg-rose-50 text-rose-700"
-                : isPaid
-                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                  : normalizedStatus === "processing"
-                    ? "border-amber-200 bg-amber-50 text-amber-700"
-                    : "border-slate-200 bg-slate-50 text-slate-700"
-            }`}
-          >
-            {status}
-          </span>
+        <div className="flex flex-wrap gap-3">
+          {/* Action buttons could go here (e.g., Download Invoice, Reorder) */}
         </div>
       </div>
 
