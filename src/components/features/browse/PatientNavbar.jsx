@@ -15,7 +15,6 @@ import {
 import { getUserFromToken, logout } from "@utils/auth";
 import { useCart } from "@context/CartContext";
 import { useTranslation } from "react-i18next";
-import { ThemeSwitcher } from "@components/common";
 
 function PatientNavbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -134,9 +133,6 @@ function PatientNavbar() {
             <button className="p-2.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all duration-300 hover:shadow-sm transform hover:-translate-y-0.5 hidden sm:block group">
               <FaBell className="text-lg group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
             </button>
-
-            {/* Theme Switcher */}
-            <ThemeSwitcher className="hidden sm:block" />
 
             {/* User Profile Section */}
             <div className="hidden sm:flex items-center gap-3 ps-4 ms-2 border-s border-slate-200">

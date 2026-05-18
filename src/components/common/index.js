@@ -8,4 +8,3 @@ export { default as OrderCard } from "./OrderCard";
 export { default as Pagination } from "./Pagination";
 export { default as ProfileLayout } from "./ProfileLayout";
 export { default as StatusBadge } from "./StatusBadge";
-export { ThemeSwitcher } from "./ThemeSwitcher";
