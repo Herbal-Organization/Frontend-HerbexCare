@@ -59,9 +59,7 @@ function DashboardSidebar({
       >
         {/* Branding Area */}
         <div className="p-6 flex items-center gap-3">
-          <div
-            className="rounded-xl p-2.5 text-white flex items-center justify-center bg-gradient-to-br from-primary to-emerald-600 shadow-md shadow-primary/20 hover:scale-105 transition-transform"
-          >
+          <div className="rounded-xl p-2.5 text-white flex items-center justify-center bg-primary shadow-md shadow-primary/20 hover:scale-105 transition-transform">
             {isPatient ? (
               <FaSpa className="text-2xl" />
             ) : (
@@ -111,7 +109,7 @@ function DashboardSidebar({
                     }
                     className={`flex-1 flex items-center gap-3 px-4 py-2.5 rounded-xl text-start text-sm font-semibold transition-all duration-200 cursor-pointer ${
                       isCurrent
-                        ? "bg-gradient-to-r from-primary/10 to-transparent text-primary"
+                        ? "bg-primary/10 text-primary"
                         : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
                     }`}
                   >
@@ -202,7 +200,9 @@ function DashboardSidebar({
               {displayName.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold truncate dark:text-slate-100">{displayName}</p>
+              <p className="text-sm font-semibold truncate dark:text-slate-100">
+                {displayName}
+              </p>
               <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                 {user?.role || t(`${role}Sidebar.member`, "Member")}
               </p>
