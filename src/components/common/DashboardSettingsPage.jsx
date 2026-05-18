@@ -13,6 +13,15 @@ import {
   FaUserCircle,
 } from "react-icons/fa";
 import { useTheme } from "@context/ThemeContext";
+import SettingsAccordionSection from "@components/common/SettingsAccordionSection";
+
+const DEFAULT_OPEN_SECTIONS = {
+  profile: false,
+  password: false,
+  language: false,
+  appearance: false,
+  delete: false,
+};
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -92,6 +101,7 @@ function DashboardSettingsPage({
   const [deleteError, setDeleteError] = useState("");
   const [isSavingPassword, setIsSavingPassword] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [openSections, setOpenSections] = useState(DEFAULT_OPEN_SECTIONS);
 
   const resolvedEmail = useMemo(() => user?.email || "", [user?.email]);
   const currentLanguage = i18n.language?.startsWith("ar") ? "ar" : "en";
@@ -103,6 +113,13 @@ function DashboardSettingsPage({
   useEffect(() => {
     setProfileForm(buildProfileForm(user));
   }, [user]);
+
+  const toggleSection = (sectionId) => {
+    setOpenSections((current) => ({
+      ...current,
+      [sectionId]: !current[sectionId],
+    }));
+  };
 
   const handleProfileChange = (field, value) => {
     setProfileForm((current) => ({
@@ -264,7 +281,7 @@ function DashboardSettingsPage({
   return (
     <div className="relative min-h-full bg-slate-50 dark:bg-slate-950">
       <div className="absolute inset-x-0 top-0 h-64 bg-[radial-gradient(circle_at_top,rgba(56,161,105,0.16),transparent_68%)]" />
-      <div className="relative mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <div className="relative mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <motion.section
           variants={containerVariants}
           initial="hidden"
@@ -311,31 +328,26 @@ function DashboardSettingsPage({
           </div>
         </motion.section>
 
+        <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
+          {t("dashboardSettings.sections.hint")}
+        </p>
+
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="mt-8 grid gap-6 lg:grid-cols-2"
+          className="mt-4 flex flex-col gap-4"
         >
-          <motion.section
-            variants={itemVariants}
-            className="rounded-[1.75rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm lg:col-span-2"
+          <SettingsAccordionSection
+            id="profile"
+            isOpen={openSections.profile}
+            onToggle={() => toggleSection("profile")}
+            icon={FaUserCircle}
+            iconWrapperClassName="bg-violet-50 text-violet-600 dark:bg-violet-950/50 dark:text-violet-400"
+            title={t("dashboardSettings.profile.title")}
+            description={t("dashboardSettings.profile.description")}
           >
-            <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-violet-600">
-                <FaUserCircle className="text-lg" />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50">
-                  {t("dashboardSettings.profile.title")}
-                </h2>
-                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                  {t("dashboardSettings.profile.description")}
-                </p>
-              </div>
-            </div>
-
-            <form onSubmit={handleProfileSubmit} className="mt-6 space-y-4">
+            <form onSubmit={handleProfileSubmit} className="space-y-4">
               {profileError ? (
                 <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
                   {profileError}
@@ -454,27 +466,18 @@ function DashboardSettingsPage({
                 </button>
               </div>
             </form>
-          </motion.section>
+          </SettingsAccordionSection>
 
-          <motion.section
-            variants={itemVariants}
-            className="rounded-[1.75rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm"
+          <SettingsAccordionSection
+            id="password"
+            isOpen={openSections.password}
+            onToggle={() => toggleSection("password")}
+            icon={FaLock}
+            iconWrapperClassName="bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400"
+            title={t("dashboardSettings.security.password.title")}
+            description={t("dashboardSettings.security.password.description")}
           >
-            <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
-                <FaLock className="text-lg" />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50">
-                  {t("dashboardSettings.security.password.title")}
-                </h2>
-                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                  {t("dashboardSettings.security.password.description")}
-                </p>
-              </div>
-            </div>
-
-            <form onSubmit={handlePasswordSubmit} className="mt-6 space-y-4">
+            <form onSubmit={handlePasswordSubmit} className="space-y-4">
               {passwordError ? (
                 <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
                   {passwordError}
@@ -549,27 +552,18 @@ function DashboardSettingsPage({
                 </button>
               </div>
             </form>
-          </motion.section>
+          </SettingsAccordionSection>
 
-          <motion.section
-            variants={itemVariants}
-            className="rounded-[1.75rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm"
+          <SettingsAccordionSection
+            id="language"
+            isOpen={openSections.language}
+            onToggle={() => toggleSection("language")}
+            icon={FaLanguage}
+            iconWrapperClassName="bg-sky-50 text-sky-600 dark:bg-sky-950/50 dark:text-sky-400"
+            title={t("dashboardSettings.language.title")}
+            description={t("dashboardSettings.language.description")}
           >
-            <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-50 text-sky-600">
-                <FaLanguage className="text-lg" />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50">
-                  {t("dashboardSettings.language.title")}
-                </h2>
-                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                  {t("dashboardSettings.language.description")}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-5">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-5 dark:border-slate-700 dark:bg-slate-800/50">
               <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                 {t("dashboardSettings.language.title")}
               </label>
@@ -583,27 +577,18 @@ function DashboardSettingsPage({
                 <option value="ar">العربية</option>
               </select>
             </div>
-          </motion.section>
+          </SettingsAccordionSection>
 
-          <motion.section
-            variants={itemVariants}
-            className="rounded-[1.75rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm"
+          <SettingsAccordionSection
+            id="appearance"
+            isOpen={openSections.appearance}
+            onToggle={() => toggleSection("appearance")}
+            icon={FaMoon}
+            iconWrapperClassName="bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400"
+            title={t("dashboardSettings.appearance.title")}
+            description={t("dashboardSettings.appearance.description")}
           >
-            <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
-                <FaMoon className="text-lg" />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50">
-                  {t("dashboardSettings.appearance.title")}
-                </h2>
-                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                  {t("dashboardSettings.appearance.description")}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-5">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-5 dark:border-slate-700 dark:bg-slate-800/50">
               <p className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
                 {t("dashboardSettings.appearance.modeLabel")}
               </p>
@@ -636,41 +621,33 @@ function DashboardSettingsPage({
                 </button>
               </div>
             </div>
-          </motion.section>
+          </SettingsAccordionSection>
 
-          <motion.section
-            variants={itemVariants}
-            className="rounded-[1.75rem] border border-rose-200 bg-rose-50 p-6 shadow-sm lg:col-span-2"
+          <SettingsAccordionSection
+            id="delete"
+            isOpen={openSections.delete}
+            onToggle={() => toggleSection("delete")}
+            icon={FaTrash}
+            iconWrapperClassName="bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400"
+            title={t("dashboardSettings.security.delete.title")}
+            description={t("dashboardSettings.security.delete.description")}
+            variant="danger"
           >
-            <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-100 text-rose-600">
-                <FaTrash className="text-lg" />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-xl font-bold text-rose-950">
-                  {t("dashboardSettings.security.delete.title")}
-                </h2>
-                <p className="mt-1 text-sm text-rose-800">
-                  {t("dashboardSettings.security.delete.description")}
-                </p>
-              </div>
-            </div>
-
-            <form onSubmit={handleDeleteAccount} className="mt-6 space-y-4">
+            <form onSubmit={handleDeleteAccount} className="space-y-4">
               {deleteError ? (
-                <div className="rounded-2xl border border-rose-200 bg-white px-4 py-3 text-sm font-medium text-rose-700">
+                <div className="rounded-2xl border border-rose-200 bg-white px-4 py-3 text-sm font-medium text-rose-700 dark:border-rose-900 dark:bg-rose-950/50 dark:text-rose-300">
                   {deleteError}
                 </div>
               ) : null}
 
-              <p className="rounded-2xl border border-rose-200 bg-white px-4 py-3 text-sm leading-6 text-slate-700">
+              <p className="rounded-2xl border border-rose-200 bg-white px-4 py-3 text-sm leading-6 text-slate-700 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-slate-300">
                 {t("profile.modals.deleteAccount.warning")}
               </p>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
+                <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                   {t("profile.modals.deleteAccount.confirmLabel")}
-                  <span className="font-bold text-rose-700">
+                  <span className="font-bold text-rose-700 dark:text-rose-400">
                     {" "}
                     {resolvedEmail}
                   </span>
@@ -700,7 +677,7 @@ function DashboardSettingsPage({
                 </button>
               </div>
             </form>
-          </motion.section>
+          </SettingsAccordionSection>
         </motion.div>
       </div>
     </div>

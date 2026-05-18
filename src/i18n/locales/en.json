@@ -197,6 +197,11 @@
       "light": "Light",
       "dark": "Dark"
     },
+    "sections": {
+      "hint": "Tap a section to expand or collapse it.",
+      "expand": "Expand section",
+      "collapse": "Collapse section"
+    },
     "security": {
       "password": {
         "title": "Reset password",
