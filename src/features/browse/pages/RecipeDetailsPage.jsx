@@ -11,8 +11,11 @@ import {
   FaCalendarAlt,
   FaToggleOn,
   FaRobot,
+  FaChevronDown,
+  FaChevronUp,
+  FaInfoCircle,
 } from "react-icons/fa";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { motion } from "motion/react";
 import Skeleton from "react-loading-skeleton";
@@ -81,71 +84,114 @@ function StatCard({ label, value, hint, accent }) {
 
 /* ── Herb item ── */
 function HerbItem({ herb }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate();
+
   return (
-    <div className="border border-slate-100 rounded-xl p-5 mb-4 last:mb-0 transition-colors hover:bg-slate-50 bg-white">
-      <div className="flex items-start justify-between gap-3 mb-4">
-        <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-1">
-            Herb Name:
-          </p>
-          <p
-            style={{ fontFamily: "'Instrument Serif', serif" }}
-            className="text-xl text-slate-900 leading-none"
-          >
-            {herb.herbName}
-          </p>
-        </div>
-        <span className="text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-3 py-1 shrink-0">
-          {herb.quantity}g
-        </span>
-      </div>
-
-      <div className="space-y-4">
-        <div>
-          <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">
-            Scientific Name:
-          </p>
-          <p className="text-sm font-medium italic text-slate-600">
-            {herb.scientificName || "N/A"}
-          </p>
-        </div>
-
-        <div>
-          <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">
-            Description:
-          </p>
-          <p className="text-xs leading-relaxed text-slate-500">
-            {herb.description || "No description available."}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="bg-slate-50 border border-slate-100 rounded-xl p-3">
-            <p className="text-[9px] uppercase tracking-widest text-slate-400 font-bold mb-1.5">
-              Benefits
+    <div 
+      className={`border border-slate-100 rounded-xl mb-4 last:mb-0 transition-all duration-300 bg-white overflow-hidden ${isExpanded ? "shadow-md ring-1 ring-emerald-100" : "hover:bg-slate-50"}`}
+    >
+      {/* Header / Toggle Area */}
+      <div 
+        className="p-5 flex items-center justify-between gap-3 cursor-pointer select-none"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex items-center gap-4">
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isExpanded ? "bg-emerald-100 text-emerald-700" : "bg-slate-50 text-slate-400 group-hover:bg-emerald-50"}`}>
+            <FaLeaf size={18} />
+          </div>
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-0.5">
+              Herb Name:
             </p>
-            <p className="text-xs font-medium text-slate-700 leading-relaxed">
-              {herb.benefits || "—"}
+            <p
+              style={{ fontFamily: "'Instrument Serif', serif" }}
+              className="text-xl text-slate-900 leading-none"
+            >
+              {herb.herbName}
             </p>
           </div>
-          <div className="bg-slate-50 border border-slate-100 rounded-xl p-3">
-            <p className="text-[9px] uppercase tracking-widest text-slate-400 font-bold mb-1.5">
-              Dosage
-            </p>
-            <p className="text-xs font-medium text-slate-700 leading-relaxed">
-              {herb.dosage || "—"}
-            </p>
-          </div>
-          <div className="bg-amber-50/50 border border-amber-100 rounded-xl p-3">
-            <p className="text-[9px] uppercase tracking-widest text-amber-600 font-bold mb-1.5">
-              Warnings
-            </p>
-            <p className="text-xs font-medium text-amber-800 leading-relaxed">
-              {herb.warnings || "No specific warnings."}
-            </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <span className="text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-3 py-1 shrink-0">
+            {herb.quantity}g
+          </span>
+          <div className={`text-slate-400 transition-transform duration-300 ${isExpanded ? "rotate-180 text-emerald-600" : ""}`}>
+            <FaChevronDown size={14} />
           </div>
         </div>
       </div>
+
+      {/* Expandable Body */}
+      <motion.div
+        initial={false}
+        animate={{ height: isExpanded ? "auto" : 0, opacity: isExpanded ? 1 : 0 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="overflow-hidden bg-slate-50/30"
+      >
+        <div className="p-5 pt-0 space-y-5 border-t border-slate-50">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1.5 flex items-center gap-1">
+                Scientific Name
+              </p>
+              <p className="text-sm font-medium italic text-slate-700">
+                {herb.scientificName || "N/A"}
+              </p>
+            </div>
+            
+            <div className="flex justify-end items-center">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/patient/home/herbs/${herb.herbId}`);
+                }}
+                className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors border border-emerald-100"
+              >
+                <FaInfoCircle />
+                Full Details
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-2">
+              Description
+            </p>
+            <p className="text-xs leading-relaxed text-slate-600 bg-white p-3 rounded-lg border border-slate-50">
+              {herb.description || "No description available."}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="bg-white border border-slate-100 rounded-xl p-3">
+              <p className="text-[9px] uppercase tracking-widest text-emerald-600 font-bold mb-1.5">
+                Benefits
+              </p>
+              <p className="text-xs font-medium text-slate-700 leading-relaxed">
+                {herb.benefits || "—"}
+              </p>
+            </div>
+            <div className="bg-white border border-slate-100 rounded-xl p-3">
+              <p className="text-[9px] uppercase tracking-widest text-sky-600 font-bold mb-1.5">
+                Dosage
+              </p>
+              <p className="text-xs font-medium text-slate-700 leading-relaxed">
+                {herb.dosage || "—"}
+              </p>
+            </div>
+            <div className="bg-amber-50 border border-amber-100 rounded-xl p-3">
+              <p className="text-[9px] uppercase tracking-widest text-amber-600 font-bold mb-1.5">
+                Warnings
+              </p>
+              <p className="text-xs font-medium text-amber-800 leading-relaxed">
+                {herb.warnings || "No specific warnings."}
+              </p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 }
