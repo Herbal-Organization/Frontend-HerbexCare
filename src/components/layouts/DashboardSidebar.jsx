@@ -51,7 +51,7 @@ function DashboardSidebar({
 
       <aside
         className={`
-          fixed top-0 start-0 z-50 h-full w-72 bg-white border-e border-slate-200 flex flex-col
+          fixed top-0 start-0 z-50 h-full w-72 bg-white dark:bg-slate-900 border-e border-slate-200 dark:border-slate-800 flex flex-col
           transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0
@@ -69,7 +69,7 @@ function DashboardSidebar({
             )}
           </div>
           <div className="flex-1 overflow-hidden">
-            <h1 className="text-slate-900 font-bold text-lg leading-none truncate">
+            <h1 className="text-slate-900 dark:text-slate-50 font-bold text-lg leading-none truncate">
               {t(`${role}Sidebar.brand`, "Herbal Care AI")}
             </h1>
             <p className="text-primary text-xs font-medium mt-1 truncate">
@@ -81,7 +81,7 @@ function DashboardSidebar({
           <button
             type="button"
             onClick={onClose}
-            className="md:hidden p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+            className="md:hidden p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors"
             aria-label="Close sidebar"
           >
             <FaTimes className="w-5 h-5" />
@@ -112,7 +112,7 @@ function DashboardSidebar({
                     className={`flex-1 flex items-center gap-3 px-4 py-2.5 rounded-xl text-start text-sm font-semibold transition-all duration-200 cursor-pointer ${
                       isCurrent
                         ? "bg-gradient-to-r from-primary/10 to-transparent text-primary"
-                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
                     }`}
                   >
                     {typeof Icon === "function" ? (
@@ -154,7 +154,7 @@ function DashboardSidebar({
                           className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                             isChildCurrent
                               ? "text-primary bg-primary/5"
-                              : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+                              : "text-slate-500 hover:bg-slate-50 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
                           }`}
                         >
                           {typeof ChildIcon === "function" ? (
@@ -174,13 +174,13 @@ function DashboardSidebar({
         </nav>
 
         {/* Footer Area */}
-        <div className="p-4 border-t border-slate-200">
+        <div className="p-4 border-t border-slate-200 dark:border-slate-800">
           <div className="mb-4 space-y-2">
             {isPatient && (
               <button
                 type="button"
                 onClick={() => navigate("/patient/home")}
-                className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-start text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 cursor-pointer"
+                className="flex w-full items-center gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-start text-sm font-semibold text-slate-700 dark:text-slate-200 shadow-sm transition-colors hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer"
               >
                 <FaHome className="text-primary" />
                 <span>{t("patientSidebar.home")}</span>
@@ -197,13 +197,13 @@ function DashboardSidebar({
             </button>
           </div>
 
-          <div className="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-br from-white to-slate-50/50 border border-slate-100 shadow-sm shadow-slate-100/50">
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-br from-white to-slate-50/50 dark:from-slate-800 dark:to-slate-900/50 border border-slate-100 dark:border-slate-700 shadow-sm shadow-slate-100/50 dark:shadow-slate-900/50">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-emerald-500 flex items-center justify-center text-white font-bold shadow-sm">
               {displayName.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold truncate">{displayName}</p>
-              <p className="text-xs text-slate-500 truncate">
+              <p className="text-sm font-semibold truncate dark:text-slate-100">{displayName}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                 {user?.role || t(`${role}Sidebar.member`, "Member")}
               </p>
             </div>

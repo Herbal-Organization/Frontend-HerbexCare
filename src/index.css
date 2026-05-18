@@ -28,6 +28,14 @@ html[lang="ar"] {
     background-color: #fafafa;
     color: #1e293b;
     -webkit-font-smoothing: antialiased;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+  }
+
+  html.dark body {
+    background-color: #020617;
+    color: #f1f5f9;
   }
 
   /* Global inheritance to prevent browser/component overrides */

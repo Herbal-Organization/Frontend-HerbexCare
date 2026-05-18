@@ -6,10 +6,11 @@ import { toast } from "react-hot-toast";
 import {
   FaLanguage,
   FaLock,
+  FaMoon,
   FaShieldAlt,
+  FaSun,
   FaTrash,
   FaUserCircle,
-  FaPalette,
 } from "react-icons/fa";
 import { useTheme } from "@context/ThemeContext";
 
@@ -33,7 +34,7 @@ const itemVariants = {
 };
 
 const inputClassName =
-  "block w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm font-medium text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/15";
+  "block w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/50 px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-primary focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary/15";
 
 function getReadableName(user, fallbackLabel) {
   return (
@@ -74,7 +75,7 @@ function DashboardSettingsPage({
   onUpdateProfile,
 }) {
   const { t, i18n } = useTranslation();
-  const { isDark, toggleTheme } = useTheme();
+  const { isDark, setTheme } = useTheme();
   const navigate = useNavigate();
   const resolvedUserId = user?.userId || user?.id;
   const [profileForm, setProfileForm] = useState(() => buildProfileForm(user));
@@ -261,7 +262,7 @@ function DashboardSettingsPage({
   };
 
   return (
-    <div className="relative min-h-full bg-slate-50">
+    <div className="relative min-h-full bg-slate-50 dark:bg-slate-950">
       <div className="absolute inset-x-0 top-0 h-64 bg-[radial-gradient(circle_at_top,rgba(56,161,105,0.16),transparent_68%)]" />
       <div className="relative mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <motion.section
@@ -318,17 +319,17 @@ function DashboardSettingsPage({
         >
           <motion.section
             variants={itemVariants}
-            className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm lg:col-span-2"
+            className="rounded-[1.75rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm lg:col-span-2"
           >
             <div className="flex items-start gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-violet-600">
                 <FaUserCircle className="text-lg" />
               </div>
               <div className="flex-1">
-                <h2 className="text-xl font-bold text-slate-900">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50">
                   {t("dashboardSettings.profile.title")}
                 </h2>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   {t("dashboardSettings.profile.description")}
                 </p>
               </div>
@@ -343,7 +344,7 @@ function DashboardSettingsPage({
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                     {t("dashboardSettings.profile.fields.fullName")}
                   </label>
                   <input
@@ -357,7 +358,7 @@ function DashboardSettingsPage({
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                     {t("dashboardSettings.profile.fields.userName")}
                   </label>
                   <input
@@ -371,7 +372,7 @@ function DashboardSettingsPage({
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                     {t("dashboardSettings.profile.fields.email")}
                   </label>
                   <input
@@ -385,7 +386,7 @@ function DashboardSettingsPage({
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                     {t("dashboardSettings.profile.fields.phone")}
                   </label>
                   <input
@@ -399,7 +400,7 @@ function DashboardSettingsPage({
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                     {t("dashboardSettings.profile.fields.governorate")}
                   </label>
                   <input
@@ -413,7 +414,7 @@ function DashboardSettingsPage({
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                     {t("dashboardSettings.profile.fields.city")}
                   </label>
                   <input
@@ -427,7 +428,7 @@ function DashboardSettingsPage({
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                     {t("dashboardSettings.profile.fields.street")}
                   </label>
                   <input
@@ -457,17 +458,17 @@ function DashboardSettingsPage({
 
           <motion.section
             variants={itemVariants}
-            className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm"
+            className="rounded-[1.75rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm"
           >
             <div className="flex items-start gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
                 <FaLock className="text-lg" />
               </div>
               <div className="flex-1">
-                <h2 className="text-xl font-bold text-slate-900">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50">
                   {t("dashboardSettings.security.password.title")}
                 </h2>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   {t("dashboardSettings.security.password.description")}
                 </p>
               </div>
@@ -482,7 +483,7 @@ function DashboardSettingsPage({
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="sm:col-span-2">
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                     {t("profile.modals.changePassword.currentPassword")}
                   </label>
                   <input
@@ -500,7 +501,7 @@ function DashboardSettingsPage({
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                     {t("profile.modals.changePassword.newPassword")}
                   </label>
                   <input
@@ -518,7 +519,7 @@ function DashboardSettingsPage({
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                     {t("profile.modals.changePassword.confirmPassword")}
                   </label>
                   <input
@@ -552,24 +553,24 @@ function DashboardSettingsPage({
 
           <motion.section
             variants={itemVariants}
-            className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm"
+            className="rounded-[1.75rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm"
           >
             <div className="flex items-start gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-50 text-sky-600">
                 <FaLanguage className="text-lg" />
               </div>
               <div className="flex-1">
-                <h2 className="text-xl font-bold text-slate-900">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50">
                   {t("dashboardSettings.language.title")}
                 </h2>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   {t("dashboardSettings.language.description")}
                 </p>
               </div>
             </div>
 
-            <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
+            <div className="mt-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-5">
+              <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                 {t("dashboardSettings.language.title")}
               </label>
               <select
@@ -586,49 +587,52 @@ function DashboardSettingsPage({
 
           <motion.section
             variants={itemVariants}
-            className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm"
+            className="rounded-[1.75rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm"
           >
             <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 text-purple-600">
-                <FaPalette className="text-lg" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
+                <FaMoon className="text-lg" />
               </div>
               <div className="flex-1">
-                <h2 className="text-xl font-bold text-slate-900">
-                  {t("theme.title")}
+                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50">
+                  {t("dashboardSettings.appearance.title")}
                 </h2>
-                <p className="mt-1 text-sm text-slate-500">
-                  {t("theme.description")}
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                  {t("dashboardSettings.appearance.description")}
                 </p>
               </div>
             </div>
 
-            <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700">
-                    {isDark ? t("theme.dark") : t("theme.light")}
-                  </label>
-                  <p className="mt-1 text-xs text-slate-500">
-                    {isDark 
-                      ? t("theme.switchToLight")
-                      : t("theme.switchToDark")
-                    }
-                  </p>
-                </div>
+            <div className="mt-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-5">
+              <p className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                {t("dashboardSettings.appearance.modeLabel")}
+              </p>
+              <div className="grid grid-cols-2 gap-3">
                 <button
-                  onClick={toggleTheme}
-                  className="relative inline-flex h-8 w-14 items-center rounded-full bg-slate-300 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  style={{
-                    backgroundColor: isDark ? "#059669" : "#cbd5e1",
-                  }}
-                  aria-label={t("theme.switchToLight")}
+                  type="button"
+                  onClick={() => setTheme("light")}
+                  className={`flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-bold transition-all ${
+                    !isDark
+                      ? "border-primary bg-primary/10 text-primary shadow-sm"
+                      : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:border-primary/40"
+                  }`}
+                  aria-pressed={!isDark}
                 >
-                  <span
-                    className="inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300"
-                    style={{
-                      transform: isDark ? "translateX(1.75rem)" : "translateX(0.25rem)",
-                    }}
-                  />
+                  <FaSun className="text-base" aria-hidden />
+                  {t("dashboardSettings.appearance.light")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTheme("dark")}
+                  className={`flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-bold transition-all ${
+                    isDark
+                      ? "border-primary bg-primary/10 text-primary shadow-sm"
+                      : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:border-primary/40"
+                  }`}
+                  aria-pressed={isDark}
+                >
+                  <FaMoon className="text-base" aria-hidden />
+                  {t("dashboardSettings.appearance.dark")}
                 </button>
               </div>
             </div>

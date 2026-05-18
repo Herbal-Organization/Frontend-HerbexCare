@@ -1,14 +1,10 @@
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
-import { useLandingTheme } from "@context/LandingThemeContext";
+import { useTheme } from "@context/ThemeContext";
 
 function ThemeSwitcher() {
   const { t } = useTranslation();
-  const theme = useLandingTheme();
-
-  if (!theme) return null;
-
-  const { isDark, toggleTheme } = theme;
+  const { isDark, toggleTheme } = useTheme();
 
   return (
     <button

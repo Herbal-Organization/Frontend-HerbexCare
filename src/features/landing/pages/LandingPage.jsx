@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { LandingThemeProvider } from "@context/LandingThemeContext";
 import Navbar from "@components/features/landing/Navbar.jsx";
 import HeroSection from "@components/features/landing/HeroSection.jsx";
 import StepsSection from "@components/features/landing/StepsSection.jsx";
@@ -35,7 +34,7 @@ function LandingPage() {
   }, []);
 
   return (
-    <LandingThemeProvider>
+    <div className="min-h-screen flex flex-col bg-[#fafafa] text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
       <header
         className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-slate-100 dark:bg-slate-900/80 dark:border-slate-800"
         dir={isRTL ? "rtl" : "ltr"}
@@ -75,7 +74,7 @@ function LandingPage() {
       >
         <FaWhatsapp className="w-6 h-6" />
       </a>
-    </LandingThemeProvider>
+    </div>
   );
 }
 
