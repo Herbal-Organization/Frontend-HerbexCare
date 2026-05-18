@@ -1,4 +1,4 @@
-import { FaHeartbeat, FaMapMarkerAlt, FaShieldAlt } from "react-icons/fa";
+import { FaMapMarkerAlt, FaEnvelope, FaPhone, FaBirthdayCake, FaVenusMars } from "react-icons/fa";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 
@@ -42,46 +42,62 @@ function PatientOverviewHero({ user, profile }) {
           </p>
 
           <div className="mt-8 grid grid-cols-2 sm:flex flex-wrap gap-4">
-            <div className="rounded-2xl border border-slate-100 bg-white/60 px-5 py-4 shadow-sm backdrop-blur-md hover:-translate-y-1 hover:shadow-md transition-all">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                {t("dashboard.hero.email")}
-              </p>
-              <p className="mt-1 text-sm font-semibold text-slate-800 truncate">
-                {user?.email || t("dashboard.hero.notAvailable")}
-              </p>
+            <div className="group rounded-2xl border border-slate-100 bg-white/60 px-5 py-4 shadow-sm backdrop-blur-md hover:-translate-y-1 hover:shadow-md transition-all flex items-center gap-3">
+              <div className="text-slate-400 group-hover:text-emerald-600 transition-colors">
+                <FaEnvelope className="text-base" />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                  {t("dashboard.hero.email")}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-slate-800 truncate">
+                  {user?.email || t("dashboard.hero.notAvailable")}
+                </p>
+              </div>
             </div>
-            <div className="rounded-2xl border border-slate-100 bg-white/60 px-5 py-4 shadow-sm backdrop-blur-md hover:-translate-y-1 hover:shadow-md transition-all">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                {t("dashboard.hero.phone")}
-              </p>
-              <p className="mt-1 text-sm font-semibold text-slate-800">
-                {user?.phone || t("dashboard.hero.notAvailable")}
-              </p>
+
+            <div className="group rounded-2xl border border-slate-100 bg-white/60 px-5 py-4 shadow-sm backdrop-blur-md hover:-translate-y-1 hover:shadow-md transition-all flex items-center gap-3">
+              <div className="text-slate-400 group-hover:text-emerald-600 transition-colors">
+                <FaPhone className="text-base" />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                  {t("dashboard.hero.phone")}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-slate-800">
+                  {user?.phone || t("dashboard.hero.notAvailable")}
+                </p>
+              </div>
             </div>
-            <div className="rounded-2xl border border-slate-100 bg-white/60 px-5 py-4 shadow-sm backdrop-blur-md hover:-translate-y-1 hover:shadow-md transition-all">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                {t("dashboard.hero.birthDate")}
-              </p>
-              <p className="mt-1 text-sm font-semibold text-slate-800">
-                {profile?.birthDate
-                  ? new Date(profile.birthDate).toLocaleDateString(
-                      isAr ? "ar-EG" : "en-US",
-                      { year: "numeric", month: "short", day: "numeric" },
-                    )
-                  : t("dashboard.hero.notSet")}
-              </p>
+
+            <div className="group rounded-2xl border border-slate-100 bg-white/60 px-5 py-4 shadow-sm backdrop-blur-md hover:-translate-y-1 hover:shadow-md transition-all flex items-center gap-3">
+              <div className="text-slate-400 group-hover:text-emerald-600 transition-colors">
+                <FaBirthdayCake className="text-base" />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                  {t("dashboard.hero.birthDate")}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-slate-800">
+                  {profile?.birthDate
+                    ? new Date(profile.birthDate).toLocaleDateString(isAr ? "ar-EG" : "en-US", { year: 'numeric', month: 'short', day: 'numeric'})
+                    : t("dashboard.hero.notSet")}
+                </p>
+              </div>
             </div>
-            <div className="rounded-2xl border border-slate-100 bg-white/60 px-5 py-4 shadow-sm backdrop-blur-md hover:-translate-y-1 hover:shadow-md transition-all">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                {t("dashboard.hero.gender")}
-              </p>
-              <p className="mt-1 text-sm font-semibold text-slate-800">
-                {profile?.gender
-                  ? t(
-                      `profile.sections.patientDetails.genderOptions.${profile.gender.toLowerCase()}`,
-                    )
-                  : t("dashboard.hero.notSet")}
-              </p>
+
+            <div className="group rounded-2xl border border-slate-100 bg-white/60 px-5 py-4 shadow-sm backdrop-blur-md hover:-translate-y-1 hover:shadow-md transition-all flex items-center gap-3">
+              <div className="text-slate-400 group-hover:text-emerald-600 transition-colors">
+                <FaVenusMars className="text-base" />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                  {t("dashboard.hero.gender")}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-slate-800">
+                  {profile?.gender ? t(`profile.sections.patientDetails.genderOptions.${profile.gender.toLowerCase()}`) : t("dashboard.hero.notSet")}
+                </p>
+              </div>
             </div>
           </div>
         </div>

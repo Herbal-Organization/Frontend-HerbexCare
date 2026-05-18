@@ -46,8 +46,9 @@ function PatientMedicalSummary({ profile }) {
               {activeConditions.map((condition) => (
                 <span
                   key={condition}
-                  className="rounded-xl border border-eose-100 bg-rose-50/50 px-4 py-2.5 text-sm font-bold text-rose-700 shadow-sm"
+                  className="inline-flex items-center gap-2 rounded-xl border border-rose-100 bg-rose-50/50 px-4 py-2.5 text-sm font-bold text-rose-700 shadow-sm"
                 >
+                  <span className="h-1.5 w-1.5 rounded-full bg-rose-500"></span>
                   {t(`profile.sections.medicalHistory.conditions.${condition}`)}
                 </span>
               ))}

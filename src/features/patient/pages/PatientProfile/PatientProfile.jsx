@@ -195,7 +195,7 @@ function PatientProfile({ user, dashboardData, isLoading, onProfileUpdated }) {
       <motion.section
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        className="mb-8 rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm"
       >
         <div className="flex items-center justify-between gap-4">
           <div>

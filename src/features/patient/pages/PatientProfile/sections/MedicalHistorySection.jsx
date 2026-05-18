@@ -17,17 +17,17 @@ function MedicalHistorySection({ profile, updateField }) {
   return (
     <motion.div
       variants={itemVariants}
-      className="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
+      className="rounded-[2rem] border border-slate-100 bg-white p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
     >
-      <div className="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4">
-        <div className="p-2.5 bg-rose-50 text-rose-500 rounded-xl">
-          <FaHeartbeat className="text-lg" />
+      <div className="flex items-center gap-4 mb-6 border-b border-slate-100 pb-6">
+        <div className="p-3 bg-rose-50 text-rose-500 rounded-xl">
+          <FaHeartbeat className="text-xl" />
         </div>
         <div>
-          <h2 className="text-lg font-bold text-slate-900">
+          <h2 className="text-2xl font-extrabold text-slate-900">
             {t("profile.sections.medicalHistory.title")}
           </h2>
-          <p className="text-xs text-slate-500 font-medium">
+          <p className="text-sm text-slate-500 font-medium">
             {t("profile.sections.medicalHistory.description")}
           </p>
         </div>
@@ -41,8 +41,8 @@ function MedicalHistorySection({ profile, updateField }) {
               key={condition.name}
               className={`relative flex items-center gap-3 rounded-xl border p-4 cursor-pointer transition-all duration-200 font-medium ${
                 isChecked
-                  ? "border-primary bg-primary/5 text-primary shadow-sm ring-1 ring-primary/20"
-                  : "border-slate-200 bg-slate-50/50 text-slate-700 hover:bg-white hover:border-slate-300"
+                  ? "border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm ring-1 ring-emerald-500/20"
+                  : "border-slate-100 bg-slate-50/50 text-slate-700 hover:bg-white hover:border-slate-200"
               }`}
             >
               <div className="flex items-center h-5">
@@ -51,7 +51,7 @@ function MedicalHistorySection({ profile, updateField }) {
                   name={condition.name}
                   checked={isChecked}
                   onChange={updateField}
-                  className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent transition-colors"
+                  className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 focus:ring-offset-0 bg-transparent transition-colors"
                 />
               </div>
               <span className="text-sm flex-1">
@@ -64,7 +64,7 @@ function MedicalHistorySection({ profile, updateField }) {
         })}
 
         <div className="col-span-1 sm:col-span-2 lg:col-span-3 mt-4 group">
-          <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 group-focus-within:text-primary transition-colors">
+          <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 group-focus-within:text-emerald-600 transition-colors">
             {t("profile.sections.medicalHistory.otherNotes")}
           </label>
           <textarea
@@ -72,7 +72,7 @@ function MedicalHistorySection({ profile, updateField }) {
             value={profile.otherNotes}
             onChange={updateField}
             placeholder={t("profile.sections.medicalHistory.notesPlaceholder")}
-            className="block w-full rounded-xl border-slate-200 bg-slate-50/50 px-4 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-slate-900 text-sm border font-medium transition-all hover:bg-white hover:border-slate-300 resize-none group-hover:shadow-sm"
+            className="block w-full rounded-xl border-slate-100 bg-slate-50/50 px-4 py-3 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 text-slate-900 text-sm border font-medium transition-all hover:bg-white hover:border-slate-200 resize-none group-hover:shadow-sm"
             rows="4"
           />
         </div>
