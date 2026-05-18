@@ -97,7 +97,7 @@ function HerbItem({ herb }) {
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center gap-4">
-          {(herb.imageURL || herb.imageUrls?.[0]) ? (
+          {herb.imageURL || herb.imageUrls?.[0] ? (
             <img
               src={herb.imageURL || herb.imageUrls?.[0]}
               alt={herb.herbName}

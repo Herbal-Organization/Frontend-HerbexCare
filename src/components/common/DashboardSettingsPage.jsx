@@ -288,7 +288,7 @@ function DashboardSettingsPage({
           animate="visible"
           className="overflow-hidden rounded-4xl border border-slate-200 bg-slate-950 text-white shadow-[0_30px_80px_rgba(15,23,42,0.18)]"
         >
-          <div className="grid gap-6 p-6 md:grid-cols-[minmax(0,1fr)_320px] md:p-8">
+          <div className="p-6 md:p-8">
             <motion.div variants={itemVariants} className="space-y-4">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white/80">
                 <FaShieldAlt className="text-[0.75rem]" />
@@ -301,28 +301,6 @@ function DashboardSettingsPage({
                 <p className="max-w-2xl text-sm leading-6 text-slate-300 md:text-base">
                   {t("dashboardSettings.subtitle")}
                 </p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              variants={itemVariants}
-              className="rounded-3xl border border-white/10 bg-white/8 p-5 backdrop-blur"
-            >
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/12 text-white">
-                  <FaUserCircle className="text-xl" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/60">
-                    {t("dashboardSettings.account.signedInAs")}
-                  </p>
-                  <p className="truncate text-base font-bold text-white">
-                    {displayName}
-                  </p>
-                  <p className="truncate text-sm text-white/70">
-                    {resolvedEmail}
-                  </p>
-                </div>
               </div>
             </motion.div>
           </div>
