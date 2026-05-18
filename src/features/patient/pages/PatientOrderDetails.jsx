@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import {
   FaArrowLeft,
+  FaBrain,
   FaCheck,
   FaCreditCard,
   FaExclamationCircle,
@@ -211,180 +212,162 @@ function PatientOrderDetails() {
               <FaLeaf /> Order Items
             </h2>
 
-            {order.herbs?.length ? (
-              <div className="mb-8">
-                <h3 className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400">
-                  <FaLeaf /> Herbs
-                </h3>
-                <div className="space-y-3">
-                  {order.herbs.map((herb, index) => (
-                    <div
-                      key={`${herb.herbId || index}`}
-                      className="flex flex-col gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
-                    >
-                      <div>
-                        <p className="font-bold text-slate-900">
-                          {herb.herbName || `Herb #${herb.herbId}`}
-                        </p>
-                        <p className="mt-0.5 text-xs font-semibold text-slate-500">
-                          Herbalist #{herb.herbalistId}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-400 shadow-sm">
-                          {herb.quantityPerGram} grams
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-
-            {order.recipes?.length ? (
-              <div>
-                <h3 className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400">
-                  <FaFlask /> Recipes
-                </h3>
-                <div className="space-y-3">
-                  {order.recipes.map((recipe, index) => (
-                    <div
-                      key={`${recipe.recipeId || index}`}
-                      className="flex flex-col gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
-                    >
-                      <div>
-                        <p className="font-bold text-slate-900">
-                          {recipe.recipeName || `Recipe #${recipe.recipeId}`}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-400 shadow-sm">
-                          Quantity: {recipe.quantity}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-
             {order.subOrders?.length ? (
-              <div className="mb-8">
-                <h3 className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400">
-                  <FaLeaf /> Order Tasks
-                </h3>
-                <div className="space-y-3">
-                  {order.subOrders.map((subOrder, index) => (
-                    <div
-                      key={`${subOrder.id || index}`}
-                      className="flex flex-col gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
-                    >
-                      <div>
-                        <p className="font-bold text-slate-900">
-                          {subOrder.herbName ||
-                            subOrder.name ||
-                            subOrder.itemName ||
-                            `Item #${subOrder.id || index + 1}`}
-                        </p>
-                        {subOrder.herbalistId && (
-                          <p className="mt-0.5 text-xs font-semibold text-slate-500">
-                            Herbalist #{subOrder.herbalistId}
-                          </p>
-                        )}
-                        {subOrder.status && (
-                          <p className="mt-0.5 text-xs font-semibold text-slate-500">
-                            Status:{" "}
-                            <span className="capitalize">
-                              {subOrder.status}
-                            </span>
-                          </p>
-                        )}
-                      </div>
-                      {(subOrder.quantity || subOrder.quantityPerGram) && (
-                        <div className="text-right">
-                          <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-400 shadow-sm">
-                            {subOrder.quantityPerGram
-                              ? `${subOrder.quantityPerGram} grams`
-                              : `Qty: ${subOrder.quantity}`}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-
-            {!order.herbs?.length &&
-            !order.recipes?.length &&
-            !order.subOrders?.length ? (
-              <div className="rounded-2xl border border-amber-100 bg-amber-50 p-6">
-                <div className="flex items-start gap-4">
-                  <div className="mt-1 flex shrink-0 items-center justify-center rounded-full bg-amber-500 text-white">
-                    <FaExclamationCircle className="text-lg" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-amber-900">
-                      Order items are being processed
-                    </p>
-                    <p className="mt-2 text-sm text-amber-800">
-                      {normalizedStatus === "pending"
-                        ? "Your order is pending. The herbalist will begin preparing your items once payment is confirmed."
-                        : "Order items details are currently unavailable. Please try refreshing the page."}
-                    </p>
-                    <p className="mt-3 text-xs font-semibold text-amber-700">
-                      Order Total:{" "}
-                      <span className="font-black text-amber-900">
-                        {order.totalCost} EGP
+              <div className="space-y-8">
+                {order.subOrders.map((subOrder, index) => (
+                  <div key={subOrder.subOrderId || index} className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                      <h3 className="text-sm font-bold text-emerald-800">
+                        From: {subOrder.herbalistName || "Herbalist"}
+                      </h3>
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                        Status: {subOrder.status}
                       </span>
-                    </p>
+                    </div>
+
+                    <div className="space-y-3">
+                      {/* Herbs in this suborder */}
+                      {subOrder.herbs?.map((herb, hIdx) => (
+                        <div
+                          key={`herb-${herb.herbId}-${hIdx}`}
+                          className="flex items-center justify-between rounded-2xl bg-slate-50 p-4 border border-slate-100"
+                        >
+                          <div>
+                            <p className="font-bold text-slate-900 flex items-center gap-2">
+                              <FaLeaf className="text-emerald-500 text-sm" />
+                              {herb.herbName}
+                            </p>
+                            <p className="text-xs font-semibold text-slate-500">
+                              {herb.unitPricePerKilo} EGP/kg ×{" "}
+                              {herb.quantityPerGram}g
+                            </p>
+                          </div>
+                          <p className="font-bold text-slate-900">
+                            {herb.subTotal} EGP
+                          </p>
+                        </div>
+                      ))}
+
+                      {/* Recipes in this suborder */}
+                      {subOrder.recipes?.map((recipe, rIdx) => (
+                        <div
+                          key={`recipe-${recipe.recipeId}-${rIdx}`}
+                          className="flex items-center justify-between rounded-2xl bg-slate-50 p-4 border border-slate-100"
+                        >
+                          <div>
+                            <p className="font-bold text-slate-900 flex items-center gap-2">
+                              <FaFlask className="text-teal-500 text-sm" />
+                              {recipe.recipeName}
+                            </p>
+                            <p className="text-xs font-semibold text-slate-500">
+                              {recipe.unitPricePerOne} EGP ×{" "}
+                              {recipe.quantityPerOne}
+                            </p>
+                          </div>
+                          <p className="font-bold text-slate-900">
+                            {recipe.subTotal} EGP
+                          </p>
+                        </div>
+                      ))}
+
+                      {/* AI Recipes in this suborder */}
+                      {subOrder.aiRecipes?.map((ai, aIdx) => (
+                        <div
+                          key={`ai-${ai.aiRecipeId}-${aIdx}`}
+                          className="flex items-center justify-between rounded-2xl bg-indigo-50/50 p-4 border border-indigo-100"
+                        >
+                          <div>
+                            <p className="font-bold text-slate-900 flex items-center gap-2">
+                              <FaBrain className="text-indigo-500 text-sm" />
+                              {ai.recipeName}
+                            </p>
+                            <p className="text-xs font-semibold text-slate-500">
+                              {ai.unitPrice} EGP × {ai.quantity}
+                            </p>
+                          </div>
+                          <p className="font-bold text-slate-900">
+                            {ai.subTotal} EGP
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
-            ) : null}
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+                <FaLeaf className="mb-4 text-4xl opacity-20" />
+                <p>No itemized details available for this order.</p>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="space-y-6">
           <div className="rounded-[2.5rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             <h2 className="mb-6 flex items-center gap-2 border-b border-slate-100 pb-4 text-lg font-extrabold text-slate-900">
-              Order Details
+              <FaReceipt /> Order Summary
             </h2>
-
-            <div className="space-y-6">
-              <div>
-                <p className="mb-2 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                  <FaMapMarkerAlt /> Shipping Address
-                </p>
-                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                  <p className="whitespace-pre-wrap text-sm font-semibold leading-relaxed text-slate-700">
-                    {order.shippingAddress || "No shipping address provided"}
-                  </p>
-                </div>
+            <div className="space-y-4">
+              <div className="flex justify-between text-sm">
+                <span className="font-semibold text-slate-500">
+                  Items Total
+                </span>
+                <span className="font-bold text-slate-900">
+                  {order.itemsTotal || 0} EGP
+                </span>
               </div>
-
-              <div>
-                <p className="mb-2 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                  <FaCreditCard /> Payment Method
-                </p>
-                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                  <p className="text-sm font-bold text-slate-900">
-                    {order.paymentMethod || "Not selected"}
-                  </p>
-                </div>
+              <div className="flex justify-between text-sm">
+                <span className="font-semibold text-slate-500">
+                  Delivery Fee
+                </span>
+                <span className="font-bold text-slate-900">
+                  {order.deliveryFee || 0} EGP
+                </span>
               </div>
-            </div>
-
-            {order.totalCost != null ? (
-              <div className="mt-8 flex items-center justify-between rounded-2xl border border-emerald-100 bg-emerald-50 p-5">
-                <span className="text-sm font-bold uppercase tracking-widest text-emerald-800">
+              <div className="border-t border-slate-100 pt-4 flex justify-between">
+                <span className="text-lg font-extrabold text-slate-900">
                   Total
                 </span>
-                <span className="text-xl font-black text-emerald-600">
-                  {order.totalCost} EGP
+                <span className="text-lg font-extrabold text-emerald-600">
+                  {order.totalPrice || order.totalCost || 0} EGP
                 </span>
               </div>
-            ) : null}
+            </div>
+          </div>
+
+          <div className="rounded-[2.5rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <h2 className="mb-6 flex items-center gap-2 border-b border-slate-100 pb-4 text-lg font-extrabold text-slate-900">
+              <FaMapMarkerAlt /> Shipping & Payment
+            </h2>
+            <div className="space-y-4 text-sm">
+              <div>
+                <span className="block font-bold uppercase tracking-widest text-slate-400 text-[10px] mb-1">
+                  Address
+                </span>
+                <p className="font-medium text-slate-700">
+                  {order.shippingAddress || "N/A"}
+                </p>
+              </div>
+              <div>
+                <span className="block font-bold uppercase tracking-widest text-slate-400 text-[10px] mb-1">
+                  Payment Method
+                </span>
+                <p className="font-medium text-slate-700 capitalize">
+                  {order.paymentMethod || "N/A"}
+                </p>
+              </div>
+              <div>
+                <span className="block font-bold uppercase tracking-widest text-slate-400 text-[10px] mb-1">
+                  Payment Status
+                </span>
+                <p
+                  className={`font-bold ${order.paymentStatus === "Paid" ? "text-emerald-600" : "text-amber-600"}`}
+                >
+                  {order.paymentStatus || "Pending"}
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="space-y-3">
