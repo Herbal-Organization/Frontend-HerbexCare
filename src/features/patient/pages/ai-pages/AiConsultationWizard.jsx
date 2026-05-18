@@ -67,7 +67,6 @@ function AiConsultationWizard({
     </div>
   );
 
-
   const renderVitalsStep = () => (
     <div className="space-y-5">
       <div className="grid gap-4 sm:grid-cols-2">
@@ -118,7 +117,9 @@ function AiConsultationWizard({
         ))}
       </div>
       <p className="text-sm font-medium text-emerald-600 mt-4">
-        {t("aiConsultation.form.selectedCount", { count: selectedSymptoms.length })}
+        {t("aiConsultation.form.selectedCount", {
+          count: selectedSymptoms.length,
+        })}
       </p>
     </div>
   );
@@ -127,28 +128,58 @@ function AiConsultationWizard({
     <div className="space-y-4">
       <div className="space-y-3">
         <div className="rounded-lg bg-slate-50 p-4">
-          <h4 className="font-semibold text-slate-900 mb-2">{t("aiConsultation.form.sections.demographics")}</h4>
+          <h4 className="font-semibold text-slate-900 mb-2">
+            {t("aiConsultation.form.sections.demographics")}
+          </h4>
           <div className="text-sm text-slate-600 space-y-1">
-            <p>{t("aiConsultation.form.labels.age")}: {calculateAge(profile?.birthDate) || "—"} {t("aiConsultation.form.units.years")}</p>
-            <p>{t("aiConsultation.form.labels.gender")}: {profile?.gender ? t(`profile.sections.patientDetails.genderOptions.${profile.gender.toLowerCase()}`) : "—"}</p>
-            <p>{t("aiConsultation.form.labels.weightKg")}: {form.weightKg || "—"} {t("aiConsultation.form.units.kg")}</p>
-            <p>{t("aiConsultation.form.labels.heightCm")}: {form.heightCm || "—"} {t("aiConsultation.form.units.cm")}</p>
+            <p>
+              {t("aiConsultation.form.labels.age")}:{" "}
+              {calculateAge(profile?.birthDate) || "—"}{" "}
+              {t("aiConsultation.form.units.years")}
+            </p>
+            <p>
+              {t("aiConsultation.form.labels.gender")}:{" "}
+              {profile?.gender
+                ? t(
+                    `profile.sections.patientDetails.genderOptions.${profile.gender.toLowerCase()}`,
+                  )
+                : "—"}
+            </p>
+            <p>
+              {t("aiConsultation.form.labels.weightKg")}: {form.weightKg || "—"}{" "}
+              {t("aiConsultation.form.units.kg")}
+            </p>
+            <p>
+              {t("aiConsultation.form.labels.heightCm")}: {form.heightCm || "—"}{" "}
+              {t("aiConsultation.form.units.cm")}
+            </p>
           </div>
         </div>
 
         <div className="rounded-lg bg-slate-50 p-4">
-          <h4 className="font-semibold text-slate-900 mb-2">{t("aiConsultation.form.sections.medicalHistory")}</h4>
+          <h4 className="font-semibold text-slate-900 mb-2">
+            {t("aiConsultation.form.sections.medicalHistory")}
+          </h4>
           <div className="text-sm text-slate-600">
             {[
-              profile?.diabetes && `✓ ${t("profile.sections.medicalHistory.conditions.diabetes")}`,
-              profile?.hypertension && `✓ ${t("profile.sections.medicalHistory.conditions.hypertension")}`,
-              profile?.asthma && `✓ ${t("profile.sections.medicalHistory.conditions.asthma")}`,
-              profile?.heartDisease && `✓ ${t("profile.sections.medicalHistory.conditions.heartDisease")}`,
-              profile?.kidneyDisease && `✓ ${t("profile.sections.medicalHistory.conditions.kidneyDisease")}`,
-              profile?.liverDisease && `✓ ${t("profile.sections.medicalHistory.conditions.liverDisease")}`,
-              profile?.smoker && `✓ ${t("profile.sections.medicalHistory.conditions.smoker")}`,
-              profile?.pregnancy && `✓ ${t("profile.sections.medicalHistory.conditions.pregnancy")}`,
-              profile?.allergies && `✓ ${t("profile.sections.medicalHistory.conditions.allergies")}`,
+              profile?.diabetes &&
+                `✓ ${t("profile.sections.medicalHistory.conditions.diabetes")}`,
+              profile?.hypertension &&
+                `✓ ${t("profile.sections.medicalHistory.conditions.hypertension")}`,
+              profile?.asthma &&
+                `✓ ${t("profile.sections.medicalHistory.conditions.asthma")}`,
+              profile?.heartDisease &&
+                `✓ ${t("profile.sections.medicalHistory.conditions.heartDisease")}`,
+              profile?.kidneyDisease &&
+                `✓ ${t("profile.sections.medicalHistory.conditions.kidneyDisease")}`,
+              profile?.liverDisease &&
+                `✓ ${t("profile.sections.medicalHistory.conditions.liverDisease")}`,
+              profile?.smoker &&
+                `✓ ${t("profile.sections.medicalHistory.conditions.smoker")}`,
+              profile?.pregnancy &&
+                `✓ ${t("profile.sections.medicalHistory.conditions.pregnancy")}`,
+              profile?.allergies &&
+                `✓ ${t("profile.sections.medicalHistory.conditions.allergies")}`,
             ]
               .filter(Boolean)
               .join(", ") || t("aiConsultation.form.noConditions")}
@@ -156,23 +187,49 @@ function AiConsultationWizard({
         </div>
 
         <div className="rounded-lg bg-slate-50 p-4">
-          <h4 className="font-semibold text-slate-900 mb-2">{t("aiConsultation.form.sections.vitals")}</h4>
+          <h4 className="font-semibold text-slate-900 mb-2">
+            {t("aiConsultation.form.sections.vitals")}
+          </h4>
           <div className="text-sm text-slate-600 space-y-1">
             <p>
-              {t("aiConsultation.form.labels.systolicBp")}/{t("aiConsultation.form.labels.diastolicBp")}: {form.systolicBp || "—"}/{form.diastolicBp || "—"} {t("aiConsultation.form.units.mmHg")}
+              {t("aiConsultation.form.labels.systolicBp")}/
+              {t("aiConsultation.form.labels.diastolicBp")}:{" "}
+              {form.systolicBp || "—"}/{form.diastolicBp || "—"}{" "}
+              {t("aiConsultation.form.units.mmHg")}
             </p>
-            <p>{t("aiConsultation.form.labels.temperatureCelsius")}: {form.temperatureCelsius || "—"}°C</p>
-            <p>{t("aiConsultation.form.labels.heartRateBpm")}: {form.heartRateBpm || "—"} {t("aiConsultation.form.units.bpm")}</p>
-            <p>{t("aiConsultation.form.labels.symptomDurationDays")}: {form.symptomDurationDays || "—"} {t("aiConsultation.form.units.days")}</p>
-            <p>{t("aiConsultation.form.labels.severityScore")}: {form.severityScore || "—"}/10</p>
+            <p>
+              {t("aiConsultation.form.labels.temperatureCelsius")}:{" "}
+              {form.temperatureCelsius || "—"}°C
+            </p>
+            <p>
+              {t("aiConsultation.form.labels.heartRateBpm")}:{" "}
+              {form.heartRateBpm || "—"} {t("aiConsultation.form.units.bpm")}
+            </p>
+            <p>
+              {t("aiConsultation.form.labels.symptomDurationDays")}:{" "}
+              {form.symptomDurationDays || "—"}{" "}
+              {t("aiConsultation.form.units.days")}
+            </p>
+            <p>
+              {t("aiConsultation.form.labels.severityScore")}:{" "}
+              {form.severityScore || "—"}/10
+            </p>
           </div>
         </div>
 
         <div className="rounded-lg bg-emerald-50 p-4">
-          <h4 className="font-semibold text-emerald-900 mb-2">{t("aiConsultation.form.sections.symptoms")}</h4>
+          <h4 className="font-semibold text-emerald-900 mb-2">
+            {t("aiConsultation.form.sections.symptoms")}
+          </h4>
           <div className="text-sm text-emerald-700">
             {selectedSymptoms.length > 0
-              ? selectedSymptoms.map(s => t(`aiConsultation.form.symptoms.${s.toLowerCase().replace(/ /g, "_")}`)).join(", ")
+              ? selectedSymptoms
+                  .map((s) =>
+                    t(
+                      `aiConsultation.form.symptoms.${s.toLowerCase().replace(/ /g, "_")}`,
+                    ),
+                  )
+                  .join(", ")
               : t("aiConsultation.form.noSymptoms")}
           </div>
         </div>
@@ -210,7 +267,9 @@ function AiConsultationWizard({
       {/* Step Header */}
       <div className="mb-6 sm:mb-8 rounded-2xl bg-linear-to-r from-emerald-50 to-teal-50 p-4 sm:p-6 border border-emerald-100">
         <div className="flex items-center gap-3 sm:gap-4">
-          <span className="text-2xl sm:text-3xl shrink-0">{currentStepData?.icon}</span>
+          <span className="text-2xl sm:text-3xl shrink-0">
+            {currentStepData?.icon}
+          </span>
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 leading-tight">
               {t(currentStepData?.titleKey)}

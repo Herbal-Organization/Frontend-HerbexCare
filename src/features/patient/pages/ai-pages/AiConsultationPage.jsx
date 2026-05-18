@@ -24,8 +24,12 @@ function AiConsultationPage() {
               }`}
             >
               <FaBrain className="text-base sm:text-lg" />
-              <span className="hidden xs:inline">{t("aiConsultation.nav.generator")}</span>
-              <span className="xs:hidden">{t("aiConsultation.nav.generator").split(' ')[0]}</span>
+              <span className="hidden xs:inline">
+                {t("aiConsultation.nav.generator")}
+              </span>
+              <span className="xs:hidden">
+                {t("aiConsultation.nav.generator").split(" ")[0]}
+              </span>
             </button>
             <button
               onClick={() => setActiveView("favorites")}
