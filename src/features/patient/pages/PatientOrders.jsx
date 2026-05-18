@@ -9,7 +9,7 @@ import {
 import { getAllMyOrders } from "@api/orders";
 import { Pagination } from "@components/common";
 
-const ORDERS_PER_PAGE = 8;
+const ORDERS_PER_PAGE = 5;
 
 function extractOrdersArray(payload) {
   if (Array.isArray(payload)) return payload;
@@ -38,6 +38,10 @@ function extractPaginationMeta(payload) {
     payload?.count,
     payload?.data?.totalItems,
     payload?.data?.totalCount,
+    // Add logic to calculate if meta missing but totalPages exists
+    payload?.totalPages > 0
+      ? payload.totalPages * (payload.pageSize || ORDERS_PER_PAGE)
+      : null,
   );
 
   const totalPages = getNumericValue(
@@ -105,42 +109,24 @@ function PatientOrders() {
           pageNumber: currentPage,
           pageSize: ORDERS_PER_PAGE,
         });
+
         const extractedOrders = extractOrdersArray(response);
         const paginationMeta = extractPaginationMeta(response);
 
-        // Fallback to client-side slicing when API returns an unpaginated list.
-        if (!paginationMeta.hasMeta) {
-          const safeTotalItems = extractedOrders.length;
-          const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
-          const endIndex = startIndex + ORDERS_PER_PAGE;
-
-          setOrders(extractedOrders.slice(startIndex, endIndex));
+        // API might send paginated object or flat array
+        if (paginationMeta.hasMeta) {
+          const safeTotalItems =
+            paginationMeta.totalItems ?? extractedOrders.length;
+          setOrders(extractedOrders);
           setTotalItems(safeTotalItems);
-          return;
-        }
-
-        const safePageSize = paginationMeta.pageSize ?? ORDERS_PER_PAGE;
-        const safeTotalPages = paginationMeta.totalPages ?? null;
-        const safeTotalItems =
-          paginationMeta.totalItems ??
-          (safeTotalPages
-            ? safeTotalPages * safePageSize
-            : extractedOrders.length);
-
-        setOrders(extractedOrders);
-        setTotalItems(safeTotalItems);
-
-        if (
-          safeTotalPages &&
-          currentPage > safeTotalPages &&
-          safeTotalPages >= 1
-        ) {
-          setCurrentPage(safeTotalPages);
-        }
-
-        // If the backend sends a page size different than the UI one, keep
-        // page buttons stable by projecting total items to the UI page size.
-        if (safePageSize !== ORDERS_PER_PAGE && safeTotalItems <= 0) {
+        } else {
+          // Client-side fallback if no meta
+          setOrders(
+            extractedOrders.slice(
+              (currentPage - 1) * ORDERS_PER_PAGE,
+              currentPage * ORDERS_PER_PAGE,
+            ),
+          );
           setTotalItems(extractedOrders.length);
         }
       } catch (err) {
@@ -155,15 +141,10 @@ function PatientOrders() {
     };
 
     loadOrders();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentPage]);
 
   const totalPages = Math.max(1, Math.ceil(totalItems / ORDERS_PER_PAGE));
-
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [currentPage, totalPages]);
 
   if (isLoading) {
     return (
