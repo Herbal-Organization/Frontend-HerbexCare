@@ -208,14 +208,14 @@ function AiConsultationWizard({
       className="w-full"
     >
       {/* Step Header */}
-      <div className="mb-8 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 p-6 border border-emerald-100">
-        <div className="flex items-center gap-3 mb-2">
-          <span className="text-3xl">{currentStepData?.icon}</span>
+      <div className="mb-6 sm:mb-8 rounded-2xl bg-linear-to-r from-emerald-50 to-teal-50 p-4 sm:p-6 border border-emerald-100">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <span className="text-2xl sm:text-3xl shrink-0">{currentStepData?.icon}</span>
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 leading-tight">
               {t(currentStepData?.titleKey)}
             </h2>
-            <p className="text-sm text-slate-600">
+            <p className="text-xs sm:text-sm text-slate-600 mt-0.5 sm:mt-1">
               {t(currentStepData?.descriptionKey)}
             </p>
           </div>
@@ -235,23 +235,23 @@ function AiConsultationWizard({
       </div>
 
       {/* Navigation */}
-      <div className="flex gap-3 justify-between">
+      <div className="flex flex-col sm:flex-row gap-3 justify-between">
         <button
           type="button"
           onClick={onPreviousStep}
           disabled={currentStep === "demographics" || isSubmitting}
-          className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 transition"
+          className="w-full sm:w-auto order-2 sm:order-1 inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 transition"
         >
           <FaChevronLeft className="text-xs" />
           {t("aiConsultation.form.actions.previous")}
         </button>
 
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3 order-1 sm:order-2">
           <button
             type="button"
             onClick={onReset}
             disabled={isSubmitting}
-            className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 transition"
+            className="w-full sm:w-auto rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 transition"
           >
             {t("aiConsultation.form.actions.reset")}
           </button>
@@ -262,7 +262,7 @@ function AiConsultationWizard({
               isSubmitting ||
               (currentStep === "symptoms" && selectedSymptoms.length === 0)
             }
-            className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50 transition"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50 transition"
           >
             {isSubmitting ? (
               <>
