@@ -60,9 +60,7 @@ function DashboardSidebar({
         {/* Branding Area */}
         <div className="p-6 flex items-center gap-3">
           <div
-            className={`rounded-lg p-2 text-white flex items-center justify-center ${
-              isPatient ? "bg-primary" : "bg-primary"
-            }`}
+            className="rounded-xl p-2.5 text-white flex items-center justify-center bg-gradient-to-br from-primary to-emerald-600 shadow-md shadow-primary/20 hover:scale-105 transition-transform"
           >
             {isPatient ? (
               <FaSpa className="text-2xl" />
@@ -111,9 +109,9 @@ function DashboardSidebar({
                     onClick={() =>
                       handleNavClick(item.href, hasChildren, item.name)
                     }
-                    className={`flex-1 flex items-center gap-3 px-4 py-2.5 rounded-xl text-start text-sm font-semibold transition-colors cursor-pointer ${
+                    className={`flex-1 flex items-center gap-3 px-4 py-2.5 rounded-xl text-start text-sm font-semibold transition-all duration-200 cursor-pointer ${
                       isCurrent
-                        ? "bg-primary/10 text-primary"
+                        ? "bg-gradient-to-r from-primary/10 to-transparent text-primary"
                         : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                     }`}
                   >
@@ -199,8 +197,8 @@ function DashboardSidebar({
             </button>
           </div>
 
-          <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-50">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-br from-white to-slate-50/50 border border-slate-100 shadow-sm shadow-slate-100/50">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-emerald-500 flex items-center justify-center text-white font-bold shadow-sm">
               {displayName.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">

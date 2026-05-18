@@ -4,10 +4,10 @@ import { useTranslation } from "react-i18next";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { type: "spring", stiffness: 300, damping: 24 }
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 300, damping: 24 },
   },
 };
 
@@ -20,7 +20,7 @@ function PatientOverviewHero({ user, profile }) {
   const displayName = user?.fullName || user?.name || user?.userName || "";
 
   return (
-    <motion.section 
+    <motion.section
       variants={itemVariants}
       className="relative overflow-hidden rounded-[2rem] border border-emerald-100 bg-white p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
     >
@@ -34,7 +34,8 @@ function PatientOverviewHero({ user, profile }) {
             {t("dashboard.hero.tagline")}
           </p>
           <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-slate-900 md:text-5xl lg:text-5xl leading-tight">
-            {t("dashboard.hero.welcome")}{displayName ? `, ${displayName}` : ""}
+            {t("dashboard.hero.welcome")}
+            {displayName ? `, ${displayName}` : ""}
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-500 font-medium">
             {t("dashboard.hero.description")}
@@ -63,7 +64,10 @@ function PatientOverviewHero({ user, profile }) {
               </p>
               <p className="mt-1 text-sm font-semibold text-slate-800">
                 {profile?.birthDate
-                  ? new Date(profile.birthDate).toLocaleDateString(isAr ? "ar-EG" : "en-US", { year: 'numeric', month: 'short', day: 'numeric'})
+                  ? new Date(profile.birthDate).toLocaleDateString(
+                      isAr ? "ar-EG" : "en-US",
+                      { year: "numeric", month: "short", day: "numeric" },
+                    )
                   : t("dashboard.hero.notSet")}
               </p>
             </div>
@@ -72,7 +76,11 @@ function PatientOverviewHero({ user, profile }) {
                 {t("dashboard.hero.gender")}
               </p>
               <p className="mt-1 text-sm font-semibold text-slate-800">
-                {profile?.gender ? t(`profile.sections.patientDetails.genderOptions.${profile.gender.toLowerCase()}`) : t("dashboard.hero.notSet")}
+                {profile?.gender
+                  ? t(
+                      `profile.sections.patientDetails.genderOptions.${profile.gender.toLowerCase()}`,
+                    )
+                  : t("dashboard.hero.notSet")}
               </p>
             </div>
           </div>
@@ -94,7 +102,6 @@ function PatientOverviewHero({ user, profile }) {
               </div>
             </div>
           </div>
-          
         </div>
       </div>
     </motion.section>

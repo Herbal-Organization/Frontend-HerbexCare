@@ -5,10 +5,10 @@ import { useTranslation } from "react-i18next";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { type: "spring", stiffness: 300, damping: 24 }
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 300, damping: 24 },
   },
 };
 
@@ -17,7 +17,7 @@ function PatientMedicalSummary({ profile }) {
   const activeConditions = getActiveConditions(profile);
 
   return (
-    <motion.section 
+    <motion.section
       variants={itemVariants}
       className="flex flex-col rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
     >
@@ -26,7 +26,9 @@ function PatientMedicalSummary({ profile }) {
           <FaHeartbeat className="text-xl" />
         </div>
         <div>
-          <h2 className="text-2xl font-extrabold text-slate-900">{t("dashboard.medicalHistory.title")}</h2>
+          <h2 className="text-2xl font-extrabold text-slate-900">
+            {t("dashboard.medicalHistory.title")}
+          </h2>
           <p className="mt-1 text-sm font-medium text-slate-500">
             {t("dashboard.medicalHistory.subtitle")}
           </p>
@@ -38,7 +40,7 @@ function PatientMedicalSummary({ profile }) {
           <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">
             {t("dashboard.medicalHistory.activeConditions")}
           </p>
-          
+
           {activeConditions.length ? (
             <div className="flex flex-wrap gap-3">
               {activeConditions.map((condition) => (
@@ -53,8 +55,12 @@ function PatientMedicalSummary({ profile }) {
           ) : (
             <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 px-6 py-8 text-center">
               <FaHeartbeat className="mx-auto text-3xl text-slate-300 mb-3" />
-              <p className="text-sm font-bold text-slate-700">{t("dashboard.medicalHistory.noConditions")}</p>
-              <p className="text-xs text-slate-500 mt-1">{t("dashboard.medicalHistory.noConditionsDesc")}</p>
+              <p className="text-sm font-bold text-slate-700">
+                {t("dashboard.medicalHistory.noConditions")}
+              </p>
+              <p className="text-xs text-slate-500 mt-1">
+                {t("dashboard.medicalHistory.noConditionsDesc")}
+              </p>
             </div>
           )}
         </div>

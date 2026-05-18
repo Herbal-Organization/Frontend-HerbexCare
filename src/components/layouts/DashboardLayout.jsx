@@ -19,7 +19,7 @@ function DashboardLayout({
 
   return (
     <div
-      className={`flex min-h-screen text-slate-900 bg-slate-50 role-${role}`}
+      className={`flex min-h-screen text-slate-900 bg-gradient-to-br from-slate-50 to-slate-100/50 role-${role}`}
     >
       <DashboardSidebar
         role={role}
@@ -32,7 +32,7 @@ function DashboardLayout({
 
       <div className="flex-1 md:ms-72 flex flex-col min-h-screen">
         {/* Mobile top bar */}
-        <div className="sticky top-0 z-30 flex items-center gap-3 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-3 md:hidden">
+        <div className="sticky top-0 z-30 flex items-center gap-3 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm shadow-slate-100/50 px-4 py-3 md:hidden">
           <button
             type="button"
             onClick={() => setSidebarOpen(true)}
@@ -59,7 +59,7 @@ function DashboardLayout({
         <main className="flex-1 flex flex-col">
           <div className="flex-1">
             {error && (
-              <div className="m-4 md:m-8 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+              <div className="m-4 md:m-8 rounded-2xl border border-red-100 bg-red-50/50 px-4 py-3 text-sm font-medium text-red-700 shadow-sm shadow-red-100/50 backdrop-blur-sm">
                 {error}
               </div>
             )}

@@ -14,7 +14,7 @@ import {
 } from "@features/patient/services/patientProfile";
 
 // Import section components
-import ProfilePhotoSection from "./sections/ProfilePhotoSection";
+
 import PersonalInformationSection from "./sections/PersonalInformationSection";
 import PatientDetailsSection from "./sections/PatientDetailsSection";
 import AddressInformationSection from "./sections/AddressInformationSection";
@@ -232,11 +232,7 @@ function PatientProfile({ user, dashboardData, isLoading, onProfileUpdated }) {
         className="space-y-8"
       >
         {/* Profile Sections */}
-        <ProfilePhotoSection
-          profile={profile}
-          setProfile={setProfile}
-          user={user}
-        />
+
         <PersonalInformationSection user={user} />
         <PatientDetailsSection profile={profile} updateField={updateField} />
         <AddressInformationSection
