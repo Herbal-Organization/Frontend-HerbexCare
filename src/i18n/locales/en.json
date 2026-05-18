@@ -166,7 +166,7 @@
   "dashboardSettings": {
     "kicker": "Account settings",
     "title": "Settings",
-    "subtitle": "Manage your password, language, and account access from one place.",
+    "subtitle": "Manage your password, language, appearance, and account access from one place.",
     "account": {
       "unknown": "User",
       "signedInAs": "Signed in as"
@@ -189,6 +189,13 @@
     "language": {
       "title": "Language",
       "description": "Switch the dashboard interface between English and Arabic."
+    },
+    "appearance": {
+      "title": "Appearance",
+      "description": "Choose light or dark mode for the dashboard and landing page.",
+      "modeLabel": "Theme",
+      "light": "Light",
+      "dark": "Dark"
     },
     "security": {
       "password": {
