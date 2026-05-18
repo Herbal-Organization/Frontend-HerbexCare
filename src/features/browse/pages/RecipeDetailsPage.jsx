@@ -88,18 +88,28 @@ function HerbItem({ herb }) {
   const navigate = useNavigate();
 
   return (
-    <div 
+    <div
       className={`border border-slate-100 rounded-xl mb-4 last:mb-0 transition-all duration-300 bg-white overflow-hidden ${isExpanded ? "shadow-md ring-1 ring-emerald-100" : "hover:bg-slate-50"}`}
     >
       {/* Header / Toggle Area */}
-      <div 
+      <div
         className="p-5 flex items-center justify-between gap-3 cursor-pointer select-none"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center gap-4">
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isExpanded ? "bg-emerald-100 text-emerald-700" : "bg-slate-50 text-slate-400 group-hover:bg-emerald-50"}`}>
-            <FaLeaf size={18} />
-          </div>
+          {herb.imageURL ? (
+            <img
+              src={herb.imageURL}
+              alt={herb.herbName}
+              className="w-12 h-12 rounded-xl object-cover border border-slate-100 shadow-xs shrink-0"
+            />
+          ) : (
+            <div
+              className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors shrink-0 ${isExpanded ? "bg-emerald-100 text-emerald-700" : "bg-slate-50 text-slate-400 group-hover:bg-emerald-50"}`}
+            >
+              <FaLeaf size={20} />
+            </div>
+          )}
           <div>
             <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-0.5">
               Herb Name:
@@ -117,7 +127,9 @@ function HerbItem({ herb }) {
           <span className="text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-3 py-1 shrink-0">
             {herb.quantity}g
           </span>
-          <div className={`text-slate-400 transition-transform duration-300 ${isExpanded ? "rotate-180 text-emerald-600" : ""}`}>
+          <div
+            className={`text-slate-400 transition-transform duration-300 ${isExpanded ? "rotate-180 text-emerald-600" : ""}`}
+          >
             <FaChevronDown size={14} />
           </div>
         </div>
@@ -126,7 +138,10 @@ function HerbItem({ herb }) {
       {/* Expandable Body */}
       <motion.div
         initial={false}
-        animate={{ height: isExpanded ? "auto" : 0, opacity: isExpanded ? 1 : 0 }}
+        animate={{
+          height: isExpanded ? "auto" : 0,
+          opacity: isExpanded ? 1 : 0,
+        }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="overflow-hidden bg-slate-50/30"
       >
@@ -140,7 +155,7 @@ function HerbItem({ herb }) {
                 {herb.scientificName || "N/A"}
               </p>
             </div>
-            
+
             <div className="flex justify-end items-center">
               <button
                 onClick={(e) => {
@@ -240,7 +255,10 @@ function ReviewCard({ review }) {
           Patient Comment:
         </p>
         <p className="text-xs leading-relaxed text-slate-600 font-medium italic">
-          "{review.comment || "No specific feedback was provided with this rating."}"
+          "
+          {review.comment ||
+            "No specific feedback was provided with this rating."}
+          "
         </p>
       </div>
     </div>
@@ -509,10 +527,14 @@ function RecipeDetailsPage() {
 
               <div className="space-y-4 mb-6">
                 <p className="text-sm leading-relaxed text-slate-500 max-w-2xl">
-                  <span className="font-bold text-slate-700">Description:</span> {recipe.title}
+                  <span className="font-bold text-slate-700">Description:</span>{" "}
+                  {recipe.title}
                 </p>
                 <p className="text-sm leading-relaxed text-slate-500 max-w-2xl">
-                  <span className="font-bold text-slate-700">Instructions:</span> {recipe.description}
+                  <span className="font-bold text-slate-700">
+                    Instructions:
+                  </span>{" "}
+                  {recipe.description}
                 </p>
               </div>
 
@@ -732,8 +754,6 @@ function RecipeDetailsPage() {
                   </div>
                 </SectionCard>
 
-
-
                 {/* Reviews */}
                 <div className="rounded-2xl border border-slate-100 bg-white p-6">
                   <div className="flex items-start justify-between mb-5 pb-4 border-b border-slate-100">
@@ -742,14 +762,15 @@ function RecipeDetailsPage() {
                         Community feedback
                       </p>
                       <p className="text-[11px] text-slate-400">
-                        {reviews.length === 0 
-                          ? "No reviews yet. Be the first to share your experience!" 
+                        {reviews.length === 0
+                          ? "No reviews yet. Be the first to share your experience!"
                           : "Share your experience"}
                       </p>
                     </div>
                     <div className="text-end pt-2">
                       <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">
-                        {reviews.length} {reviews.length === 1 ? "Review" : "Reviews"}
+                        {reviews.length}{" "}
+                        {reviews.length === 1 ? "Review" : "Reviews"}
                       </p>
                     </div>
                   </div>
