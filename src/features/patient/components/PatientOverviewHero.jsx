@@ -94,42 +94,7 @@ function PatientOverviewHero({ user, profile }) {
               </div>
             </div>
           </div>
-
-          <div className="group rounded-3xl border border-slate-100 bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-4">
-              <div className="rounded-2xl bg-amber-50 p-3.5 text-amber-600 group-hover:scale-110 group-hover:bg-amber-100 transition-all">
-                <FaHeartbeat className="text-lg" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-bold text-slate-900">
-                    {t("dashboard.hero.medicalProfile")}
-                  </p>
-                  <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">{t("dashboard.hero.active")}</span>
-                </div>
-                <p className="text-sm text-slate-500 font-medium mt-0.5">
-                  {t("dashboard.hero.syncing")}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="group rounded-3xl border border-slate-800 bg-slate-900 p-5 text-white shadow-lg hover:shadow-xl transition-shadow relative overflow-hidden">
-            <div className="pointer-events-none absolute -end-6 -bottom-6 opacity-10">
-              <FaShieldAlt className="text-8xl text-emerald-400" />
-            </div>
-            <div className="flex items-center gap-4 relative z-10">
-              <div className="rounded-2xl bg-white/10 p-3.5 text-emerald-400 backdrop-blur">
-                <FaShieldAlt className="text-lg" />
-              </div>
-              <div>
-                <p className="text-sm font-bold tracking-wide">{t("dashboard.hero.secureSync")}</p>
-                <p className="text-sm text-slate-400 font-medium mt-0.5">
-                  {t("dashboard.hero.protected")}
-                </p>
-              </div>
-            </div>
-          </div>
+          
         </div>
       </div>
     </motion.section>

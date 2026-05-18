@@ -22,6 +22,7 @@ function App() {
     <div className="min-h-screen flex flex-col font-sans scroll-smooth">
       <Toaster position="top-right" />
 
+      {/* Landing and Auth Routes */}
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth/login" element={<AuthPage />} />
@@ -31,14 +32,14 @@ function App() {
           path="/forget-password"
           element={
             isAuthenticated() ? (
-              <Navigate to="/reset-password" replace />
+              <Navigate to="/change-password" replace />
             ) : (
               <ForgetPassword />
             )
           }
         />
         <Route
-          path="/reset-password"
+          path="/change-password"
           element={
             isAuthenticated() ? (
               <ResetPasswordPage />
@@ -48,6 +49,7 @@ function App() {
           }
         />
 
+        {/* Patient Routes */}
         <Route element={<ProtectedRoute allowedRoles={["Patient"]} />}>
           <Route path="/patient/home" element={<PatientHome />} />
           <Route path="/patient/home/herbs" element={<HerbsPage />} />
@@ -62,7 +64,8 @@ function App() {
           />
           <Route path="/patient/dashboard/*" element={<PatientDashboard />} />
         </Route>
-
+        
+        {/* Hebalist Routes */}
         <Route element={<ProtectedRoute allowedRoles={["Herbalist"]} />}>
           <Route
             path="/herbalist/dashboard/*"

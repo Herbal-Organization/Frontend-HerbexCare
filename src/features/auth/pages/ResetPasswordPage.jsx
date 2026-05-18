@@ -47,7 +47,7 @@ function ResetPasswordPage() {
       );
       reset();
       window.setTimeout(() => {
-        navigate("/auth");
+        navigate("/auth/login");
       }, 1500);
     },
   });
@@ -171,7 +171,7 @@ function ResetPasswordPage() {
 
       <div className="mt-8 text-center">
         <Link
-          to="/auth"
+          to="/auth/login"
           className="text-sm font-bold text-primary hover:text-primary-hover"
         >
           Back to Sign In

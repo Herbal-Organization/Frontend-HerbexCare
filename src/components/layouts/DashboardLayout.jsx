@@ -66,10 +66,7 @@ function DashboardLayout({
             {children}
           </div>
 
-          {/* Footer */}
-          <div className="border-t border-slate-200 px-4 sm:px-8 py-4 text-xs text-slate-400">
-            Herbal Care AI &copy; {new Date().getFullYear()}
-          </div>
+          
         </main>
       </div>
     </div>
