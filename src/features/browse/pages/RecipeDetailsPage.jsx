@@ -97,9 +97,9 @@ function HerbItem({ herb }) {
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center gap-4">
-          {herb.imageURL ? (
+          {(herb.imageURL || herb.imageUrls?.[0]) ? (
             <img
-              src={herb.imageURL}
+              src={herb.imageURL || herb.imageUrls?.[0]}
               alt={herb.herbName}
               className="w-12 h-12 rounded-xl object-cover border border-slate-100 shadow-xs shrink-0"
             />
@@ -179,28 +179,28 @@ function HerbItem({ herb }) {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div className="bg-white border border-slate-100 rounded-xl p-3">
-              <p className="text-[9px] uppercase tracking-widest text-emerald-600 font-bold mb-1.5">
+          <div className="flex flex-col gap-3">
+            <div className="bg-white border border-slate-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+              <p className="text-[10px] uppercase tracking-widest text-emerald-600 font-bold sm:w-24 shrink-0">
                 Benefits
               </p>
-              <p className="text-xs font-medium text-slate-700 leading-relaxed">
+              <p className="text-sm font-medium text-slate-700 leading-relaxed">
                 {herb.benefits || "—"}
               </p>
             </div>
-            <div className="bg-white border border-slate-100 rounded-xl p-3">
-              <p className="text-[9px] uppercase tracking-widest text-sky-600 font-bold mb-1.5">
+            <div className="bg-white border border-slate-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+              <p className="text-[10px] uppercase tracking-widest text-sky-600 font-bold sm:w-24 shrink-0">
                 Dosage
               </p>
-              <p className="text-xs font-medium text-slate-700 leading-relaxed">
+              <p className="text-sm font-medium text-slate-700 leading-relaxed">
                 {herb.dosage || "—"}
               </p>
             </div>
-            <div className="bg-amber-50 border border-amber-100 rounded-xl p-3">
-              <p className="text-[9px] uppercase tracking-widest text-amber-600 font-bold mb-1.5">
+            <div className="bg-amber-50 border border-amber-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+              <p className="text-[10px] uppercase tracking-widest text-amber-600 font-bold sm:w-24 shrink-0">
                 Warnings
               </p>
-              <p className="text-xs font-medium text-amber-800 leading-relaxed">
+              <p className="text-sm font-medium text-amber-800 leading-relaxed">
                 {herb.warnings || "No specific warnings."}
               </p>
             </div>
