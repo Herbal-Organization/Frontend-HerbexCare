@@ -5,9 +5,12 @@ import {
   FaExclamationCircle,
   FaShoppingBag,
   FaChevronRight,
+  FaHeart,
+  FaRegHeart,
 } from "react-icons/fa";
-import { getAllMyOrders } from "@api/orders";
+import { getAllMyOrders, markOrderAsFavorite } from "@api/orders";
 import { Pagination } from "@components/common";
+import { toast } from "react-hot-toast";
 
 const ORDERS_PER_PAGE = 5;
 
@@ -66,6 +69,11 @@ function extractPaginationMeta(payload) {
 
 const normalizeStatus = (status) => (status || "").trim().toLowerCase();
 
+const isCanceledStatus = (status) => {
+  const normalized = normalizeStatus(status);
+  return normalized === "canceled" || normalized === "cancelled";
+};
+
 const getStatusColor = (status) => {
   const normalized = normalizeStatus(status);
   switch (normalized) {
@@ -99,6 +107,7 @@ function PatientOrders() {
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
+  const [busyKeys, setBusyKeys] = useState(new Set());
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -110,7 +119,9 @@ function PatientOrders() {
           pageSize: ORDERS_PER_PAGE,
         });
 
-        const extractedOrders = extractOrdersArray(response);
+        const extractedOrders = extractOrdersArray(response).filter(
+          (order) => !isCanceledStatus(order.status),
+        );
         const paginationMeta = extractPaginationMeta(response);
 
         // API might send paginated object or flat array
@@ -143,6 +154,34 @@ function PatientOrders() {
     loadOrders();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentPage]);
+
+  const handleToggleFavorite = async (e, orderId) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (busyKeys.has(orderId)) return;
+
+    setBusyKeys((prev) => new Set(prev).add(orderId));
+    try {
+      await markOrderAsFavorite(orderId);
+      setOrders((prev) =>
+        prev.map((order) =>
+          (order.orderId || order.id) === orderId
+            ? { ...order, isFavorite: !order.isFavorite }
+            : order,
+        ),
+      );
+      toast.success("Favorite status updated");
+    } catch (err) {
+      toast.error("Failed to update favorite status");
+    } finally {
+      setBusyKeys((prev) => {
+        const next = new Set(prev);
+        next.delete(orderId);
+        return next;
+      });
+    }
+  };
 
   const totalPages = Math.max(1, Math.ceil(totalItems / ORDERS_PER_PAGE));
 
@@ -206,6 +245,8 @@ function PatientOrders() {
             (Array.isArray(order.recipes) ? order.recipes.length : 0) +
             (Array.isArray(order.herbs) ? order.herbs.length : 0) +
             (Array.isArray(order.aiRecipes) ? order.aiRecipes.length : 0);
+          const isFavorite = !!order.isFavorite;
+          const isBusy = busyKeys.has(orderId);
 
           return (
             <Link
@@ -234,6 +275,21 @@ function PatientOrders() {
                 </div>
 
                 <div className="flex items-center gap-4">
+                  <button
+                    onClick={(e) => handleToggleFavorite(e, orderId)}
+                    disabled={isBusy}
+                    className={`p-2 transition-colors rounded-full ${
+                      isFavorite ? "text-rose-500" : "text-slate-300 hover:text-rose-400"
+                    }`}
+                  >
+                    {isBusy ? (
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-emerald-500" />
+                    ) : isFavorite ? (
+                      <FaHeart className="h-5 w-5" />
+                    ) : (
+                      <FaRegHeart className="h-5 w-5" />
+                    )}
+                  </button>
                   <span
                     className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${getStatusColor(status)}`}
                   >
