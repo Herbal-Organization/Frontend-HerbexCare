@@ -279,7 +279,9 @@ function PatientOrders() {
                     onClick={(e) => handleToggleFavorite(e, orderId)}
                     disabled={isBusy}
                     className={`p-2 transition-colors rounded-full ${
-                      isFavorite ? "text-rose-500" : "text-slate-300 hover:text-rose-400"
+                      isFavorite
+                        ? "text-rose-500"
+                        : "text-slate-300 hover:text-rose-400"
                     }`}
                   >
                     {isBusy ? (

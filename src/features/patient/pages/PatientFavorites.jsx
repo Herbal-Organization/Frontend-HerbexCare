@@ -30,7 +30,7 @@ function extractItems(payload) {
 
 function normalizeRecipeFavorite(item) {
   const recipe = item?.recipe || item;
-  
+
   // Inject fallback dates so normalizeRecipe can format them
   const recipeToNormalize = {
     ...recipe,
@@ -41,9 +41,9 @@ function normalizeRecipeFavorite(item) {
       item?.savedDate ||
       null,
   };
-  
+
   const normalized = normalizeRecipe(recipeToNormalize);
-  
+
   return {
     ...normalized,
     recipeId: normalized.id, // Ensure recipeId is available if needed
@@ -80,11 +80,12 @@ function PatientFavorites() {
       setError("");
 
       try {
-        const [recipesResponse, herbsResponse, ordersResponse] = await Promise.all([
-          getMyRecipesFavorites(),
-          getMyHerbsFavorites(),
-          getFavoriteOrders(),
-        ]);
+        const [recipesResponse, herbsResponse, ordersResponse] =
+          await Promise.all([
+            getMyRecipesFavorites(),
+            getMyHerbsFavorites(),
+            getFavoriteOrders(),
+          ]);
 
         const recipesList = extractItems(recipesResponse);
         const detailedRecipes = await Promise.all(
@@ -95,12 +96,15 @@ function PatientFavorites() {
                 const details = await getRecipeById(recipeId);
                 return { ...item, recipe: details };
               } catch (err) {
-                console.error(`Failed to fetch details for recipe ${recipeId}:`, err);
+                console.error(
+                  `Failed to fetch details for recipe ${recipeId}:`,
+                  err,
+                );
                 return item;
               }
             }
             return item;
-          })
+          }),
         );
 
         const recipes = detailedRecipes
@@ -116,12 +120,15 @@ function PatientFavorites() {
                 const details = await getHerbById(herbId);
                 return { ...item, herb: details };
               } catch (err) {
-                console.error(`Failed to fetch details for herb ${herbId}:`, err);
+                console.error(
+                  `Failed to fetch details for herb ${herbId}:`,
+                  err,
+                );
                 return item;
               }
             }
             return item;
-          })
+          }),
         );
 
         const herbs = detailedHerbs
@@ -170,8 +177,14 @@ function PatientFavorites() {
   const sortedOrders = useMemo(
     () =>
       [...orderFavorites].sort((a, b) => {
-        const aDate = a.orderDate || a.createdAt ? new Date(a.orderDate || a.createdAt).getTime() : 0;
-        const bDate = b.orderDate || b.createdAt ? new Date(b.orderDate || b.createdAt).getTime() : 0;
+        const aDate =
+          a.orderDate || a.createdAt
+            ? new Date(a.orderDate || a.createdAt).getTime()
+            : 0;
+        const bDate =
+          b.orderDate || b.createdAt
+            ? new Date(b.orderDate || b.createdAt).getTime()
+            : 0;
         return bDate - aDate;
       }),
     [orderFavorites],
@@ -354,7 +367,9 @@ function PatientFavorites() {
                       averageRating={recipe.averageRating}
                       price={recipe.price}
                       isFavorite={true}
-                      onToggleFavorite={() => handleRemoveRecipeFavorite(recipe.id || recipe.recipeId)}
+                      onToggleFavorite={() =>
+                        handleRemoveRecipeFavorite(recipe.id || recipe.recipeId)
+                      }
                       isFavoriteUpdating={isBusy}
                     />
                   );
@@ -390,7 +405,9 @@ function PatientFavorites() {
                       key={herb.herbId}
                       herb={herb}
                       isFavorite={true}
-                      onToggleFavorite={() => handleRemoveHerbFavorite(herb.herbId)}
+                      onToggleFavorite={() =>
+                        handleRemoveHerbFavorite(herb.herbId)
+                      }
                       isFavoriteUpdating={isBusy}
                     />
                   );
@@ -420,7 +437,9 @@ function PatientFavorites() {
               <div className="space-y-4">
                 {sortedOrders.map((order) => {
                   const orderId = order.orderId || order.id;
-                  const orderDate = new Date(order.orderDate || order.createdAt);
+                  const orderDate = new Date(
+                    order.orderDate || order.createdAt,
+                  );
                   const formattedDate = orderDate.toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "short",
@@ -430,7 +449,9 @@ function PatientFavorites() {
                   const itemCount =
                     (Array.isArray(order.recipes) ? order.recipes.length : 0) +
                     (Array.isArray(order.herbs) ? order.herbs.length : 0) +
-                    (Array.isArray(order.aiRecipes) ? order.aiRecipes.length : 0);
+                    (Array.isArray(order.aiRecipes)
+                      ? order.aiRecipes.length
+                      : 0);
 
                   const isBusy = busyKey === `order-${orderId}`;
 
@@ -440,13 +461,18 @@ function PatientFavorites() {
                       className="rounded-lg border border-slate-200 bg-white p-6 transition-all hover:shadow-md"
                     >
                       <div className="flex items-center justify-between">
-                        <Link to={`/patient/dashboard/orders/${orderId}`} className="flex-1">
+                        <Link
+                          to={`/patient/dashboard/orders/${orderId}`}
+                          className="flex-1"
+                        >
                           <div className="flex items-center gap-4">
                             <div>
                               <h3 className="font-semibold text-slate-900">
                                 Order #{orderId}
                               </h3>
-                              <p className="text-sm text-slate-500">{formattedDate}</p>
+                              <p className="text-sm text-slate-500">
+                                {formattedDate}
+                              </p>
                             </div>
                             <div className="text-end">
                               <p className="text-lg font-bold text-slate-900">
@@ -464,7 +490,9 @@ function PatientFavorites() {
                             onClick={() => handleRemoveOrderFavorite(orderId)}
                             disabled={isBusy}
                             className={`p-2 transition-colors rounded-full ${
-                              isBusy ? "opacity-50" : "hover:bg-rose-50 text-rose-500"
+                              isBusy
+                                ? "opacity-50"
+                                : "hover:bg-rose-50 text-rose-500"
                             }`}
                             title="Remove from favorites"
                           >

@@ -87,24 +87,23 @@ function PaymentSimulationPage() {
     setIsSimulating(true);
     try {
       await simulatePayment(orderId, {
-        message: "Payment simulated successfully. Order is now pending.",
-        transactionId: createTransactionId(),
+        paymentStatus: "Paid",
+        status: "Pending",
       });
-      try {
-        const refreshed = await getOrderById(orderId);
-        setOrder(refreshed);
-      } catch (_err) {
-        // If refresh fails, still proceed to details page.
-      }
-      toast.success("Payment confirmed successfully");
-      navigate(`/patient/dashboard/orders/${orderId}`, { replace: true });
+      toast.success("Payment simulated successfully. Order is now pending.");
+      navigate(`/patient/dashboard/orders/${orderId}`, {
+        replace: true,
+        state: {
+          showConfirmation: true,
+          message: "Payment simulated successfully. Order is now pending.",
+        },
+      });
     } catch (err) {
-      const message =
+      toast.error(
         err.response?.data?.message ||
-        err.response?.data?.title ||
-        "Payment simulation failed.";
-      setError(message);
-      toast.error(message);
+          err.response?.data?.title ||
+          "Payment simulation failed. Please try again.",
+      );
     } finally {
       setIsSimulating(false);
     }

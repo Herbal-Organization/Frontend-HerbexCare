@@ -92,7 +92,7 @@ function PatientOrderDetails() {
     try {
       await cancelOrder(orderId);
       toast.success("Order canceled successfully");
-      await fetchOrderDetails();
+      navigate("/patient/dashboard/orders");
     } catch (err) {
       toast.error(
         err.response?.data?.message ||
