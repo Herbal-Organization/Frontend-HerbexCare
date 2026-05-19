@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { googleLoginAccount } from "@api/accounts";
-import { storeAuthTokens, getPostLoginRoute } from "@features/auth/services/authSession";
+import {
+  storeAuthTokens,
+  getPostLoginRoute,
+} from "@features/auth/services/authSession";
 import { getUserRole } from "@utils/auth";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -16,7 +19,7 @@ function SocialAuthButtons() {
     setIsGoogleLoading(true);
     try {
       console.log("Google login success, sending token to backend...");
-      
+
       // Send id_token to backend
       const data = await googleLoginAccount({
         idToken: credentialResponse.credential,
@@ -26,13 +29,15 @@ function SocialAuthButtons() {
       if (data) {
         storeAuthTokens(data);
         toast.success(t("auth.login.success"));
-        
+
         const role = getUserRole();
         navigate(getPostLoginRoute(role));
       }
     } catch (error) {
       console.error("Google Login Error:", error);
-      toast.error(error?.response?.data?.message || t("auth.login.googleError"));
+      toast.error(
+        error?.response?.data?.message || t("auth.login.googleError"),
+      );
     } finally {
       setIsGoogleLoading(false);
     }
@@ -47,26 +52,30 @@ function SocialAuthButtons() {
     <div className="mt-8">
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-200"></div>
+          <div className="w-full border-t border-slate-200 dark:border-slate-800"></div>
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="bg-[#F9F9F9] px-4 text-slate-400 font-medium">
+          <span className="bg-[#F9F9F9] dark:bg-slate-900 px-4 text-slate-400 dark:text-slate-500 font-medium transition-colors duration-300">
             {t("auth.login.orContinueWith")}
           </span>
         </div>
       </div>
 
       <div className="mt-6 flex justify-center">
-        <div className={`w-full max-w-sm ${isGoogleLoading ? "opacity-50 pointer-events-none" : ""} flex justify-center items-center `}>
+        <div
+          className={`w-full max-w-sm ${
+            isGoogleLoading ? "opacity-50 pointer-events-none" : ""
+          } flex justify-center items-center rounded-full overflow-hidden`}
+        >
           <GoogleLogin
             onSuccess={handleSuccess}
             onError={handleError}
             useOneTap
-            theme="outline"
+            theme="filled_blue"
             size="large"
-            width="100%"
+            width="320px"
             text="continue_with"
-            shape="circle"
+            shape="pill"
           />
         </div>
       </div>
