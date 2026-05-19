@@ -52,6 +52,10 @@ function App() {
         {/* Patient Routes */}
         <Route element={<ProtectedRoute allowedRoles={["Patient"]} />}>
           <Route path="/patient/home" element={<PatientHome />} />
+          <Route
+            path="/patient/chat"
+            element={<Navigate to="/patient/dashboard/ai-chat" replace />}
+          />
           <Route path="/patient/home/herbs" element={<HerbsPage />} />
           <Route
             path="/patient/home/herbs/:herbId"

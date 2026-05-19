@@ -19,6 +19,8 @@ const ChatHistoryPanel = ({
 
   const getConsultationTitle = (item, idx) => {
     const raw =
+      item?.recommendedRecipeName ||
+      item?.recipeName ||
       item?.title ||
       item?.name ||
       item?.subject ||
@@ -92,7 +94,7 @@ const ChatHistoryPanel = ({
                       : "border-transparent hover:bg-slate-50 hover:border-slate-100"
                   }`}
                   onClick={() => {
-                    if (id && typeof onSelectConsultation === "function") {
+                    if (typeof onSelectConsultation === "function") {
                       onSelectConsultation(id, item);
                     }
                     if (window.innerWidth < 768) onClose();
@@ -101,7 +103,7 @@ const ChatHistoryPanel = ({
                   tabIndex={0}
                   onKeyDown={(e) => {
                     if (e.key !== "Enter") return;
-                    if (id && typeof onSelectConsultation === "function") {
+                    if (typeof onSelectConsultation === "function") {
                       onSelectConsultation(id, item);
                     }
                     if (window.innerWidth < 768) onClose();

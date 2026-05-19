@@ -17,6 +17,18 @@ const AiChatPage = () => {
   const [activeConsultationId, setActiveConsultationId] = useState(null);
 
   const normalizeChatMessages = (detail, consultationId) => {
+    const looksLikeAiRecipe =
+      Boolean(
+        detail &&
+          (detail.recommendedRecipeName ||
+            detail.mainHerb ||
+            detail.scientificName ||
+            detail.matchPercentage !== undefined ||
+            detail.preparation ||
+            detail.dosage ||
+            detail.contraindications),
+      );
+
     const raw =
       (Array.isArray(detail) ? detail : null) ||
       detail?.messages ||
@@ -70,6 +82,17 @@ const AiChatPage = () => {
           };
         })
         .filter(Boolean);
+    }
+
+    // If the detail is already a recipe-like AI response, render it as one AI message.
+    if (looksLikeAiRecipe) {
+      return [
+        {
+          id: `${consultationId || "chat"}-ai`,
+          role: "ai",
+          data: detail,
+        },
+      ];
     }
 
     // Fallback: attempt to build a 2-message conversation shape
@@ -177,8 +200,16 @@ const AiChatPage = () => {
     setActiveConsultationId(null);
   };
 
-  const handleSelectConsultation = async (id) => {
-    if (!id) return;
+  const handleSelectConsultation = async (id, item) => {
+    // If API doesn't provide an id in the list response, fall back to showing the item.
+    if (!id) {
+      setActiveConsultationId(null);
+      if (item) {
+        setMessages(normalizeChatMessages(item, null));
+      }
+      return;
+    }
+
     setActiveConsultationId(id);
 
     try {

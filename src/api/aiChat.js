@@ -19,8 +19,14 @@ export const generateChatMessage = async (payload) => {
  * Fetch the current user's chat consultations.
  * GET /api/AiChat/myConsultations
  */
-export const fetchMyChatConsultations = async () => {
-  const { data } = await httpClient.get("/api/AiChat/myConsultations");
+export const fetchMyChatConsultations = async (pageNumber, pageSize) => {
+  const params = {};
+  if (pageNumber !== undefined) params.pageNumber = pageNumber;
+  if (pageSize !== undefined) params.pageSize = pageSize;
+
+  const { data } = await httpClient.get("/api/AiChat/myConsultations", {
+    params: Object.keys(params).length ? params : undefined,
+  });
   return data;
 };
 
