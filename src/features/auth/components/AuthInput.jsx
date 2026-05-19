@@ -19,24 +19,24 @@ const AuthInput = forwardRef(function AuthInput(
   const inputType = isPassword && showPassword ? "text" : inputProps.type;
 
   const baseInputClassName =
-    `block w-full rounded-xl border py-3 outline-none focus:ring-1 text-slate-900 text-sm font-medium ${
+    `block w-full rounded-xl border py-3 outline-none focus:ring-1 text-slate-900 dark:text-slate-100 dark:bg-slate-800 text-sm font-medium transition-colors ${
       hasIcon ? "ps-11" : "px-4"
     } ${isPassword && showPassword ? "pe-11" : isPassword ? "pe-11" : "pe-4"} ${
       error
         ? "border-eed-500 focus:border-eed-500 focus:ring-red-500"
-        : "border-slate-200 focus:border-primary focus:ring-primary"
+        : "border-slate-200 dark:border-slate-700 focus:border-primary dark:focus:border-emerald-500 focus:ring-primary dark:focus:ring-emerald-500/20"
     } ${inputClassName}`.trim();
 
   return (
     <div className={wrapperClassName}>
       {label ? (
-        <label className="mb-2 block text-sm font-bold text-slate-700">
+        <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
           {label}
         </label>
       ) : null}
       <div className="relative rounded-xl shadow-sm">
         {hasIcon && (
-          <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-4 text-slate-400 text-[20px]">
+          <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-4 text-slate-400 dark:text-slate-500 text-[20px]">
             {icon}
           </div>
         )}
@@ -50,7 +50,7 @@ const AuthInput = forwardRef(function AuthInput(
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute inset-y-0 end-0 flex items-center pe-4 text-slate-400 hover:text-slate-600 text-[20px]"
+            className="absolute inset-y-0 end-0 flex items-center pe-4 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 text-[20px]"
           >
             {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
           </button>

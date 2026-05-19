@@ -164,16 +164,16 @@ function Login({ setSuccessMsg }) {
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
-              className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary"
+              className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-primary focus:ring-primary"
               {...register("rememberMe")}
             />
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-sm font-medium text-slate-700 dark:text-slate-400">
               Remember Me
             </span>
           </label>
           <Link
             to="/forget-password"
-            className="text-sm font-medium text-primary hover:text-primary-hover transition-colors"
+            className="text-sm font-medium text-primary dark:text-emerald-400 hover:text-primary-hover transition-colors"
           >
             Forgot Password?
           </Link>
@@ -182,7 +182,7 @@ function Login({ setSuccessMsg }) {
         <button
           disabled={isLoading}
           type="submit"
-          className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3.5 text-base font-bold text-white shadow-md shadow-primary/20 transition-all hover:bg-primary-hover hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0"
+          className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary dark:bg-emerald-600 px-4 py-3.5 text-base font-bold text-white shadow-md shadow-primary/20 dark:shadow-emerald-900/20 transition-all hover:bg-primary-hover dark:hover:bg-emerald-500 hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0"
         >
           {isLoading ? (
             <>
@@ -201,11 +201,11 @@ function Login({ setSuccessMsg }) {
       <SocialAuthButtons />
 
       <div className="pt-8 text-center">
-        <p className="text-sm font-medium text-slate-500">
+        <p className="text-sm font-medium text-slate-500 dark:text-slate-500">
           Don't have an account?{" "}
           <Link
             to="/auth/register"
-            className="text-primary font-bold hover:underline"
+            className="text-primary dark:text-emerald-400 font-bold hover:underline"
           >
             Sign Up
           </Link>

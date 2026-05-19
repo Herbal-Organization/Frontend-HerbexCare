@@ -200,8 +200,7 @@ function Register({ setSuccessMsg }) {
             },
             pattern: {
               value: /^[0-9+\-\s()]*$/,
-              message:
-                "Phone number contains invalid characters",
+              message: "Phone number contains invalid characters",
             },
             validate: (value) => {
               if (!value) return true;
@@ -218,15 +217,15 @@ function Register({ setSuccessMsg }) {
         />
 
         <div>
-          <label className="mb-2 block text-sm font-bold text-slate-700">
+          <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
             Account Role
           </label>
           <div className="grid grid-cols-2 gap-3">
             <label
               className={`flex cursor-pointer items-center justify-center gap-3 rounded-xl border py-2.5 transition-colors ${
                 role === "Patient"
-                  ? "border-primary bg-primary/10"
-                  : "border-slate-200 bg-white hover:bg-slate-50"
+                  ? "border-primary dark:border-emerald-500 bg-primary/10 dark:bg-emerald-500/10"
+                  : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50"
               }`}
             >
               <input
@@ -239,12 +238,16 @@ function Register({ setSuccessMsg }) {
               />
               <FaPerson
                 className={
-                  role === "Patient" ? "text-primary" : "text-slate-400"
+                  role === "Patient"
+                    ? "text-primary dark:text-emerald-400"
+                    : "text-slate-400"
                 }
               />
               <span
                 className={`text-sm font-bold ${
-                  role === "Patient" ? "text-primary" : "text-slate-600"
+                  role === "Patient"
+                    ? "text-primary dark:text-emerald-400"
+                    : "text-slate-600 dark:text-slate-400"
                 }`}
               >
                 Patient
@@ -253,8 +256,8 @@ function Register({ setSuccessMsg }) {
             <label
               className={`flex cursor-pointer items-center justify-center gap-3 rounded-xl border py-2.5 transition-colors ${
                 role === "Herbalist"
-                  ? "border-primary bg-primary/10"
-                  : "border-slate-200 bg-white hover:bg-slate-50"
+                  ? "border-primary dark:border-emerald-500 bg-primary/10 dark:bg-emerald-500/10"
+                  : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50"
               }`}
             >
               <input
@@ -267,12 +270,16 @@ function Register({ setSuccessMsg }) {
               />
               <MdLocalLibrary
                 className={
-                  role === "Herbalist" ? "text-primary" : "text-slate-400"
+                  role === "Herbalist"
+                    ? "text-primary dark:text-emerald-400"
+                    : "text-slate-400"
                 }
               />
               <span
                 className={`text-sm font-bold ${
-                  role === "Herbalist" ? "text-primary" : "text-slate-600"
+                  role === "Herbalist"
+                    ? "text-primary dark:text-emerald-400"
+                    : "text-slate-600 dark:text-slate-400"
                 }`}
               >
                 Herbalist
@@ -299,12 +306,9 @@ function Register({ setSuccessMsg }) {
               },
               validate: (value) => {
                 if (!value) return true;
-                if (!/[A-Z]/.test(value))
-                  return "Must contain uppercase";
-                if (!/[a-z]/.test(value))
-                  return "Must contain lowercase";
-                if (!/[0-9]/.test(value))
-                  return "Must contain a number";
+                if (!/[A-Z]/.test(value)) return "Must contain uppercase";
+                if (!/[a-z]/.test(value)) return "Must contain lowercase";
+                if (!/[0-9]/.test(value)) return "Must contain a number";
                 return true;
               },
             })}
@@ -330,7 +334,7 @@ function Register({ setSuccessMsg }) {
           <button
             disabled={isLoading}
             type="submit"
-            className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3.5 text-base font-bold text-white shadow-md shadow-primary/20 transition-all hover:bg-primary-hover hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0"
+            className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary dark:bg-emerald-600 px-4 py-3.5 text-base font-bold text-white shadow-md shadow-primary/20 dark:shadow-emerald-900/20 transition-all hover:bg-primary-hover dark:hover:bg-emerald-500 hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0"
           >
             {isLoading ? (
               <>
@@ -338,10 +342,10 @@ function Register({ setSuccessMsg }) {
                 <span>Creating account...</span>
               </>
             ) : (
-            <>
-              <FaUserPlus />
-              <span>Sign Up</span>
-            </>
+              <>
+                <FaUserPlus />
+                <span>Sign Up</span>
+              </>
             )}
           </button>
         </div>
@@ -350,11 +354,11 @@ function Register({ setSuccessMsg }) {
       <SocialAuthButtons />
 
       <div className="pt-8 text-center">
-        <p className="text-sm font-medium text-slate-500">
+        <p className="text-sm font-medium text-slate-500 dark:text-slate-500">
           Already have an account?{" "}
-          <Link 
+          <Link
             to="/auth/login"
-            className="text-primary font-bold hover:underline"
+            className="text-primary dark:text-emerald-400 font-bold hover:underline"
           >
             Log In
           </Link>
