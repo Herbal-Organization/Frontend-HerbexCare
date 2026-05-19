@@ -123,11 +123,9 @@ function PatientOrders() {
           pageSize: ORDERS_PER_PAGE,
         });
 
-        const extractedOrders = extractOrdersArray(response).filter(
-          (order) => !isCanceledStatus(order.status),
-        );
+        const extractedOrders = extractOrdersArray(response);
 
-        // Fetch detailed info for each order to get paymentMethod
+        // Fetch detailed info for each order to get paymentMethod and actual status
         const detailedOrders = await Promise.all(
           extractedOrders.map(async (order) => {
             try {
@@ -250,8 +248,12 @@ function PatientOrders() {
             <FaBox className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="text-3xl font-black tracking-tight text-slate-900">My Orders</h1>
-            <p className="mt-1 text-sm font-medium text-slate-500">Track and manage your recent purchases</p>
+            <h1 className="text-3xl font-black tracking-tight text-slate-900">
+              My Orders
+            </h1>
+            <p className="mt-1 text-sm font-medium text-slate-500">
+              Track and manage your recent purchases
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2 rounded-xl bg-white p-1 shadow-sm border border-slate-200">
@@ -271,7 +273,7 @@ function PatientOrders() {
             day: "numeric",
           });
           const totalPrice = order.totalPrice || order.total || 0;
-          const status = order.status || "Pending";
+          const status = order.orderStatus || order.status || "Pending";
           const paymentMethod = order.paymentMethod || "Not Specified";
           const isFavorite = !!order.isFavorite;
           const isBusy = busyKeys.has(orderId);
@@ -282,17 +284,21 @@ function PatientOrders() {
               className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:border-emerald-200"
             >
               <div className="absolute top-0 left-0 h-full w-1.5 bg-emerald-500 transform -translate-x-full transition-transform duration-300 group-hover:translate-x-0" />
-              
+
               <div className="flex flex-col md:flex-row md:items-center p-5 sm:p-6 gap-6">
                 {/* Order Identity & Date */}
                 <div className="flex-1 min-w-50">
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="text-lg font-black text-slate-900">Order #{orderId}</span>
+                    <span className="text-lg font-black text-slate-900">
+                      Order #{orderId}
+                    </span>
                     <button
                       onClick={(e) => handleToggleFavorite(e, orderId)}
                       disabled={isBusy}
                       className={`p-2 transition-all rounded-full hover:bg-rose-50 ${
-                        isFavorite ? "text-rose-500 scale-110" : "text-slate-300 hover:text-rose-400"
+                        isFavorite
+                          ? "text-rose-500 scale-110"
+                          : "text-slate-300 hover:text-rose-400"
                       }`}
                     >
                       {isBusy ? (
@@ -313,28 +319,44 @@ function PatientOrders() {
                 {/* Details Section */}
                 <div className="flex flex-wrap items-center gap-6 md:gap-10">
                   <div className="flex flex-col gap-1">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Amount</span>
-                    <span className="text-xl font-black text-slate-900">{totalPrice.toFixed(2)} <span className="text-sm font-bold text-slate-500">EGP</span></span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      Amount
+                    </span>
+                    <span className="text-xl font-black text-slate-900">
+                      {totalPrice.toFixed(2)}{" "}
+                      <span className="text-sm font-bold text-slate-500">
+                        EGP
+                      </span>
+                    </span>
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Payment</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      Payment
+                    </span>
                     <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-1.5 border border-slate-100">
-                      {paymentMethod.toLowerCase().includes('card') ? (
+                      {paymentMethod.toLowerCase().includes("card") ? (
                         <FaCreditCard className="text-blue-500" />
                       ) : (
                         <FaMoneyBillWave className="text-emerald-600" />
                       )}
-                      <span className="text-xs font-bold text-slate-700">{paymentMethod}</span>
+                      <span className="text-xs font-bold text-slate-700">
+                        {paymentMethod}
+                      </span>
                     </div>
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Status</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      Status
+                    </span>
                     <span
                       className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold ring-4 ring-white ${getStatusColor(status)}`}
                     >
-                      <span className="text-sm leading-none">{getStatusIcon(status)}</span> {status}
+                      <span className="text-sm leading-none">
+                        {getStatusIcon(status)}
+                      </span>{" "}
+                      {status}
                     </span>
                   </div>
                 </div>
