@@ -250,15 +250,15 @@ function PatientOrders() {
       </header>
 
       {/* Filters Bar */}
-      <div className="mb-10 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center lg:px-8">
-        <div className="items-center gap-3 text-slate-500 mr-4 border-r border-slate-100 pr-6 hidden sm:flex">
+      <div className="mb-10 flex flex-col gap-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm lg:flex-row lg:items-center lg:px-8">
+        <div className="items-center gap-3 text-slate-500 mr-4 border-b pb-4 lg:border-b-0 lg:pb-0 lg:border-r lg:border-slate-100 lg:pr-6 hidden sm:flex">
           <FaFilter className="h-5 w-5 text-emerald-500" />
           <span className="text-sm font-bold uppercase tracking-wider">
             Filters
           </span>
         </div>
 
-        <div className="grid grid-cols-1 gap-5 w-full sm:grid-cols-2 lg:flex lg:items-center lg:gap-8">
+        <div className="grid grid-cols-1 gap-5 w-full sm:grid-cols-2 lg:flex lg:items-end lg:gap-8">
           {/* Status Filter */}
           <div className="flex flex-col gap-2 flex-1">
             <label
@@ -272,7 +272,7 @@ function PatientOrders() {
                 id="status"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-4 pr-10 text-sm font-bold text-slate-700 outline-none transition-all hover:bg-slate-50 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/50 py-3 pl-4 pr-10 text-sm font-bold text-slate-700 outline-none transition-all hover:bg-slate-50 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
               >
                 <option value="all">All Statuses</option>
                 <option value="pending">Pending</option>
@@ -300,7 +300,7 @@ function PatientOrders() {
                 id="payment"
                 value={paymentFilter}
                 onChange={(e) => setPaymentFilter(e.target.value)}
-                className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-4 pr-10 text-sm font-bold text-slate-700 outline-none transition-all hover:bg-slate-50 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/50 py-3 pl-4 pr-10 text-sm font-bold text-slate-700 outline-none transition-all hover:bg-slate-50 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
               >
                 <option value="all">Any Payment</option>
                 <option value="cash">Cash</option>
@@ -320,7 +320,7 @@ function PatientOrders() {
                 setStatusFilter("all");
                 setPaymentFilter("all");
               }}
-              className="mt-4 lg:mt-6 text-xs font-black uppercase tracking-widest text-emerald-600 hover:text-emerald-700 transition-colors"
+              className="mt-2 h-11 px-4 flex items-center justify-center text-xs font-black uppercase tracking-widest text-emerald-600 hover:text-emerald-700 transition-colors lg:pb-1"
             >
               Reset
             </button>

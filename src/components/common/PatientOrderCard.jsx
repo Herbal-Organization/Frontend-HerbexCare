@@ -55,7 +55,8 @@ const PatientOrderCard = ({ order, isBusy, onToggleFavorite }) => {
 
   const getPaymentIcon = (method) => {
     const m = method.toLowerCase();
-    if (m.includes("card") || m.includes("credit")) return <FaCreditCard className="text-blue-500" />;
+    if (m.includes("card") || m.includes("credit"))
+      return <FaCreditCard className="text-blue-500" />;
     if (m.includes("wallet")) return <FaWallet className="text-purple-500" />;
     return <FaMoneyBillWave className="text-emerald-600" />;
   };
@@ -64,9 +65,9 @@ const PatientOrderCard = ({ order, isBusy, onToggleFavorite }) => {
     <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:border-emerald-200">
       <div className="absolute top-0 left-0 h-full w-1.5 bg-emerald-500 transform -translate-x-full transition-transform duration-300 group-hover:translate-x-0" />
 
-      <div className="flex flex-col md:flex-row md:items-center p-5 sm:p-6 gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-center p-5 sm:p-6 gap-6">
         {/* Order Identity & Date */}
-        <div className="flex-1 min-w-50">
+        <div className="lg:flex-1 min-w-50 lg:border-r lg:border-slate-100 pr-4">
           <div className="flex items-center gap-3 mb-2">
             <span className="text-lg font-black text-slate-900">
               Order #{orderId}
@@ -100,7 +101,7 @@ const PatientOrderCard = ({ order, isBusy, onToggleFavorite }) => {
         </div>
 
         {/* Details Section */}
-        <div className="flex flex-wrap items-center gap-6 md:gap-10">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:flex lg:flex-wrap lg:items-center lg:gap-10">
           <div className="flex flex-col gap-1">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
               Amount
@@ -115,20 +116,20 @@ const PatientOrderCard = ({ order, isBusy, onToggleFavorite }) => {
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
               Payment
             </span>
-            <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-1.5 border border-slate-100">
+            <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-2 py-1.5 border border-slate-100 sm:px-3">
               {getPaymentIcon(paymentMethod)}
-              <span className="text-xs font-bold text-slate-700">
+              <span className="text-[11px] font-bold text-slate-700 sm:text-xs">
                 {paymentMethod}
               </span>
             </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5 col-span-2 sm:col-span-1">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
               Status
             </span>
             <span
-              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold ring-4 ring-white ${getStatusColor(
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold ring-4 ring-white w-fit ${getStatusColor(
                 status,
               )}`}
             >
@@ -141,11 +142,12 @@ const PatientOrderCard = ({ order, isBusy, onToggleFavorite }) => {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end md:ml-auto">
+        <div className="flex items-center justify-end lg:ml-auto w-full lg:w-auto border-t border-slate-100 pt-4 lg:border-0 lg:pt-0">
           <Link
             to={`/patient/dashboard/orders/${orderId}`}
-            className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white shadow-lg shadow-slate-200 transition-all hover:bg-emerald-600 hover:shadow-emerald-100 hover:-translate-y-0.5 active:translate-y-0"
+            className="flex h-11 w-full lg:w-11 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 text-white shadow-lg shadow-slate-200 transition-all hover:bg-emerald-600 hover:shadow-emerald-100 hover:-translate-y-0.5 active:translate-y-0 lg:px-0"
           >
+            <span className="text-sm font-bold lg:hidden">View Details</span>
             <FaChevronRight className="h-4 w-4" />
           </Link>
         </div>
