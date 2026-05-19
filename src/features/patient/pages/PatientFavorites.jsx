@@ -20,6 +20,7 @@ import { normalizeHerb } from "@features/browse/services/herbs";
 import { getRecipeById } from "@api/recipes";
 import { normalizeRecipe } from "@features/browse/services/recipes";
 import { getFavoriteOrders, markOrderAsFavorite } from "@api/orders";
+import { PatientOrderCard } from "@components/common";
 
 function extractItems(payload) {
   if (Array.isArray(payload)) return payload;
@@ -437,74 +438,15 @@ function PatientFavorites() {
               <div className="space-y-4">
                 {sortedOrders.map((order) => {
                   const orderId = order.orderId || order.id;
-                  const orderDate = new Date(
-                    order.orderDate || order.createdAt,
-                  );
-                  const formattedDate = orderDate.toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  });
-                  const totalPrice = order.totalPrice || order.total || 0;
-                  const itemCount =
-                    (Array.isArray(order.recipes) ? order.recipes.length : 0) +
-                    (Array.isArray(order.herbs) ? order.herbs.length : 0) +
-                    (Array.isArray(order.aiRecipes)
-                      ? order.aiRecipes.length
-                      : 0);
-
                   const isBusy = busyKey === `order-${orderId}`;
 
                   return (
-                    <div
+                    <PatientOrderCard
                       key={orderId}
-                      className="rounded-lg border border-slate-200 bg-white p-6 transition-all hover:shadow-md"
-                    >
-                      <div className="flex items-center justify-between">
-                        <Link
-                          to={`/patient/dashboard/orders/${orderId}`}
-                          className="flex-1"
-                        >
-                          <div className="flex items-center gap-4">
-                            <div>
-                              <h3 className="font-semibold text-slate-900">
-                                Order #{orderId}
-                              </h3>
-                              <p className="text-sm text-slate-500">
-                                {formattedDate}
-                              </p>
-                            </div>
-                            <div className="text-end">
-                              <p className="text-lg font-bold text-slate-900">
-                                {totalPrice.toFixed(2)} EGP
-                              </p>
-                              <p className="text-sm text-slate-500">
-                                {itemCount} item{itemCount !== 1 ? "s" : ""}
-                              </p>
-                            </div>
-                          </div>
-                        </Link>
-
-                        <div className="flex items-center gap-4">
-                          <button
-                            onClick={() => handleRemoveOrderFavorite(orderId)}
-                            disabled={isBusy}
-                            className={`p-2 transition-colors rounded-full ${
-                              isBusy
-                                ? "opacity-50"
-                                : "hover:bg-rose-50 text-rose-500"
-                            }`}
-                            title="Remove from favorites"
-                          >
-                            {isBusy ? (
-                              <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-rose-500" />
-                            ) : (
-                              <FaHeart className="h-5 w-5" />
-                            )}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+                      order={order}
+                      isBusy={isBusy}
+                      onToggleFavorite={handleRemoveOrderFavorite}
+                    />
                   );
                 })}
               </div>
