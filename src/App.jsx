@@ -14,6 +14,8 @@ import HerbDetailsPage from "@features/browse/pages/HerbDetailsPage";
 import LandingPage from "@features/landing/pages/LandingPage";
 import NotFoundPage from "@features/landing/pages/NotFoundPage";
 import { isAuthenticated } from "@utils/auth";
+import ChatConsultations from "@features/patient/pages/ChatConsultations";
+import ChatConversation from "@features/patient/pages/ChatConversation";
 
 import { Toaster } from "react-hot-toast";
 
@@ -63,8 +65,16 @@ function App() {
             element={<RecipeDetailsPage />}
           />
           <Route path="/patient/dashboard/*" element={<PatientDashboard />} />
+          <Route
+            path="/patient/chat"
+            element={<ChatConsultations />}
+          />
+          <Route
+            path="/patient/chat/:id"
+            element={<ChatConversation />}
+          />
         </Route>
-        
+
         {/* Hebalist Routes */}
         <Route element={<ProtectedRoute allowedRoles={["Herbalist"]} />}>
           <Route
