@@ -67,7 +67,7 @@ export const simulatePayment = async (orderId, payload) => {
 };
 
 export const markOrderAsFavorite = async (orderId) => {
-  const { data } = await httpClient.patch(`/api/Orders/${orderId}/favorite`);
+  const { data } = await httpClient.post(`/api/Orders/${orderId}/favorite`);
   return data;
 };
 
