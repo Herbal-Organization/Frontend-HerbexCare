@@ -1,9 +1,34 @@
 import React from "react";
 import { FaHistory, FaRegCommentDots, FaTimes } from "react-icons/fa";
 
-const ChatHistoryPanel = ({ messages, onNewChat, isOpen, onClose }) => {
-  // Extract user messages to show as history items
+const ChatHistoryPanel = ({
+  messages,
+  consultations = [],
+  isLoadingConsultations = false,
+  onSelectConsultation,
+  activeConsultationId,
+  onNewChat,
+  isOpen,
+  onClose,
+}) => {
+  // Extract user messages to show as fallback history items
   const userMessages = messages.filter((m) => m.role === "user").reverse();
+
+  const getConsultationId = (item) =>
+    item?.id ?? item?.consultationId ?? item?.chatId ?? item?.sessionId;
+
+  const getConsultationTitle = (item, idx) => {
+    const raw =
+      item?.title ||
+      item?.name ||
+      item?.subject ||
+      item?.lastUserMessage ||
+      item?.lastPrompt ||
+      item?.userPrompt ||
+      item?.prompt;
+    const title = typeof raw === "string" ? raw.trim() : "";
+    return title || `Consultation #${idx + 1}`;
+  };
 
   return (
     <>
@@ -47,7 +72,57 @@ const ChatHistoryPanel = ({ messages, onNewChat, isOpen, onClose }) => {
         </div>
 
         <div className="flex-1 overflow-y-auto p-3 space-y-1 custom-scrollbar">
-          {userMessages.length === 0 ? (
+          {isLoadingConsultations ? (
+            <div className="text-center text-sm text-slate-400 mt-10">
+              Loading...
+            </div>
+          ) : consultations.length > 0 ? (
+            consultations.map((item, idx) => {
+              const id = getConsultationId(item);
+              const isActive = id && activeConsultationId
+                ? String(id) === String(activeConsultationId)
+                : false;
+
+              return (
+                <div
+                  key={id || idx}
+                  className={`px-3 py-2.5 rounded-lg cursor-pointer flex items-center gap-3 transition-colors border group ${
+                    isActive
+                      ? "bg-emerald-50 border-emerald-100"
+                      : "border-transparent hover:bg-slate-50 hover:border-slate-100"
+                  }`}
+                  onClick={() => {
+                    if (id && typeof onSelectConsultation === "function") {
+                      onSelectConsultation(id, item);
+                    }
+                    if (window.innerWidth < 768) onClose();
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key !== "Enter") return;
+                    if (id && typeof onSelectConsultation === "function") {
+                      onSelectConsultation(id, item);
+                    }
+                    if (window.innerWidth < 768) onClose();
+                  }}
+                >
+                  <FaRegCommentDots
+                    className={`transition-colors shrink-0 ${
+                      isActive
+                        ? "text-emerald-700"
+                        : "text-slate-400 group-hover:text-primary"
+                    }`}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm text-slate-700 truncate font-medium">
+                      {getConsultationTitle(item, idx)}
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          ) : userMessages.length === 0 ? (
             <div className="text-center text-sm text-slate-400 mt-10">
               No history yet
             </div>
@@ -60,7 +135,7 @@ const ChatHistoryPanel = ({ messages, onNewChat, isOpen, onClose }) => {
                   if (window.innerWidth < 768) onClose();
                 }}
               >
-                <FaRegCommentDots className="text-slate-400 group-hover:text-primary transition-colors flex-shrink-0" />
+                <FaRegCommentDots className="text-slate-400 group-hover:text-primary transition-colors shrink-0" />
                 <div className="text-sm text-slate-700 truncate font-medium">
                   {msg.content}
                 </div>

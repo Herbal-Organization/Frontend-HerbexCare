@@ -16,33 +16,26 @@ export const generateChatMessage = async (payload) => {
 };
 
 /**
- * Get all consultations for the current user.
+ * Fetch the current user's chat consultations.
  * GET /api/AiChat/myConsultations
- *
- * @returns {Promise<Array>} A list of consultations.
  */
-export const getMyConsultations = async () => {
+export const fetchMyChatConsultations = async () => {
   const { data } = await httpClient.get("/api/AiChat/myConsultations");
   return data;
 };
 
 /**
- * Get a specific consultation by its ID.
+ * Fetch a specific chat consultation.
  * GET /api/AiChat/{id}/myConsultation
- *
- * @param {string} id - The ID of the consultation.
- * @returns {Promise<Object>} The consultation data.
  */
-export const getMyConsultationById = async (id) => {
-  if (!id) {
-    throw new Error("Consultation ID is required.");
-  }
+export const fetchMyChatConsultationById = async (id) => {
+  if (!id) throw new Error("consultation id is required");
   const { data } = await httpClient.get(`/api/AiChat/${id}/myConsultation`);
   return data;
 };
 
 export default {
   generateChatMessage,
-  getMyConsultations,
-  getMyConsultationById,
+  fetchMyChatConsultations,
+  fetchMyChatConsultationById,
 };

@@ -38,8 +38,8 @@ export const getPatientNavConfig = (t) => [
     icon: FaBrain,
   },
   {
-    name: "Recent Chats",
-    href: "/patient/chat",
+    name: "AI Chat",
+    href: "/patient/dashboard/ai-chat",
     icon: FaComments,
   },
   {
