@@ -47,7 +47,7 @@ function AiConsultationWizard({
       <div className="grid gap-4 sm:grid-cols-2">
         {physicalFields.map((field) => (
           <div key={field.key} className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700">
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
               {t(field.labelKey)}
             </label>
             <input
@@ -59,7 +59,7 @@ function AiConsultationWizard({
               value={form[field.key]}
               onChange={(e) => onChange(field.key, e.target.value)}
               disabled={isSubmitting}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm font-medium text-slate-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 disabled:bg-slate-100"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2.5 text-sm font-medium text-slate-900 dark:text-slate-100 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-900/20 disabled:bg-slate-100 dark:disabled:bg-slate-800/50"
             />
           </div>
         ))}
@@ -72,7 +72,7 @@ function AiConsultationWizard({
       <div className="grid gap-4 sm:grid-cols-2">
         {vitalsFields.map((field) => (
           <div key={field.key} className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700">
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
               {t(field.labelKey)}
             </label>
             <input
@@ -84,7 +84,7 @@ function AiConsultationWizard({
               value={form[field.key]}
               onChange={(e) => onChange(field.key, e.target.value)}
               disabled={isSubmitting}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm font-medium text-slate-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 disabled:bg-slate-100"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2.5 text-sm font-medium text-slate-900 dark:text-slate-100 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-900/20 disabled:bg-slate-100 dark:disabled:bg-slate-800/50"
             />
           </div>
         ))}
@@ -94,29 +94,29 @@ function AiConsultationWizard({
 
   const renderSymptomsStep = () => (
     <div className="space-y-4">
-      <p className="text-sm text-slate-600 mb-4">
+      <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
         {t("aiConsultation.form.symptomsInstruction")}
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
         {SYMPTOMS_LIST.map((symptom) => (
           <label
             key={symptom}
-            className="flex items-center gap-3 rounded-lg border border-slate-200 p-3 cursor-pointer hover:bg-slate-50 transition"
+            className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 p-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition"
           >
             <input
               type="checkbox"
               checked={selectedSymptoms.includes(symptom)}
               onChange={() => onSymptomToggle(symptom)}
               disabled={isSubmitting}
-              className="h-5 w-5 rounded border-slate-300 text-emerald-600 focus:ring-2 focus:ring-emerald-500"
+              className="h-5 w-5 rounded border-slate-300 dark:border-slate-700 text-emerald-600 focus:ring-2 focus:ring-emerald-500"
             />
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
               {symptom}
             </span>
           </label>
         ))}
       </div>
-      <p className="text-sm font-medium text-emerald-600 mt-4">
+      <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 mt-4">
         {t("aiConsultation.form.selectedCount", {
           count: selectedSymptoms.length,
         })}
@@ -127,11 +127,11 @@ function AiConsultationWizard({
   const renderReviewStep = () => (
     <div className="space-y-4">
       <div className="space-y-3">
-        <div className="rounded-lg bg-slate-50 p-4">
-          <h4 className="font-semibold text-slate-900 mb-2">
+        <div className="rounded-lg bg-slate-50 dark:bg-slate-800/50 p-4 border border-slate-100 dark:border-slate-800/50">
+          <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">
             {t("aiConsultation.form.sections.demographics")}
           </h4>
-          <div className="text-sm text-slate-600 space-y-1">
+          <div className="text-sm text-slate-600 dark:text-slate-400 space-y-1">
             <p>
               {t("aiConsultation.form.labels.age")}:{" "}
               {calculateAge(profile?.birthDate) || "—"}{" "}
@@ -156,11 +156,11 @@ function AiConsultationWizard({
           </div>
         </div>
 
-        <div className="rounded-lg bg-slate-50 p-4">
-          <h4 className="font-semibold text-slate-900 mb-2">
+        <div className="rounded-lg bg-slate-50 dark:bg-slate-800/50 p-4 border border-slate-100 dark:border-slate-800/50">
+          <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">
             {t("aiConsultation.form.sections.medicalHistory")}
           </h4>
-          <div className="text-sm text-slate-600">
+          <div className="text-sm text-slate-600 dark:text-slate-400">
             {[
               profile?.diabetes &&
                 `✓ ${t("profile.sections.medicalHistory.conditions.diabetes")}`,
@@ -186,11 +186,11 @@ function AiConsultationWizard({
           </div>
         </div>
 
-        <div className="rounded-lg bg-slate-50 p-4">
-          <h4 className="font-semibold text-slate-900 mb-2">
+        <div className="rounded-lg bg-slate-50 dark:bg-slate-800/50 p-4 border border-slate-100 dark:border-slate-800/50">
+          <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">
             {t("aiConsultation.form.sections.vitals")}
           </h4>
-          <div className="text-sm text-slate-600 space-y-1">
+          <div className="text-sm text-slate-600 dark:text-slate-400 space-y-1">
             <p>
               {t("aiConsultation.form.labels.systolicBp")}/
               {t("aiConsultation.form.labels.diastolicBp")}:{" "}
@@ -217,11 +217,11 @@ function AiConsultationWizard({
           </div>
         </div>
 
-        <div className="rounded-lg bg-emerald-50 p-4">
-          <h4 className="font-semibold text-emerald-900 mb-2">
+        <div className="rounded-lg bg-emerald-50 dark:bg-emerald-900/20 p-4 border border-emerald-100 dark:border-emerald-800/50">
+          <h4 className="font-semibold text-emerald-900 dark:text-emerald-300 mb-2">
             {t("aiConsultation.form.sections.symptoms")}
           </h4>
-          <div className="text-sm text-emerald-700">
+          <div className="text-sm text-emerald-700 dark:text-emerald-400">
             {selectedSymptoms.length > 0
               ? selectedSymptoms
                   .map((s) =>
@@ -265,16 +265,16 @@ function AiConsultationWizard({
       className="w-full"
     >
       {/* Step Header */}
-      <div className="mb-6 sm:mb-8 rounded-2xl bg-linear-to-r from-emerald-50 to-teal-50 p-4 sm:p-6 border border-emerald-100">
+      <div className="mb-6 sm:mb-8 rounded-2xl bg-linear-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 p-4 sm:p-6 border border-emerald-100 dark:border-emerald-900/30">
         <div className="flex items-center gap-3 sm:gap-4">
           <span className="text-2xl sm:text-3xl shrink-0">
             {currentStepData?.icon}
           </span>
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 leading-tight">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 leading-tight">
               {t(currentStepData?.titleKey)}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 mt-0.5 sm:mt-1">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-0.5 sm:mt-1">
               {t(currentStepData?.descriptionKey)}
             </p>
           </div>
@@ -283,13 +283,13 @@ function AiConsultationWizard({
 
       {/* Error Message */}
       {error ? (
-        <div className="mb-6 rounded-lg border border-eed-200 bg-red-50 p-4 text-sm font-medium text-red-700">
+        <div className="mb-6 rounded-lg border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-4 text-sm font-medium text-red-700 dark:text-red-300">
           {error}
         </div>
       ) : null}
 
       {/* Step Content */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 mb-6 shadow-sm">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8 mb-6 shadow-sm">
         {renderStep()}
       </div>
 

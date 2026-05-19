@@ -13,15 +13,15 @@ const itemVariants = {
 
 function AddressRow({ icon, label, value, t }) {
   return (
-    <div className="group flex items-start gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-5 hover:bg-white hover:border-slate-200 hover:shadow-sm transition-all">
-      <div className="mt-0.5 rounded-xl bg-white p-2.5 text-slate-400 shadow-sm group-hover:text-primary group-hover:scale-110 transition-all">
+    <div className="group flex items-start gap-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-5 hover:bg-white dark:hover:bg-slate-800 hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-sm transition-all">
+      <div className="mt-0.5 rounded-xl bg-white dark:bg-slate-900 p-2.5 text-slate-400 dark:text-slate-500 shadow-sm group-hover:text-primary dark:group-hover:text-emerald-500 group-hover:scale-110 transition-all">
         {icon}
       </div>
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 group-hover:text-primary transition-colors">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 group-hover:text-primary dark:group-hover:text-emerald-500 transition-colors">
           {label}
         </p>
-        <p className="mt-1 text-sm font-bold text-slate-800">
+        <p className="mt-1 text-sm font-bold text-slate-800 dark:text-slate-200">
           {value || t("dashboard.address.notSet")}
         </p>
       </div>
@@ -34,17 +34,17 @@ function PatientAddressCard({ profile }) {
   return (
     <motion.section
       variants={itemVariants}
-      className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
+      className="rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
     >
-      <div className="flex items-center gap-4 border-b border-slate-100 pb-6 mb-6">
-        <div className="p-3 bg-orange-50 text-orange-500 rounded-2xl">
+      <div className="flex items-center gap-4 border-b border-slate-100 dark:border-slate-800 pb-6 mb-6">
+        <div className="p-3 bg-orange-50 dark:bg-orange-500/10 text-orange-500 rounded-2xl">
           <FaMapMarkedAlt className="text-xl" />
         </div>
         <div>
-          <h2 className="text-2xl font-extrabold text-slate-900">
+          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">
             {t("dashboard.address.title")}
           </h2>
-          <p className="mt-1 text-sm font-medium text-slate-500">
+          <p className="mt-1 text-sm font-medium text-slate-500 dark:text-slate-400">
             {t("dashboard.address.subtitle")}
           </p>
         </div>

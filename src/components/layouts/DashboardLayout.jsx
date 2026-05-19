@@ -30,9 +30,9 @@ function DashboardLayout({
         onClose={() => setSidebarOpen(false)}
       />
 
-      <div className="flex-1 md:ms-72 flex flex-col min-h-screen">
+      <div className="flex-1 lg:ms-72 flex flex-col min-h-screen">
         {/* Mobile top bar */}
-        <div className="sticky top-0 z-30 flex items-center gap-3 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm shadow-slate-100/50 px-4 py-3 md:hidden dark:bg-slate-900/80 dark:border-slate-800 dark:shadow-slate-900/50">
+        <div className="sticky top-0 z-30 flex items-center gap-3 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm shadow-slate-100/50 px-4 py-3 lg:hidden dark:bg-slate-900/80 dark:border-slate-800 dark:shadow-slate-900/50">
           <button
             type="button"
             onClick={() => setSidebarOpen(true)}
@@ -59,14 +59,12 @@ function DashboardLayout({
         <main className="flex-1 flex flex-col">
           <div className="flex-1">
             {error && (
-              <div className="m-4 md:m-8 rounded-2xl border border-red-100 bg-red-50/50 px-4 py-3 text-sm font-medium text-red-700 shadow-sm shadow-red-100/50 backdrop-blur-sm dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">
+              <div className="m-4 lg:m-8 rounded-2xl border border-red-100 bg-red-50/50 px-4 py-3 text-sm font-medium text-red-700 shadow-sm shadow-red-100/50 backdrop-blur-sm dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">
                 {error}
               </div>
             )}
             {children}
           </div>
-
-          
         </main>
       </div>
     </div>

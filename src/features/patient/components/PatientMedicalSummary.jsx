@@ -19,17 +19,17 @@ function PatientMedicalSummary({ profile }) {
   return (
     <motion.section
       variants={itemVariants}
-      className="flex flex-col rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
+      className="flex flex-col rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
     >
-      <div className="flex items-center gap-4 border-b border-slate-100 pb-6 mb-6">
-        <div className="p-3 bg-rose-50 text-rose-500 rounded-2xl">
+      <div className="flex items-center gap-4 border-b border-slate-100 dark:border-slate-800 pb-6 mb-6">
+        <div className="p-3 bg-rose-50 dark:bg-rose-500/10 text-rose-500 rounded-2xl">
           <FaHeartbeat className="text-xl" />
         </div>
         <div>
-          <h2 className="text-2xl font-extrabold text-slate-900">
+          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">
             {t("dashboard.medicalHistory.title")}
           </h2>
-          <p className="mt-1 text-sm font-medium text-slate-500">
+          <p className="mt-1 text-sm font-medium text-slate-500 dark:text-slate-400">
             {t("dashboard.medicalHistory.subtitle")}
           </p>
         </div>
@@ -46,7 +46,7 @@ function PatientMedicalSummary({ profile }) {
               {activeConditions.map((condition) => (
                 <span
                   key={condition}
-                  className="inline-flex items-center gap-2 rounded-xl border border-rose-100 bg-rose-50/50 px-4 py-2.5 text-sm font-bold text-rose-700 shadow-sm"
+                  className="inline-flex items-center gap-2 rounded-xl border border-rose-100 dark:border-rose-900/30 bg-rose-50/50 dark:bg-rose-500/5 px-4 py-2.5 text-sm font-bold text-rose-700 dark:text-rose-400 shadow-sm"
                 >
                   <span className="h-1.5 w-1.5 rounded-full bg-rose-500"></span>
                   {t(`profile.sections.medicalHistory.conditions.${condition}`)}
@@ -54,19 +54,19 @@ function PatientMedicalSummary({ profile }) {
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 px-6 py-8 text-center">
-              <FaHeartbeat className="mx-auto text-3xl text-slate-300 mb-3" />
-              <p className="text-sm font-bold text-slate-700">
+            <div className="rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 px-6 py-8 text-center">
+              <FaHeartbeat className="mx-auto text-3xl text-slate-300 dark:text-slate-600 mb-3" />
+              <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
                 {t("dashboard.medicalHistory.noConditions")}
               </p>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">
                 {t("dashboard.medicalHistory.noConditionsDesc")}
               </p>
             </div>
           )}
         </div>
 
-        <div className="mt-auto rounded-2xl bg-slate-50 p-6 border border-slate-100">
+        <div className="mt-auto rounded-2xl bg-slate-50 dark:bg-slate-800/30 p-6 border border-slate-100 dark:border-slate-800">
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
               {t("dashboard.medicalHistory.additionalNotes")}
@@ -75,7 +75,7 @@ function PatientMedicalSummary({ profile }) {
               <span className="flex h-2 w-2 rounded-full bg-emerald-400"></span>
             )}
           </div>
-          <p className="text-sm leading-relaxed text-slate-700 font-medium whitespace-pre-wrap">
+          <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300 font-medium whitespace-pre-wrap">
             {profile?.otherNotes || t("dashboard.medicalHistory.noNotes")}
           </p>
         </div>
