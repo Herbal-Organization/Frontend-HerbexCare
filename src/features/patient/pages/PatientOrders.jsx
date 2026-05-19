@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
   FaBox,
@@ -10,6 +10,8 @@ import {
   FaCalendarAlt,
   FaCreditCard,
   FaMoneyBillWave,
+  FaFilter,
+  FaWallet,
 } from "react-icons/fa";
 import { getAllMyOrders, getOrderById, markOrderAsFavorite } from "@api/orders";
 import { Pagination } from "@components/common";
@@ -112,6 +114,10 @@ function PatientOrders() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [busyKeys, setBusyKeys] = useState(new Set());
+  
+  // Filters state
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [paymentFilter, setPaymentFilter] = useState("all");
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -200,6 +206,18 @@ function PatientOrders() {
     }
   };
 
+  const filteredOrders = useMemo(() => {
+    return orders.filter((order) => {
+      const matchStatus =
+        statusFilter === "all" ||
+        normalizeStatus(order.orderStatus) === statusFilter;
+      const matchPayment =
+        paymentFilter === "all" ||
+        String(order.paymentMethod).toLowerCase() === paymentFilter.toLowerCase();
+      return matchStatus && matchPayment;
+    });
+  }, [orders, statusFilter, paymentFilter]);
+
   const totalPages = Math.max(1, Math.ceil(totalItems / ORDERS_PER_PAGE));
 
   if (isLoading) {
@@ -242,7 +260,7 @@ function PatientOrders() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-      <header className="mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <header className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600 shadow-sm transition-transform hover:scale-105">
             <FaBox className="h-6 w-6" />
@@ -263,8 +281,97 @@ function PatientOrders() {
         </div>
       </header>
 
-      <div className="grid gap-6">
-        {orders.map((order) => {
+      {/* Filters Bar */}
+      <div className="mb-10 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center lg:px-8">
+        <div className="items-center gap-3 text-slate-500 mr-4 border-r border-slate-100 pr-6 hidden sm:flex">
+          <FaFilter className="h-5 w-5 text-emerald-500" />
+          <span className="text-sm font-bold uppercase tracking-wider">Filters</span>
+        </div>
+
+        <div className="grid grid-cols-1 gap-5 w-full sm:grid-cols-2 lg:flex lg:items-center lg:gap-8">
+          {/* Status Filter */}
+          <div className="flex flex-col gap-2 flex-1">
+            <label htmlFor="status" className="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1">
+              Order Status
+            </label>
+            <div className="relative group">
+              <select
+                id="status"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-4 pr-10 text-sm font-bold text-slate-700 outline-none transition-all hover:bg-slate-50 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+              >
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="processing">Processing</option>
+                <option value="paid">Paid / Confirmed</option>
+                <option value="completed">Completed</option>
+                <option value="canceled">Canceled</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 group-hover:text-emerald-500 transition-colors">
+                <FaChevronRight className="h-3 w-3 rotate-90" />
+              </div>
+            </div>
+          </div>
+
+          {/* Payment Filter */}
+          <div className="flex flex-col gap-2 flex-1">
+            <label htmlFor="payment" className="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1">
+              Payment Method
+            </label>
+            <div className="relative group">
+              <select
+                id="payment"
+                value={paymentFilter}
+                onChange={(e) => setPaymentFilter(e.target.value)}
+                className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-4 pr-10 text-sm font-bold text-slate-700 outline-none transition-all hover:bg-slate-50 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+              >
+                <option value="all">Any Payment</option>
+                <option value="cash">Cash</option>
+                <option value="wallet">Wallet</option>
+                <option value="credit">Credit Card</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 group-hover:text-emerald-500 transition-colors">
+                <FaChevronRight className="h-3 w-3 rotate-90" />
+              </div>
+            </div>
+          </div>
+
+          {/* Clear Filters */}
+          {(statusFilter !== "all" || paymentFilter !== "all") && (
+            <button
+              onClick={() => {
+                setStatusFilter("all");
+                setPaymentFilter("all");
+              }}
+              className="mt-4 lg:mt-6 text-xs font-black uppercase tracking-widest text-emerald-600 hover:text-emerald-700 transition-colors"
+            >
+              Reset
+            </button>
+          )}
+        </div>
+      </div>
+
+      {filteredOrders.length === 0 ? (
+        <div className="flex h-80 flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50/30 px-4 text-center">
+          <div className="mb-6 rounded-full bg-slate-100 p-6">
+            <FaFilter className="h-10 w-10 text-slate-300" />
+          </div>
+          <h3 className="text-xl font-bold text-slate-900">No matching orders</h3>
+          <p className="mt-2 text-slate-500">We couldn't find any orders that match those filters. Try selecting different criteria.</p>
+          <button
+            onClick={() => {
+              setStatusFilter("all");
+              setPaymentFilter("all");
+            }}
+            className="mt-6 rounded-xl bg-slate-900 px-6 py-2.5 text-sm font-bold text-white transition-transform hover:scale-105 active:scale-95"
+          >
+            Clear All Filters
+          </button>
+        </div>
+      ) : (
+        <div className="grid gap-6">
+          {filteredOrders.map((order) => {
           const orderId = order.orderId || order.id;
           const orderDate = new Date(order.orderDate || order.createdAt);
           const formattedDate = orderDate.toLocaleDateString("en-US", {
