@@ -6,6 +6,7 @@ import {
   FaLeaf,
   FaRegHeart,
   FaSeedling,
+  FaShoppingBag,
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import {
@@ -18,6 +19,7 @@ import { HerbCard, RecipeCard } from "@components/features/browse";
 import { normalizeHerb } from "@features/browse/services/herbs";
 import { getRecipeById } from "@api/recipes";
 import { normalizeRecipe } from "@features/browse/services/recipes";
+import { getFavoriteOrders, markOrderAsFavorite } from "@api/orders";
 
 function extractItems(payload) {
   if (Array.isArray(payload)) return payload;
@@ -67,6 +69,7 @@ function PatientFavorites() {
   const [activeTab, setActiveTab] = useState("recipes");
   const [recipeFavorites, setRecipeFavorites] = useState([]);
   const [herbFavorites, setHerbFavorites] = useState([]);
+  const [orderFavorites, setOrderFavorites] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [busyKey, setBusyKey] = useState("");
@@ -77,9 +80,10 @@ function PatientFavorites() {
       setError("");
 
       try {
-        const [recipesResponse, herbsResponse] = await Promise.all([
+        const [recipesResponse, herbsResponse, ordersResponse] = await Promise.all([
           getMyRecipesFavorites(),
           getMyHerbsFavorites(),
+          getFavoriteOrders(),
         ]);
 
         const recipesList = extractItems(recipesResponse);
@@ -124,8 +128,11 @@ function PatientFavorites() {
           .map(normalizeHerbFavorite)
           .filter((item) => item.herbId);
 
+        const orders = extractItems(ordersResponse);
+
         setRecipeFavorites(recipes);
         setHerbFavorites(herbs);
+        setOrderFavorites(orders);
       } catch (err) {
         setError(
           err?.response?.data?.message ||
@@ -158,6 +165,16 @@ function PatientFavorites() {
         return bDate - aDate;
       }),
     [herbFavorites],
+  );
+
+  const sortedOrders = useMemo(
+    () =>
+      [...orderFavorites].sort((a, b) => {
+        const aDate = a.orderDate || a.createdAt ? new Date(a.orderDate || a.createdAt).getTime() : 0;
+        const bDate = b.orderDate || b.createdAt ? new Date(b.orderDate || b.createdAt).getTime() : 0;
+        return bDate - aDate;
+      }),
+    [orderFavorites],
   );
 
   const handleRemoveRecipeFavorite = async (recipeId) => {
@@ -198,6 +215,28 @@ function PatientFavorites() {
         err?.response?.data?.message ||
         err?.response?.data?.title ||
         "Unable to update herb favorite.";
+      toast.error(message);
+    } finally {
+      setBusyKey("");
+    }
+  };
+
+  const handleRemoveOrderFavorite = async (orderId) => {
+    const id = Number(orderId || 0);
+    if (!id || busyKey) return;
+
+    setBusyKey(`order-${id}`);
+    try {
+      await markOrderAsFavorite(id);
+      setOrderFavorites((current) =>
+        current.filter((order) => Number(order.orderId || order.id) !== id),
+      );
+      toast.success("Order removed from favorites.");
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        err?.response?.data?.title ||
+        "Unable to update order favorite.";
       toast.error(message);
     } finally {
       setBusyKey("");
@@ -259,6 +298,18 @@ function PatientFavorites() {
             >
               <FaLeaf className="text-base" />
               Herbs ({sortedHerbs.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("orders")}
+              className={`px-6 py-4 font-semibold text-sm transition border-b-2 whitespace-nowrap flex items-center gap-2 ${
+                activeTab === "orders"
+                  ? "border-emerald-600 text-emerald-600"
+                  : "border-transparent text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <FaShoppingBag className="text-base" />
+              Orders ({sortedOrders.length})
             </button>
           </div>
         </div>
@@ -342,6 +393,90 @@ function PatientFavorites() {
                       onToggleFavorite={() => handleRemoveHerbFavorite(herb.herbId)}
                       isFavoriteUpdating={isBusy}
                     />
+                  );
+                })}
+              </div>
+            )
+          ) : null}
+
+          {!error && activeTab === "orders" ? (
+            sortedOrders.length === 0 ? (
+              <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 p-14 text-center">
+                <FaShoppingBag className="mx-auto text-4xl text-slate-300" />
+                <h2 className="mt-4 text-xl font-bold text-slate-700">
+                  No Favorite Orders Yet
+                </h2>
+                <p className="mt-2 text-sm text-slate-500">
+                  Mark orders as favorites to see them here.
+                </p>
+                <Link
+                  to="/patient/dashboard/orders"
+                  className="mt-6 inline-flex rounded-full bg-slate-900 px-5 py-2.5 text-xs font-bold text-white hover:bg-slate-800"
+                >
+                  My Orders
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {sortedOrders.map((order) => {
+                  const orderId = order.orderId || order.id;
+                  const orderDate = new Date(order.orderDate || order.createdAt);
+                  const formattedDate = orderDate.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  });
+                  const totalPrice = order.totalPrice || order.total || 0;
+                  const itemCount =
+                    (Array.isArray(order.recipes) ? order.recipes.length : 0) +
+                    (Array.isArray(order.herbs) ? order.herbs.length : 0) +
+                    (Array.isArray(order.aiRecipes) ? order.aiRecipes.length : 0);
+
+                  const isBusy = busyKey === `order-${orderId}`;
+
+                  return (
+                    <div
+                      key={orderId}
+                      className="rounded-lg border border-slate-200 bg-white p-6 transition-all hover:shadow-md"
+                    >
+                      <div className="flex items-center justify-between">
+                        <Link to={`/patient/dashboard/orders/${orderId}`} className="flex-1">
+                          <div className="flex items-center gap-4">
+                            <div>
+                              <h3 className="font-semibold text-slate-900">
+                                Order #{orderId}
+                              </h3>
+                              <p className="text-sm text-slate-500">{formattedDate}</p>
+                            </div>
+                            <div className="text-end">
+                              <p className="text-lg font-bold text-slate-900">
+                                {totalPrice.toFixed(2)} EGP
+                              </p>
+                              <p className="text-sm text-slate-500">
+                                {itemCount} item{itemCount !== 1 ? "s" : ""}
+                              </p>
+                            </div>
+                          </div>
+                        </Link>
+
+                        <div className="flex items-center gap-4">
+                          <button
+                            onClick={() => handleRemoveOrderFavorite(orderId)}
+                            disabled={isBusy}
+                            className={`p-2 transition-colors rounded-full ${
+                              isBusy ? "opacity-50" : "hover:bg-rose-50 text-rose-500"
+                            }`}
+                            title="Remove from favorites"
+                          >
+                            {isBusy ? (
+                              <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-rose-500" />
+                            ) : (
+                              <FaHeart className="h-5 w-5" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   );
                 })}
               </div>
