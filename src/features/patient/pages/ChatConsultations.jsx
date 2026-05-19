@@ -23,16 +23,20 @@ const ChatConsultations = () => {
       {isLoading && <p>Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
       <div className="grid gap-4">
-        {consultations.map((consultation) => (
-          <div key={consultation.id} className="p-4 border rounded-lg">
-            <Link to={`/patient/chat/${consultation.id}`}>
-              <h2 className="text-xl font-semibold">{consultation.title}</h2>
-              <p className="text-gray-500">
-                {new Date(consultation.createdAt).toLocaleDateString()}
-              </p>
-            </Link>
-          </div>
-        ))}
+        {consultations.length > 0 ? (
+          consultations.map((consultation) => (
+            <div key={consultation.id} className="p-4 border rounded-lg">
+              <Link to={`/patient/chat/${consultation.id}`}>
+                <h2 className="text-xl font-semibold">{consultation.title}</h2>
+                <p className="text-gray-500">
+                  {new Date(consultation.createdAt).toLocaleDateString()}
+                </p>
+              </Link>
+            </div>
+          ))
+        ) : (
+          <p>No consultations found.</p>
+        )}
       </div>
     </div>
   );
