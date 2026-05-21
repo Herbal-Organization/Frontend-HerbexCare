@@ -1,15 +1,20 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { FaComments, FaHistory, FaHeart } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import ChatLayout from "@features/patient/components/new-chat/ChatLayout";
+import PatientAiChat from "./PatientAiChat";
+import AiChatHistoryPage from "./AiChatHistoryPage";
+import AiChatFavoritesPage from "./AiChatFavoritesPage";
 import {
   fetchMyChatConsultationById,
   fetchMyChatConsultations,
   generateChatMessage,
 } from "@api/aiChat";
-import { useTranslation } from "react-i18next";
 
 const AiChatPage = () => {
   const { t } = useTranslation();
+  const [activeView, setActiveView] = useState("chat");
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [consultations, setConsultations] = useState([]);
@@ -44,24 +49,24 @@ const AiChatPage = () => {
             roleRaw.toLowerCase() === "assistant" || roleRaw.toLowerCase() === "ai"
               ? "ai"
               : roleRaw.toLowerCase() === "user"
-                ? "user"
-                : undefined;
+              ? "user"
+              : undefined;
 
           const content =
             typeof m?.content === "string"
               ? m.content
               : typeof m?.text === "string"
-                ? m.text
-                : typeof m?.message === "string"
-                  ? m.message
-                  : undefined;
+              ? m.text
+              : typeof m?.message === "string"
+              ? m.message
+              : undefined;
 
           const data =
             m?.data && typeof m.data === "object"
               ? m.data
               : m?.response && typeof m.response === "object"
-                ? m.response
-                : undefined;
+              ? m.response
+              : undefined;
 
           if (!role) return null;
           if (!content && !data) return null;
@@ -84,7 +89,6 @@ const AiChatPage = () => {
         .filter(Boolean);
     }
 
-    // If the detail is already a recipe-like AI response, render it as one AI message.
     if (looksLikeAiRecipe) {
       return [
         {
@@ -95,14 +99,10 @@ const AiChatPage = () => {
       ];
     }
 
-    // Fallback: attempt to build a 2-message conversation shape
     const userPrompt =
       detail?.userPrompt || detail?.prompt || detail?.question || detail?.input;
     const aiResponse =
-      detail?.aiResponse ||
-      detail?.responseData ||
-      detail?.response ||
-      detail?.result;
+      detail?.aiResponse || detail?.responseData || detail?.response || detail?.result;
 
     const normalized = [];
     if (typeof userPrompt === "string" && userPrompt.trim()) {
@@ -172,8 +172,6 @@ const AiChatPage = () => {
       };
 
       setMessages((prev) => [...prev, newAiMsg]);
-
-      // Refresh recent consultations in the background (if the backend persists chats)
       loadConsultations();
     } catch (error) {
       console.error("AI Chat Error:", error);
@@ -201,7 +199,6 @@ const AiChatPage = () => {
   };
 
   const handleSelectConsultation = async (id, item) => {
-    // If API doesn't provide an id in the list response, fall back to showing the item.
     if (!id) {
       setActiveConsultationId(null);
       if (item) {
@@ -223,12 +220,51 @@ const AiChatPage = () => {
   };
 
   return (
-    <div className="p-0 sm:p-4 lg:p-6 max-w-7xl mx-auto h-full flex flex-col">
-      <div className="hidden md:block mb-4">
-        <h1 className="text-2xl font-bold text-slate-800">AI Herbal Chat</h1>
-        <p className="text-slate-500 text-sm mt-1">
-          Get personalized herbal recommendations instantly.
-        </p>
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+      <div className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-[61px] lg:top-0 z-20 shadow-sm overflow-hidden transition-all">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex gap-1 overflow-x-auto no-scrollbar scroll-smooth">
+            <button
+              onClick={() => setActiveView("chat")}
+              className={`px-4 sm:px-6 py-4 font-semibold text-xs sm:text-sm transition border-b-2 whitespace-nowrap flex items-center justify-center flex-1 sm:flex-none gap-2 ${
+                activeView === "chat"
+                  ? "border-emerald-600 text-emerald-600 dark:text-emerald-400 bg-emerald-50/30 dark:bg-emerald-900/10"
+                  : "border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+              }`}
+            >
+              <FaComments className="text-base sm:text-lg" />
+              <span>{t("patientSidebar.aiChat", "Chat")}</span>
+            </button>
+            <button
+              onClick={() => setActiveView("history")}
+              className={`px-4 sm:px-6 py-4 font-semibold text-xs sm:text-sm transition border-b-2 whitespace-nowrap flex items-center justify-center flex-1 sm:flex-none gap-2 ${
+                activeView === "history"
+                  ? "border-emerald-600 text-emerald-600 dark:text-emerald-400 bg-emerald-50/30 dark:bg-emerald-900/10"
+                  : "border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+              }`}
+            >
+              <FaHistory className="text-base sm:text-lg" />
+              <span>{t("aiChat.nav.history", "Chat History")}</span>
+            </button>
+            <button
+              onClick={() => setActiveView("favorites")}
+              className={`px-4 sm:px-6 py-4 font-semibold text-xs sm:text-sm transition border-b-2 whitespace-nowrap flex items-center justify-center flex-1 sm:flex-none gap-2 ${
+                activeView === "favorites"
+                  ? "border-rose-600 text-rose-600 dark:text-rose-400 bg-rose-50/30 dark:bg-rose-900/10"
+                  : "border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+              }`}
+            >
+              <FaHeart className="text-base sm:text-lg" />
+              <span>{t("aiChat.nav.favorites", "Favorites")}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-7xl">
+        {activeView === "chat" && <PatientAiChat />}
+        {activeView === "history" && <AiChatHistoryPage />}
+        {activeView === "favorites" && <AiChatFavoritesPage />}
       </div>
       <ChatLayout
         messages={messages}
