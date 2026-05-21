@@ -26,6 +26,9 @@ export const fetchMyChatConsultations = async (pageNumber = 1, pageSize = 10) =>
   return data;
 };
 
+// Backwards-compatible aliases (some files import the older names)
+export const fetchMyAiChatConsultations = fetchMyChatConsultations;
+
 /**
  * Fetch details of a specific AI Chat consultation.
  * GET /api/AiChat/{id}/myConsultation
@@ -35,6 +38,9 @@ export const fetchMyChatConsultationById = async (id) => {
   const { data } = await httpClient.get(`/api/AiChat/${id}/myConsultation`);
   return data;
 };
+
+// Backwards-compatible alias
+export const fetchMyAiChatConsultationById = fetchMyChatConsultationById;
 
 /**
  * Fetch the AI Chat catalog.

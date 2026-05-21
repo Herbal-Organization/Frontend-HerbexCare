@@ -7,6 +7,8 @@ import {
   FaStamp,
   FaUserMd,
   FaTags,
+  FaHeart,
+  FaRegHeart,
 } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "motion/react";
@@ -17,6 +19,11 @@ import Footer from "@components/features/landing/Footer";
 import useHerbDetails from "@features/browse/hooks/useHerbDetails";
 import { useCart } from "@context/CartContext";
 import { getHerbalistById } from "@api/herbalists";
+import {
+  getMyHerbalistsFavorites,
+  toggleFavorite,
+} from "@api/favorites";
+import { extractFavoriteItems } from "@features/browse/services/herbalists";
 
 /* ── Add to cart form ── */
 function AddToCartForm({ providers, herb }) {
@@ -25,6 +32,8 @@ function AddToCartForm({ providers, herb }) {
   const [quantity, setQuantity] = useState("");
   const [selectedHerbalistProfile, setSelectedHerbalistProfile] =
     useState(null);
+  const [favoriteHerbalistIds, setFavoriteHerbalistIds] = useState(new Set());
+  const [isFavoriteUpdating, setIsFavoriteUpdating] = useState(false);
 
   const getProviderId = (provider) =>
     String(provider?.herbalistId ?? provider?.userId ?? provider?.id ?? "");
@@ -82,6 +91,60 @@ function AddToCartForm({ providers, herb }) {
 
     loadSelectedHerbalist();
   }, [selectedProviderId]);
+
+  useEffect(() => {
+    const loadFavoriteHerbalists = async () => {
+      try {
+        const response = await getMyHerbalistsFavorites();
+        const items = extractFavoriteItems(response);
+        const ids = new Set(
+          items
+            .map((item) =>
+              Number(item?.herbalistId || item?.targetId || item?.id || 0),
+            )
+            .filter(Boolean),
+        );
+        setFavoriteHerbalistIds(ids);
+      } catch {
+        setFavoriteHerbalistIds(new Set());
+      }
+    };
+
+    loadFavoriteHerbalists();
+  }, []);
+
+  const handleToggleHerbalistFavorite = async () => {
+    const id = Number(selectedProviderId || 0);
+    if (!id || isFavoriteUpdating) return;
+
+    setIsFavoriteUpdating(true);
+    try {
+      await toggleFavorite({ targetId: id, type: "Herbalist" });
+      const wasFavorite = favoriteHerbalistIds.has(id);
+      setFavoriteHerbalistIds((current) => {
+        const next = new Set(current);
+        if (wasFavorite) {
+          next.delete(id);
+        } else {
+          next.add(id);
+        }
+        return next;
+      });
+      toast.success(
+        wasFavorite
+          ? "Herbalist removed from favorites."
+          : "Herbalist added to favorites.",
+      );
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        err?.response?.data?.title ||
+        "Unable to update favorite herbalist.";
+      toast.error(message);
+    } finally {
+      setIsFavoriteUpdating(false);
+    }
+  };
 
   const resolvedProviderName =
     selectedHerbalistProfile?.fullName ||
@@ -180,15 +243,34 @@ function AddToCartForm({ providers, herb }) {
         {/* Selected provider details */}
         {selectedProvider && (
           <div className="p-3 bg-[#EAF3DE] rounded-lg border border-[#C0DD97]">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-2 gap-2">
               <span className="text-xs font-medium text-[#3B6D11] uppercase tracking-wider">
                 Selected provider
               </span>
-              {selectedProvider.averageRating && (
-                <span className="text-[11px] font-medium bg-white text-[#633806] border border-[#EF9F27] border-opacity-50 rounded px-2 py-0.5">
-                  {Number(selectedProvider.averageRating).toFixed(1)} ★
-                </span>
-              )}
+              <div className="flex items-center gap-2">
+                {selectedProvider.averageRating ? (
+                  <span className="text-[11px] font-medium bg-white text-[#633806] border border-[#EF9F27] border-opacity-50 rounded px-2 py-0.5">
+                    {Number(selectedProvider.averageRating).toFixed(1)} ★
+                  </span>
+                ) : null}
+                <button
+                  type="button"
+                  onClick={handleToggleHerbalistFavorite}
+                  disabled={isFavoriteUpdating}
+                  aria-label={
+                    favoriteHerbalistIds.has(Number(selectedProviderId))
+                      ? "Remove herbalist from favorites"
+                      : "Add herbalist to favorites"
+                  }
+                  className="rounded-full p-1.5 text-rose-600 transition hover:bg-white/70 disabled:opacity-50"
+                >
+                  {favoriteHerbalistIds.has(Number(selectedProviderId)) ? (
+                    <FaHeart className="text-sm" />
+                  ) : (
+                    <FaRegHeart className="text-sm" />
+                  )}
+                </button>
+              </div>
             </div>
             <p className="text-sm font-semibold text-[#27500A] mb-1">
               {resolvedProviderName}

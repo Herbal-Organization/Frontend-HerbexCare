@@ -4,6 +4,7 @@ export { default as BrowseHeader } from './BrowseHeader';
 export { default as DiseaseDetailsModal } from './DiseaseDetailsModal';
 export { default as FacetFilters } from './FacetFilters';
 export { default as HerbCard } from './HerbCard';
+export { default as HerbalistFavoriteCard } from './HerbalistFavoriteCard';
 export { default as HerbFilters } from './HerbFilters';
 export { default as HerbsGrid } from './HerbsGrid';
 export { default as HerbsPagination } from './HerbsPagination';

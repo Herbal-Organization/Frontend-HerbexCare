@@ -10,7 +10,8 @@ import {
   FaShoppingCart,
   FaHome,
   FaBookOpen,
-  FaUser
+  FaUser,
+  FaUserMd,
 } from "react-icons/fa";
 import { getUserFromToken, logout } from "@utils/auth";
 import { useCart } from "@context/CartContext";
@@ -38,6 +39,11 @@ function PatientNavbar() {
     { label: t("navbar.home"), path: "/patient/home", exact: true, icon: FaHome },
     { label: t("navbar.herbs"), path: "/patient/home/herbs", icon: FaLeaf },
     { label: t("navbar.recipes"), path: "/patient/home/recipes", icon: FaBookOpen },
+    {
+      label: t("navbar.herbalists"),
+      path: "/patient/home/herbalists",
+      icon: FaUserMd,
+    },
     { label: t("navbar.profile"), path: "/patient/dashboard/profile", icon: FaUser },
   ];
 
