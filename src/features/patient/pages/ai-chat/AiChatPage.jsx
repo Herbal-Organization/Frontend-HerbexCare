@@ -22,17 +22,16 @@ const AiChatPage = () => {
   const [activeConsultationId, setActiveConsultationId] = useState(null);
 
   const normalizeChatMessages = (detail, consultationId) => {
-    const looksLikeAiRecipe =
-      Boolean(
-        detail &&
-          (detail.recommendedRecipeName ||
-            detail.mainHerb ||
-            detail.scientificName ||
-            detail.matchPercentage !== undefined ||
-            detail.preparation ||
-            detail.dosage ||
-            detail.contraindications),
-      );
+    const looksLikeAiRecipe = Boolean(
+      detail &&
+      (detail.recommendedRecipeName ||
+        detail.mainHerb ||
+        detail.scientificName ||
+        detail.matchPercentage !== undefined ||
+        detail.preparation ||
+        detail.dosage ||
+        detail.contraindications),
+    );
 
     const raw =
       (Array.isArray(detail) ? detail : null) ||
@@ -46,27 +45,28 @@ const AiChatPage = () => {
         .map((m, idx) => {
           const roleRaw = (m?.role || m?.sender || m?.type || "").toString();
           const role =
-            roleRaw.toLowerCase() === "assistant" || roleRaw.toLowerCase() === "ai"
+            roleRaw.toLowerCase() === "assistant" ||
+            roleRaw.toLowerCase() === "ai"
               ? "ai"
               : roleRaw.toLowerCase() === "user"
-              ? "user"
-              : undefined;
+                ? "user"
+                : undefined;
 
           const content =
             typeof m?.content === "string"
               ? m.content
               : typeof m?.text === "string"
-              ? m.text
-              : typeof m?.message === "string"
-              ? m.message
-              : undefined;
+                ? m.text
+                : typeof m?.message === "string"
+                  ? m.message
+                  : undefined;
 
           const data =
             m?.data && typeof m.data === "object"
               ? m.data
               : m?.response && typeof m.response === "object"
-              ? m.response
-              : undefined;
+                ? m.response
+                : undefined;
 
           if (!role) return null;
           if (!content && !data) return null;
@@ -102,7 +102,10 @@ const AiChatPage = () => {
     const userPrompt =
       detail?.userPrompt || detail?.prompt || detail?.question || detail?.input;
     const aiResponse =
-      detail?.aiResponse || detail?.responseData || detail?.response || detail?.result;
+      detail?.aiResponse ||
+      detail?.responseData ||
+      detail?.response ||
+      detail?.result;
 
     const normalized = [];
     if (typeof userPrompt === "string" && userPrompt.trim()) {
@@ -117,7 +120,9 @@ const AiChatPage = () => {
       normalized.push({
         id: `${consultationId || "chat"}-ai`,
         role: "ai",
-        ...(typeof aiResponse === "string" ? { content: aiResponse } : { data: aiResponse }),
+        ...(typeof aiResponse === "string"
+          ? { content: aiResponse }
+          : { data: aiResponse }),
       });
     }
 
