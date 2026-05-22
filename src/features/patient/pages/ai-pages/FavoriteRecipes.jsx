@@ -401,7 +401,7 @@ function FavoriteRecipes() {
                           "Favorite Recipe"}
                       </p>
                       <div className="flex items-center gap-2 mt-4">
-                        <FaClock className="text-slate-300 text-xs" />
+                        
                         {(() => {
                           const savedDate =
                             recipe.createdAt || recipe.savedAt || recipe.date;

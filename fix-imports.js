@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
 const SRC_PATH = "src";
 
@@ -61,7 +61,7 @@ walkDir(SRC_PATH, (filePath) => {
   let modified = false;
 
   // Match all import/export statements with relative paths
-  const importRegex = /(from\s+['"])([\.\/][^'"]*)(["'])/g;
+  const importRegex = /(from\s+['"])([./][^'"]*)(["'])/g;
 
   content = content.replace(
     importRegex,

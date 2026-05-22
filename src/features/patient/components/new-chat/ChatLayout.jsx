@@ -4,13 +4,26 @@ import ChatHistoryPanel from "./ChatHistoryPanel";
 import ChatArea from "./ChatArea";
 import ChatInput from "./ChatInput";
 
-const ChatLayout = ({ messages, isLoading, onSendMessage, onNewChat }) => {
+const ChatLayout = ({
+  messages,
+  isLoading,
+  onSendMessage,
+  onNewChat,
+  consultations = [],
+  isLoadingConsultations = false,
+  onSelectConsultation,
+  activeConsultationId,
+}) => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   return (
     <div className="flex h-[calc(100dvh-64px)] sm:h-[calc(100vh-140px)] md:h-[calc(100vh-120px)] w-full bg-white sm:rounded-2xl shadow-sm sm:border border-slate-200 overflow-hidden relative">
       <ChatHistoryPanel
         messages={messages}
+        consultations={consultations}
+        isLoadingConsultations={isLoadingConsultations}
+        onSelectConsultation={onSelectConsultation}
+        activeConsultationId={activeConsultationId}
         onNewChat={onNewChat}
         isOpen={isHistoryOpen}
         onClose={() => setIsHistoryOpen(false)}

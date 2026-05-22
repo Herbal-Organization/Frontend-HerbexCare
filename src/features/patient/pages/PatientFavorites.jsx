@@ -7,16 +7,27 @@ import {
   FaRegHeart,
   FaSeedling,
   FaShoppingBag,
+  FaUserMd,
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import {
   getMyHerbsFavorites,
+  getMyHerbalistsFavorites,
   getMyRecipesFavorites,
   toggleFavorite,
 } from "@api/favorites";
 import { getHerbById } from "@api/herbs";
-import { HerbCard, RecipeCard } from "@components/features/browse";
+import { getHerbalistById } from "@api/herbalists";
+import {
+  HerbCard,
+  HerbalistFavoriteCard,
+  RecipeCard,
+} from "@components/features/browse";
 import { normalizeHerb } from "@features/browse/services/herbs";
+import {
+  extractFavoriteItems,
+  normalizeHerbalist,
+} from "@features/browse/services/herbalists";
 import { getRecipeById } from "@api/recipes";
 import { normalizeRecipe } from "@features/browse/services/recipes";
 import { getFavoriteOrders, markOrderAsFavorite } from "@api/orders";
@@ -66,10 +77,26 @@ function normalizeHerbFavorite(item) {
   };
 }
 
+function normalizeHerbalistFavorite(item) {
+  const herbalist = item?.herbalist || item;
+  const normalized = normalizeHerbalist(herbalist);
+
+  return {
+    ...normalized,
+    createdDate:
+      herbalist?.createdDate ||
+      item?.createdDate ||
+      item?.favoritedAt ||
+      item?.savedDate ||
+      null,
+  };
+}
+
 function PatientFavorites() {
   const [activeTab, setActiveTab] = useState("recipes");
   const [recipeFavorites, setRecipeFavorites] = useState([]);
   const [herbFavorites, setHerbFavorites] = useState([]);
+  const [herbalistFavorites, setHerbalistFavorites] = useState([]);
   const [orderFavorites, setOrderFavorites] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -81,10 +108,11 @@ function PatientFavorites() {
       setError("");
 
       try {
-        const [recipesResponse, herbsResponse, ordersResponse] =
+        const [recipesResponse, herbsResponse, herbalistsResponse, ordersResponse] =
           await Promise.all([
             getMyRecipesFavorites(),
             getMyHerbsFavorites(),
+            getMyHerbalistsFavorites(),
             getFavoriteOrders(),
           ]);
 
@@ -136,10 +164,35 @@ function PatientFavorites() {
           .map(normalizeHerbFavorite)
           .filter((item) => item.herbId);
 
+        const herbalistsList = extractFavoriteItems(herbalistsResponse);
+        const detailedHerbalists = await Promise.all(
+          herbalistsList.map(async (item) => {
+            const herbalistId = item.targetId || item.herbalistId;
+            if (herbalistId) {
+              try {
+                const details = await getHerbalistById(herbalistId);
+                return { ...item, herbalist: details };
+              } catch (err) {
+                console.error(
+                  `Failed to fetch details for herbalist ${herbalistId}:`,
+                  err,
+                );
+                return item;
+              }
+            }
+            return item;
+          }),
+        );
+
+        const herbalists = detailedHerbalists
+          .map(normalizeHerbalistFavorite)
+          .filter((item) => item.herbalistId);
+
         const orders = extractItems(ordersResponse);
 
         setRecipeFavorites(recipes);
         setHerbFavorites(herbs);
+        setHerbalistFavorites(herbalists);
         setOrderFavorites(orders);
       } catch (err) {
         setError(
@@ -173,6 +226,16 @@ function PatientFavorites() {
         return bDate - aDate;
       }),
     [herbFavorites],
+  );
+
+  const sortedHerbalists = useMemo(
+    () =>
+      [...herbalistFavorites].sort((a, b) => {
+        const aDate = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+        const bDate = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+        return bDate - aDate;
+      }),
+    [herbalistFavorites],
   );
 
   const sortedOrders = useMemo(
@@ -235,6 +298,28 @@ function PatientFavorites() {
     }
   };
 
+  const handleRemoveHerbalistFavorite = async (herbalistId) => {
+    const id = Number(herbalistId || 0);
+    if (!id || busyKey) return;
+
+    setBusyKey(`herbalist-${id}`);
+    try {
+      await toggleFavorite({ targetId: id, type: "Herbalist" });
+      setHerbalistFavorites((current) =>
+        current.filter((item) => Number(item.herbalistId) !== id),
+      );
+      toast.success("Herbalist removed from favorites.");
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        err?.response?.data?.title ||
+        "Unable to update herbalist favorite.";
+      toast.error(message);
+    } finally {
+      setBusyKey("");
+    }
+  };
+
   const handleRemoveOrderFavorite = async (orderId) => {
     const id = Number(orderId || 0);
     if (!id || busyKey) return;
@@ -282,7 +367,8 @@ function PatientFavorites() {
               Favorites
             </h1>
             <p className="text-sm font-medium text-slate-500">
-              Manage all your favorite recipes and herbs in one place.
+              Manage your favorite recipes, herbs, herbalists, and orders in one
+              place.
             </p>
           </div>
         </div>
@@ -312,6 +398,18 @@ function PatientFavorites() {
             >
               <FaLeaf className="text-base" />
               Herbs ({sortedHerbs.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("herbalists")}
+              className={`px-6 py-4 font-semibold text-sm transition border-b-2 whitespace-nowrap flex items-center gap-2 ${
+                activeTab === "herbalists"
+                  ? "border-emerald-600 text-emerald-600"
+                  : "border-transparent text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <FaUserMd className="text-base" />
+              Herbalists ({sortedHerbalists.length})
             </button>
             <button
               type="button"
@@ -408,6 +506,45 @@ function PatientFavorites() {
                       isFavorite={true}
                       onToggleFavorite={() =>
                         handleRemoveHerbFavorite(herb.herbId)
+                      }
+                      isFavoriteUpdating={isBusy}
+                    />
+                  );
+                })}
+              </div>
+            )
+          ) : null}
+
+          {!error && activeTab === "herbalists" ? (
+            sortedHerbalists.length === 0 ? (
+              <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 p-14 text-center">
+                <FaUserMd className="mx-auto text-4xl text-slate-300" />
+                <h2 className="mt-4 text-xl font-bold text-slate-700">
+                  No Favorite Herbalists Yet
+                </h2>
+                <p className="mt-2 text-sm text-slate-500">
+                  Save herbalists from the directory or when browsing herb
+                  providers.
+                </p>
+                <Link
+                  to="/patient/home/herbalists"
+                  className="mt-6 inline-flex rounded-full bg-slate-900 px-5 py-2.5 text-xs font-bold text-white hover:bg-slate-800"
+                >
+                  Browse Herbalists
+                </Link>
+              </div>
+            ) : (
+              <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {sortedHerbalists.map((herbalist) => {
+                  const currentKey = `herbalist-${herbalist.herbalistId}`;
+                  const isBusy = busyKey === currentKey;
+                  return (
+                    <HerbalistFavoriteCard
+                      key={herbalist.herbalistId}
+                      herbalist={herbalist}
+                      isFavorite={true}
+                      onToggleFavorite={() =>
+                        handleRemoveHerbalistFavorite(herbalist.herbalistId)
                       }
                       isFavoriteUpdating={isBusy}
                     />

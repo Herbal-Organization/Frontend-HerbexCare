@@ -11,6 +11,7 @@ import RecipesPage from "@features/browse/pages/RecipesPage";
 import HerbsPage from "@features/browse/pages/HerbsPage";
 import RecipeDetailsPage from "@features/browse/pages/RecipeDetailsPage";
 import HerbDetailsPage from "@features/browse/pages/HerbDetailsPage";
+import HerbalistsPage from "@features/browse/pages/HerbalistsPage";
 import LandingPage from "@features/landing/pages/LandingPage";
 import NotFoundPage from "@features/landing/pages/NotFoundPage";
 import { isAuthenticated } from "@utils/auth";
@@ -58,6 +59,7 @@ function App() {
             element={<HerbDetailsPage />}
           />
           <Route path="/patient/home/recipes" element={<RecipesPage />} />
+          <Route path="/patient/home/herbalists" element={<HerbalistsPage />} />
           <Route
             path="/patient/home/recipes/:recipeId"
             element={<RecipeDetailsPage />}
