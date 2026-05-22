@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { FaComments, FaHistory, FaHeart } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import ChatLayout from "@features/patient/components/new-chat/ChatLayout";
-import PatientAiChat from "./PatientAiChat";
 import AiChatHistoryPage from "./AiChatHistoryPage";
 import AiChatFavoritesPage from "./AiChatFavoritesPage";
 import {
@@ -267,7 +266,6 @@ const AiChatPage = () => {
       </div>
 
       <div className="mx-auto max-w-7xl">
-        {activeView === "chat" && <PatientAiChat />}
         {activeView === "history" && <AiChatHistoryPage />}
         {activeView === "favorites" && <AiChatFavoritesPage />}
       </div>
