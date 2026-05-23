@@ -231,6 +231,7 @@ export const buildPatientProfileState = ({
   patientInfo,
 }) => {
   const persistedPatientInfo = getStoredPatientInfo();
+  const persistedUser = getStoredPatientUser();
 
   // For new users: only use persisted (user-set) values, not backend defaults
   // This ensures new users must explicitly set gender and birthDate
@@ -250,10 +251,28 @@ export const buildPatientProfileState = ({
     birthDate: normalizeDateForInput(resolvedPatientInfo?.birthDate),
     gender: normalizeGender(resolvedPatientInfo?.gender),
     // Support different API shapes: address may live on userDetails.address
+    // or under the patientInfo (from Patients API), or in persisted user store
     governorate:
-      userDetails?.governorate ?? userDetails?.address?.governorate ?? "",
-    city: userDetails?.city ?? userDetails?.address?.city ?? "",
-    street: userDetails?.street ?? userDetails?.address?.street ?? "",
+      userDetails?.governorate ??
+      userDetails?.address?.governorate ??
+      patientInfo?.governorate ??
+      patientInfo?.address?.governorate ??
+      persistedUser?.governorate ??
+      "",
+    city:
+      userDetails?.city ??
+      userDetails?.address?.city ??
+      patientInfo?.city ??
+      patientInfo?.address?.city ??
+      persistedUser?.city ??
+      "",
+    street:
+      userDetails?.street ??
+      userDetails?.address?.street ??
+      patientInfo?.street ??
+      patientInfo?.address?.street ??
+      persistedUser?.street ??
+      "",
     diabetes: medicalHistory?.diabetes ?? false,
     hypertension: medicalHistory?.hypertension ?? false,
     asthma: medicalHistory?.asthma ?? false,
