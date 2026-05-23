@@ -15,7 +15,7 @@ export const getAdminNavConfig = (t) => [
   },
   {
     name: t("adminSidebar.users"),
-    href: "/admin/dashboard#users",
+    href: "/admin/dashboard/users",
     icon: MdPeople,
   },
   {
