@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { FiDatabase } from "react-icons/fi";
 import { registerAccount } from "@api/accounts";
+import { getPatientMedicalHistory } from "@api/medicalHistories";
 import { deleteUser, getAllUsers, getUserById, updateUser } from "@api/users";
 import AdminUsersHeader from "@features/admin/components/users/AdminUsersHeader";
 import AdminUsersHero from "@features/admin/components/users/AdminUsersHero";
@@ -31,6 +32,7 @@ function AdminUsersPage() {
   const [roleFilter, setRoleFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [detailUser, setDetailUser] = useState(null);
+  const [detailMedicalHistory, setDetailMedicalHistory] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
   const [modalMode, setModalMode] = useState("create");
@@ -160,10 +162,37 @@ function AdminUsersPage() {
     setIsDetailOpen(true);
     setIsDetailLoading(true);
     setDetailUser(user);
+    setDetailMedicalHistory(null);
 
     try {
       const response = await getUserById(user.id);
-      setDetailUser(normalizeAdminUser(response));
+      const normalizedUser = normalizeAdminUser(response);
+      setDetailUser(normalizedUser);
+
+      const isPatient =
+        String(normalizedUser.role || "").toLowerCase() === "patient";
+
+      if (isPatient) {
+        const patientIdCandidates = [
+          response?.patientId,
+          response?.patient?.patientId,
+          response?.patient?.id,
+          normalizedUser?.patientId,
+          normalizedUser?.id,
+        ].filter(
+          (value) => value !== undefined && value !== null && value !== "",
+        );
+
+        for (const patientId of patientIdCandidates) {
+          try {
+            const history = await getPatientMedicalHistory(patientId);
+            setDetailMedicalHistory(history || null);
+            break;
+          } catch (medicalHistoryError) {
+            // Try the next possible patient identifier.
+          }
+        }
+      }
     } catch (err) {
       toast.error(
         err?.response?.data?.message ||
@@ -274,8 +303,12 @@ function AdminUsersPage() {
 
       <AdminUserDetailsDrawer
         user={detailUser}
+        medicalHistory={detailMedicalHistory}
         isOpen={isDetailOpen}
-        onClose={() => setIsDetailOpen(false)}
+        onClose={() => {
+          setIsDetailOpen(false);
+          setDetailMedicalHistory(null);
+        }}
         loading={isDetailLoading}
       />
 

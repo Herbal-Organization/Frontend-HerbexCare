@@ -22,8 +22,32 @@ function DetailRow({ label, value, icon: Icon }) {
   );
 }
 
-function AdminUserDetailsDrawer({ user, isOpen, onClose, loading }) {
+function MedicalHistoryBadge({ label, value }) {
+  const active = value === true;
+
+  return (
+    <div
+      className={`rounded-xl border px-3 py-2 text-sm font-semibold ${
+        active
+          ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+          : "border-slate-200 bg-slate-50 text-slate-600"
+      }`}
+    >
+      {label}: {active ? "Yes" : "No"}
+    </div>
+  );
+}
+
+function AdminUserDetailsDrawer({
+  user,
+  medicalHistory,
+  isOpen,
+  onClose,
+  loading,
+}) {
   if (!isOpen) return null;
+
+  const isPatient = String(user?.role || "").toLowerCase() === "patient";
 
   return (
     <div className="fixed inset-0 z-50 flex">
@@ -98,6 +122,64 @@ function AdminUserDetailsDrawer({ user, isOpen, onClose, loading }) {
                   icon={FaMapMarkerAlt}
                 />
               </div>
+
+              {isPatient ? (
+                <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+                    Medical History
+                  </p>
+
+                  {medicalHistory ? (
+                    <>
+                      <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                        <MedicalHistoryBadge
+                          label="Diabetes"
+                          value={medicalHistory.diabetes}
+                        />
+                        <MedicalHistoryBadge
+                          label="Hypertension"
+                          value={medicalHistory.hypertension}
+                        />
+                        <MedicalHistoryBadge
+                          label="Asthma"
+                          value={medicalHistory.asthma}
+                        />
+                        <MedicalHistoryBadge
+                          label="Heart Disease"
+                          value={medicalHistory.heartDisease}
+                        />
+                        <MedicalHistoryBadge
+                          label="Kidney Disease"
+                          value={medicalHistory.kidneyDisease}
+                        />
+                        <MedicalHistoryBadge
+                          label="Liver Disease"
+                          value={medicalHistory.liverDisease}
+                        />
+                        <MedicalHistoryBadge
+                          label="Smoker"
+                          value={medicalHistory.smoker}
+                        />
+                        <MedicalHistoryBadge
+                          label="Pregnancy"
+                          value={medicalHistory.pregnancy}
+                        />
+                      </div>
+
+                      <div className="mt-4 rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                        <span className="font-bold text-slate-900">
+                          Other Notes:
+                        </span>{" "}
+                        {medicalHistory.otherNotes || "N/A"}
+                      </div>
+                    </>
+                  ) : (
+                    <p className="mt-3 text-sm font-medium text-slate-500">
+                      No medical history found for this patient.
+                    </p>
+                  )}
+                </div>
+              ) : null}
             </div>
           )}
         </div>
