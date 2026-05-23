@@ -20,6 +20,9 @@ const itemVariants = {
 function PatientOverviewHero({ user, profile }) {
   const { t, i18n } = useTranslation();
   const isAr = i18n.language === "ar";
+  const genderKey = profile?.gender
+    ? `profile.sections.patientDetails.genderOptions.${profile.gender.toLowerCase()}`
+    : null;
   const address = [profile?.street, profile?.city, profile?.governorate]
     .filter(Boolean)
     .join(", ");
@@ -28,11 +31,11 @@ function PatientOverviewHero({ user, profile }) {
   return (
     <motion.section
       variants={itemVariants}
-      className="relative overflow-hidden rounded-[2rem] border border-emerald-100 dark:border-emerald-900/30 bg-white dark:bg-slate-900 p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
+      className="relative overflow-hidden rounded-4xl border border-emerald-100 dark:border-emerald-900/30 bg-white dark:bg-slate-900 p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
     >
       {/* Decorative gradient overlay */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-emerald-50/80 dark:from-emerald-900/20 via-white dark:via-slate-900 to-teal-50/30 dark:to-teal-900/10" />
-      <div className="pointer-events-none absolute -top-40 -start-40 h-96 w-96 rounded-full bg-emerald-400/10 dark:bg-emerald-500/5 blur-[80px]" />
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-emerald-50/80 dark:from-emerald-900/20 via-white dark:via-slate-900 to-teal-50/30 dark:to-teal-900/10" />
+      <div className="pointer-events-none absolute -top-40 -inset-s-40 h-96 w-96 rounded-full bg-emerald-400/10 dark:bg-emerald-500/5 blur-[80px]" />
 
       <div className="relative grid gap-8 lg:grid-cols-[1.4fr_0.9fr]">
         <div>
@@ -104,10 +107,11 @@ function PatientOverviewHero({ user, profile }) {
                   {t("dashboard.hero.gender")}
                 </p>
                 <p className="mt-1 text-sm font-semibold text-slate-800 dark:text-slate-200">
-                  {profile?.gender
-                    ? t(
-                        `profile.sections.patientDetails.genderOptions.${profile.gender.toLowerCase()}`,
-                      )
+                  {genderKey
+                    ? t(genderKey, {
+                        defaultValue:
+                          profile.gender || t("dashboard.hero.notSet"),
+                      })
                     : t("dashboard.hero.notSet")}
                 </p>
               </div>

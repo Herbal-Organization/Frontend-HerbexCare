@@ -1,8 +1,8 @@
 import DashboardSettingsPage from "@components/common/DashboardSettingsPage";
-import { updateUser } from "@api/users";
 import {
   changePassword,
   deleteUserAccount,
+  updateCurrentUserProfile,
 } from "@services/accountSettings";
 
 function PatientSettings({ user }) {
@@ -11,7 +11,7 @@ function PatientSettings({ user }) {
   return (
     <DashboardSettingsPage
       user={user}
-      onUpdateProfile={(payload) => updateUser(userId, payload)}
+      onUpdateProfile={(payload) => updateCurrentUserProfile(payload)}
       onResetPassword={({ email, oldPassword, newPassword }) =>
         changePassword(email, oldPassword, newPassword)
       }

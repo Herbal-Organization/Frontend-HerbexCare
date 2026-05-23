@@ -25,7 +25,9 @@ function PatientDetailsSection({ profile, updateField }) {
           <FaVenusMars className="text-xl" />
         </div>
         <div>
-          <h2 className="text-2xl font-extrabold text-slate-900">{t("profile.sections.patientDetails.title")}</h2>
+          <h2 className="text-2xl font-extrabold text-slate-900">
+            {t("profile.sections.patientDetails.title")}
+          </h2>
           <p className="text-sm text-slate-500 font-medium">
             {t("profile.sections.patientDetails.description")}
           </p>
@@ -79,9 +81,15 @@ function PatientDetailsSection({ profile, updateField }) {
               onChange={updateField}
               className="block w-full appearance-none rounded-xl border-slate-100 bg-slate-50/50 py-3 ps-11 pe-4 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 text-slate-900 text-sm border font-medium transition-all hover:bg-white hover:border-slate-200 cursor-pointer"
             >
-              <option value="">{t("profile.sections.patientDetails.genderOptions.choose")}</option>
-              <option value="Male">{t("profile.sections.patientDetails.genderOptions.male")}</option>
-              <option value="Female">{t("profile.sections.patientDetails.genderOptions.female")}</option>
+              <option value="">
+                {t("profile.sections.patientDetails.genderOptions.choose")}
+              </option>
+              <option value="Male">
+                {t("profile.sections.patientDetails.genderOptions.male")}
+              </option>
+              <option value="Female">
+                {t("profile.sections.patientDetails.genderOptions.female")}
+              </option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 inset-e-0 flex items-center px-4 text-slate-400">
               <svg

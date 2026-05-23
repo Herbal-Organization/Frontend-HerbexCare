@@ -315,7 +315,8 @@
         "genderOptions": {
           "choose": "اختر الجنس",
           "male": "ذكر",
-          "female": "أنثى"
+          "female": "أنثى",
+          "unknown": "غير محدد"
         }
       },
       "medicalHistory": {

@@ -18,8 +18,28 @@ export const updateUser = async (id, payload) => {
 };
 
 export const updateUsersAddress = async (payload) => {
+  return updateMyAddress(payload);
+};
+
+export const updateMyAddress = async (payload) => {
   const { data } = await httpClient.patch(
     `/api/Users/update-my-address`,
+    payload,
+  );
+  return data;
+};
+
+export const updateMyFullName = async (payload) => {
+  const { data } = await httpClient.patch(
+    `/api/Users/update-my-fullname`,
+    payload,
+  );
+  return data;
+};
+
+export const updateMyUserName = async (payload) => {
+  const { data } = await httpClient.patch(
+    `/api/Users/update-my-username`,
     payload,
   );
   return data;

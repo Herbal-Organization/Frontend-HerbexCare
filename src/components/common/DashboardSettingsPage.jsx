@@ -45,6 +45,9 @@ const itemVariants = {
 const inputClassName =
   "block w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/50 px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-primary focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary/15";
 
+const readOnlyInputClassName =
+  "block w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900/30 px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 outline-none cursor-not-allowed";
+
 function getReadableName(user, fallbackLabel) {
   return (
     user?.fullName ||
@@ -142,8 +145,6 @@ function DashboardSettingsPage({
     const payload = {
       fullName: profileForm.fullName.trim(),
       userName: profileForm.userName.trim(),
-      email: profileForm.email.trim(),
-      phone: profileForm.phone.trim(),
       governorate: profileForm.governorate.trim(),
       city: profileForm.city.trim(),
       street: profileForm.street.trim(),
@@ -152,7 +153,10 @@ function DashboardSettingsPage({
     setIsSavingProfile(true);
     try {
       await onUpdateProfile(payload);
-      setProfileForm(payload);
+      setProfileForm((current) => ({
+        ...current,
+        ...payload,
+      }));
       toast.success(t("dashboardSettings.messages.profileUpdateSuccess"));
     } catch (error) {
       const message = extractErrorMessage(
@@ -368,11 +372,20 @@ function DashboardSettingsPage({
                   <input
                     type="email"
                     value={profileForm.email}
-                    onChange={(event) =>
-                      handleProfileChange("email", event.target.value)
-                    }
-                    className={inputClassName}
+                    readOnly
+                    aria-readonly="true"
+                    className={readOnlyInputClassName}
+                    title={t(
+                      "dashboardSettings.profile.fields.emailReadOnly",
+                      "Email is managed separately.",
+                    )}
                   />
+                  <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                    {t(
+                      "dashboardSettings.profile.fields.emailReadOnly",
+                      "Email is managed separately.",
+                    )}
+                  </p>
                 </div>
 
                 <div>
@@ -382,11 +395,20 @@ function DashboardSettingsPage({
                   <input
                     type="text"
                     value={profileForm.phone}
-                    onChange={(event) =>
-                      handleProfileChange("phone", event.target.value)
-                    }
-                    className={inputClassName}
+                    readOnly
+                    aria-readonly="true"
+                    className={readOnlyInputClassName}
+                    title={t(
+                      "dashboardSettings.profile.fields.phoneReadOnly",
+                      "Phone is managed separately.",
+                    )}
                   />
+                  <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                    {t(
+                      "dashboardSettings.profile.fields.phoneReadOnly",
+                      "Phone is managed separately.",
+                    )}
+                  </p>
                 </div>
 
                 <div>

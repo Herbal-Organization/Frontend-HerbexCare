@@ -117,6 +117,18 @@ const pickLatestOrderId = (orders) => {
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const buildShippingAddress = (profile, userDetails) =>
+  [
+    profile?.street,
+    profile?.city,
+    profile?.governorate,
+    userDetails?.street,
+    userDetails?.city,
+    userDetails?.governorate,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
 function PatientCart({ dashboardData }) {
   const {
     cart,
@@ -140,25 +152,44 @@ function PatientCart({ dashboardData }) {
   );
 
   useEffect(() => {
-    if (dashboardData?.profile) {
-      const { governorate, city, street, phone } = dashboardData.profile;
-      
+    const profile = dashboardData?.profile;
+    const userDetails = dashboardData?.userDetails;
+
+    if (profile || userDetails) {
+      const shippingAddressFromProfile = buildShippingAddress(
+        profile,
+        userDetails,
+      );
+      const contactPhoneFromProfile =
+        profile?.phone || userDetails?.phone || getUserFromToken()?.phone || "";
+      const contactNameFromProfile =
+        userDetails?.fullName ||
+        userDetails?.name ||
+        getUserFromToken()?.name ||
+        "";
+
       setShippingAddress((current) => {
         if (!current) {
-          const addressParts = [governorate, city, street].filter(Boolean);
-          return addressParts.join(", ");
+          return shippingAddressFromProfile;
         }
         return current;
       });
-      
+
+      setContactName((current) => {
+        if (!current) {
+          return contactNameFromProfile;
+        }
+        return current;
+      });
+
       setContactPhone((current) => {
         if (!current) {
-          return phone || getUserFromToken()?.phone || "";
+          return contactPhoneFromProfile;
         }
         return current;
       });
     }
-  }, [dashboardData]);
+  }, [dashboardData?.profile, dashboardData?.userDetails]);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -210,8 +241,6 @@ function PatientCart({ dashboardData }) {
       );
       return;
     }
-
-
 
     if (!shippingAddress.trim()) {
       setError("Please enter a shipping address.");

@@ -1,8 +1,8 @@
 import DashboardSettingsPage from "@components/common/DashboardSettingsPage";
-import { updateUser } from "@api/users";
 import {
   deleteHerbalistAccount,
   resetHerbalistAccount,
+  updateCurrentUserProfile,
 } from "@services/accountSettings";
 
 function HerbalistSettings({ user }) {
@@ -11,7 +11,7 @@ function HerbalistSettings({ user }) {
   return (
     <DashboardSettingsPage
       user={user}
-      onUpdateProfile={(payload) => updateUser(userId, payload)}
+      onUpdateProfile={(payload) => updateCurrentUserProfile(payload)}
       onResetPassword={({ email, oldPassword, newPassword }) =>
         resetHerbalistAccount(email, oldPassword, newPassword)
       }
