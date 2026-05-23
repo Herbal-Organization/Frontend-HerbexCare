@@ -33,9 +33,6 @@ function AdminUsersTable({ users, onView, onEdit }) {
                 Contact Info
               </th>
               <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
-                Username
-              </th>
-              <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
                 Actions
               </th>
             </tr>
@@ -74,11 +71,6 @@ function AdminUsersTable({ users, onView, onEdit }) {
                   </p>
                   <p className="text-xs text-slate-500">
                     {user.phone || "No phone number"}
-                  </p>
-                </td>
-                <td className="px-6 py-4">
-                  <p className="text-sm font-medium text-slate-700">
-                    {user.userName || "No username"}
                   </p>
                 </td>
                 <td className="px-6 py-4">
