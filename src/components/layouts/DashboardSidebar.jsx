@@ -80,7 +80,7 @@ function DashboardSidebar({
                 ? t("patientSidebar.tagline", "Your Natural Path")
                 : isAdmin
                   ? t("adminSidebar.tagline", "Super Admin Console")
-                : "Practitioner Portal"}
+                  : "Practitioner Portal"}
             </p>
           </div>
           <button

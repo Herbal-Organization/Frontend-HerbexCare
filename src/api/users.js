@@ -1,17 +1,19 @@
 import httpClient from "./httpClient";
 
-export const getAllUsers = async () => {
-  const { data } = await httpClient.get("/api/Users/get-all");
+export const getAllUsers = async (params = {}) => {
+  const { data } = await httpClient.get("/api/admin/users", {
+    params,
+  });
   return data;
 };
 
 export const getUserById = async (id) => {
-  const { data } = await httpClient.get(`/api/Users/get/${id}`);
+  const { data } = await httpClient.get(`/api/admin/users/${id}`);
   return data;
 };
 
 export const updateUser = async (id, payload) => {
-  const { data } = await httpClient.put(`/api/Users/update/${id}`, payload);
+  const { data } = await httpClient.put(`/api/admin/users/${id}`, payload);
   return data;
 };
 
@@ -24,6 +26,6 @@ export const updateUsersAddress = async (payload) => {
 };
 
 export const deleteUser = async (id) => {
-  const { data } = await httpClient.delete(`/api/Users/delete/${id}`);
+  const { data } = await httpClient.delete(`/api/admin/users/${id}`);
   return data;
 };

@@ -67,7 +67,7 @@ function App() {
           />
           <Route path="/patient/dashboard/*" element={<PatientDashboard />} />
         </Route>
-        
+
         {/* Hebalist Routes */}
         <Route element={<ProtectedRoute allowedRoles={["Herbalist"]} />}>
           <Route

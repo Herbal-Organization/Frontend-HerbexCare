@@ -13,6 +13,7 @@ import { getAdminNavConfig } from "@config/dashboard/adminNav";
 import { getAllUsers } from "@api/users";
 import { getAllPatients } from "@api/patients";
 import { getAllHerbalists } from "@api/herbalists";
+import AdminUsersPage from "./AdminUsersPage";
 import {
   FaDatabase,
   FaExternalLinkAlt,
@@ -359,7 +360,9 @@ function AdminDashboardHome() {
                   Admin access note
                 </p>
                 <p className="mt-2 text-sm leading-6 text-slate-600">
-                  The admin account is pre-created. It should log in directly with the provided email and password without a public registration flow.
+                  The admin account is pre-created. It should log in directly
+                  with the provided email and password without a public
+                  registration flow.
                 </p>
               </div>
             </div>
@@ -422,7 +425,8 @@ function AdminDashboard() {
       setSidebarOpen={setSidebarOpen}
     >
       <Routes>
-        <Route path="/" element={<AdminDashboardHome />} />
+        <Route path="/" element={<AdminUsersPage />} />
+        <Route path="/users" element={<AdminUsersPage />} />
         <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
       </Routes>
     </DashboardLayout>

@@ -25,7 +25,9 @@ export const decodeJWT = (token) => {
 };
 
 export const normalizeUserRole = (role) => {
-  const normalizedRole = String(role || "").trim().toLowerCase();
+  const normalizedRole = String(role || "")
+    .trim()
+    .toLowerCase();
 
   if (normalizedRole === "patient") {
     return "Patient";
@@ -64,12 +66,11 @@ export const getUserFromToken = () => {
       decoded[
         "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
       ],
-    role:
-      normalizeUserRole(
-        decoded.role ||
-          decoded.Role ||
-          decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"],
-      ),
+    role: normalizeUserRole(
+      decoded.role ||
+        decoded.Role ||
+        decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"],
+    ),
     phone:
       decoded.phone ||
       decoded[
