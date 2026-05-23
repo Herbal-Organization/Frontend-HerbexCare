@@ -19,13 +19,13 @@ const DEFAULT_FORM = {
 };
 
 const createInitialForm = (source = {}) => ({
-  fullName: source.fullName || "",
-  userName: source.userName || "",
-  email: source.email || "",
+  fullName: source?.fullName || "",
+  userName: source?.userName || "",
+  email: source?.email || "",
   password: "",
   confirmPassword: "",
-  role: source.role || "Patient",
-  phone: source.phone || "",
+  role: source?.role || "Patient",
+  phone: source?.phone || "",
 });
 
 function AdminUserModal({
@@ -192,7 +192,6 @@ function AdminUserModal({
                 ))}
               </select>
             </div>
-
           </div>
 
           {!isEditMode && (
