@@ -47,13 +47,19 @@ const ChatInput = ({ onSendMessage, isLoading }) => {
           <button
             type="submit"
             disabled={message.trim().length <= 50 || isLoading}
-            className={`absolute right-1.5 bottom-1.5 p-2.5 rounded-xl sm:rounded-full flex items-center justify-center transition-all ${
+            aria-label={
               message.trim().length > 50 && !isLoading
-                ? "bg-emerald-600 text-white hover:bg-emerald-700 shadow-md active:scale-90"
-                : "bg-slate-100 text-slate-300 cursor-not-allowed"
+                ? "Generate response"
+                : "Generate disabled"
+            }
+            className={`absolute right-1.5 bottom-1.5 p-2.5 rounded-xl sm:rounded-full flex items-center justify-center gap-2 transition-all text-sm font-medium ${
+              message.trim().length > 50 && !isLoading
+                ? "bg-emerald-600 text-white hover:bg-emerald-700 shadow-md active:scale-90 px-3"
+                : "bg-slate-100 text-slate-300 cursor-not-allowed px-2"
             }`}
           >
             <FaPaperPlane className="w-4 h-4" />
+            <span className="hidden sm:inline">Generate</span>
           </button>
         </div>
 
