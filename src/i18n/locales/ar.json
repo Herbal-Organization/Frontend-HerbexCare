@@ -184,6 +184,50 @@
     "settings": "الإعدادات",
     "member": "ممارس"
   },
+  "adminSidebar": {
+    "brand": "إدارة HerbexCare",
+    "tagline": "لوحة المشرف العام",
+    "overview": "نظرة عامة",
+    "users": "المستخدمون",
+    "patients": "المرضى",
+    "herbalists": "الأعشابيون",
+    "apiDocs": "وثائق API",
+    "settings": "الإعدادات",
+    "signOut": "تسجيل الخروج",
+    "member": "مدير"
+  },
+  "adminDashboard": {
+    "badge": "مشرف عام",
+    "title": "مركز التحكم بالنظام",
+    "subtitle": "راقب السجلات الأساسية، واستعرض أعداد المنصة، وانتقل مباشرة إلى وثائق الـ API المنشورة.",
+    "apiDocs": "فتح Swagger",
+    "directLogin": "حساب دخول مباشر",
+    "directLoginHint": "هذا الحساب الإداري مُنشأ مسبقاً ولا يستخدم التسجيل العام.",
+    "stats": {
+      "users": "كل المستخدمين",
+      "patients": "المرضى",
+      "herbalists": "الأعشابيون",
+      "api": "API المنشور"
+    },
+    "sections": {
+      "users": "سجل المستخدمين",
+      "patients": "سجل المرضى",
+      "herbalists": "سجل الأعشبيين",
+      "api": "الوصول إلى الـ API"
+    },
+    "table": {
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "role": "الدور",
+      "details": "التفاصيل"
+    },
+    "empty": {
+      "users": "لم يُرجع الـ API أي مستخدمين.",
+      "patients": "لم يُرجع الـ API أي سجلات مرضى.",
+      "herbalists": "لم يُرجع الـ API أي سجلات أعشابيين."
+    }
+  },
   "dashboardSettings": {
     "kicker": "إعدادات الحساب",
     "title": "الإعدادات",

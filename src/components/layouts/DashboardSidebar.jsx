@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { FaTimes, FaSignOutAlt, FaHome } from "react-icons/fa";
 import { MdAdd, MdRemove, MdEco } from "react-icons/md";
 import { FaSpa } from "react-icons/fa";
+import { FaShieldAlt } from "react-icons/fa";
 
 function DashboardSidebar({
   role,
@@ -38,6 +39,8 @@ function DashboardSidebar({
   };
 
   const isPatient = role === "patient";
+  const isAdmin = role === "admin";
+  const currentPath = `${location.pathname}${location.hash || ""}`;
 
   return (
     <>
@@ -51,7 +54,7 @@ function DashboardSidebar({
 
       <aside
         className={`
-          fixed top-0 start-0 z-50 h-full w-72 bg-white dark:bg-slate-900 border-e border-slate-200 dark:border-slate-800 flex flex-col
+          fixed top-0 inset-s-0 z-50 h-full w-72 bg-white dark:bg-slate-900 border-e border-slate-200 dark:border-slate-800 flex flex-col
           transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
           lg:translate-x-0
@@ -62,6 +65,8 @@ function DashboardSidebar({
           <div className="rounded-xl p-2.5 text-white flex items-center justify-center bg-primary shadow-md shadow-primary/20 hover:scale-105 transition-transform">
             {isPatient ? (
               <FaSpa className="text-2xl" />
+            ) : isAdmin ? (
+              <FaShieldAlt className="text-2xl" />
             ) : (
               <MdEco className="text-2xl" />
             )}
@@ -73,6 +78,8 @@ function DashboardSidebar({
             <p className="text-primary text-xs font-medium mt-1 truncate">
               {isPatient
                 ? t("patientSidebar.tagline", "Your Natural Path")
+                : isAdmin
+                  ? t("adminSidebar.tagline", "Super Admin Console")
                 : "Practitioner Portal"}
             </p>
           </div>
@@ -91,8 +98,9 @@ function DashboardSidebar({
           {navigation.map((item) => {
             const hasChildren = item.children && item.children.length > 0;
             const isExpanded = expandedItems[item.name];
-            const isCurrent =
-              item.href === `/${role}/dashboard`
+            const isCurrent = item.href.includes("#")
+              ? currentPath === item.href
+              : item.href === `/${role}/dashboard`
                 ? location.pathname === `/${role}/dashboard` ||
                   location.pathname === `/${role}/dashboard/`
                 : location.pathname.startsWith(item.href);
@@ -195,8 +203,8 @@ function DashboardSidebar({
             </button>
           </div>
 
-          <div className="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-br from-white to-slate-50/50 dark:from-slate-800 dark:to-slate-900/50 border border-slate-100 dark:border-slate-700 shadow-sm shadow-slate-100/50 dark:shadow-slate-900/50">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-emerald-500 flex items-center justify-center text-white font-bold shadow-sm">
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-linear-to-br from-white to-slate-50/50 dark:from-slate-800 dark:to-slate-900/50 border border-slate-100 dark:border-slate-700 shadow-sm shadow-slate-100/50 dark:shadow-slate-900/50">
+            <div className="w-10 h-10 rounded-full bg-linear-to-br from-primary to-emerald-500 flex items-center justify-center text-white font-bold shadow-sm">
               {displayName.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">

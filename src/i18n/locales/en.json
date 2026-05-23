@@ -165,6 +165,50 @@
     "settings": "Settings",
     "member": "Practitioner"
   },
+  "adminSidebar": {
+    "brand": "HerbexCare Admin",
+    "tagline": "Super Admin Console",
+    "overview": "Overview",
+    "users": "Users",
+    "patients": "Patients",
+    "herbalists": "Herbalists",
+    "apiDocs": "API Docs",
+    "settings": "Settings",
+    "signOut": "Sign Out",
+    "member": "Administrator"
+  },
+  "adminDashboard": {
+    "badge": "Super Admin",
+    "title": "System Control Center",
+    "subtitle": "Monitor core records, review platform counts, and jump into the published API documentation.",
+    "apiDocs": "Open Swagger docs",
+    "directLogin": "Direct login account",
+    "directLoginHint": "This admin account is pre-provisioned and does not use public registration.",
+    "stats": {
+      "users": "All users",
+      "patients": "Patients",
+      "herbalists": "Herbalists",
+      "api": "Published API"
+    },
+    "sections": {
+      "users": "User Registry",
+      "patients": "Patient Registry",
+      "herbalists": "Herbalist Registry",
+      "api": "API Access"
+    },
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "role": "Role",
+      "details": "Details"
+    },
+    "empty": {
+      "users": "No users were returned by the API.",
+      "patients": "No patient records were returned by the API.",
+      "herbalists": "No herbalist records were returned by the API."
+    }
+  },
   "dashboardSettings": {
     "kicker": "Account settings",
     "title": "Settings",

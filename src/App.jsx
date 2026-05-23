@@ -5,6 +5,7 @@ import { ForgetPassword, ProtectedRoute } from "@features/auth/components";
 import ResetPasswordPage from "@features/auth/pages/ResetPasswordPage";
 import PatientDashboard from "@features/patient/pages/PatientDashboard";
 import HerbalistDashboard from "@features/herbalist/pages/HerbalistDashboard";
+import AdminDashboard from "@features/admin/pages/AdminDashboard";
 
 import PatientHome from "@features/patient/pages/PatientHome";
 import RecipesPage from "@features/browse/pages/RecipesPage";
@@ -73,6 +74,11 @@ function App() {
             path="/herbalist/dashboard/*"
             element={<HerbalistDashboard />}
           />
+        </Route>
+
+        {/* Super Admin Routes */}
+        <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]} />}>
+          <Route path="/admin/dashboard/*" element={<AdminDashboard />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

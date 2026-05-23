@@ -61,5 +61,9 @@ export const getPostLoginRoute = (role) => {
     return "/herbalist/dashboard";
   }
 
+  if (role === "SuperAdmin") {
+    return "/admin/dashboard";
+  }
+
   return "/";
 };

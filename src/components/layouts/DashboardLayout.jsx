@@ -1,6 +1,6 @@
 import React from "react";
 import DashboardSidebar from "./DashboardSidebar";
-import { FaBars, FaSpa } from "react-icons/fa";
+import { FaBars, FaShieldAlt, FaSpa } from "react-icons/fa";
 import { MdEco } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 
@@ -16,10 +16,11 @@ function DashboardLayout({
 }) {
   const { t } = useTranslation();
   const isPatient = role === "patient";
+  const isAdmin = role === "admin";
 
   return (
     <div
-      className={`flex min-h-screen text-slate-900 bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-950 dark:to-slate-900 dark:text-slate-100 role-${role}`}
+      className={`flex min-h-screen text-slate-900 bg-linear-to-br from-slate-50 to-slate-100/50 dark:from-slate-950 dark:to-slate-900 dark:text-slate-100 role-${role}`}
     >
       <DashboardSidebar
         role={role}
@@ -45,6 +46,8 @@ function DashboardLayout({
             <div className="bg-primary rounded-lg p-1.5 text-white">
               {isPatient ? (
                 <FaSpa className="text-lg" />
+              ) : isAdmin ? (
+                <FaShieldAlt className="text-lg" />
               ) : (
                 <MdEco className="text-lg" />
               )}

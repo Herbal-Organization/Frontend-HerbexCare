@@ -156,29 +156,10 @@ const pickFirstDefined = (...values) =>
 
 export const normalizePatientUser = (user = {}) => ({
   ...user,
-  // Support raw JWT claim keys that some auth providers include in the stored object
-  id: pickFirstDefined(
-    user.id,
-    user.userId,
-    user.userID,
-    user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"],
-  ),
-  userId: pickFirstDefined(
-    user.userId,
-    user.id,
-    user.userID,
-    user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"],
-  ),
-  fullName: pickFirstDefined(
-    user.fullName,
-    user.name,
-    user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
-  ),
-  name: pickFirstDefined(
-    user.name,
-    user.fullName,
-    user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
-  ),
+  id: pickFirstDefined(user.id, user.userId, user.userID),
+  userId: pickFirstDefined(user.userId, user.id, user.userID),
+  fullName: pickFirstDefined(user.fullName, user.name),
+  name: pickFirstDefined(user.name, user.fullName),
   userName: pickFirstDefined(user.userName, user.username),
   username: pickFirstDefined(user.username, user.userName),
   email: pickFirstDefined(user.email, user.mail),
@@ -250,7 +231,6 @@ export const buildPatientProfileState = ({
   patientInfo,
 }) => {
   const persistedPatientInfo = getStoredPatientInfo();
-  const persistedUser = getStoredPatientUser();
 
   // For new users: only use persisted (user-set) values, not backend defaults
   // This ensures new users must explicitly set gender and birthDate
@@ -269,29 +249,9 @@ export const buildPatientProfileState = ({
     ...DEFAULT_MEDICAL_HISTORY,
     birthDate: normalizeDateForInput(resolvedPatientInfo?.birthDate),
     gender: normalizeGender(resolvedPatientInfo?.gender),
-    // Support different API shapes: address may live on userDetails.address
-    // or under the patientInfo (from Patients API), or in persisted user store
-    governorate:
-      userDetails?.governorate ??
-      userDetails?.address?.governorate ??
-      patientInfo?.governorate ??
-      patientInfo?.address?.governorate ??
-      persistedUser?.governorate ??
-      "",
-    city:
-      userDetails?.city ??
-      userDetails?.address?.city ??
-      patientInfo?.city ??
-      patientInfo?.address?.city ??
-      persistedUser?.city ??
-      "",
-    street:
-      userDetails?.street ??
-      userDetails?.address?.street ??
-      patientInfo?.street ??
-      patientInfo?.address?.street ??
-      persistedUser?.street ??
-      "",
+    governorate: userDetails?.governorate ?? "",
+    city: userDetails?.city ?? "",
+    street: userDetails?.street ?? "",
     diabetes: medicalHistory?.diabetes ?? false,
     hypertension: medicalHistory?.hypertension ?? false,
     asthma: medicalHistory?.asthma ?? false,
