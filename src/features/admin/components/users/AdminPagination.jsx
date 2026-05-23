@@ -56,7 +56,8 @@ function AdminPagination({
     <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
       <p className="text-sm text-slate-500">
         Showing {Math.min((currentPage - 1) * itemsPerPage + 1, totalItems)} to{" "}
-        {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} entries
+        {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems}{" "}
+        entries
       </p>
 
       <div className="flex items-center gap-2 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-200">

@@ -61,8 +61,10 @@ function AdminUserModal({
 
     if (!isEditMode || form.password.trim()) {
       if (!form.password.trim()) return "Password is required.";
-      if (form.password.length < 8) return "Password must be at least 8 characters.";
-      if (form.password !== form.confirmPassword) return "Passwords do not match.";
+      if (form.password.length < 8)
+        return "Password must be at least 8 characters.";
+      if (form.password !== form.confirmPassword)
+        return "Passwords do not match.";
     }
 
     return "";
@@ -209,7 +211,9 @@ function AdminUserModal({
                 isPassword
                 icon={<FaLock />}
                 value={form.password}
-                onChange={(event) => handleChange("password", event.target.value)}
+                onChange={(event) =>
+                  handleChange("password", event.target.value)
+                }
               />
               <AuthInput
                 label="Confirm Password"
@@ -218,7 +222,9 @@ function AdminUserModal({
                 isPassword
                 icon={<FaLock />}
                 value={form.confirmPassword}
-                onChange={(event) => handleChange("confirmPassword", event.target.value)}
+                onChange={(event) =>
+                  handleChange("confirmPassword", event.target.value)
+                }
               />
             </div>
           )}
@@ -242,7 +248,11 @@ function AdminUserModal({
               disabled={isSubmitting}
               className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isSubmitting ? "Saving..." : isEditMode ? "Update User" : "Create User"}
+              {isSubmitting
+                ? "Saving..."
+                : isEditMode
+                  ? "Update User"
+                  : "Create User"}
             </button>
           </div>
         </form>

@@ -1,10 +1,6 @@
 import { FiFilter } from "react-icons/fi";
 
-function AdminUsersToolbar({
-  roleFilter,
-  onRoleFilterChange,
-  totalItems,
-}) {
+function AdminUsersToolbar({ roleFilter, onRoleFilterChange, totalItems }) {
   return (
     <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm xl:flex-row xl:items-center xl:justify-between">
       <div className="flex flex-wrap items-center gap-3">

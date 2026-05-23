@@ -43,7 +43,10 @@ function AdminUsersPage() {
     setError("");
 
     try {
-      const response = await getAllUsers({ PageNumber: 1, PageSize: LOAD_SIZE });
+      const response = await getAllUsers({
+        PageNumber: 1,
+        PageSize: LOAD_SIZE,
+      });
       const normalized = normalizeUsersResponse(response);
       setUsers(normalized.items);
     } catch (err) {
@@ -67,7 +70,10 @@ function AdminUsersPage() {
   }, [searchValue, roleFilter]);
 
   const filteredUsers = useMemo(() => {
-    return filterUsersByRole(users.filter((user) => matchesUserSearch(user, searchValue)), roleFilter);
+    return filterUsersByRole(
+      users.filter((user) => matchesUserSearch(user, searchValue)),
+      roleFilter,
+    );
   }, [roleFilter, searchValue, users]);
 
   const totalItems = filteredUsers.length;
@@ -154,7 +160,10 @@ function AdminUsersPage() {
           onSearchChange={setSearchValue}
         />
 
-        <AdminUsersHero onAddUser={handleOpenCreate} totalUsers={users.length} />
+        <AdminUsersHero
+          onAddUser={handleOpenCreate}
+          totalUsers={users.length}
+        />
 
         <AdminUsersStats stats={stats} />
 
@@ -184,7 +193,9 @@ function AdminUsersPage() {
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
               <FiDatabase className="text-2xl" />
             </div>
-            <h2 className="mt-5 text-2xl font-black text-slate-900">No users found</h2>
+            <h2 className="mt-5 text-2xl font-black text-slate-900">
+              No users found
+            </h2>
             <p className="mt-2 text-sm text-slate-500">
               Try a different search term or role filter.
             </p>

@@ -5,7 +5,12 @@ export const ADMIN_USER_ROLES = ["Patient", "Herbalist", "SuperAdmin"];
 
 export const normalizeAdminUser = (raw = {}) => ({
   id: pickFirstDefined(raw.id, raw.userId, raw.userID),
-  fullName: pickFirstDefined(raw.fullName, raw.name, raw.userName, raw.username),
+  fullName: pickFirstDefined(
+    raw.fullName,
+    raw.name,
+    raw.userName,
+    raw.username,
+  ),
   userName: pickFirstDefined(raw.userName, raw.username),
   email: pickFirstDefined(raw.email, raw.mail),
   phone: pickFirstDefined(raw.phone, raw.phoneNumber),
@@ -26,13 +31,25 @@ export const extractUsersList = (payload) => {
 export const normalizeUsersResponse = (payload) => ({
   items: extractUsersList(payload).map(normalizeAdminUser),
   pageNumber:
-    payload?.pageNumber ?? payload?.PageNumber ?? payload?.data?.pageNumber ?? 1,
+    payload?.pageNumber ??
+    payload?.PageNumber ??
+    payload?.data?.pageNumber ??
+    1,
   totalPages:
-    payload?.totalPages ?? payload?.TotalPages ?? payload?.data?.totalPages ?? 1,
+    payload?.totalPages ??
+    payload?.TotalPages ??
+    payload?.data?.totalPages ??
+    1,
   totalCount:
-    payload?.totalCount ?? payload?.TotalCount ?? payload?.data?.totalCount ?? 0,
+    payload?.totalCount ??
+    payload?.TotalCount ??
+    payload?.data?.totalCount ??
+    0,
   hasNextPage:
-    payload?.hasNextPage ?? payload?.HasNextPage ?? payload?.data?.hasNextPage ?? false,
+    payload?.hasNextPage ??
+    payload?.HasNextPage ??
+    payload?.data?.hasNextPage ??
+    false,
   hasPreviousPage:
     payload?.hasPreviousPage ??
     payload?.HasPreviousPage ??
@@ -80,7 +97,10 @@ export const matchesUserSearch = (user = {}, searchValue = "") => {
 
 export const filterUsersByRole = (users = [], roleFilter = "All") => {
   if (!roleFilter || roleFilter === "All") return users;
-  return users.filter((user) => String(user.role || "").toLowerCase() === roleFilter.toLowerCase());
+  return users.filter(
+    (user) =>
+      String(user.role || "").toLowerCase() === roleFilter.toLowerCase(),
+  );
 };
 
 export const getAdminUserStats = (users = []) => {
