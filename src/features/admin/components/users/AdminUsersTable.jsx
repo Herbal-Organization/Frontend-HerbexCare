@@ -2,7 +2,6 @@ import { FiEdit3, FiEye } from "react-icons/fi";
 import {
   getUserInitials,
   getUserRoleTone,
-  formatUserLocation,
 } from "@features/admin/services/adminUsers";
 
 function AdminUsersTable({ users, onView, onEdit }) {
@@ -34,7 +33,7 @@ function AdminUsersTable({ users, onView, onEdit }) {
                 Contact Info
               </th>
               <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
-                Location
+                Username
               </th>
               <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
                 Actions
@@ -79,7 +78,7 @@ function AdminUsersTable({ users, onView, onEdit }) {
                 </td>
                 <td className="px-6 py-4">
                   <p className="text-sm font-medium text-slate-700">
-                    {formatUserLocation(user)}
+                    {user.userName || "No username"}
                   </p>
                 </td>
                 <td className="px-6 py-4">
