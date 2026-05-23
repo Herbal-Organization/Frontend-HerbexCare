@@ -289,8 +289,10 @@
       "patientDetails": {
         "title": "Patient Details",
         "description": "Essential medical demographics",
+        "medicalHistoryId": "Medical History ID",
         "birthDate": "Birth Date",
         "gender": "Gender",
+        "age": "Age",
         "genderOptions": {
           "choose": "Choose Gender",
           "male": "Male",

@@ -308,8 +308,10 @@
       "patientDetails": {
         "title": "تفاصيل المريض",
         "description": "البيانات الديموغرافية الطبية الأساسية",
+        "medicalHistoryId": "معرّف السجل الطبي",
         "birthDate": "تاريخ الميلاد",
         "gender": "الجنس",
+        "age": "العمر",
         "genderOptions": {
           "choose": "اختر الجنس",
           "male": "ذكر",

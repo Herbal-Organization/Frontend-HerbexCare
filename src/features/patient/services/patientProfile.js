@@ -25,8 +25,11 @@ export const DEFAULT_ADDRESS = {
 };
 
 export const DEFAULT_PATIENT_INFO = {
+  medicalHistoryId: "",
   birthDate: "",
+  genderName: "",
   gender: "",
+  age: "",
 };
 
 const PATIENT_INFO_STORAGE_KEY = "patient_profile_info";
@@ -48,7 +51,8 @@ export const MEDICAL_CONDITIONS = [
 // Check if user has explicitly set gender and birthdate
 export const isProfileComplete = (profile) => {
   // Profile is considered incomplete if gender or birthDate are empty/not set by user
-  const hasGender = profile?.gender && profile.gender.trim() !== "";
+  const genderValue = profile?.genderName || profile?.gender;
+  const hasGender = genderValue && String(genderValue).trim() !== "";
   const hasBirthDate = profile?.birthDate && profile.birthDate.trim() !== "";
   return hasGender && hasBirthDate;
 };
@@ -107,6 +111,14 @@ const normalizeGender = (value) => {
   return String(value);
 };
 
+const normalizeAge = (value) => {
+  if (value === undefined || value === null || value === "") {
+    return "";
+  }
+
+  return String(value);
+};
+
 export const getStoredPatientInfo = () => {
   try {
     const rawValue = localStorage.getItem(PATIENT_INFO_STORAGE_KEY);
@@ -154,6 +166,27 @@ const storePatientUser = (patientUser) => {
 const pickFirstDefined = (...values) =>
   values.find((value) => value !== undefined && value !== null && value !== "");
 
+const normalizePatientInfo = (patientInfo = {}) => {
+  const medicalHistoryId = pickFirstDefined(
+    patientInfo.medicalHistoryId,
+    patientInfo.medicalHistoryID,
+  );
+  const birthDate = normalizeDateForInput(patientInfo.birthDate);
+  const genderName = normalizeGender(
+    pickFirstDefined(patientInfo.genderName, patientInfo.gender),
+  );
+  const age = normalizeAge(patientInfo.age);
+
+  return {
+    ...patientInfo,
+    medicalHistoryId,
+    birthDate,
+    genderName,
+    gender: genderName,
+    age,
+  };
+};
+
 export const normalizePatientUser = (user = {}) => ({
   ...user,
   id: pickFirstDefined(user.id, user.userId, user.userID),
@@ -190,7 +223,7 @@ export const getProfileCompletionPercentage = () => {
       user.email,
       user.phone,
       info.birthDate,
-      info.gender,
+      info.genderName || info.gender,
       user.governorate,
       user.city,
       user.street,
@@ -231,24 +264,20 @@ export const buildPatientProfileState = ({
   patientInfo,
 }) => {
   const persistedPatientInfo = getStoredPatientInfo();
-
-  // For new users: only use persisted (user-set) values, not backend defaults
-  // This ensures new users must explicitly set gender and birthDate
-  const birthDateValue = persistedPatientInfo?.birthDate || "";
-  const genderValue = persistedPatientInfo?.gender || "";
-
-  const resolvedPatientInfo = {
-    ...persistedPatientInfo,
-    birthDate: birthDateValue,
-    gender: genderValue,
-  };
+  const resolvedPatientInfo = normalizePatientInfo({
+    ...(persistedPatientInfo || {}),
+    ...(patientInfo || {}),
+  });
 
   return {
     ...DEFAULT_PATIENT_INFO,
     ...DEFAULT_ADDRESS,
     ...DEFAULT_MEDICAL_HISTORY,
-    birthDate: normalizeDateForInput(resolvedPatientInfo?.birthDate),
-    gender: normalizeGender(resolvedPatientInfo?.gender),
+    medicalHistoryId: resolvedPatientInfo?.medicalHistoryId || "",
+    birthDate: resolvedPatientInfo?.birthDate || "",
+    genderName: resolvedPatientInfo?.genderName || "",
+    gender: resolvedPatientInfo?.gender || "",
+    age: resolvedPatientInfo?.age || "",
     governorate: userDetails?.governorate ?? "",
     city: userDetails?.city ?? "",
     street: userDetails?.street ?? "",
@@ -305,8 +334,10 @@ export const savePatientProfile = async (profile) => {
   if (profile.birthDate && profile.birthDate.trim()) {
     patientInfoPayload.birthDate = profile.birthDate.trim();
   }
-  if (profile.gender && profile.gender.trim()) {
-    patientInfoPayload.gender = profile.gender.trim();
+  const genderValue = (profile.genderName || profile.gender || "").trim();
+  if (genderValue) {
+    patientInfoPayload.genderName = genderValue;
+    patientInfoPayload.gender = genderValue;
   }
 
   // Build address payload - send only provided values.
@@ -371,7 +402,10 @@ export const savePatientProfile = async (profile) => {
   }
 
   if (Object.keys(patientInfoPayload).length > 0) {
-    storePatientInfo(patientInfoPayload);
+    storePatientInfo({
+      ...patientInfoPayload,
+      genderName: patientInfoPayload.genderName || patientInfoPayload.gender,
+    });
   }
 
   return {

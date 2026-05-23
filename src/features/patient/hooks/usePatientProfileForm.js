@@ -13,10 +13,22 @@ function usePatientProfileForm(initialProfile, options = {}) {
 
   const updateField = useCallback((event) => {
     const { name, value, type, checked } = event.target;
-    setProfile((current) => ({
-      ...current,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    const nextValue = type === "checkbox" ? checked : value;
+
+    setProfile((current) => {
+      if (name === "genderName" || name === "gender") {
+        return {
+          ...current,
+          genderName: nextValue,
+          gender: nextValue,
+        };
+      }
+
+      return {
+        ...current,
+        [name]: nextValue,
+      };
+    });
   }, []);
 
   const save = useCallback(async () => {
