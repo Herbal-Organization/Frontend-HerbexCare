@@ -156,10 +156,29 @@ const pickFirstDefined = (...values) =>
 
 export const normalizePatientUser = (user = {}) => ({
   ...user,
-  id: pickFirstDefined(user.id, user.userId, user.userID),
-  userId: pickFirstDefined(user.userId, user.id, user.userID),
-  fullName: pickFirstDefined(user.fullName, user.name),
-  name: pickFirstDefined(user.name, user.fullName),
+  // Support raw JWT claim keys that some auth providers include in the stored object
+  id: pickFirstDefined(
+    user.id,
+    user.userId,
+    user.userID,
+    user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"],
+  ),
+  userId: pickFirstDefined(
+    user.userId,
+    user.id,
+    user.userID,
+    user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"],
+  ),
+  fullName: pickFirstDefined(
+    user.fullName,
+    user.name,
+    user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+  ),
+  name: pickFirstDefined(
+    user.name,
+    user.fullName,
+    user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+  ),
   userName: pickFirstDefined(user.userName, user.username),
   username: pickFirstDefined(user.username, user.userName),
   email: pickFirstDefined(user.email, user.mail),
