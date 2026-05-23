@@ -24,6 +24,28 @@ export const decodeJWT = (token) => {
   }
 };
 
+export const normalizeUserRole = (role) => {
+  const normalizedRole = String(role || "").trim().toLowerCase();
+
+  if (normalizedRole === "patient") {
+    return "Patient";
+  }
+
+  if (normalizedRole === "herbalist") {
+    return "Herbalist";
+  }
+
+  if (
+    normalizedRole === "superadmin" ||
+    normalizedRole === "admin" ||
+    normalizedRole === "super admin"
+  ) {
+    return "SuperAdmin";
+  }
+
+  return role || null;
+};
+
 export const getUserFromToken = () => {
   const token = getAccessToken();
   if (!token) return null;
@@ -43,9 +65,11 @@ export const getUserFromToken = () => {
         "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
       ],
     role:
-      decoded.role ||
-      decoded.Role ||
-      decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"],
+      normalizeUserRole(
+        decoded.role ||
+          decoded.Role ||
+          decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"],
+      ),
     phone:
       decoded.phone ||
       decoded[
