@@ -18,11 +18,16 @@ const ChatArea = ({ messages, isLoading }) => {
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-slate-400">
             <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
-              <span className="text-5xl text-primary" aria-hidden="true">✨</span>
+              <span className="text-5xl text-primary" aria-hidden="true">
+                ✨
+              </span>
             </div>
-            <h2 className="text-xl font-bold text-slate-700 mb-2">Welcome to AI Herbal Chat</h2>
+            <h2 className="text-xl font-bold text-slate-700 mb-2">
+              Welcome to AI Herbal Chat
+            </h2>
             <p className="text-sm text-center max-w-sm">
-              Describe your symptoms or ask about specific herbs to get personalized recommendations.
+              Describe your symptoms or ask about specific herbs to get
+              personalized recommendations.
             </p>
           </div>
         ) : (
@@ -37,8 +42,14 @@ const ChatArea = ({ messages, isLoading }) => {
               </div>
               <div className="px-5 py-3.5 bg-white border border-slate-100 rounded-2xl rounded-tl-sm shadow-sm flex space-x-2">
                 <div className="w-2 h-2 bg-slate-300 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-                <div className="w-2 h-2 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
+                <div
+                  className="w-2 h-2 bg-slate-300 rounded-full animate-bounce"
+                  style={{ animationDelay: "0.2s" }}
+                ></div>
+                <div
+                  className="w-2 h-2 bg-slate-300 rounded-full animate-bounce"
+                  style={{ animationDelay: "0.4s" }}
+                ></div>
               </div>
             </div>
           </div>

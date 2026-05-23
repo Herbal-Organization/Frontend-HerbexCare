@@ -127,12 +127,6 @@ function PatientProfile({ user, dashboardData, isLoading, onProfileUpdated }) {
     setProfile(initialProfile);
   }, [initialProfile, setProfile]);
 
-  // Debug: log incoming props to help diagnose missing fields
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.debug("PatientProfile props:", { user, profileFromDashboard: dashboardData?.profile, dashboardData });
-  }, [user, dashboardData]);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     const didSave = await save();

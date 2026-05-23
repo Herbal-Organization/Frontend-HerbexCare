@@ -2,12 +2,7 @@ import React, { useState } from "react";
 import ChatArea from "./ChatArea";
 import ChatInput from "./ChatInput";
 
-const ChatLayout = ({
-  messages,
-  isLoading,
-  onSendMessage,
-  onNewChat,
-}) => {
+const ChatLayout = ({ messages, isLoading, onSendMessage, onNewChat }) => {
   return (
     <div className="flex h-[calc(100dvh-64px)] sm:h-[calc(100vh-140px)] md:h-[calc(100vh-120px)] w-full bg-white sm:rounded-2xl shadow-sm sm:border border-slate-200 overflow-hidden relative">
       <div className="flex flex-col flex-1 relative w-full overflow-hidden">
