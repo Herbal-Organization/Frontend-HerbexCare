@@ -1,6 +1,12 @@
 import { useMemo, useState } from "react";
 import { FiX } from "react-icons/fi";
-import { FaLock, FaPhone, FaUser, FaUserTag } from "react-icons/fa";
+import {
+  FaLock,
+  FaMapMarkerAlt,
+  FaPhone,
+  FaUser,
+  FaUserTag,
+} from "react-icons/fa";
 import AuthInput from "@features/auth/components/AuthInput";
 import { ADMIN_USER_ROLES } from "@features/admin/services/adminUsers";
 
@@ -16,6 +22,9 @@ const DEFAULT_FORM = {
   confirmPassword: "",
   role: "Patient",
   phone: "",
+  governorate: "",
+  city: "",
+  street: "",
 };
 
 const createInitialForm = (source = {}) => ({
@@ -26,6 +35,9 @@ const createInitialForm = (source = {}) => ({
   confirmPassword: "",
   role: source?.role || "Patient",
   phone: source?.phone || "",
+  governorate: source?.governorate || "",
+  city: source?.city || "",
+  street: source?.street || "",
 });
 
 function AdminUserModal({
@@ -83,8 +95,15 @@ function AdminUserModal({
       userName: form.userName.trim(),
       email: form.email.trim().toLowerCase(),
       phone: form.phone.trim(),
-      role: form.role,
     };
+
+    if (isEditMode) {
+      payload.governorate = form.governorate.trim();
+      payload.city = form.city.trim();
+      payload.street = form.street.trim();
+    } else {
+      payload.role = form.role;
+    }
 
     if (!isEditMode || form.password.trim()) {
       payload.password = form.password;
@@ -175,24 +194,55 @@ function AdminUserModal({
             />
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <label className="mb-2 block text-sm font-bold text-slate-700">
-                Role
-              </label>
-              <select
-                value={form.role}
-                onChange={(event) => handleChange("role", event.target.value)}
-                className="block w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 outline-none transition-colors focus:border-emerald-500"
-              >
-                {USER_CREATION_ROLES.map((role) => (
-                  <option key={role} value={role}>
-                    {role}
-                  </option>
-                ))}
-              </select>
+          {isEditMode ? (
+            <div className="grid gap-4 md:grid-cols-3">
+              <AuthInput
+                label="Governorate"
+                type="text"
+                placeholder="Cairo"
+                icon={<FaMapMarkerAlt />}
+                value={form.governorate}
+                onChange={(event) =>
+                  handleChange("governorate", event.target.value)
+                }
+              />
+              <AuthInput
+                label="City"
+                type="text"
+                placeholder="Nasr City"
+                icon={<FaMapMarkerAlt />}
+                value={form.city}
+                onChange={(event) => handleChange("city", event.target.value)}
+              />
+              <AuthInput
+                label="Street"
+                type="text"
+                placeholder="Street 10"
+                icon={<FaMapMarkerAlt />}
+                value={form.street}
+                onChange={(event) => handleChange("street", event.target.value)}
+              />
             </div>
-          </div>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-sm font-bold text-slate-700">
+                  Role
+                </label>
+                <select
+                  value={form.role}
+                  onChange={(event) => handleChange("role", event.target.value)}
+                  className="block w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 outline-none transition-colors focus:border-emerald-500"
+                >
+                  {USER_CREATION_ROLES.map((role) => (
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
 
           {!isEditMode && (
             <div className="grid gap-4 md:grid-cols-2">
@@ -218,12 +268,6 @@ function AdminUserModal({
                   handleChange("confirmPassword", event.target.value)
                 }
               />
-            </div>
-          )}
-
-          {isEditMode && (
-            <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600">
-              Leave password fields empty to keep the current password.
             </div>
           )}
 
