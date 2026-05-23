@@ -228,6 +228,7 @@ function AdminUsersPage() {
       />
 
       <AdminUserModal
+        key={`${modalMode}-${modalUser?.id || "new"}-${isModalOpen ? "open" : "closed"}`}
         isOpen={isModalOpen}
         mode={modalMode}
         initialValue={modalUser}

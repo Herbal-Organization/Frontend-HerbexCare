@@ -1,8 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { FiX } from "react-icons/fi";
 import { FaLock, FaPhone, FaUser, FaUserTag } from "react-icons/fa";
 import AuthInput from "@features/auth/components/AuthInput";
 import { ADMIN_USER_ROLES } from "@features/admin/services/adminUsers";
+
+const USER_CREATION_ROLES = ADMIN_USER_ROLES.filter(
+  (role) => role !== "SuperAdmin",
+);
 
 const DEFAULT_FORM = {
   fullName: "",
@@ -14,6 +18,16 @@ const DEFAULT_FORM = {
   phone: "",
 };
 
+const createInitialForm = (source = {}) => ({
+  fullName: source.fullName || "",
+  userName: source.userName || "",
+  email: source.email || "",
+  password: "",
+  confirmPassword: "",
+  role: source.role || "Patient",
+  phone: source.phone || "",
+});
+
 function AdminUserModal({
   isOpen,
   mode,
@@ -23,23 +37,8 @@ function AdminUserModal({
   isSubmitting,
   error,
 }) {
-  const [form, setForm] = useState(DEFAULT_FORM);
+  const [form, setForm] = useState(() => createInitialForm(initialValue));
   const [formError, setFormError] = useState("");
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    setForm({
-      fullName: initialValue?.fullName || "",
-      userName: initialValue?.userName || "",
-      email: initialValue?.email || "",
-      password: "",
-      confirmPassword: "",
-      role: initialValue?.role || "Patient",
-      phone: initialValue?.phone || "",
-    });
-    setFormError("");
-  }, [initialValue, isOpen]);
 
   const isEditMode = mode === "edit";
 
@@ -186,20 +185,14 @@ function AdminUserModal({
                 onChange={(event) => handleChange("role", event.target.value)}
                 className="block w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 outline-none transition-colors focus:border-emerald-500"
               >
-                {ADMIN_USER_ROLES.map((role) => (
+                {USER_CREATION_ROLES.map((role) => (
                   <option key={role} value={role}>
                     {role}
                   </option>
                 ))}
               </select>
             </div>
-            <div className="rounded-2xl bg-emerald-50 px-4 py-4 text-sm text-emerald-800">
-              <p className="font-bold">Role-based access</p>
-              <p className="mt-1 text-emerald-700/80">
-                The selected role determines which dashboard and permissions the
-                account receives.
-              </p>
-            </div>
+
           </div>
 
           {!isEditMode && (
