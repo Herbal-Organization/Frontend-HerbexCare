@@ -1,10 +1,10 @@
-import { FiEdit3, FiEye } from "react-icons/fi";
+import { FiEdit3, FiEye, FiTrash2 } from "react-icons/fi";
 import {
   getUserInitials,
   getUserRoleTone,
 } from "@features/admin/services/adminUsers";
 
-function AdminUsersTable({ users, onView, onEdit }) {
+function AdminUsersTable({ users, onView, onEdit, onDelete }) {
   return (
     <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
       <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
@@ -53,7 +53,7 @@ function AdminUsersTable({ users, onView, onEdit }) {
                         {user.fullName || "N/A"}
                       </p>
                       <p className="text-xs text-slate-500">
-                        {user.userName || user.email || "No username"}
+                        {user.userName || "No username"}
                       </p>
                     </div>
                   </div>
@@ -90,6 +90,14 @@ function AdminUsersTable({ users, onView, onEdit }) {
                       aria-label={`Edit ${user.fullName || "user"}`}
                     >
                       <FiEdit3 />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onDelete(user)}
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-rose-100 bg-rose-50 text-rose-700 transition-colors hover:bg-rose-100"
+                      aria-label={`Delete ${user.fullName || "user"}`}
+                    >
+                      <FiTrash2 />
                     </button>
                   </div>
                 </td>

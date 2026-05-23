@@ -2,13 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { FiDatabase } from "react-icons/fi";
 import { registerAccount } from "@api/accounts";
-import { getAllUsers, getUserById, updateUser } from "@api/users";
+import { deleteUser, getAllUsers, getUserById, updateUser } from "@api/users";
 import AdminUsersHeader from "@features/admin/components/users/AdminUsersHeader";
 import AdminUsersHero from "@features/admin/components/users/AdminUsersHero";
 import AdminUsersStats from "@features/admin/components/users/AdminUsersStats";
 import AdminUsersToolbar from "@features/admin/components/users/AdminUsersToolbar";
 import AdminUsersTable from "@features/admin/components/users/AdminUsersTable";
 import AdminUserDetailsDrawer from "@features/admin/components/users/AdminUserDetailsDrawer";
+import AdminDeleteUserModal from "@features/admin/components/users/AdminDeleteUserModal";
 import AdminUserModal from "@features/admin/components/users/AdminUserModal";
 import AdminPagination from "@features/admin/components/users/AdminPagination";
 import {
@@ -37,6 +38,9 @@ function AdminUsersPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [modalError, setModalError] = useState("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const loadUsers = async () => {
     setIsLoading(true);
@@ -103,6 +107,53 @@ function AdminUsersPage() {
     setModalUser(user);
     setModalError("");
     setIsModalOpen(true);
+  };
+
+  const handleDeleteUser = async (user) => {
+    if (!user?.id) return;
+
+    setDeleteTarget(user);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    if (isDeleting) return;
+
+    setIsDeleteModalOpen(false);
+    setDeleteTarget(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget?.id) return;
+
+    setIsDeleting(true);
+
+    try {
+      await deleteUser(deleteTarget.id);
+      toast.success("User deleted successfully.");
+
+      if (detailUser?.id === deleteTarget.id) {
+        setIsDetailOpen(false);
+        setDetailUser(null);
+      }
+
+      if (modalUser?.id === deleteTarget.id) {
+        setIsModalOpen(false);
+        setModalUser(null);
+      }
+
+      setIsDeleteModalOpen(false);
+      setDeleteTarget(null);
+      await loadUsers();
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        err?.response?.data?.title ||
+        "Unable to delete user.";
+      toast.error(message);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const handleViewUser = async (user) => {
@@ -207,6 +258,7 @@ function AdminUsersPage() {
             users={paginatedUsers}
             onView={handleViewUser}
             onEdit={handleOpenEdit}
+            onDelete={handleDeleteUser}
           />
         ) : null}
 
@@ -236,6 +288,14 @@ function AdminUsersPage() {
         onSubmit={handleSubmitUser}
         isSubmitting={isSaving}
         error={modalError}
+      />
+
+      <AdminDeleteUserModal
+        isOpen={isDeleteModalOpen}
+        user={deleteTarget}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        isDeleting={isDeleting}
       />
     </div>
   );

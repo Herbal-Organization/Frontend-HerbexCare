@@ -1,12 +1,12 @@
 import { FiX } from "react-icons/fi";
 import {
   FaEnvelope,
-  FaMapMarkerAlt,
   FaPhone,
   FaShieldAlt,
   FaUser,
+  FaMapMarkerAlt,
+  FaUserTag,
 } from "react-icons/fa";
-import { formatUserLocation } from "@features/admin/services/adminUsers";
 
 function DetailRow({ label, value, icon: Icon }) {
   return (
@@ -70,6 +70,11 @@ function AdminUserDetailsDrawer({ user, isOpen, onClose, loading }) {
                   value={user?.fullName}
                   icon={FaUser}
                 />
+                <DetailRow
+                  label="Username"
+                  value={user?.userName}
+                  icon={FaUserTag}
+                />
                 <DetailRow label="Role" value={user?.role} icon={FaShieldAlt} />
                 <DetailRow
                   label="Email"
@@ -77,21 +82,21 @@ function AdminUserDetailsDrawer({ user, isOpen, onClose, loading }) {
                   icon={FaEnvelope}
                 />
                 <DetailRow label="Phone" value={user?.phone} icon={FaPhone} />
-              </div>
-
-              <DetailRow
-                label="Location"
-                value={formatUserLocation(user)}
-                icon={FaMapMarkerAlt}
-              />
-
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
-                  User Payload
-                </p>
-                <pre className="mt-3 overflow-auto rounded-2xl bg-slate-950 p-4 text-xs leading-6 text-slate-100">
-                  {JSON.stringify(user, null, 2)}
-                </pre>
+                <DetailRow
+                  label="Governorate"
+                  value={user?.governorate}
+                  icon={FaMapMarkerAlt}
+                />
+                <DetailRow
+                  label="City"
+                  value={user?.city}
+                  icon={FaMapMarkerAlt}
+                />
+                <DetailRow
+                  label="Street"
+                  value={user?.street}
+                  icon={FaMapMarkerAlt}
+                />
               </div>
             </div>
           )}
