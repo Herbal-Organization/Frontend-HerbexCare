@@ -1,4 +1,4 @@
-import { FaVenusMars, FaBirthdayCake, FaFingerprint, FaHashtag } from "react-icons/fa";
+import { FaVenusMars, FaBirthdayCake, FaHashtag } from "react-icons/fa";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 
@@ -33,20 +33,6 @@ function PatientDetailsSection({ profile, updateField }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-        <div className="group">
-          <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 group-hover:text-emerald-600 transition-colors">
-            {t("profile.sections.patientDetails.medicalHistoryId")}
-          </label>
-          <div className="relative flex items-center">
-            <div className="absolute inset-y-0 inset-s-0 flex items-center ps-4 text-slate-400 group-hover:text-emerald-600 transition-colors">
-              <FaFingerprint className="text-sm" />
-            </div>
-            <div className="w-full px-4 py-3 ps-11 bg-slate-50/50 border border-slate-100 rounded-xl text-slate-700 font-medium group-hover:bg-white group-hover:border-slate-200 group-hover:shadow-sm transition-all">
-              {profile.medicalHistoryId || t("profile.messages.noData")}
-            </div>
-          </div>
-        </div>
-
         <div className="group">
           <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 group-focus-within:text-emerald-600 transition-colors">
             {t("profile.sections.patientDetails.birthDate")}
