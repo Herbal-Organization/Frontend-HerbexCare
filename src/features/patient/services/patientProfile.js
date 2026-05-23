@@ -249,9 +249,11 @@ export const buildPatientProfileState = ({
     ...DEFAULT_MEDICAL_HISTORY,
     birthDate: normalizeDateForInput(resolvedPatientInfo?.birthDate),
     gender: normalizeGender(resolvedPatientInfo?.gender),
-    governorate: userDetails?.governorate ?? "",
-    city: userDetails?.city ?? "",
-    street: userDetails?.street ?? "",
+    // Support different API shapes: address may live on userDetails.address
+    governorate:
+      userDetails?.governorate ?? userDetails?.address?.governorate ?? "",
+    city: userDetails?.city ?? userDetails?.address?.city ?? "",
+    street: userDetails?.street ?? userDetails?.address?.street ?? "",
     diabetes: medicalHistory?.diabetes ?? false,
     hypertension: medicalHistory?.hypertension ?? false,
     asthma: medicalHistory?.asthma ?? false,
