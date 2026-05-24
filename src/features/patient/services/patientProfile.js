@@ -336,7 +336,6 @@ export const savePatientProfile = async (profile) => {
   }
   const genderValue = (profile.genderName || profile.gender || "").trim();
   if (genderValue) {
-    patientInfoPayload.genderName = genderValue;
     patientInfoPayload.gender = genderValue;
   }
 
@@ -404,7 +403,7 @@ export const savePatientProfile = async (profile) => {
   if (Object.keys(patientInfoPayload).length > 0) {
     storePatientInfo({
       ...patientInfoPayload,
-      genderName: patientInfoPayload.genderName || patientInfoPayload.gender,
+      genderName: patientInfoPayload.gender,
     });
   }
 

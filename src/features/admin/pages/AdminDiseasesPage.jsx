@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence } from "motion/react";
-import { Link, Outlet } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import {
   FaClock,
@@ -288,13 +287,6 @@ function AdminDiseasesPage() {
               <FaPlus className="text-sm" />
               Add Disease
             </button>
-            <Link
-              to="pending"
-              className="inline-flex items-center gap-2 rounded-2xl border border-emerald-300 bg-white px-4 py-3 text-sm font-bold text-emerald-700 transition-colors hover:border-emerald-400 hover:bg-emerald-50"
-            >
-              <FaClock className="text-sm" />
-              Pending Approvals
-            </Link>
           </div>
         </div>
       </section>
@@ -329,20 +321,118 @@ function AdminDiseasesPage() {
         </div>
       ) : null}
 
-      <Outlet
-        context={{
-          pendingDiseases,
-          isLoading,
-          error,
-          processingDiseaseIds,
-          isProcessing,
-          runPendingAction,
-          handleOpenDetails,
-          selectedDisease,
-          setSelectedDisease,
-          setIsDetailsOpen,
-        }}
-      />
+      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="flex flex-col gap-4 border-b border-slate-100 pb-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-slate-900">
+              Pending approvals
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Approve or reject diseases that are waiting for moderation.
+            </p>
+          </div>
+          <div className="inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-amber-700">
+            <FaClock className="text-[10px]" />
+            {pendingDiseases.length} awaiting review
+          </div>
+        </div>
+
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-500" />
+          </div>
+        ) : pendingDiseases.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-10 text-center text-sm text-slate-500">
+            No diseases are waiting for approval.
+          </div>
+        ) : (
+          <div className="mt-5 grid gap-4 xl:grid-cols-2">
+            {pendingDiseases.map((disease) => {
+              const disabled = isProcessing(disease.diseaseId);
+
+              return (
+                <article
+                  key={disease.diseaseId}
+                  className="rounded-3xl border border-slate-200 bg-slate-50/70 p-5"
+                >
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="text-lg font-bold text-slate-900">
+                          {disease.diseaseName}
+                        </h3>
+                        <span className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-amber-700">
+                          Pending review
+                        </span>
+                      </div>
+                      <p className="mt-1 text-sm text-slate-500">
+                        {disease.diseaseType || "No disease type provided"}
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleOpenDetails(disease)}
+                      className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-black uppercase tracking-widest text-slate-600 transition-colors hover:border-emerald-500 hover:text-emerald-700"
+                    >
+                      <FaEye className="text-[10px]" />
+                      View
+                    </button>
+                  </div>
+
+                  <div className="mt-4 space-y-4">
+                    <p className="text-sm leading-6 text-slate-600">
+                      {disease.description || "No description provided."}
+                    </p>
+
+                    {disease.symptoms ? (
+                      <div className="flex flex-wrap gap-2">
+                        {parseSymptoms(disease.symptoms)
+                          .slice(0, 4)
+                          .map((symptom) => (
+                            <span
+                              key={symptom}
+                              className="inline-flex rounded-full bg-amber-50 border border-amber-200 px-3 py-1 text-[11px] font-bold text-amber-700"
+                            >
+                              {symptom}
+                            </span>
+                          ))}
+                      </div>
+                    ) : null}
+
+                    <div className="flex flex-wrap gap-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          runPendingAction(disease, approveDisease)
+                        }
+                        disabled={disabled}
+                        className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {disabled ? (
+                          <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        ) : (
+                          <FaPlus className="text-xs" />
+                        )}
+                        Approve
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => runPendingAction(disease, rejectDisease)}
+                        disabled={disabled}
+                        className="inline-flex items-center gap-2 rounded-2xl border border-rose-200 bg-white px-4 py-2.5 text-sm font-bold text-rose-600 transition-colors hover:border-rose-400 hover:text-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        <FaTimes className="text-xs" />
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </section>
 
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-4 border-b border-slate-100 pb-4 lg:flex-row lg:items-end lg:justify-between">
