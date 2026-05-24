@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { AnimatePresence } from "motion/react";
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { FaPlus, FaTimes, FaSave } from "react-icons/fa";
 
 export default function DiseaseForm({
@@ -10,13 +10,23 @@ export default function DiseaseForm({
   error,
   showAiSupport = false,
 }) {
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     diseaseName: "",
     diseaseType: "",
     description: "",
     symptoms: "",
     isSupportedByAi: false,
+  };
+
+  const [formData, setFormData] = useState({
+    ...initialFormData,
   });
+
+  useEffect(() => {
+    if (!show) {
+      setFormData(initialFormData);
+    }
+  }, [show]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,16 +53,6 @@ export default function DiseaseForm({
     };
 
     await onSubmit(payload);
-
-    if (!error) {
-      setFormData({
-        diseaseName: "",
-        diseaseType: "",
-        description: "",
-        symptoms: "",
-        isSupportedByAi: false,
-      });
-    }
   };
 
   const handleCheckboxChange = (e) => {
@@ -103,7 +103,7 @@ export default function DiseaseForm({
 
           <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
             {error && (
-              <div className="rounded-2xl border border-eed-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-600 flex items-center gap-3">
+              <div className="rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-600 flex items-center gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-red-600" />
                 {error}
               </div>
