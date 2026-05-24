@@ -173,6 +173,7 @@
     "patients": "Patients",
     "herbalists": "Herbalists",
     "diseases": "Diseases",
+    "aiConsultations": "AI Consultations",
     "apiDocs": "API Docs",
     "settings": "Settings",
     "signOut": "Sign Out",
@@ -182,20 +183,53 @@
     "badge": "Super Admin",
     "title": "System Control Center",
     "subtitle": "Monitor core records, review platform counts, and jump into the published API documentation.",
+    "overviewSubtitle": "Platform totals and AI consultation metrics in one place.",
+    "refresh": "Refresh",
+    "loading": "Loading statistics",
+    "loadError": "Unable to load overview statistics.",
     "apiDocs": "Open Swagger docs",
     "directLogin": "Direct login account",
     "directLoginHint": "This admin account is pre-provisioned and does not use public registration.",
-    "stats": {
-      "users": "All users",
-      "patients": "Patients",
-      "herbalists": "Herbalists",
-      "api": "Published API"
-    },
     "sections": {
+      "platform": "Platform",
+      "platformDescription": "Registered users and catalogue size across the system.",
+      "aiConsultations": "AI consultations",
+      "aiConsultationsDescription": "Consultation activity from the AI chat service.",
       "users": "User Registry",
       "patients": "Patient Registry",
       "herbalists": "Herbalist Registry",
       "api": "API Access"
+    },
+    "stats": {
+      "users": "All users",
+      "usersHint": "Total registered accounts",
+      "patients": "Patients",
+      "patientsHint": "Patient profiles in the system",
+      "herbalists": "Herbalists",
+      "herbalistsHint": "Herbalist profiles in the system",
+      "recipes": "Recipes",
+      "recipesHint": "Recipes in the catalogue",
+      "herbs": "Herbs",
+      "herbsHint": "Herbs in the catalogue",
+      "api": "Published API",
+      "totalConsultations": "Total consultations",
+      "totalConsultationsHint": "All AI chat consultations in the system",
+      "activeConsultations": "Active",
+      "activeConsultationsHint": "{{rate}}% of total are active",
+      "blockedConsultations": "Blocked",
+      "blockedConsultationsHint": "Consultations marked as blocked",
+      "topCategory": "Top category",
+      "topCategoryHint": "Most requested herb category"
+    },
+    "quickActions": {
+      "title": "Manage consultations",
+      "subtitle": "Open the full list to review recipes, match scores, and alternatives.",
+      "viewConsultations": "View all consultations"
+    },
+    "summary": {
+      "activeShare": "Active share",
+      "blockedShare": "Blocked share",
+      "leadingCategory": "Leading category"
     },
     "table": {
       "name": "Name",

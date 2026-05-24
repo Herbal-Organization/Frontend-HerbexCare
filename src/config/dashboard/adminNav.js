@@ -4,6 +4,7 @@ import {
   MdLocalFlorist,
   MdLocalHospital,
   MdHealing,
+  MdSmartToy,
   MdOpenInNew,
   MdSettings,
 } from "react-icons/md";
@@ -11,7 +12,7 @@ import {
 export const getAdminNavConfig = (t) => [
   {
     name: t("adminSidebar.overview"),
-    href: "/admin/dashboard#overview",
+    href: "/admin/dashboard/overview",
     icon: MdDashboard,
   },
   {
@@ -33,6 +34,11 @@ export const getAdminNavConfig = (t) => [
     name: t("adminSidebar.diseases", "Diseases"),
     href: "/admin/dashboard/diseases",
     icon: MdLocalHospital,
+  },
+  {
+    name: t("adminSidebar.aiConsultations", "AI Consultations"),
+    href: "/admin/dashboard/ai-consultations",
+    icon: MdSmartToy,
   },
   {
     name: t("adminSidebar.apiDocs"),

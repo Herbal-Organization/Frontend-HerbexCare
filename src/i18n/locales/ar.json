@@ -192,6 +192,7 @@
     "patients": "المرضى",
     "herbalists": "الأعشابيون",
     "diseases": "الأمراض",
+    "aiConsultations": "استشارات الذكاء الاصطناعي",
     "apiDocs": "وثائق API",
     "settings": "الإعدادات",
     "signOut": "تسجيل الخروج",
@@ -201,20 +202,53 @@
     "badge": "مشرف عام",
     "title": "مركز التحكم بالنظام",
     "subtitle": "راقب السجلات الأساسية، واستعرض أعداد المنصة، وانتقل مباشرة إلى وثائق الـ API المنشورة.",
+    "overviewSubtitle": "إجماليات المنصة ومقاييس استشارات الذكاء الاصطناعي في مكان واحد.",
+    "refresh": "تحديث",
+    "loading": "جاري تحميل الإحصائيات",
+    "loadError": "تعذر تحميل إحصائيات النظرة العامة.",
     "apiDocs": "فتح Swagger",
     "directLogin": "حساب دخول مباشر",
     "directLoginHint": "هذا الحساب الإداري مُنشأ مسبقاً ولا يستخدم التسجيل العام.",
-    "stats": {
-      "users": "كل المستخدمين",
-      "patients": "المرضى",
-      "herbalists": "الأعشابيون",
-      "api": "API المنشور"
-    },
     "sections": {
+      "platform": "المنصة",
+      "platformDescription": "المستخدمون المسجلون وحجم الكتالوج في النظام.",
+      "aiConsultations": "استشارات الذكاء الاصطناعي",
+      "aiConsultationsDescription": "نشاط الاستشارات من خدمة الدردشة بالذكاء الاصطناعي.",
       "users": "سجل المستخدمين",
       "patients": "سجل المرضى",
       "herbalists": "سجل الأعشبيين",
       "api": "الوصول إلى الـ API"
+    },
+    "stats": {
+      "users": "كل المستخدمين",
+      "usersHint": "إجمالي الحسابات المسجلة",
+      "patients": "المرضى",
+      "patientsHint": "ملفات المرضى في النظام",
+      "herbalists": "الأعشابيون",
+      "herbalistsHint": "ملفات الأعشابيين في النظام",
+      "recipes": "الوصفات",
+      "recipesHint": "الوصفات في الكتالوج",
+      "herbs": "الأعشاب",
+      "herbsHint": "الأعشاب في الكتالوج",
+      "api": "API المنشور",
+      "totalConsultations": "إجمالي الاستشارات",
+      "totalConsultationsHint": "جميع استشارات الدردشة بالذكاء الاصطناعي",
+      "activeConsultations": "نشطة",
+      "activeConsultationsHint": "{{rate}}% من الإجمالي نشطة",
+      "blockedConsultations": "محظورة",
+      "blockedConsultationsHint": "استشارات محددة كمحظورة",
+      "topCategory": "أفضل فئة",
+      "topCategoryHint": "أكثر فئة أعشاب طلباً"
+    },
+    "quickActions": {
+      "title": "إدارة الاستشارات",
+      "subtitle": "افتح القائمة الكاملة لمراجعة الوصفات ونسب التطابق والبدائل.",
+      "viewConsultations": "عرض كل الاستشارات"
+    },
+    "summary": {
+      "activeShare": "نسبة النشطة",
+      "blockedShare": "نسبة المحظورة",
+      "leadingCategory": "الفئة الرائدة"
     },
     "table": {
       "name": "الاسم",

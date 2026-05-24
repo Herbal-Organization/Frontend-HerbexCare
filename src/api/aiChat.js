@@ -66,10 +66,35 @@ export const fetchAiChatCatalogById = async (id) => {
   return data;
 };
 
+/**
+ * Fetch all AI Chat consultations for admin.
+ * GET /api/AiChat/admin/all-consultations
+ */
+export const fetchAdminAllAiChatConsultations = async (
+  pageNumber = 1,
+  pageSize = 10,
+) => {
+  const { data } = await httpClient.get("/api/AiChat/admin/all-consultations", {
+    params: { pageNumber, pageSize },
+  });
+  return data;
+};
+
+/**
+ * Fetch AI Chat statistics for admin overview.
+ * GET /api/AiChat/admin/statistics
+ */
+export const fetchAdminAiChatStatistics = async () => {
+  const { data } = await httpClient.get("/api/AiChat/admin/statistics");
+  return data;
+};
+
 export default {
   generateChatMessage,
   fetchMyChatConsultations,
   fetchMyChatConsultationById,
   fetchAiChatCatalog,
   fetchAiChatCatalogById,
+  fetchAdminAllAiChatConsultations,
+  fetchAdminAiChatStatistics,
 };
