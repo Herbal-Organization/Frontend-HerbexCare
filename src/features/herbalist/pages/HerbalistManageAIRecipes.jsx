@@ -33,9 +33,11 @@ const extractArray = (payload) => {
 
 const getAiRecipeId = (recipe) => {
   const candidate =
-    recipe?.aiRecipeId ||
-    recipe?.targetId ||
-    recipe?.recipeId ||
+    recipe?.aiRecipeId ??
+    recipe?.targetId ??
+    recipe?.recipeId ??
+    recipe?.recipe_id ??
+    recipe?.["recipe-id"] ??
     recipe?.id;
   return candidate ? String(candidate) : null;
 };
@@ -56,6 +58,8 @@ const getInventoryLinkedRecipeId = (item) =>
     aiRecipeId: item?.aiRecipeId,
     targetId: item?.targetId,
     recipeId: item?.recipeId,
+    recipe_id: item?.recipe_id,
+    ["recipe-id"]: item?.["recipe-id"],
   });
 
 const isInventoryItemActive = (item) => {
@@ -206,12 +210,46 @@ function HerbalistManageAIRecipes() {
     if (!aiRecipeId) return;
 
     setIsDetailOpen(true);
-    setDetailRecipe(recipe);
+    setDetailRecipe({ ...recipe, __detailSource: "catalog" });
     setIsDetailLoading(true);
 
     try {
       const data = await fetchCatalogById(aiRecipeId);
-      setDetailRecipe(data);
+      setDetailRecipe({ ...data, __detailSource: "catalog" });
+    } catch (err) {
+      toast.error(
+        err?.response?.data?.message ||
+          err?.response?.data?.title ||
+          "Failed to load recipe details.",
+      );
+    } finally {
+      setIsDetailLoading(false);
+    }
+  };
+
+  const openInventoryDetail = async (item) => {
+    const recipeId = getInventoryLinkedRecipeId(item);
+    if (!recipeId) {
+      toast.error("Invalid AI recipe id.");
+      return;
+    }
+
+    setIsDetailOpen(true);
+    setDetailRecipe({
+      ...item,
+      aiRecipeId: item?.aiRecipeId ?? recipeId,
+      __detailSource: "inventory",
+    });
+    setIsDetailLoading(true);
+
+    try {
+      const data = await fetchCatalogById(recipeId);
+      setDetailRecipe({
+        ...item,
+        ...(data || {}),
+        aiRecipeId: data?.aiRecipeId ?? data?.recipeId ?? item?.aiRecipeId ?? recipeId,
+        __detailSource: "inventory",
+      });
     } catch (err) {
       toast.error(
         err?.response?.data?.message ||
@@ -435,6 +473,7 @@ function HerbalistManageAIRecipes() {
   const detailNormalized = detailRecipe
     ? normalizeGeneratedRecipe(detailRecipe)
     : null;
+  const detailSource = detailRecipe?.__detailSource || "catalog";
 
   return (
     <div className="space-y-8">
@@ -672,16 +711,12 @@ function HerbalistManageAIRecipes() {
                       </button>
                       <button
                         type="button"
-                        onClick={() =>
-                          catalogItem
-                            ? openCatalogDetail(catalogItem)
-                            : recipeId &&
-                              openCatalogDetail({ aiRecipeId: recipeId })
-                        }
+                        onClick={() => openInventoryDetail(item)}
+                        disabled={!recipeId}
                         className="col-span-2 flex h-10 items-center justify-center gap-1 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50"
                       >
                         <FaEye className="text-[10px]" />
-                        View Catalog Details
+                        View Details
                       </button>
                       <button
                         type="button"
@@ -716,7 +751,9 @@ function HerbalistManageAIRecipes() {
               <div className="flex items-start justify-between gap-4 border-b border-slate-100 bg-slate-50 px-6 py-5">
                 <div className="min-w-0">
                   <p className="text-[10px] font-black uppercase tracking-[0.22em] text-emerald-700">
-                    Catalog Recipe
+                    {detailSource === "inventory"
+                      ? "Inventory Recipe"
+                      : "Catalog Recipe"}
                   </p>
                   <h3 className="mt-1 truncate text-xl font-black text-slate-900">
                     {getRecipeTitle(detailRecipe || {})}
@@ -738,47 +775,81 @@ function HerbalistManageAIRecipes() {
                   </div>
                 ) : (
                   <dl className="grid gap-4 sm:grid-cols-2">
+                    {detailSource === "inventory" ? (
+                      <>
+                        <div className="rounded-2xl bg-emerald-50/70 p-4">
+                          <dt className="text-xs font-bold uppercase text-emerald-700">
+                            Selling Price
+                          </dt>
+                          <dd className="mt-1 text-lg font-black text-emerald-700">
+                            {detailRecipe?.price
+                              ? `${detailRecipe.price} EGP`
+                              : "—"}
+                          </dd>
+                        </div>
+                        <div className="rounded-2xl bg-slate-50 p-4">
+                          <dt className="text-xs font-bold uppercase text-slate-400">
+                            Availability
+                          </dt>
+                          <dd className="mt-1 font-semibold text-slate-800">
+                            {isInventoryItemActive(detailRecipe)
+                              ? "Active"
+                              : "Inactive"}
+                          </dd>
+                        </div>
+                      </>
+                    ) : null}
                     <div className="rounded-2xl bg-slate-50 p-4 sm:col-span-2">
                       <dt className="text-xs font-bold uppercase text-slate-400">
-                        Main herb
+                        Condition
                       </dt>
                       <dd className="mt-1 font-bold text-slate-900">
-                        {detailRecipe?.mainHerb || "—"}
-                      </dd>
-                      <dd className="text-sm text-slate-500">
-                        {detailRecipe?.scientificName || ""}
+                        {detailNormalized?.condition ||
+                          detailRecipe?.condition ||
+                          "—"}
                       </dd>
                     </div>
                     <div className="rounded-2xl bg-slate-50 p-4">
                       <dt className="text-xs font-bold uppercase text-slate-400">
-                        Category
+                        Confidence
                       </dt>
                       <dd className="mt-1 font-semibold text-slate-800">
-                        {detailRecipe?.category || "—"}
-                      </dd>
-                    </div>
-                    <div className="rounded-2xl bg-slate-50 p-4">
-                      <dt className="text-xs font-bold uppercase text-slate-400">
-                        Dosage
-                      </dt>
-                      <dd className="mt-1 text-sm text-slate-700">
-                        {detailRecipe?.dosage || "—"}
+                        {detailNormalized?.confidenceScore ||
+                        detailRecipe?.confidenceScore
+                          ? `${detailNormalized?.confidenceScore || detailRecipe?.confidenceScore}%`
+                          : "—"}
                       </dd>
                     </div>
                     <div className="rounded-2xl bg-slate-50 p-4 sm:col-span-2">
                       <dt className="text-xs font-bold uppercase text-slate-400">
                         Preparation
                       </dt>
-                      <dd className="mt-1 text-sm leading-6 text-slate-700">
-                        {detailRecipe?.preparation || "—"}
-                      </dd>
+                      {detailNormalized?.preparationInstructions?.length ? (
+                        <dd className="mt-3">
+                          <ol className="space-y-2 text-sm leading-6 text-slate-700">
+                            {detailNormalized.preparationInstructions.map(
+                              (step, idx) => (
+                                <li key={idx}>
+                                  {idx + 1}. {step}
+                                </li>
+                              ),
+                            )}
+                          </ol>
+                        </dd>
+                      ) : (
+                        <dd className="mt-1 text-sm leading-6 text-slate-700">
+                          {detailRecipe?.preparation || "—"}
+                        </dd>
+                      )}
                     </div>
                     <div className="rounded-2xl bg-rose-50/70 p-4 sm:col-span-2">
                       <dt className="text-xs font-bold uppercase text-rose-700">
                         Contraindications
                       </dt>
                       <dd className="mt-1 text-sm text-rose-900/80">
-                        {detailRecipe?.contraindications || "—"}
+                        {detailNormalized?.cautionWarning ||
+                          detailRecipe?.contraindications ||
+                          "—"}
                       </dd>
                     </div>
                   </dl>
