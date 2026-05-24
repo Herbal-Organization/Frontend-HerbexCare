@@ -21,11 +21,11 @@ function HerbsGrid({
 }) {
   if (isLoading) {
     return (
-      <div className="grid gap-8 px-4 pb-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-5 pb-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
         {Array.from({ length: 8 }).map((_, index) => (
           <div
             key={`herb-skeleton-${index}`}
-            className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white text-start shadow-sm"
+            className="group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white text-start shadow-sm"
           >
             <div className="relative">
               <Skeleton
@@ -90,7 +90,7 @@ function HerbsGrid({
 
   if (error) {
     return (
-      <div className="rounded-4xl border border-eed-100 bg-red-50 p-16 text-center shadow-sm max-w-2xl mx-auto mt-12">
+      <div className="mx-auto mt-12 max-w-2xl rounded-3xl border border-red-100 bg-red-50 p-12 text-center shadow-sm sm:p-16">
         <h2 className="text-xl font-extrabold text-red-800">
           Unable to load herbs
         </h2>
@@ -108,8 +108,8 @@ function HerbsGrid({
 
   if (!herbs || herbs.length === 0) {
     return (
-      <div className="rounded-4xl border border-slate-200 bg-white p-16 text-center shadow-sm max-w-2xl mx-auto mt-12">
-        <div className="text-6xl mb-6">🌿</div>
+      <div className="mx-auto mt-12 max-w-2xl rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-sm sm:p-16">
+        <div className="mb-6 text-6xl">🌿</div>
         <h3 className="text-2xl font-bold text-slate-800">No herbs found</h3>
         <p className="mt-2 text-slate-500 font-medium">
           Try adjusting your search criteria to find what you're looking for.
@@ -123,7 +123,7 @@ function HerbsGrid({
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-4 pb-12"
+      className="grid gap-5 pb-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4"
     >
       {herbs.map((herb) => (
         <HerbCard

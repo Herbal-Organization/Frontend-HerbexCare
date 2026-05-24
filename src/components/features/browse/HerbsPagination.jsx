@@ -11,8 +11,8 @@ function HerbsPagination({ currentPage, totalPages, itemCount, onPageChange }) {
   );
 
   return (
-    <div className="mt-12 flex justify-center px-4 pb-12">
-      <div className="flex flex-col items-center gap-4 rounded-3xl border border-slate-200 bg-white px-4 py-5 shadow-sm sm:px-6">
+    <div className="mt-10 flex justify-center px-4 pb-12">
+      <div className="flex flex-col items-center gap-4 rounded-3xl border border-slate-200/80 bg-white/90 px-5 py-5 shadow-sm backdrop-blur-sm sm:px-8">
         <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-slate-400">
           Page {currentPage} of {totalPages}
         </p>
@@ -21,7 +21,8 @@ function HerbsPagination({ currentPage, totalPages, itemCount, onPageChange }) {
             type="button"
             disabled={currentPage === 1}
             onClick={() => onPageChange(currentPage - 1)}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition-all hover:border-primary hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition-all hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-40"
+            aria-label="Previous page"
           >
             <FiChevronLeft />
           </button>
@@ -31,10 +32,10 @@ function HerbsPagination({ currentPage, totalPages, itemCount, onPageChange }) {
               key={pageNumber}
               type="button"
               onClick={() => onPageChange(pageNumber)}
-              className={`flex h-11 min-w-11 items-center justify-center rounded-full border px-3 text-sm font-bold transition-all ${
+              className={`flex h-10 min-w-10 items-center justify-center rounded-xl border px-3 text-sm font-bold transition-all ${
                 pageNumber === currentPage
-                  ? "border-primary bg-primary text-white shadow-md"
-                  : "border-slate-200 bg-white text-slate-600 hover:border-primary hover:bg-primary/10"
+                  ? "border-emerald-600 bg-emerald-600 text-white shadow-md shadow-emerald-600/25"
+                  : "border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700"
               }`}
             >
               {pageNumber}
@@ -45,7 +46,8 @@ function HerbsPagination({ currentPage, totalPages, itemCount, onPageChange }) {
             type="button"
             disabled={currentPage === totalPages}
             onClick={() => onPageChange(currentPage + 1)}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition-all hover:border-primary hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition-all hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-40"
+            aria-label="Next page"
           >
             <FiChevronRight />
           </button>

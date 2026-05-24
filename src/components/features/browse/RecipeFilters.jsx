@@ -35,9 +35,9 @@ function RecipeFilters({
       onToggleItem={onDiseaseChange}
       extraControls={
         <>
-          <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2">
-            <span className="text-xs font-semibold text-slate-500">
-              Min EGP
+          <div className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Min
             </span>
             <input
               type="number"
@@ -46,12 +46,14 @@ function RecipeFilters({
               value={minPrice}
               onChange={(event) => onMinPriceChange(event.target.value)}
               placeholder="0"
-              className="w-24 rounded-md border border-slate-200 px-2 py-1 text-sm outline-none focus:border-emerald-500"
+              className="w-20 border-0 bg-transparent p-0 text-sm font-semibold text-slate-800 outline-none placeholder:text-slate-400 focus:ring-0 sm:w-24"
+              aria-label="Minimum price in EGP"
             />
+            <span className="text-xs font-bold text-emerald-600">EGP</span>
           </div>
-          <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2">
-            <span className="text-xs font-semibold text-slate-500">
-              Max EGP
+          <div className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Max
             </span>
             <input
               type="number"
@@ -60,8 +62,10 @@ function RecipeFilters({
               value={maxPrice}
               onChange={(event) => onMaxPriceChange(event.target.value)}
               placeholder="Any"
-              className="w-24 rounded-md border border-slate-200 px-2 py-1 text-sm outline-none focus:border-emerald-500"
+              className="w-20 border-0 bg-transparent p-0 text-sm font-semibold text-slate-800 outline-none placeholder:text-slate-400 focus:ring-0 sm:w-24"
+              aria-label="Maximum price in EGP"
             />
+            <span className="text-xs font-bold text-emerald-600">EGP</span>
           </div>
         </>
       }

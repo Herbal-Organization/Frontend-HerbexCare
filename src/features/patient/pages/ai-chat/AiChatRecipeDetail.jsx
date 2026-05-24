@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import AiRecipeAddToCartAction from "../ai-pages/AiRecipeAddToCartAction";
 import { toggleFavorite } from "@api/favorites";
+import AiChatRecipeReviewsSection from "./AiChatRecipeReviewsSection";
 
 function AiChatRecipeDetail({ data }) {
   // We assume data may have `isFavorite` or `saved` boolean.
@@ -230,6 +231,10 @@ function AiChatRecipeDetail({ data }) {
             </p>
           </div>
         )}
+      </div>
+
+      <div className="lg:col-span-3">
+        <AiChatRecipeReviewsSection recipeId={targetId} />
       </div>
     </div>
   );

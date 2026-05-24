@@ -2,22 +2,16 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion as Motion } from "motion/react";
 import { getHerbWithHerbalist } from "@api/herbs";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaLeaf, FaRegHeart } from "react-icons/fa";
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 24 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 300, damping: 24 },
+    transition: { type: "spring", stiffness: 320, damping: 26 },
   },
 };
-
-// These would come from your herb data model
-// herb.commonUses: string[]       e.g. ["Inflammation", "Joint pain"]
-// herb.dosage: string             e.g. "500–2,000 mg/day with food"
-// herb.forms: string[]            e.g. ["Capsule", "Powder", "Tea"]
-// herb.caution: string            e.g. "May interact with blood thinners"
 
 function HerbCard({
   herb,
@@ -32,7 +26,7 @@ function HerbCard({
     if (herb?.herbId) {
       getHerbWithHerbalist(herb.herbId)
         .then((data) => {
-          if (data && data.herbalistName) {
+          if (data?.herbalistName) {
             setHerbalistName(data.herbalistName);
           }
         })
@@ -46,118 +40,89 @@ function HerbCard({
     onToggleFavorite(herb.herbId);
   };
 
+  const displayName = herb.herbName || herb.name;
+  const uses = herb.commonUses?.length
+    ? herb.commonUses
+    : herb.benefitList?.slice(0, 3) || [];
+
   return (
     <Motion.button
       variants={itemVariants}
-      whileHover={{ y: -4 }}
+      whileHover={{ y: -6 }}
       type="button"
       onClick={() => navigate(`/patient/home/herbs/${herb.herbId}`)}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white text-start h-full w-full transition-all duration-250 hover:-translate-y-1 hover:shadow-xl cursor-pointer"
+      className="group flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white text-start shadow-sm transition-all duration-300 hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-500/10"
     >
-      {/* Image / Placeholder */}
-      <div className="relative">
+      <div className="relative overflow-hidden">
         {herb.imageURL ? (
           <img
             src={herb.imageURL}
-            alt={herb.herbName}
-            className="w-full h-40 object-cover block"
+            alt={displayName}
+            className="block h-44 w-full object-cover transition-transform duration-500 group-hover:scale-105 sm:h-48"
           />
         ) : (
-          <div className="w-full h-40 bg-[#EAF3DE] flex items-center justify-center">
-            <svg
-              width="48"
-              height="64"
-              viewBox="0 0 48 64"
-              fill="none"
-              className="opacity-25"
-            >
-              <path
-                d="M24 2C36 14 40 36 24 62C8 36 12 14 24 2Z"
-                fill="#639922"
-              />
-              <line
-                x1="24"
-                y1="2"
-                x2="24"
-                y2="62"
-                stroke="#639922"
-                strokeWidth="1.5"
-              />
-            </svg>
+          <div className="flex h-44 w-full items-center justify-center bg-linear-to-br from-emerald-50 to-teal-50 sm:h-48">
+            <FaLeaf className="text-5xl text-emerald-300/80" />
           </div>
         )}
+        <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-slate-900/50 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+        {herb.isApproved === true ? (
+          <span className="absolute start-3 top-3 rounded-full border border-emerald-200/80 bg-white/95 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-emerald-700 shadow-sm backdrop-blur-sm">
+            Approved
+          </span>
+        ) : null}
       </div>
 
-      {/* Body */}
-      <div className="flex flex-1 flex-col gap-3 p-4">
-        {/* Name */}
+      <div className="flex flex-1 flex-col gap-3 p-5">
         <div>
-          <h3
-            className="text-lg font-semibold text-slate-900 leading-snug"
-            style={{ fontFamily: "'Lora', serif" }}
-          >
-            {herb.herbName}
+          <h3 className="text-lg font-bold leading-snug text-slate-900 transition-colors group-hover:text-emerald-700">
+            {displayName}
           </h3>
-          <p
-            className="mt-1 text-xs italic text-slate-500"
-            style={{ fontFamily: "'Lora', serif" }}
-          >
-            <span className="font-semibold not-italic text-slate-700">
-              Scientific Name:
-            </span>{" "}
-            {herb.scientificName}
-          </p>
-          {herbalistName && (
-            <p className="mt-1.5 text-xs font-medium text-slate-500">
-              <span className="text-slate-400">By:</span> {herbalistName}
+          {herb.scientificName ? (
+            <p className="mt-1 text-xs italic text-slate-500">
+              {herb.scientificName}
             </p>
-          )}
+          ) : null}
+          {herbalistName ? (
+            <p className="mt-2 text-xs font-medium text-slate-500">
+              <span className="text-slate-400">By</span> {herbalistName}
+            </p>
+          ) : null}
         </div>
 
-        {/* Use tags */}
-        {herb.commonUses?.length > 0 && (
+        {uses.length > 0 ? (
           <div className="flex flex-wrap gap-1.5">
-            {herb.commonUses.slice(0, 3).map((use) => (
+            {uses.slice(0, 3).map((use) => (
               <span
                 key={use}
-                className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-[#EAF3DE] text-[#3B6D11] border border-[#C0DD97]"
+                className="rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-800"
               >
                 {use}
               </span>
             ))}
           </div>
-        )}
+        ) : null}
 
-        {/* Short description if available */}
-        {herb.description && (
-          <p className="text-sm text-slate-600 leading-relaxed line-clamp-3 mt-2">
-            <span className="font-semibold text-slate-700">Description:</span>{" "}
+        {herb.description ? (
+          <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">
             {herb.description}
           </p>
-        )}
+        ) : null}
 
-        {/* Footer */}
-        <div className="mt-auto pt-3 flex items-center justify-between">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(`/patient/home/herbs/${herb.herbId}`);
-            }}
-            className="text-xs font-medium text-[#3B6D11] bg-[#EAF3DE] border border-[#C0DD97] rounded-lg px-3.5 py-1.5 hover:bg-[#C0DD97] transition-colors cursor-pointer"
-          >
-            Full details →
-          </button>
+        <div className="mt-auto flex items-center justify-between gap-2 pt-2">
+          <span className="text-xs font-bold text-emerald-700 transition-colors group-hover:text-emerald-600">
+            View details →
+          </span>
           <button
             type="button"
             onClick={handleToggleFavorite}
             disabled={isFavoriteUpdating}
-            className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-colors ${
+            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border transition-all ${
               isFavorite
                 ? "border-rose-200 bg-rose-50 text-rose-600"
-                : "border-slate-100 bg-slate-50 text-slate-500 hover:bg-slate-100"
-            } ${isFavoriteUpdating ? "opacity-60 cursor-not-allowed" : ""}`}
-            aria-label={isFavorite ? "Unfavorite herb" : "Favorite herb"}
+                : "border-slate-200 bg-slate-50 text-slate-500 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-600"
+            } ${isFavoriteUpdating ? "cursor-not-allowed opacity-60" : ""}`}
+            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
           >
             {isFavorite ? (
               <FaHeart className="text-sm" />

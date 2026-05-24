@@ -207,9 +207,9 @@ function RecipesPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="flex min-h-screen flex-col bg-linear-to-b from-teal-50/40 via-slate-50 to-white">
       <PatientNavbar />
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="mx-auto flex-1 w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <BrowseFilters
           title="Recipe Library"
           description="Browse every recipe returned by the recipes endpoint and search instantly."
@@ -218,6 +218,7 @@ function RecipesPage() {
           resultCount={filteredRecipes.length}
           resultLabel={`recipe${filteredRecipes.length === 1 ? "" : "s"} available`}
           placeholder="Search recipes, herbs, or conditions..."
+          accent="teal"
         />
         <RecipeFilters
           availableDiseases={availableDiseases}
