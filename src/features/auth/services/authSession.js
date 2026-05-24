@@ -38,17 +38,36 @@ export const refreshAuthSession = async () => {
   return data;
 };
 
+export const revokeRefreshTokenOnServer = (refreshToken) => {
+  if (!refreshToken) return;
+
+  void axios
+    .post(
+      `${API_BASE_URL}/api/Accounts/logout`,
+      { refreshToken },
+      { timeout: 5000 },
+    )
+    .catch(() => {
+      // Local session is already cleared; server revoke is best-effort.
+    });
+};
+
 export const endAuthSession = async () => {
   const refreshToken = getRefreshToken();
+  clearAuthTokens();
+
+  if (!refreshToken) {
+    return;
+  }
 
   try {
-    if (refreshToken) {
-      await axios.post(`${API_BASE_URL}/api/Accounts/logout`, {
-        refreshToken,
-      });
-    }
-  } finally {
-    clearAuthTokens();
+    await axios.post(
+      `${API_BASE_URL}/api/Accounts/logout`,
+      { refreshToken },
+      { timeout: 5000 },
+    );
+  } catch {
+    // Local session is already cleared.
   }
 };
 

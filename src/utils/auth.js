@@ -1,6 +1,9 @@
 import {
+  clearAuthTokens,
   endAuthSession,
   getAccessToken,
+  getRefreshToken,
+  revokeRefreshTokenOnServer,
 } from "@features/auth/services/authSession";
 
 // Auth utility functions
@@ -103,7 +106,13 @@ export const isAuthenticated = () => {
   }
 };
 
-export const logout = async () => {
-  await endAuthSession();
-  window.location.href = "/auth/login";
+/**
+ * Sign out immediately: clear local session and hard-navigate to login.
+ * Server revoke runs in the background so a slow API cannot block logout.
+ */
+export const logout = () => {
+  const refreshToken = getRefreshToken();
+  clearAuthTokens();
+  revokeRefreshTokenOnServer(refreshToken);
+  window.location.replace("/auth/login");
 };

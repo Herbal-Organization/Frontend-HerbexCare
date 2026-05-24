@@ -41,9 +41,8 @@ function AdminDashboard() {
     checkAuth();
   }, [navigate]);
 
-  const handleLogout = async () => {
-    await logout();
-    navigate("/auth/login");
+  const handleLogout = () => {
+    logout();
   };
 
   const displayUser = useMemo(() => user, [user]);
