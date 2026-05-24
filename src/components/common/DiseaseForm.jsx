@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import React, { useState } from "react";
+import { AnimatePresence } from "motion/react";
 import { FaPlus, FaTimes, FaSave } from "react-icons/fa";
 
 export default function DiseaseForm({
@@ -8,12 +8,14 @@ export default function DiseaseForm({
   onSubmit,
   isSubmitting,
   error,
+  showAiSupport = false,
 }) {
   const [formData, setFormData] = useState({
     diseaseName: "",
     diseaseType: "",
     description: "",
     symptoms: "",
+    isSupportedByAi: false,
   });
 
   const handleChange = (e) => {
@@ -37,7 +39,7 @@ export default function DiseaseForm({
       diseaseType: formData.diseaseType.trim() || null,
       description: formData.description.trim() || null,
       symptoms: formData.symptoms.trim() || null,
-      isSupportedByAi: false,
+      isSupportedByAi: formData.isSupportedByAi,
     };
 
     await onSubmit(payload);
@@ -48,8 +50,17 @@ export default function DiseaseForm({
         diseaseType: "",
         description: "",
         symptoms: "",
+        isSupportedByAi: false,
       });
     }
+  };
+
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
   };
 
   if (!show) return null;
@@ -92,14 +103,10 @@ export default function DiseaseForm({
 
           <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
             {error && (
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="rounded-2xl border border-eed-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-600 flex items-center gap-3"
-              >
+              <div className="rounded-2xl border border-eed-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-600 flex items-center gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-red-600" />
                 {error}
-              </motion.div>
+              </div>
             )}
 
             <div className="space-y-4">
@@ -159,6 +166,26 @@ export default function DiseaseForm({
                   className="block w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-5 py-4 outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 text-slate-900 text-sm font-medium transition-all hover:bg-white resize-none"
                 />
               </div>
+
+              {showAiSupport && (
+                <label className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50/50 px-5 py-4 text-sm text-slate-600 transition-colors hover:bg-white">
+                  <input
+                    type="checkbox"
+                    name="isSupportedByAi"
+                    checked={formData.isSupportedByAi}
+                    onChange={handleCheckboxChange}
+                    className="mt-1 h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-600"
+                  />
+                  <span>
+                    <span className="block font-bold text-slate-900">
+                      Supported by AI
+                    </span>
+                    <span className="mt-1 block text-xs leading-5 text-slate-500">
+                      Mark this disease as available for AI diagnostics.
+                    </span>
+                  </span>
+                </label>
+              )}
             </div>
 
             <div className="flex gap-3 pt-6 border-t border-slate-100">

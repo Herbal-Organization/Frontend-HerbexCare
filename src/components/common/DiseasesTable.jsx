@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "motion/react";
 import { FaVirus, FaPlus, FaEye } from "react-icons/fa";
 
 const parseSymptoms = (symptomsString) => {
@@ -15,7 +14,27 @@ export default function DiseasesTable({
   isLoading,
   onAddClick,
   onViewDetails,
+  showAiSupport = false,
 }) {
+  const renderAiSupport = (disease) => {
+    const supportedValue = disease?.isSupportedByAi;
+    const isSupported =
+      supportedValue === true ||
+      supportedValue === "true" ||
+      supportedValue === "True" ||
+      supportedValue === 1;
+
+    return isSupported ? (
+      <span className="inline-flex items-center rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1.5 text-xs font-bold text-emerald-700">
+        AI enabled
+      </span>
+    ) : (
+      <span className="inline-flex items-center rounded-full bg-slate-100 border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-500">
+        Not supported
+      </span>
+    );
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-96">
@@ -46,11 +65,7 @@ export default function DiseasesTable({
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-sm"
-    >
+    <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-sm">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
@@ -67,18 +82,20 @@ export default function DiseasesTable({
               <th className="px-6 py-4 text-start text-xs font-black uppercase tracking-wider text-slate-600">
                 Symptoms
               </th>
+              {showAiSupport && (
+                <th className="px-6 py-4 text-start text-xs font-black uppercase tracking-wider text-slate-600">
+                  AI Diagnostic
+                </th>
+              )}
               <th className="px-6 py-4 text-end text-xs font-black uppercase tracking-wider text-slate-600">
                 Details
               </th>
             </tr>
           </thead>
           <tbody>
-            {diseases.map((disease, index) => (
-              <motion.tr
+            {diseases.map((disease) => (
+              <tr
                 key={disease.diseaseId}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: index * 0.05 }}
                 className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors"
               >
                 <td className="px-6 py-4">
@@ -134,6 +151,9 @@ export default function DiseasesTable({
                     </span>
                   )}
                 </td>
+                {showAiSupport && (
+                  <td className="px-6 py-4">{renderAiSupport(disease)}</td>
+                )}
                 <td className="px-6 py-4 text-end">
                   <button
                     type="button"
@@ -144,11 +164,11 @@ export default function DiseasesTable({
                     View
                   </button>
                 </td>
-              </motion.tr>
+              </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </motion.div>
+    </div>
   );
 }

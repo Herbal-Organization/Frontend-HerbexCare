@@ -2,6 +2,7 @@ import {
   MdDashboard,
   MdPeople,
   MdLocalFlorist,
+  MdLocalHospital,
   MdHealing,
   MdOpenInNew,
   MdSettings,
@@ -27,6 +28,11 @@ export const getAdminNavConfig = (t) => [
     name: t("adminSidebar.herbalists"),
     href: "/admin/dashboard#herbalists",
     icon: MdLocalFlorist,
+  },
+  {
+    name: t("adminSidebar.diseases", "Diseases"),
+    href: "/admin/dashboard/diseases",
+    icon: MdLocalHospital,
   },
   {
     name: t("adminSidebar.apiDocs"),

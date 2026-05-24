@@ -14,6 +14,7 @@ import { getAllUsers } from "@api/users";
 import { getAllPatients } from "@api/patients";
 import { getAllHerbalists } from "@api/herbalists";
 import AdminUsersPage from "./AdminUsersPage";
+import AdminDiseasesPage from "./AdminDiseasesPage";
 import {
   FaDatabase,
   FaExternalLinkAlt,
@@ -62,7 +63,7 @@ const normalizeHerbalist = (raw = {}) => ({
   rating: pick(raw.averageRating),
 });
 
-function StatCard({ icon: Icon, label, value }) {
+function StatCard({ icon, label, value }) {
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-center justify-between gap-4">
@@ -73,7 +74,7 @@ function StatCard({ icon: Icon, label, value }) {
           <p className="mt-3 text-3xl font-black text-slate-900">{value}</p>
         </div>
         <div className="rounded-2xl bg-slate-900/5 p-3 text-slate-700">
-          <Icon className="text-2xl" />
+          {icon}
         </div>
       </div>
     </div>
@@ -246,22 +247,22 @@ function AdminDashboardHome() {
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          icon={FaUsers}
+          icon={<FaUsers className="text-2xl" />}
           label={t("adminDashboard.stats.users")}
           value={users.length}
         />
         <StatCard
-          icon={FaUser}
+          icon={<FaUser className="text-2xl" />}
           label={t("adminDashboard.stats.patients")}
           value={patients.length}
         />
         <StatCard
-          icon={FaLeaf}
+          icon={<FaLeaf className="text-2xl" />}
           label={t("adminDashboard.stats.herbalists")}
           value={herbalists.length}
         />
         <StatCard
-          icon={FaDatabase}
+          icon={<FaDatabase className="text-2xl" />}
           label={t("adminDashboard.stats.api")}
           value="Live"
         />
@@ -427,6 +428,7 @@ function AdminDashboard() {
       <Routes>
         <Route path="/" element={<AdminUsersPage />} />
         <Route path="/users" element={<AdminUsersPage />} />
+        <Route path="/diseases" element={<AdminDiseasesPage />} />
         <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
       </Routes>
     </DashboardLayout>
