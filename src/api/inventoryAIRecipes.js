@@ -1,47 +1,65 @@
 import httpClient from "./httpClient";
 
+/**
+ * GET /api/inventory-ai-recipes/my-inventory
+ */
 export const getMyInventoryAIRecipes = async () => {
-  const { data } = await httpClient.get("/api/InventoryAiRecipes/my-inventory");
+  const { data } = await httpClient.get("/api/inventory-ai-recipes/my-inventory");
   return data;
 };
 
-export const addInventoryAIRecipes = async (payload) => {
-  const { data } = await httpClient.post(
-    "/api/InventoryAiRecipes/add",
-    payload,
-  );
+/**
+ * POST /api/inventory-ai-recipes/add
+ */
+export const addInventoryAIRecipe = async (aiRecipeId, price) => {
+  const { data } = await httpClient.post("/api/inventory-ai-recipes/add", {
+    aiRecipeId: Number(aiRecipeId),
+    price: Number(price),
+  });
   return data;
 };
 
-/** PATCH: update price */
-export const updateInventoryAIRecipePrice = async (id, payload) => {
+/**
+ * PATCH /api/inventory-ai-recipes/{id}/price
+ */
+export const updateInventoryAIRecipePrice = async (inventoryId, price) => {
   const { data } = await httpClient.patch(
-    `/api/InventoryAiRecipes/${id}/price`,
-    payload,
+    `/api/inventory-ai-recipes/${inventoryId}/price`,
+    { price: Number(price) },
   );
   return data;
 };
 
-/** PATCH: update status (e.g. available / unavailable) */
-export const updateInventoryAIRecipeStatus = async (id, payload) => {
+/**
+ * Toggle active / inactive status for an inventory item.
+ * PATCH /api/inventory-ai-recipes/{id}/status
+ */
+export const toggleInventoryAIRecipeStatus = async (inventoryId) => {
   const { data } = await httpClient.patch(
-    `/api/InventoryAiRecipes/${id}/status`,
-    payload,
+    `/api/inventory-ai-recipes/${inventoryId}/status`,
   );
   return data;
 };
 
-export const removeInventoryAIRecipe = async (id) => {
+/**
+ * DELETE /api/inventory-ai-recipes/{id}/delete
+ */
+export const removeInventoryAIRecipe = async (inventoryId) => {
   const { data } = await httpClient.delete(
-    `/api/InventoryAiRecipes/${id}/delete`,
+    `/api/inventory-ai-recipes/${inventoryId}/delete`,
   );
   return data;
 };
 
-/** GET: herbalists related to this inventory item */
-export const getInventoryAIRecipeHerbalists = async (id) => {
-  const { data } = await httpClient.get(
-    `/api/InventoryAiRecipes/${id}/herbalists`,
-  );
-  return data;
+/** @deprecated Use addInventoryAIRecipe */
+export const addInventoryAIRecipes = async (payload) =>
+  addInventoryAIRecipe(payload?.aiRecipeId, payload?.price);
+
+export default {
+  getMyInventoryAIRecipes,
+  addInventoryAIRecipe,
+  updateInventoryAIRecipePrice,
+  toggleInventoryAIRecipeStatus,
+  removeInventoryAIRecipe,
+  addInventoryAIRecipes,
 };

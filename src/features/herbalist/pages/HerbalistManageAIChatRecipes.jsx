@@ -7,7 +7,6 @@ import {
   FaListUl,
   FaComments,
   FaEye,
-  FaBan,
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "motion/react";
@@ -60,10 +59,22 @@ const getInventoryLinkedRecipeId = (item) =>
 
 const isInventoryItemActive = (item) => {
   if (item?.isBlocked === true) return false;
+  if (item?.isActive === true) return true;
   if (item?.isActive === false) return false;
+
   const status = String(item?.status || "").toLowerCase();
-  return status !== "inactive" && status !== "blocked";
+  if (status === "active") return true;
+  if (status === "inactive" || status === "blocked") return false;
+
+  return true;
 };
+
+const withInventoryItemActiveState = (item, isActive) => ({
+  ...item,
+  isActive,
+  isBlocked: !isActive,
+  status: isActive ? "Active" : "Inactive",
+});
 
 const getRecipeTitle = (recipe) => {
   const normalized = normalizeGeneratedRecipe(recipe);
@@ -293,22 +304,31 @@ function HerbalistManageAIChatRecipes() {
     if (!inventoryId || togglingInventoryIds.includes(inventoryId)) return;
 
     const currentlyActive = isInventoryItemActive(item);
-    const confirmMessage = currentlyActive
-      ? "Deactivate this recipe? Patients will not see it while inactive."
-      : "Activate this recipe? It will be available to patients again.";
-
-    if (!window.confirm(confirmMessage)) return;
+    const nextActive = !currentlyActive;
 
     setTogglingInventoryIds((current) => [...current, inventoryId]);
+    setInventoryItems((current) =>
+      current.map((entry) =>
+        getInventoryItemId(entry) === inventoryId
+          ? withInventoryItemActiveState(entry, nextActive)
+          : entry,
+      ),
+    );
 
     try {
       const response = await toggleInventoryAiChatRecipeStatus(inventoryId);
       toast.success(
         response?.message ||
-          (currentlyActive ? "Recipe deactivated." : "Recipe activated."),
+          (nextActive ? "Recipe activated." : "Recipe deactivated."),
       );
-      await loadData();
     } catch (err) {
+      setInventoryItems((current) =>
+        current.map((entry) =>
+          getInventoryItemId(entry) === inventoryId
+            ? withInventoryItemActiveState(entry, currentlyActive)
+            : entry,
+        ),
+      );
       const message =
         err?.response?.data?.message ||
         err?.response?.data?.title ||
@@ -577,7 +597,7 @@ function HerbalistManageAIChatRecipes() {
                     </div>
 
                     <div className="mt-4 rounded-2xl bg-slate-50 p-4 border border-slate-100">
-                      <div className="flex items-baseline justify-between">
+                      <div className="flex items-center justify-between gap-4">
                         <div>
                           <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                             Price
@@ -586,19 +606,47 @@ function HerbalistManageAIChatRecipes() {
                             {item.price} EGP
                           </p>
                         </div>
-                        <div
-                          className={`rounded px-2 py-0.5 text-[10px] font-bold uppercase ${
-                            active
-                              ? "bg-emerald-100 text-emerald-700"
-                              : "bg-slate-100 text-slate-500"
-                          }`}
-                        >
-                          {active ? "Active" : "Inactive"}
+
+                        <div className="flex flex-col items-end gap-1.5">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                            Availability
+                          </p>
+                          <div className="flex items-center gap-2.5">
+                            <span
+                              className={`text-[10px] font-bold uppercase ${
+                                active ? "text-emerald-700" : "text-slate-500"
+                              }`}
+                            >
+                              {active ? "Active" : "Inactive"}
+                            </span>
+                            <button
+                              type="button"
+                              role="switch"
+                              aria-checked={active}
+                              aria-label={
+                                active
+                                  ? "Deactivate recipe in inventory"
+                                  : "Activate recipe in inventory"
+                              }
+                              disabled={isToggling || !inventoryId}
+                              onClick={() => handleToggleInventoryStatus(item)}
+                              className={`relative inline-flex h-7 w-12 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 ${
+                                active ? "bg-emerald-500" : "bg-slate-300"
+                              }`}
+                            >
+                              <span
+                                aria-hidden="true"
+                                className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                                  active ? "translate-x-5" : "translate-x-0.5"
+                                } ${isToggling ? "opacity-70" : ""}`}
+                              />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="mt-5 grid grid-cols-2 gap-2">
+                    <div className="mt-5 grid grid-cols-1 gap-2">
                       <button
                         type="button"
                         onClick={() =>
@@ -615,25 +663,6 @@ function HerbalistManageAIChatRecipes() {
                         className="flex h-10 items-center justify-center gap-1 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50"
                       >
                         Edit Price
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleToggleInventoryStatus(item)}
-                        disabled={isToggling || !inventoryId}
-                        className={`flex h-10 items-center justify-center gap-1 rounded-lg border text-xs font-bold disabled:cursor-not-allowed disabled:opacity-60 ${
-                          active
-                            ? "border-amber-200 text-amber-700 hover:bg-amber-50"
-                            : "border-emerald-200 text-emerald-700 hover:bg-emerald-50"
-                        }`}
-                      >
-                        {isToggling ? (
-                          <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                        ) : active ? (
-                          <FaBan className="text-[10px]" />
-                        ) : (
-                          <FaCheckCircle className="text-[10px]" />
-                        )}
-                        {active ? "Deactivate" : "Activate"}
                       </button>
                       <button
                         type="button"
