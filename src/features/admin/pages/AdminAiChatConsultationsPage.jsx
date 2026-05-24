@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import {
+  FaBan,
+  FaCheckCircle,
   FaChevronLeft,
   FaChevronRight,
   FaFilter,
@@ -9,7 +12,10 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { MdSmartToy } from "react-icons/md";
-import { fetchAdminAllAiChatConsultations } from "@api/aiChat";
+import {
+  fetchAdminAllAiChatConsultations,
+  toggleAdminAiChatRecipeStatus,
+} from "@api/aiChat";
 
 const DEFAULT_PAGE_SIZE = 10;
 const PAGE_SIZE_OPTIONS = [10, 20, 50];
@@ -51,8 +57,25 @@ const buildPageItems = (currentPage, totalPages) => {
   ];
 };
 
-function ConsultationDetailsModal({ isOpen, item, onClose }) {
+const isRecipeActive = (item = {}) => {
+  if (item.isBlocked === true) return false;
+  if (item.isActive === false) return false;
+  const status = String(item.status || item.recipeStatus || "").toLowerCase();
+  if (status === "blocked" || status === "inactive") return false;
+  return true;
+};
+
+function ConsultationDetailsModal({
+  isOpen,
+  item,
+  onClose,
+  onToggleStatus,
+  isToggling,
+  t,
+}) {
   if (!isOpen || !item) return null;
+
+  const active = isRecipeActive(item);
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/45 p-4 backdrop-blur-sm sm:items-center">
@@ -66,7 +89,20 @@ function ConsultationDetailsModal({ isOpen, item, onClose }) {
               {item.recommendedRecipeName || "Consultation details"}
             </h2>
             <p className="mt-1 text-sm text-slate-500">
-              Recipe ID: <span className="font-semibold">{item.aiChatRecipeId}</span>
+              Recipe ID:{" "}
+              <span className="font-semibold">{item.aiChatRecipeId}</span>
+              {" · "}
+              <span
+                className={
+                  active
+                    ? "font-semibold text-emerald-700"
+                    : "font-semibold text-rose-700"
+                }
+              >
+                {active
+                  ? t("adminAiConsultations.status.active", "Active")
+                  : t("adminAiConsultations.status.blocked", "Blocked")}
+              </span>
               {typeof item.matchPercentage === "number" ? (
                 <>
                   {" "}
@@ -162,6 +198,41 @@ function ConsultationDetailsModal({ isOpen, item, onClose }) {
               <p className="mt-3 text-sm text-slate-500">No alternatives.</p>
             )}
           </div>
+
+          <div className="border-t border-slate-100 px-6 py-5">
+            <p className="text-sm text-slate-600">
+              {t(
+                "adminAiConsultations.toggle.modalHint",
+                "Blocking a recipe removes it from AI recommendations for patients. Active recipes can still be suggested in consultations.",
+              )}
+            </p>
+            <button
+              type="button"
+              disabled={isToggling}
+              onClick={() => onToggleStatus(item)}
+              className={`mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
+                active
+                  ? "border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100"
+                  : "bg-emerald-600 text-white hover:bg-emerald-700"
+              }`}
+            >
+              {isToggling ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              ) : active ? (
+                <FaBan className="text-sm" />
+              ) : (
+                <FaCheckCircle className="text-sm" />
+              )}
+              {isToggling
+                ? t("adminAiConsultations.toggle.updating", "Updating...")
+                : active
+                  ? t("adminAiConsultations.toggle.blockRecipe", "Block recipe")
+                  : t(
+                      "adminAiConsultations.toggle.activateRecipe",
+                      "Activate recipe",
+                    )}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -169,6 +240,7 @@ function ConsultationDetailsModal({ isOpen, item, onClose }) {
 }
 
 function AdminAiChatConsultationsPage() {
+  const { t } = useTranslation();
   const [items, setItems] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
@@ -180,6 +252,7 @@ function AdminAiChatConsultationsPage() {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [togglingRecipeIds, setTogglingRecipeIds] = useState([]);
 
   const load = async ({ nextPageNumber = pageNumber, nextPageSize = pageSize } = {}) => {
     setIsLoading(true);
@@ -252,6 +325,67 @@ function AdminAiChatConsultationsPage() {
     setIsDetailsOpen(true);
   };
 
+  const isTogglingRecipe = (recipeId) =>
+    togglingRecipeIds.includes(String(recipeId));
+
+  const updateRecipeStatusLocally = (recipeId, nextActive) => {
+    const id = String(recipeId);
+    const patch = (item) =>
+      String(item.aiChatRecipeId) === id
+        ? {
+            ...item,
+            isActive: nextActive,
+            isBlocked: !nextActive,
+            status: nextActive ? "Active" : "Blocked",
+          }
+        : item;
+
+    setItems((current) => current.map(patch));
+    setSelectedItem((current) =>
+      current && String(current.aiChatRecipeId) === id ? patch(current) : current,
+    );
+  };
+
+  const handleToggleStatus = async (item) => {
+    const recipeId = item?.aiChatRecipeId;
+    if (!recipeId || isTogglingRecipe(recipeId)) return;
+
+    const currentlyActive = isRecipeActive(item);
+    const confirmMessage = currentlyActive
+      ? t(
+          "adminAiConsultations.toggle.confirmBlock",
+          "Block this AI recipe? It will no longer be recommended to patients.",
+        )
+      : t(
+          "adminAiConsultations.toggle.confirmActivate",
+          "Activate this AI recipe? It can be recommended in consultations again.",
+        );
+
+    if (!window.confirm(confirmMessage)) return;
+
+    setTogglingRecipeIds((current) => [...current, String(recipeId)]);
+
+    try {
+      const response = await toggleAdminAiChatRecipeStatus(recipeId);
+      const message =
+        response?.message ||
+        t("adminAiConsultations.toggle.success", "Recipe status updated.");
+      toast.success(message);
+      updateRecipeStatusLocally(recipeId, !currentlyActive);
+      await load({ nextPageNumber: pageNumber, nextPageSize: pageSize });
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        err?.response?.data?.title ||
+        t("adminAiConsultations.toggle.error", "Unable to update recipe status.");
+      toast.error(message);
+    } finally {
+      setTogglingRecipeIds((current) =>
+        current.filter((id) => id !== String(recipeId)),
+      );
+    }
+  };
+
   return (
     <div className="space-y-6 p-4 md:p-8">
       <section className="overflow-hidden rounded-4xl border border-slate-200 bg-linear-to-br from-slate-900 via-slate-800 to-emerald-900 px-6 py-8 text-white shadow-xl shadow-slate-900/10 md:px-8">
@@ -265,9 +399,10 @@ function AdminAiChatConsultationsPage() {
               All consultations
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-200 md:text-base">
-              Review AI recommendations produced for all users. Click any row to
-              see the full preparation, dosage, contraindications, and
-              alternatives.
+              {t(
+                "adminAiConsultations.subtitle",
+                "Review AI recommendations and block or activate recipes so they are excluded or included in future patient consultations.",
+              )}
             </p>
           </div>
 
@@ -368,10 +503,19 @@ function AdminAiChatConsultationsPage() {
                       <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
                         Preparation
                       </th>
+                      <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                        {t("adminAiConsultations.table.status", "Status")}
+                      </th>
+                      <th className="px-5 py-3 text-right text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                        {t("adminAiConsultations.table.actions", "Actions")}
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 bg-white">
                     {filteredItems.map((item) => {
+                      const recipeId = item.aiChatRecipeId;
+                      const active = isRecipeActive(item);
+                      const toggling = isTogglingRecipe(recipeId);
                       const match = typeof item.matchPercentage === "number" ? item.matchPercentage : null;
                       const matchTone =
                         match === null
@@ -433,6 +577,45 @@ function AdminAiChatConsultationsPage() {
                             <p className="mt-1 text-xs text-slate-500">
                               {item.dosage || "No dosage"}
                             </p>
+                          </td>
+                          <td className="px-5 py-4">
+                            <span
+                              className={`inline-flex rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide ${
+                                active
+                                  ? "bg-emerald-100 text-emerald-700"
+                                  : "bg-rose-100 text-rose-700"
+                              }`}
+                            >
+                              {active
+                                ? t("adminAiConsultations.status.active", "Active")
+                                : t("adminAiConsultations.status.blocked", "Blocked")}
+                            </span>
+                          </td>
+                          <td className="px-5 py-4 text-right">
+                            <button
+                              type="button"
+                              disabled={toggling}
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                handleToggleStatus(item);
+                              }}
+                              className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
+                                active
+                                  ? "border-rose-200 text-rose-700 hover:bg-rose-50"
+                                  : "border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                              }`}
+                            >
+                              {toggling ? (
+                                <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                              ) : active ? (
+                                <FaBan className="text-[10px]" />
+                              ) : (
+                                <FaCheckCircle className="text-[10px]" />
+                              )}
+                              {active
+                                ? t("adminAiConsultations.actions.block", "Block")
+                                : t("adminAiConsultations.actions.activate", "Activate")}
+                            </button>
                           </td>
                         </tr>
                       );
@@ -506,6 +689,11 @@ function AdminAiChatConsultationsPage() {
       <ConsultationDetailsModal
         isOpen={isDetailsOpen}
         item={selectedItem}
+        t={t}
+        onToggleStatus={handleToggleStatus}
+        isToggling={
+          selectedItem ? isTogglingRecipe(selectedItem.aiChatRecipeId) : false
+        }
         onClose={() => {
           setIsDetailsOpen(false);
           setSelectedItem(null);

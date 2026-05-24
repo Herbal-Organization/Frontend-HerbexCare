@@ -244,6 +244,31 @@
       "herbalists": "No herbalist records were returned by the API."
     }
   },
+  "adminAiConsultations": {
+    "subtitle": "Review AI recommendations and block or activate recipes so they are excluded or included in future patient consultations.",
+    "table": {
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "blocked": "Blocked"
+    },
+    "actions": {
+      "block": "Block",
+      "activate": "Activate"
+    },
+    "toggle": {
+      "confirmBlock": "Block this AI recipe? It will no longer be recommended to patients.",
+      "confirmActivate": "Activate this AI recipe? It can be recommended in consultations again.",
+      "success": "Recipe status updated.",
+      "error": "Unable to update recipe status.",
+      "modalHint": "Blocking a recipe removes it from AI recommendations for patients. Active recipes can still be suggested in consultations.",
+      "blockRecipe": "Block recipe",
+      "activateRecipe": "Activate recipe",
+      "updating": "Updating..."
+    }
+  },
   "dashboardSettings": {
     "kicker": "Account settings",
     "title": "Settings",

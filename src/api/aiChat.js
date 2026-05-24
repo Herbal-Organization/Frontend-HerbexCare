@@ -89,6 +89,18 @@ export const fetchAdminAiChatStatistics = async () => {
   return data;
 };
 
+/**
+ * Toggle active/blocked status of an AI Chat recipe (admin).
+ * PATCH /api/AiChat/admin/{id}/toggle-status
+ */
+export const toggleAdminAiChatRecipeStatus = async (id) => {
+  if (!id) throw new Error("AI Chat recipe ID is required");
+  const { data } = await httpClient.patch(
+    `/api/AiChat/admin/${id}/toggle-status`,
+  );
+  return data;
+};
+
 export default {
   generateChatMessage,
   fetchMyChatConsultations,
@@ -97,4 +109,5 @@ export default {
   fetchAiChatCatalogById,
   fetchAdminAllAiChatConsultations,
   fetchAdminAiChatStatistics,
+  toggleAdminAiChatRecipeStatus,
 };
