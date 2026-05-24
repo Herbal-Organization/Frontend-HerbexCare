@@ -154,11 +154,6 @@ function HerbalistDashboardHome({
       inventoryAveragePrice: averagePrice,
     });
 
-    if (hasPartialError) {
-      setStatsError(
-        "Some dashboard metrics could not be loaded. You can still manage your data from each section.",
-      );
-    }
 
     setIsLoadingStats(false);
   }, [herbalistId]);

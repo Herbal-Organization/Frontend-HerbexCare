@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import ChatLayout from "@features/patient/components/new-chat/ChatLayout";
 import { generateChatMessage } from "@api/aiChat";
+import { parseApiError } from "@features/patient/pages/ai-pages/aiConsultationUtils";
 
 const PatientAiChat = () => {
   const [messages, setMessages] = useState([]);
@@ -39,12 +40,14 @@ const PatientAiChat = () => {
       setMessages((prev) => [...prev, newAiMsg]);
     } catch (error) {
       console.error("AI Chat Error:", error);
-      toast.error("Failed to generate response. Please try again.");
+      const message = parseApiError(error);
+      toast.error(message);
 
       const errorMsg = {
         id: Date.now() + 1,
         role: "ai",
         content:
+          message ||
           "I'm sorry, I encountered an error while processing your request. Could you please try again?",
         timestamp: new Date().toLocaleTimeString([], {
           hour: "2-digit",

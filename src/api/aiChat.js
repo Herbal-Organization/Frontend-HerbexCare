@@ -1,18 +1,44 @@
 import httpClient from "./httpClient";
+import {
+  hasAiChatRecipeDisplayData,
+  normalizeAiChatRecipeResponse,
+} from "@features/patient/pages/ai-chat/aiChatRecipeUtils";
 
 /**
  * Generate an AI Chat response.
  * POST /api/AiChat/chat-generate
  *
  * @param {Object} payload - The chat request payload. Expected format: { userPrompt: string }
- * @returns {Promise<Object>} The AI chat response data.
+ * @returns {Promise<Object>} Normalized recipe payload for chat UI.
  */
 export const generateChatMessage = async (payload) => {
-  if (!payload || !payload.userPrompt) {
+  const userPrompt =
+    typeof payload?.userPrompt === "string"
+      ? payload.userPrompt.trim()
+      : typeof payload?.UserPrompt === "string"
+        ? payload.UserPrompt.trim()
+        : "";
+
+  if (!userPrompt) {
     throw new Error("Payload with userPrompt is required.");
   }
-  const { data } = await httpClient.post("/api/AiChat/chat-generate", payload);
-  return data;
+
+  const { data } = await httpClient.post("/api/AiChat/chat-generate", {
+    userPrompt,
+  });
+
+  const normalized = normalizeAiChatRecipeResponse(data);
+
+  if (!normalized || !hasAiChatRecipeDisplayData(normalized)) {
+    const message =
+      (typeof data === "object" && (data?.message || data?.title)) ||
+      "The server did not return a recipe. Please try again with more detail.";
+    const error = new Error(message);
+    error.code = "EMPTY_AI_CHAT_RESPONSE";
+    throw error;
+  }
+
+  return normalized;
 };
 
 /**

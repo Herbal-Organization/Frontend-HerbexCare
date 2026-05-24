@@ -1,126 +1,156 @@
-import React from "react";
 import MatchPercentageGauge from "./MatchPercentageGauge";
-import { FaUser, FaRobot, FaLeaf, FaInfoCircle, FaExclamationTriangle } from "react-icons/fa";
+import { hasAiChatRecipeDisplayData } from "@features/patient/pages/ai-chat/aiChatRecipeUtils";
+import {
+  FaUser,
+  FaRobot,
+  FaLeaf,
+  FaInfoCircle,
+  FaExclamationTriangle,
+} from "react-icons/fa";
 
 const ChatBubble = ({ message }) => {
   const isUser = message.role === "user";
+  const showRecipeCard =
+    !isUser && message.data && hasAiChatRecipeDisplayData(message.data);
 
   return (
-    <div className={`flex w-full ${isUser ? "justify-end" : "justify-start"} mb-6`}>
-      <div className={`flex w-full max-w-[95%] sm:max-w-[85%] md:max-w-[75%] gap-2 sm:gap-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}>
-        {/* Avatar */}
-        <div className="flex-shrink-0">
+    <div
+      className={`flex w-full py-2 sm:py-3 ${isUser ? "justify-end" : "justify-start"}`}
+    >
+      <div
+        className={`flex w-full max-w-[min(100%,42rem)] gap-2 sm:max-w-[min(92%,36rem)] sm:gap-3 ${
+          isUser ? "flex-row-reverse" : "flex-row"
+        }`}
+      >
+        <div className="shrink-0">
           <div
-            className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shadow-sm ${
-              isUser ? "bg-primary text-white" : "bg-white border border-slate-200 text-primary"
+            className={`flex h-9 w-9 items-center justify-center rounded-full shadow-sm sm:h-10 sm:w-10 ${
+              isUser
+                ? "bg-emerald-600 text-white"
+                : "border border-slate-200 bg-white text-emerald-600 dark:border-slate-700 dark:bg-slate-800"
             }`}
           >
-            {isUser ? <FaUser className="w-4 h-4 sm:w-5 sm:h-5" /> : <FaRobot className="w-5 h-5 sm:w-6 sm:h-6" />}
+            {isUser ? (
+              <FaUser className="h-4 w-4" />
+            ) : (
+              <FaRobot className="h-4 w-4 sm:h-5 sm:w-5" />
+            )}
           </div>
         </div>
 
-        {/* Message Content */}
-        <div className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}>
+        <div
+          className={`flex min-w-0 flex-1 flex-col ${isUser ? "items-end" : "items-start"}`}
+        >
           <div
-            className={`px-5 py-3.5 rounded-2xl shadow-sm ${
+            className={`w-full max-w-full ${
               isUser
-                ? "bg-primary text-white rounded-tr-sm"
-                : "bg-white border border-slate-100 text-slate-800 rounded-tl-sm w-full"
+                ? "rounded-2xl rounded-br-md bg-emerald-600 px-4 py-3 text-white shadow-md shadow-emerald-600/20 sm:px-5 sm:py-3.5"
+                : "overflow-hidden rounded-2xl rounded-bl-md border border-slate-200/80 bg-white text-slate-800 shadow-sm dark:border-slate-700 dark:bg-slate-900"
             }`}
           >
-            {/* Render plain text if it exists */}
-            {message.content && (
-              <div className="whitespace-pre-wrap text-sm leading-relaxed">
+            {message.content ? (
+              <div className="whitespace-pre-wrap text-sm leading-relaxed sm:text-[15px]">
                 {message.content}
               </div>
-            )}
+            ) : null}
 
-            {/* Render Structured AI Data if it exists */}
-            {message.data && !isUser && (
-              <div className="mt-2 space-y-4 w-full">
-                <div className="flex flex-col sm:flex-row sm:justify-between items-start border-b border-slate-100 pb-3 gap-3">
-                  <div className="flex-1">
-                    {message.data.recommendedRecipeName && (
-                      <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-1 leading-tight">
+            {showRecipeCard ? (
+              <div className="space-y-4 p-4 sm:p-5">
+                <div className="flex flex-col gap-4 border-b border-slate-100 pb-4 dark:border-slate-800 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0 flex-1 space-y-2">
+                    {message.data.recommendedRecipeName ? (
+                      <h3 className="text-base font-black leading-snug text-slate-900 dark:text-white sm:text-lg">
                         {message.data.recommendedRecipeName}
                       </h3>
-                    )}
-                    {message.data.mainHerb && (
-                      <div className="flex flex-wrap items-center text-primary text-xs sm:text-sm font-semibold">
-                        <FaLeaf className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1.5" />
-                        {message.data.mainHerb}
-                        {message.data.scientificName && (
-                          <span className="text-slate-400 italic ml-1 font-normal">
+                    ) : null}
+                    {message.data.mainHerb ? (
+                      <div className="flex flex-wrap items-center gap-1 text-sm font-semibold text-emerald-700 dark:text-emerald-400">
+                        <FaLeaf className="shrink-0" />
+                        <span>{message.data.mainHerb}</span>
+                        {message.data.scientificName ? (
+                          <span className="font-normal italic text-slate-400">
                             ({message.data.scientificName})
                           </span>
-                        )}
+                        ) : null}
                       </div>
-                    )}
-                    {message.data.category && (
-                      <span className="inline-block mt-2 px-2.5 py-0.5 bg-primary/10 text-primary text-[10px] sm:text-xs font-medium rounded-full">
+                    ) : null}
+                    {message.data.category ? (
+                      <span className="inline-block rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 sm:text-xs">
                         {message.data.category}
                       </span>
-                    )}
+                    ) : null}
                   </div>
-                  {message.data.matchPercentage !== undefined && (
-                    <div className="sm:ml-4 flex-shrink-0 self-end sm:self-auto">
-                      <MatchPercentageGauge percentage={message.data.matchPercentage} />
+                  {message.data.matchPercentage !== undefined ? (
+                    <div className="flex shrink-0 justify-center sm:justify-end">
+                      <MatchPercentageGauge
+                        percentage={message.data.matchPercentage}
+                      />
                     </div>
-                  )}
+                  ) : null}
                 </div>
 
-                <div className="space-y-3 text-sm">
-                  {message.data.preparation && (
-                    <div>
-                      <h4 className="font-semibold text-slate-700 mb-1 flex items-center gap-1.5">
-                        <FaInfoCircle className="w-3.5 h-3.5 text-slate-400" /> Preparation
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {message.data.preparation ? (
+                    <div className="sm:col-span-2">
+                      <h4 className="mb-1.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-500">
+                        <FaInfoCircle className="text-slate-400" />
+                        Preparation
                       </h4>
-                      <p className="text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                      <p className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-sm leading-relaxed text-slate-700 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-300">
                         {message.data.preparation}
                       </p>
                     </div>
-                  )}
-                  {message.data.dosage && (
+                  ) : null}
+                  {message.data.dosage ? (
                     <div>
-                      <h4 className="font-semibold text-slate-700 mb-1 flex items-center gap-1.5">
-                        <FaInfoCircle className="w-3.5 h-3.5 text-slate-400" /> Dosage
+                      <h4 className="mb-1.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-500">
+                        <FaInfoCircle className="text-slate-400" />
+                        Dosage
                       </h4>
-                      <p className="text-slate-600">{message.data.dosage}</p>
+                      <p className="text-sm text-slate-700 dark:text-slate-300">
+                        {message.data.dosage}
+                      </p>
                     </div>
-                  )}
-                  {message.data.contraindications && (
-                    <div>
-                      <h4 className="font-semibold text-red-600 mb-1 flex items-center gap-1.5">
-                        <FaExclamationTriangle className="w-3.5 h-3.5 text-red-500" /> Contraindications
+                  ) : null}
+                  {message.data.contraindications ? (
+                    <div className="sm:col-span-2">
+                      <h4 className="mb-1.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-rose-600">
+                        <FaExclamationTriangle className="text-rose-500" />
+                        Contraindications
                       </h4>
-                      <p className="text-red-600/80 bg-red-50 p-2.5 rounded-lg border border-red-100">
+                      <p className="rounded-xl border border-rose-100 bg-rose-50/80 p-3 text-sm leading-relaxed text-rose-800 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-300">
                         {message.data.contraindications}
                       </p>
                     </div>
-                  )}
+                  ) : null}
                 </div>
 
-                {message.data.otherPossibilities && message.data.otherPossibilities.length > 0 && (
-                  <div className="pt-3 border-t border-slate-100">
-                    <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                      Other Possibilities
+                {message.data.otherPossibilities?.length > 0 ? (
+                  <div className="border-t border-slate-100 pt-4 dark:border-slate-800">
+                    <h4 className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                      Other possibilities
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {message.data.otherPossibilities.map((possibility, idx) => (
-                        <div
+                        <span
                           key={idx}
-                          className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 transition-colors text-slate-700 text-xs rounded-full border border-slate-200 cursor-pointer"
+                          className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
                         >
                           {possibility}
-                        </div>
+                        </span>
                       ))}
                     </div>
                   </div>
-                )}
+                ) : null}
               </div>
-            )}
+            ) : !isUser && message.data && !message.content ? (
+              <div className="px-4 py-3 text-sm text-slate-600 dark:text-slate-300 sm:px-5 sm:py-4">
+                Recipe details could not be displayed. Please try again.
+              </div>
+            ) : null}
           </div>
-          <span className="text-[10px] text-slate-400 mt-1.5 px-1 font-medium">
+
+          <span className="mt-1.5 px-1 text-[10px] font-medium text-slate-400 sm:text-xs">
             {message.timestamp || "Just now"}
           </span>
         </div>

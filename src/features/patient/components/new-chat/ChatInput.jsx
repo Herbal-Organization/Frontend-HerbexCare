@@ -1,22 +1,34 @@
-import React, { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaPaperPlane } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 
+const MIN_CHARS = 50;
+const MAX_CHARS = 2000;
+
 const ChatInput = ({ onSendMessage, isLoading }) => {
   const [message, setMessage] = useState("");
+  const textareaRef = useRef(null);
+
+  const trimmed = message.trim();
+  const charCount = trimmed.length;
+  const canSend = charCount > MIN_CHARS && !isLoading;
+
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
+  }, [message]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const trimmed = message.trim();
-    if (!trimmed || isLoading) return;
-
-    if (trimmed.length <= 50) {
-      toast.error("Please enter a prompt longer than 50 characters.");
-      return;
-    }
+    if (!canSend) return;
 
     onSendMessage(trimmed);
     setMessage("");
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -27,47 +39,57 @@ const ChatInput = ({ onSendMessage, isLoading }) => {
   };
 
   return (
-    <div className="p-3 sm:p-4 bg-white border-t border-slate-200">
+    <div className="shrink-0 border-t border-slate-200 bg-white/95 px-3 py-3 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/95 sm:px-4 sm:py-4 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
       <form
         onSubmit={handleSubmit}
-        className="max-w-4xl mx-auto relative flex flex-col gap-2"
+        className="mx-auto max-w-3xl space-y-2"
       >
-        <div className="relative">
-          <textarea
-            className="w-full bg-slate-50 border border-slate-200 rounded-2xl sm:rounded-3xl pl-4 pr-12 sm:pl-6 sm:pr-14 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 resize-none custom-scrollbar transition-all"
-            placeholder="Describe symptoms (e.g., headache, cough)..."
-            rows="1"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={isLoading}
-            style={{ minHeight: "48px", maxHeight: "150px" }}
-          />
+        <div className="flex items-end gap-2 sm:gap-3">
+          <div className="relative min-w-0 flex-1">
+            <textarea
+              ref={textareaRef}
+              className="block w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 pe-4 text-sm leading-relaxed text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:bg-slate-900 sm:rounded-3xl sm:px-5 sm:py-3.5 sm:text-[15px]"
+              placeholder="Describe your symptoms in detail…"
+              rows={1}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={isLoading}
+              maxLength={MAX_CHARS}
+              aria-label="Message to herbal AI assistant"
+            />
+          </div>
 
           <button
             type="submit"
-            disabled={message.trim().length <= 50 || isLoading}
-            aria-label={
-              message.trim().length > 50 && !isLoading
-                ? "Generate response"
-                : "Generate disabled"
-            }
-            className={`absolute right-1.5 bottom-1.5 p-2.5 rounded-xl sm:rounded-full flex items-center justify-center gap-2 transition-all text-sm font-medium ${
-              message.trim().length > 50 && !isLoading
-                ? "bg-emerald-600 text-white hover:bg-emerald-700 shadow-md active:scale-90 px-3"
-                : "bg-slate-100 text-slate-300 cursor-not-allowed px-2"
+            disabled={!canSend}
+            aria-label={canSend ? "Send message" : "Enter at least 50 characters"}
+            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition-all sm:h-12 sm:w-12 sm:rounded-2xl ${
+              canSend
+                ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/30 hover:bg-emerald-700 active:scale-95"
+                : "cursor-not-allowed bg-slate-100 text-slate-300 dark:bg-slate-800 dark:text-slate-600"
             }`}
           >
-            <FaPaperPlane className="w-4 h-4" />
-            <span className="hidden sm:inline">Generate</span>
+            <FaPaperPlane className="text-sm sm:text-base" />
           </button>
         </div>
 
-        {message.trim().length > 0 && message.trim().length <= 50 ? (
-          <p className="px-2 text-[10px] sm:text-xs text-rose-500 font-medium">
-            Please provide more detail (min 50 characters)
+        <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-[11px] sm:text-xs">
+          <p
+            className={`font-medium ${
+              charCount > 0 && charCount <= MIN_CHARS
+                ? "text-amber-600 dark:text-amber-400"
+                : "text-slate-400"
+            }`}
+          >
+            {charCount > 0 && charCount <= MIN_CHARS
+              ? `${MIN_CHARS - charCount} more characters needed`
+              : "Shift + Enter for a new line"}
           </p>
-        ) : null}
+          <p className="text-slate-400">
+            {charCount}/{MAX_CHARS}
+          </p>
+        </div>
       </form>
     </div>
   );
