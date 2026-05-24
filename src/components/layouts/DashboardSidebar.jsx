@@ -5,6 +5,7 @@ import { FaTimes, FaSignOutAlt, FaHome } from "react-icons/fa";
 import { MdAdd, MdRemove, MdEco } from "react-icons/md";
 import { FaSpa } from "react-icons/fa";
 import { FaShieldAlt } from "react-icons/fa";
+import { getHerbalistDisplayName } from "@features/herbalist/services/herbalistProfile";
 
 function DashboardSidebar({
   role,
@@ -20,7 +21,14 @@ function DashboardSidebar({
   const [expandedItems, setExpandedItems] = useState({});
 
   const displayName =
-    user?.name || user?.email || t(`${role}Sidebar.member`, "Member");
+    role === "herbalist"
+      ? getHerbalistDisplayName(user) ||
+        user?.email ||
+        t("herbalistSidebar.member", "Herbalist")
+      : user?.name ||
+        user?.fullName ||
+        user?.email ||
+        t(`${role}Sidebar.member`, "Member");
 
   const toggleExpand = (name) => {
     setExpandedItems((prev) => ({
@@ -80,7 +88,7 @@ function DashboardSidebar({
                 ? t("patientSidebar.tagline", "Your Natural Path")
                 : isAdmin
                   ? t("adminSidebar.tagline", "Super Admin Console")
-                  : "Practitioner Portal"}
+                  : t("herbalistSidebar.tagline", "Herbalist Portal")}
             </p>
           </div>
           <button

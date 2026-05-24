@@ -3,9 +3,14 @@ import { FaUser, FaIdCard, FaStar, FaClock } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { motion } from "motion/react";
 import ProfileLayout from "@components/common/ProfileLayout";
-import { saveHerbalistProfile } from "@features/herbalist/services/herbalistProfile";
+import {
+  loadHerbalistProfile,
+  normalizeHerbalistProfile,
+  saveHerbalistProfile,
+} from "@features/herbalist/services/herbalistProfile";
 
 const DEFAULT_PROFILE = {
+  herbalistId: "",
   userId: "",
   licenseNumber: "",
   averageRating: "",
@@ -48,12 +53,52 @@ function HerbalistProfile({
   );
 
   const [profile, setProfile] = useState(initialProfile);
+  const [isProfileLoading, setIsProfileLoading] = useState(true);
+  const [profileLoadError, setProfileLoadError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
 
   useEffect(() => {
     setProfile(initialProfile);
   }, [initialProfile]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchProfile = async () => {
+      setIsProfileLoading(true);
+      setProfileLoadError("");
+
+      try {
+        const data = await loadHerbalistProfile();
+        if (isMounted) {
+          setProfile(data);
+        }
+      } catch (err) {
+        if (!isMounted) return;
+        const message =
+          err?.response?.data?.message ||
+          err?.response?.data?.title ||
+          "Failed to load herbalist profile.";
+        setProfileLoadError(message);
+        if (dashboardData?.herbalistProfile) {
+          setProfile(
+            normalizeHerbalistProfile(dashboardData.herbalistProfile),
+          );
+        }
+      } finally {
+        if (isMounted) {
+          setIsProfileLoading(false);
+        }
+      }
+    };
+
+    fetchProfile();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [dashboardData?.herbalistProfile]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -69,7 +114,8 @@ function HerbalistProfile({
     setSaveError("");
 
     try {
-      await saveHerbalistProfile(profile);
+      const updated = await saveHerbalistProfile(profile);
+      setProfile(updated);
       await onProfileUpdated?.();
       toast.success("Profile updated successfully!");
     } catch (err) {
@@ -97,7 +143,7 @@ function HerbalistProfile({
     }
   };
 
-  if (isLoading) {
+  if (isLoading || isProfileLoading) {
     return (
       <div className="flex items-center justify-center min-h-100">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -112,15 +158,25 @@ function HerbalistProfile({
       saving={isSaving}
       onSubmit={handleSubmit}
     >
-      {saveError && (
+      {profileLoadError ? (
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
-          className="mb-6 rounded-2xl border border-eed-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+          className="mb-6 rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800"
+        >
+          {profileLoadError}
+        </motion.div>
+      ) : null}
+
+      {saveError ? (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          className="mb-6 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
         >
           {saveError}
         </motion.div>
-      )}
+      ) : null}
 
       <motion.div
         variants={containerVariants}
@@ -201,6 +257,22 @@ function HerbalistProfile({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+            <div className="group">
+              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 group-hover:text-primary transition-colors">
+                Herbalist ID
+              </label>
+              <div className="px-4 py-3 bg-slate-50 border border-slate-200/60 rounded-xl text-slate-700 font-medium">
+                {profile.herbalistId || profile.id || "N/A"}
+              </div>
+            </div>
+            <div className="group">
+              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 group-hover:text-primary transition-colors">
+                User ID
+              </label>
+              <div className="px-4 py-3 bg-slate-50 border border-slate-200/60 rounded-xl text-slate-700 font-medium">
+                {profile.userId || user?.userId || user?.id || "N/A"}
+              </div>
+            </div>
             <div className="group">
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 group-hover:text-primary transition-colors">
                 License Number

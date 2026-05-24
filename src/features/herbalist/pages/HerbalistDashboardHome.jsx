@@ -13,6 +13,7 @@ import { getRecipesByHerbalist } from "@api/recipes";
 import { normalizeHerb } from "@features/browse/services/herbs";
 import { normalizeInventoryList } from "@features/herbalist/services/inventory";
 import { normalizeRecipe } from "@features/browse/services/recipes";
+import { getHerbalistDisplayName } from "@features/herbalist/services/herbalistProfile";
 
 const extractInventoryArray = (responseData) => {
   if (Array.isArray(responseData)) {
@@ -167,6 +168,7 @@ function HerbalistDashboardHome({
   }, [loadStats]);
 
   const profile = dashboardData?.herbalistProfile || {};
+  const displayName = getHerbalistDisplayName(user);
 
   return (
     <section className="space-y-8">
@@ -176,7 +178,7 @@ function HerbalistDashboardHome({
             Herbalist Dashboard
           </p>
           <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-900">
-            Welcome back, {user?.name || "Herbalist"}
+            Welcome back, {displayName}
           </h1>
           <p className="mt-2 text-sm font-medium text-slate-600">
             Track your herbs, recipes, inventory availability, and profile

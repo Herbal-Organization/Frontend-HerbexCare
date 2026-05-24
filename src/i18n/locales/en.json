@@ -152,6 +152,8 @@
     "member": "Member"
   },
   "herbalistSidebar": {
+    "brand": "HerbexCare",
+    "tagline": "Herbalist Portal",
     "dashboard": "Dashboard",
     "manageHerbs": "Manage Herbs",
     "globalRegistry": "Global Registry",
@@ -163,7 +165,7 @@
     "orders": "Orders",
     "profile": "Profile",
     "settings": "Settings",
-    "member": "Practitioner"
+    "member": "Herbalist"
   },
   "adminSidebar": {
     "brand": "HerbexCare Admin",

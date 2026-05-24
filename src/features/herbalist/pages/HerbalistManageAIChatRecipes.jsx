@@ -1,20 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  FaRobot,
   FaSearch,
   FaPlus,
   FaTimes,
   FaCheckCircle,
   FaListUl,
   FaComments,
+  FaEye,
+  FaBan,
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "motion/react";
-import { fetchAiChatCatalog } from "@api/aiChat";
+import { fetchAiChatCatalog, fetchAiChatCatalogById } from "@api/aiChat";
 import {
   getMyInventoryAiChatRecipes,
   addInventoryAiChatRecipe,
   updateInventoryAiChatRecipePrice,
+  toggleInventoryAiChatRecipeStatus,
   removeInventoryAiChatRecipe,
 } from "@api/inventoryAiChatRecipes";
 import { normalizeGeneratedRecipe } from "@features/patient/pages/ai-pages/aiConsultationUtils";
@@ -27,13 +29,39 @@ const extractArray = (payload) => {
 };
 
 const getAiRecipeId = (recipe) => {
-  const candidate = 
+  const candidate =
     recipe?.aiChatRecipeId ||
     recipe?.aiRecipeId ||
     recipe?.targetId ||
     recipe?.recipeId ||
     recipe?.id;
   return candidate ? String(candidate) : null;
+};
+
+/** Inventory row id (for price / status / delete) — not the catalog recipe id */
+const getInventoryItemId = (item) => {
+  const candidate =
+    item?.inventoryAiChatRecipeId ??
+    item?.inventoryId ??
+    item?.id;
+  return candidate !== undefined && candidate !== null && candidate !== ""
+    ? String(candidate)
+    : null;
+};
+
+const getInventoryLinkedRecipeId = (item) =>
+  getAiRecipeId({
+    aiChatRecipeId: item?.aiChatRecipeId,
+    aiRecipeId: item?.aiRecipeId,
+    targetId: item?.targetId,
+    recipeId: item?.recipeId,
+  });
+
+const isInventoryItemActive = (item) => {
+  if (item?.isBlocked === true) return false;
+  if (item?.isActive === false) return false;
+  const status = String(item?.status || "").toLowerCase();
+  return status !== "inactive" && status !== "blocked";
 };
 
 const getRecipeTitle = (recipe) => {
@@ -66,9 +94,15 @@ function HerbalistManageAIChatRecipes() {
   const pageSize = 9;
 
   const [selectedRecipeForInventory, setSelectedRecipeForInventory] = useState(null);
+  const [selectedInventoryItem, setSelectedInventoryItem] = useState(null);
   const [price, setPrice] = useState("");
   const [isAddingToInventory, setIsAddingToInventory] = useState(false);
   const [isEditingPrice, setIsEditingPrice] = useState(false);
+  const [togglingInventoryIds, setTogglingInventoryIds] = useState([]);
+
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [detailRecipe, setDetailRecipe] = useState(null);
+  const [isDetailLoading, setIsDetailLoading] = useState(false);
 
   const loadData = async () => {
     setIsLoading(true);
@@ -103,9 +137,7 @@ function HerbalistManageAIChatRecipes() {
       }
 
       const recipeIdsInInventory = new Set(
-        invItems
-          .map(getAiRecipeId)
-          .filter(Boolean)
+        invItems.map(getInventoryLinkedRecipeId).filter(Boolean),
       );
 
       setInventoryRecipeIds(recipeIdsInInventory);
@@ -136,16 +168,50 @@ function HerbalistManageAIChatRecipes() {
     });
   }, [recipes, searchQuery]);
 
-  const openInventoryModal = (recipe, existingPrice = "", isEdit = false) => {
+  const openInventoryModal = (
+    recipe,
+    existingPrice = "",
+    isEdit = false,
+    inventoryItem = null,
+  ) => {
     setSelectedRecipeForInventory(recipe);
-    setPrice(String(existingPrice));
+    setSelectedInventoryItem(inventoryItem);
+    setPrice(String(existingPrice ?? ""));
     setIsEditingPrice(isEdit);
   };
 
   const closeInventoryModal = () => {
     setSelectedRecipeForInventory(null);
+    setSelectedInventoryItem(null);
     setPrice("");
     setIsEditingPrice(false);
+  };
+
+  const openCatalogDetail = async (recipe) => {
+    const aiRecipeId = getAiRecipeId(recipe);
+    if (!aiRecipeId) return;
+
+    setIsDetailOpen(true);
+    setDetailRecipe(recipe);
+    setIsDetailLoading(true);
+
+    try {
+      const data = await fetchAiChatCatalogById(aiRecipeId);
+      setDetailRecipe(data);
+    } catch (err) {
+      toast.error(
+        err?.response?.data?.message ||
+          err?.response?.data?.title ||
+          "Failed to load recipe details.",
+      );
+    } finally {
+      setIsDetailLoading(false);
+    }
+  };
+
+  const closeCatalogDetail = () => {
+    setIsDetailOpen(false);
+    setDetailRecipe(null);
   };
 
   const handleInventorySubmit = async (event) => {
@@ -167,34 +233,21 @@ function HerbalistManageAIChatRecipes() {
     setIsAddingToInventory(true);
     try {
       if (isEditingPrice) {
-        await updateInventoryAiChatRecipePrice(aiRecipeId, parsedPrice);
+        const inventoryId = getInventoryItemId(selectedInventoryItem);
+        if (!inventoryId) {
+          toast.error("Invalid inventory item.");
+          return;
+        }
+
+        await updateInventoryAiChatRecipePrice(inventoryId, parsedPrice);
         toast.success("Price updated successfully!");
-        
-        // Update local state
-        setInventoryItems(current => 
-          current.map(item => {
-            const currentId = getAiRecipeId(item);
-            if (currentId === aiRecipeId) {
-              return { ...item, price: parsedPrice };
-            }
-            return item;
-          })
-        );
       } else {
         await addInventoryAiChatRecipe(aiRecipeId, parsedPrice);
         toast.success("AI Chat recipe added to inventory successfully!");
-        setInventoryRecipeIds((current) => new Set([...current, aiRecipeId]));
-        
-        // Add to local state (optimistic)
-        const newItem = {
-          id: Date.now(), // temporary id
-          aiRecipeId: aiRecipeId,
-          price: parsedPrice,
-          isActive: true
-        };
-        setInventoryItems(current => [...current, newItem]);
       }
+
       closeInventoryModal();
+      await loadData();
     } catch (err) {
       const message =
         err.response?.data?.message ||
@@ -206,29 +259,64 @@ function HerbalistManageAIChatRecipes() {
     }
   };
 
-  const handleRemoveFromInventory = async (id) => {
-    if (!window.confirm("Are you sure you want to remove this recipe from your inventory?")) return;
+  const handleRemoveFromInventory = async (item) => {
+    const inventoryId = getInventoryItemId(item);
+    if (!inventoryId) {
+      toast.error("Invalid inventory item.");
+      return;
+    }
+
+    if (
+      !window.confirm(
+        "Are you sure you want to remove this recipe from your inventory?",
+      )
+    ) {
+      return;
+    }
+
     try {
-      await removeInventoryAiChatRecipe(id);
+      await removeInventoryAiChatRecipe(inventoryId);
       toast.success("Removed from inventory.");
-      
-      const itemToRemove = inventoryItems.find(i => i.id === id);
-      setInventoryItems(current => current.filter(item => item.id !== id));
-      
-      if (itemToRemove) {
-        const recipeId = getAiRecipeId(itemToRemove);
-        setInventoryRecipeIds(current => {
-          const next = new Set(current);
-          next.delete(recipeId);
-          return next;
-        });
-      }
+      await loadData();
     } catch (err) {
       const message =
         err.response?.data?.message ||
         err.response?.data?.title ||
         "Failed to remove from inventory.";
       toast.error(message);
+    }
+  };
+
+  const handleToggleInventoryStatus = async (item) => {
+    const inventoryId = getInventoryItemId(item);
+    if (!inventoryId || togglingInventoryIds.includes(inventoryId)) return;
+
+    const currentlyActive = isInventoryItemActive(item);
+    const confirmMessage = currentlyActive
+      ? "Deactivate this recipe? Patients will not see it while inactive."
+      : "Activate this recipe? It will be available to patients again.";
+
+    if (!window.confirm(confirmMessage)) return;
+
+    setTogglingInventoryIds((current) => [...current, inventoryId]);
+
+    try {
+      const response = await toggleInventoryAiChatRecipeStatus(inventoryId);
+      toast.success(
+        response?.message ||
+          (currentlyActive ? "Recipe deactivated." : "Recipe activated."),
+      );
+      await loadData();
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        err?.response?.data?.title ||
+        "Failed to update recipe status.";
+      toast.error(message);
+    } finally {
+      setTogglingInventoryIds((current) =>
+        current.filter((id) => id !== inventoryId),
+      );
     }
   };
 
@@ -296,15 +384,26 @@ function HerbalistManageAIChatRecipes() {
             )}
           </div>
 
-          <button
-            type="button"
-            onClick={() => openInventoryModal(recipe, "", false)}
-            disabled={isInInventory || !aiRecipeId}
-            className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-slate-800 disabled:pointer-events-none disabled:opacity-50"
-          >
-            <FaPlus className="text-xs text-emerald-400" />
-            {isInInventory ? "Already in Inventory" : "Add to Inventory"}
-          </button>
+          <div className="mt-5 flex gap-2">
+            <button
+              type="button"
+              onClick={() => openCatalogDetail(recipe)}
+              disabled={!aiRecipeId}
+              className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border-2 border-slate-200 text-sm font-bold text-slate-700 transition-all hover:border-emerald-300 hover:text-emerald-700 disabled:pointer-events-none disabled:opacity-50"
+            >
+              <FaEye className="text-xs" />
+              View Details
+            </button>
+            <button
+              type="button"
+              onClick={() => openInventoryModal(recipe, "", false)}
+              disabled={isInInventory || !aiRecipeId}
+              className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-slate-800 disabled:pointer-events-none disabled:opacity-50"
+            >
+              <FaPlus className="text-xs text-emerald-400" />
+              {isInInventory ? "Listed" : "Add"}
+            </button>
+          </div>
         </div>
       </motion.div>
     );
@@ -434,14 +533,27 @@ function HerbalistManageAIChatRecipes() {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {inventoryItems.map((item, index) => {
-              const recipeId = getAiRecipeId(item);
-              const catalogItem = recipes.find(r => getAiRecipeId(r) === recipeId);
-              const recipeTitle = catalogItem ? getRecipeTitle(catalogItem) : "AI Chat Recipe";
-              const recipeSubtitle = catalogItem ? getRecipeSubtitle(catalogItem) : "";
-              
+              const recipeId = getInventoryLinkedRecipeId(item);
+              const inventoryId = getInventoryItemId(item);
+              const catalogItem = recipes.find(
+                (r) => getAiRecipeId(r) === recipeId,
+              );
+              const recipeTitle = catalogItem
+                ? getRecipeTitle(catalogItem)
+                : item?.recommendedRecipeName ||
+                  item?.recipeName ||
+                  "AI Chat Recipe";
+              const recipeSubtitle = catalogItem
+                ? getRecipeSubtitle(catalogItem)
+                : item?.category || "";
+              const active = isInventoryItemActive(item);
+              const isToggling = inventoryId
+                ? togglingInventoryIds.includes(inventoryId)
+                : false;
+
               return (
                 <div
-                  key={item.id || index}
+                  key={inventoryId || recipeId || index}
                   className="group relative flex flex-col overflow-hidden rounded-4xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-emerald-200 hover:shadow-[0_10px_40px_rgb(0,0,0,0.06)]"
                 >
                   <div className="relative flex h-full flex-col">
@@ -473,24 +585,76 @@ function HerbalistManageAIChatRecipes() {
                             {item.price} EGP
                           </p>
                         </div>
-                        <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${item.isActive !== false ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
-                          {item.isActive !== false ? 'Active' : 'Inactive'}
+                        <div
+                          className={`rounded px-2 py-0.5 text-[10px] font-bold uppercase ${
+                            active
+                              ? "bg-emerald-100 text-emerald-700"
+                              : "bg-slate-100 text-slate-500"
+                          }`}
+                        >
+                          {active ? "Active" : "Inactive"}
                         </div>
                       </div>
                     </div>
 
-                    <div className="mt-5 flex gap-2">
+                    <div className="mt-5 grid grid-cols-2 gap-2">
                       <button
-                        onClick={() => openInventoryModal(catalogItem || { id: recipeId }, item.price, true)}
-                        className="flex-1 flex h-10 items-center justify-center gap-1 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                        type="button"
+                        onClick={() =>
+                          openInventoryModal(
+                            catalogItem || {
+                              aiChatRecipeId: recipeId,
+                              id: recipeId,
+                            },
+                            item.price,
+                            true,
+                            item,
+                          )
+                        }
+                        className="flex h-10 items-center justify-center gap-1 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50"
                       >
                         Edit Price
                       </button>
                       <button
-                        onClick={() => handleRemoveFromInventory(item.id)}
-                        className="flex-1 flex h-10 items-center justify-center gap-1 rounded-lg border border-red-200 text-xs font-bold text-red-600 hover:bg-red-50"
+                        type="button"
+                        onClick={() => handleToggleInventoryStatus(item)}
+                        disabled={isToggling || !inventoryId}
+                        className={`flex h-10 items-center justify-center gap-1 rounded-lg border text-xs font-bold disabled:cursor-not-allowed disabled:opacity-60 ${
+                          active
+                            ? "border-amber-200 text-amber-700 hover:bg-amber-50"
+                            : "border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                        }`}
                       >
-                        Remove
+                        {isToggling ? (
+                          <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                        ) : active ? (
+                          <FaBan className="text-[10px]" />
+                        ) : (
+                          <FaCheckCircle className="text-[10px]" />
+                        )}
+                        {active ? "Deactivate" : "Activate"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          catalogItem
+                            ? openCatalogDetail(catalogItem)
+                            : recipeId &&
+                              openCatalogDetail({
+                                aiChatRecipeId: recipeId,
+                              })
+                        }
+                        className="col-span-2 flex h-10 items-center justify-center gap-1 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                      >
+                        <FaEye className="text-[10px]" />
+                        View Catalog Details
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFromInventory(item)}
+                        className="col-span-2 flex h-10 items-center justify-center gap-1 rounded-lg border border-red-200 text-xs font-bold text-red-600 hover:bg-red-50"
+                      >
+                        Remove from Inventory
                       </button>
                     </div>
                   </div>
@@ -500,6 +664,97 @@ function HerbalistManageAIChatRecipes() {
           </div>
         )
       )}
+
+      <AnimatePresence>
+        {isDetailOpen ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/40 p-4 backdrop-blur-md sm:items-center"
+          >
+            <motion.div
+              initial={{ scale: 0.96, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.96, y: 20 }}
+              className="max-h-[90vh] w-full max-w-2xl overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-2xl"
+            >
+              <div className="flex items-start justify-between gap-4 border-b border-slate-100 bg-slate-50 px-6 py-5">
+                <div className="min-w-0">
+                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-emerald-700">
+                    Catalog Recipe
+                  </p>
+                  <h3 className="mt-1 truncate text-xl font-black text-slate-900">
+                    {detailRecipe?.recommendedRecipeName ||
+                      getRecipeTitle(detailRecipe || {})}
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={closeCatalogDetail}
+                  className="rounded-full bg-white p-2 text-slate-400 shadow-sm hover:bg-slate-100 hover:text-slate-700"
+                >
+                  <FaTimes />
+                </button>
+              </div>
+
+              <div className="max-h-[calc(90vh-5rem)] overflow-y-auto p-6">
+                {isDetailLoading ? (
+                  <div className="flex justify-center py-12">
+                    <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-500/30 border-t-emerald-500" />
+                  </div>
+                ) : (
+                  <dl className="grid gap-4 sm:grid-cols-2">
+                    <div className="rounded-2xl bg-slate-50 p-4 sm:col-span-2">
+                      <dt className="text-xs font-bold uppercase text-slate-400">
+                        Main herb
+                      </dt>
+                      <dd className="mt-1 font-bold text-slate-900">
+                        {detailRecipe?.mainHerb || "—"}
+                      </dd>
+                      <dd className="text-sm text-slate-500">
+                        {detailRecipe?.scientificName || ""}
+                      </dd>
+                    </div>
+                    <div className="rounded-2xl bg-slate-50 p-4">
+                      <dt className="text-xs font-bold uppercase text-slate-400">
+                        Category
+                      </dt>
+                      <dd className="mt-1 font-semibold text-slate-800">
+                        {detailRecipe?.category || "—"}
+                      </dd>
+                    </div>
+                    <div className="rounded-2xl bg-slate-50 p-4">
+                      <dt className="text-xs font-bold uppercase text-slate-400">
+                        Dosage
+                      </dt>
+                      <dd className="mt-1 text-sm text-slate-700">
+                        {detailRecipe?.dosage || "—"}
+                      </dd>
+                    </div>
+                    <div className="rounded-2xl bg-slate-50 p-4 sm:col-span-2">
+                      <dt className="text-xs font-bold uppercase text-slate-400">
+                        Preparation
+                      </dt>
+                      <dd className="mt-1 text-sm leading-6 text-slate-700">
+                        {detailRecipe?.preparation || "—"}
+                      </dd>
+                    </div>
+                    <div className="rounded-2xl bg-rose-50/70 p-4 sm:col-span-2">
+                      <dt className="text-xs font-bold uppercase text-rose-700">
+                        Contraindications
+                      </dt>
+                      <dd className="mt-1 text-sm text-rose-900/80">
+                        {detailRecipe?.contraindications || "—"}
+                      </dd>
+                    </div>
+                  </dl>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
       <AnimatePresence>
         {selectedRecipeForInventory ? (

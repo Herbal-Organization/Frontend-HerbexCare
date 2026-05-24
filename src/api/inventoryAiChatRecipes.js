@@ -1,45 +1,58 @@
 import httpClient from "./httpClient";
 
 /**
- * Get current inventory of AI Chat Recipes.
- * Assumed endpoint: GET /api/inventory-ai-chat-recipes/my-inventory
+ * Get current herbalist inventory of AI Chat recipes.
+ * GET /api/inventory-ai-chat-recipes/my-inventory
  */
 export const getMyInventoryAiChatRecipes = async () => {
-  const { data } = await httpClient.get("/api/inventory-ai-chat-recipes/my-inventory");
-  return data;
-};
-
-/**
- * Add an AI Chat Recipe to the inventory.
- * POST /api/inventory-ai-chat-recipes/{id}/price
- */
-export const addInventoryAiChatRecipe = async (id, price) => {
-  const { data } = await httpClient.post(
-    `/api/inventory-ai-chat-recipes/${id}/price`,
-    { price }
+  const { data } = await httpClient.get(
+    "/api/inventory-ai-chat-recipes/my-inventory",
   );
   return data;
 };
 
 /**
- * Update the price of an AI Chat Recipe in the inventory.
+ * Add an AI Chat recipe to inventory with a selling price.
+ * POST /api/inventory-ai-chat-recipes/add
+ */
+export const addInventoryAiChatRecipe = async (aiChatRecipeId, price) => {
+  const { data } = await httpClient.post("/api/inventory-ai-chat-recipes/add", {
+    aiChatRecipeId: Number(aiChatRecipeId),
+    price: Number(price),
+  });
+  return data;
+};
+
+/**
+ * Update selling price for an inventory item.
  * PATCH /api/inventory-ai-chat-recipes/{id}/price
  */
-export const updateInventoryAiChatRecipePrice = async (id, price) => {
+export const updateInventoryAiChatRecipePrice = async (inventoryId, price) => {
   const { data } = await httpClient.patch(
-    `/api/inventory-ai-chat-recipes/${id}/price`,
-    { price }
+    `/api/inventory-ai-chat-recipes/${inventoryId}/price`,
+    { price: Number(price) },
   );
   return data;
 };
 
 /**
- * Remove an AI Chat Recipe from the inventory.
- * Assumed endpoint: DELETE /api/inventory-ai-chat-recipes/{id}/delete
+ * Toggle active / inactive status for an inventory item.
+ * PATCH /api/inventory-ai-chat-recipes/{id}/status
  */
-export const removeInventoryAiChatRecipe = async (id) => {
+export const toggleInventoryAiChatRecipeStatus = async (inventoryId) => {
+  const { data } = await httpClient.patch(
+    `/api/inventory-ai-chat-recipes/${inventoryId}/status`,
+  );
+  return data;
+};
+
+/**
+ * Remove an AI Chat recipe from inventory.
+ * DELETE /api/inventory-ai-chat-recipes/{id}/delete
+ */
+export const removeInventoryAiChatRecipe = async (inventoryId) => {
   const { data } = await httpClient.delete(
-    `/api/inventory-ai-chat-recipes/${id}/delete`
+    `/api/inventory-ai-chat-recipes/${inventoryId}/delete`,
   );
   return data;
 };
@@ -48,5 +61,6 @@ export default {
   getMyInventoryAiChatRecipes,
   addInventoryAiChatRecipe,
   updateInventoryAiChatRecipePrice,
+  toggleInventoryAiChatRecipeStatus,
   removeInventoryAiChatRecipe,
 };

@@ -171,6 +171,8 @@
     "member": "عضو"
   },
   "herbalistSidebar": {
+    "brand": "HerbexCare",
+    "tagline": "بوابة الأعشابي",
     "dashboard": "لوحة التحكم",
     "manageHerbs": "إدارة الأعشاب",
     "globalRegistry": "السجل العالمي للأعشاب",
@@ -182,7 +184,7 @@
     "orders": "الطلبات",
     "profile": "الملف الشخصي",
     "settings": "الإعدادات",
-    "member": "ممارس"
+    "member": "أعشابي"
   },
   "adminSidebar": {
     "brand": "إدارة HerbexCare",

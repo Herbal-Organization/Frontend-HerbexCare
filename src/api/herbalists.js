@@ -1,5 +1,8 @@
 import httpClient from "./httpClient";
 
+/**
+ * GET /api/Herbalists/get-profile/me
+ */
 export const getMyHerbalistProfile = async () => {
   const { data } = await httpClient.get("/api/Herbalists/get-profile/me");
   return data;
@@ -15,6 +18,10 @@ export const getAllHerbalists = async () => {
   return data;
 };
 
+/**
+ * PUT /api/Herbalists/update-profile/me
+ * Body: { bio, availableFrom, availableTo } — times as "HH:mm"
+ */
 export const updateMyHerbalistProfile = async (payload) => {
   const { data } = await httpClient.put(
     "/api/Herbalists/update-profile/me",

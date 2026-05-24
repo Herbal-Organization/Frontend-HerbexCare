@@ -1,4 +1,3 @@
-import { getUserById } from "@api/users";
 import {
   getMyHerbalistProfile,
   updateMyHerbalistProfile,
@@ -31,16 +30,8 @@ const normalizeTime = (value) => {
   return `${hours}:${minutes}`;
 };
 
-const formatTimeForApi = (value) => {
-  // normalize for UI (HH:MM) then convert to API time format HH:MM:SS
-  const normalizedValue = normalizeTime(value);
-
-  if (!normalizedValue) {
-    return null;
-  }
-
-  return `${normalizedValue}:00`;
-};
+/** API expects HH:mm (e.g. "09:00") */
+const formatTimeForApi = (value) => normalizeTime(value) || null;
 const getStoredHerbalistProfile = () => {
   try {
     const rawValue = localStorage.getItem(HERBALIST_PROFILE_STORAGE_KEY);
@@ -73,13 +64,55 @@ export const normalizeHerbalistUser = (user = {}) => ({
   ...user,
   id: pickFirstDefined(user.id, user.userId, user.userID),
   userId: pickFirstDefined(user.userId, user.id, user.userID),
-  fullName: pickFirstDefined(user.fullName, user.name),
-  name: pickFirstDefined(user.name, user.fullName),
+  fullName: pickFirstDefined(user.fullName, user.name, user.userName),
+  name: pickFirstDefined(user.name, user.fullName, user.userName),
   userName: pickFirstDefined(user.userName, user.username),
   username: pickFirstDefined(user.username, user.userName),
   email: pickFirstDefined(user.email, user.mail),
   phone: pickFirstDefined(user.phone, user.phoneNumber),
 });
+
+/** Prefer existing auth/session names when API returns empty partial user objects */
+export const mergeHerbalistUser = (base = {}, incoming = {}) =>
+  normalizeHerbalistUser({
+    ...base,
+    ...incoming,
+    fullName: pickFirstDefined(
+      incoming.fullName,
+      incoming.name,
+      base.fullName,
+      base.name,
+      base.userName,
+    ),
+    name: pickFirstDefined(
+      incoming.name,
+      incoming.fullName,
+      base.name,
+      base.fullName,
+      base.userName,
+    ),
+    userName: pickFirstDefined(
+      incoming.userName,
+      incoming.username,
+      base.userName,
+      base.username,
+    ),
+    email: pickFirstDefined(incoming.email, incoming.mail, base.email, base.mail),
+    phone: pickFirstDefined(
+      incoming.phone,
+      incoming.phoneNumber,
+      base.phone,
+      base.phoneNumber,
+    ),
+  });
+
+export const getHerbalistDisplayName = (user = {}) =>
+  pickFirstDefined(
+    user.fullName,
+    user.name,
+    user.userName,
+    user.username,
+  ) || "Herbalist";
 
 export const normalizeHerbalistProfile = (profile = {}) => {
   const persistedProfile = getStoredHerbalistProfile();
@@ -87,6 +120,12 @@ export const normalizeHerbalistProfile = (profile = {}) => {
   const fallbackProfile = persistedProfile || {};
 
   return {
+    herbalistId: pickFirstDefined(
+      incomingProfile.herbalistId,
+      incomingProfile.id,
+      fallbackProfile.herbalistId,
+      fallbackProfile.id,
+    ),
     id: pickFirstDefined(
       incomingProfile.id,
       incomingProfile.herbalistId,
@@ -123,12 +162,8 @@ export const normalizeHerbalistProfile = (profile = {}) => {
   };
 };
 
-export const getHerbalistDashboardData = async (userId) => {
-  const [userDetails, herbalistProfile] = await Promise.all([
-    userId ? getUserById(userId).catch(() => null) : Promise.resolve(null),
-    getMyHerbalistProfile().catch(() => null),
-  ]);
-
+export const getHerbalistDashboardData = async (authUser = {}) => {
+  const herbalistProfile = await getMyHerbalistProfile().catch(() => null);
   const normalizedProfile = normalizeHerbalistProfile(herbalistProfile || {});
 
   if (herbalistProfile) {
@@ -136,31 +171,26 @@ export const getHerbalistDashboardData = async (userId) => {
   }
 
   return {
-    userDetails: normalizeHerbalistUser(userDetails || {}),
+    userDetails: normalizeHerbalistUser(authUser || {}),
     herbalistProfile: normalizedProfile,
   };
 };
 
+export const loadHerbalistProfile = async () => {
+  const response = await getMyHerbalistProfile();
+  const normalizedProfile = normalizeHerbalistProfile(response || {});
+  storeHerbalistProfile(normalizedProfile);
+  return normalizedProfile;
+};
+
 export const saveHerbalistProfile = async (profile) => {
   const payload = {
-    bio: profile.bio?.trim() || null,
+    bio: profile.bio?.trim() || "",
     availableFrom: formatTimeForApi(profile.availableFrom),
     availableTo: formatTimeForApi(profile.availableTo),
   };
 
-  // Log payload to help debug server-side validation issues
-  console.log("Saving herbalist profile payload:", payload);
-
-  try {
-    await updateMyHerbalistProfile(payload);
-  } catch (err) {
-    console.error(
-      "Failed to update herbalist profile",
-      err.response?.status,
-      err.response?.data,
-    );
-    throw err;
-  }
+  await updateMyHerbalistProfile(payload);
 
   // Re-read profile after update so UI reflects backend truth immediately.
   const updatedProfileResponse = await getMyHerbalistProfile().catch(

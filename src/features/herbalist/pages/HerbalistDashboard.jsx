@@ -18,7 +18,11 @@ import HerbalistSettings from "./HerbalistSettings";
 import HerbalistSubOrders from "./HerbalistSubOrders";
 import SubOrderDetails from "./SubOrderDetails";
 import useHerbalistDashboardData from "@features/herbalist/hooks/useHerbalistDashboardData";
-import { normalizeHerbalistUser } from "@features/herbalist/services/herbalistProfile";
+import {
+  getHerbalistDisplayName,
+  mergeHerbalistUser,
+  normalizeHerbalistUser,
+} from "@features/herbalist/services/herbalistProfile";
 import { getMySubOrders } from "@api/subOrders";
 import { useTranslation } from "react-i18next";
 import DashboardLayout from "@components/layouts/DashboardLayout";
@@ -56,21 +60,16 @@ function HerbalistDashboard() {
     logout();
   };
 
-  const safeUserId = user?.userId || user?.id;
   const {
     data: dashboardData,
     isLoading: isDashboardLoading,
     error: dashboardError,
     reload: reloadDashboard,
-  } = useHerbalistDashboardData(safeUserId);
+  } = useHerbalistDashboardData(user);
 
   const displayUser = useMemo(() => {
     if (!user) return null;
-    if (!dashboardData?.userDetails) return user;
-    return normalizeHerbalistUser({
-      ...(user || {}),
-      ...dashboardData.userDetails,
-    });
+    return mergeHerbalistUser(user, dashboardData?.userDetails || {});
   }, [user, dashboardData?.userDetails]);
 
   useEffect(() => {
@@ -185,7 +184,7 @@ function HerbalistDashboard() {
             path="*"
             element={
               <HerbalistDashboardHome
-                user={user}
+                user={displayUser}
                 dashboardData={dashboardData}
                 isLoadingDashboard={isDashboardLoading}
                 onRetryDashboard={reloadDashboard}

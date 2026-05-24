@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { getHerbalistDashboardData } from "@features/herbalist/services/herbalistProfile";
 
-function useHerbalistDashboardData(userId) {
+function useHerbalistDashboardData(authUser) {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const safeUserId = userId ? String(userId) : null;
   const loadDashboardData = useCallback(async () => {
-    if (!userId) {
+    if (!authUser) {
       setData(null);
       setIsLoading(false);
       return;
@@ -18,7 +17,7 @@ function useHerbalistDashboardData(userId) {
     setError("");
 
     try {
-      const result = await getHerbalistDashboardData(userId);
+      const result = await getHerbalistDashboardData(authUser);
       setData(result);
     } catch (err) {
       const message =
@@ -29,7 +28,7 @@ function useHerbalistDashboardData(userId) {
     } finally {
       setIsLoading(false);
     }
-  }, [safeUserId]);
+  }, [authUser]);
 
   useEffect(() => {
     loadDashboardData();
