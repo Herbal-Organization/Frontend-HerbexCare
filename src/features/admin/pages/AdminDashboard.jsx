@@ -15,6 +15,7 @@ import { getAllPatients } from "@api/patients";
 import { getAllHerbalists } from "@api/herbalists";
 import AdminUsersPage from "./AdminUsersPage";
 import AdminDiseasesPage from "./AdminDiseasesPage";
+import AdminDiseasesPendingPage from "./AdminDiseasesPendingPage";
 import {
   FaDatabase,
   FaExternalLinkAlt,
@@ -428,7 +429,9 @@ function AdminDashboard() {
       <Routes>
         <Route path="/" element={<AdminUsersPage />} />
         <Route path="/users" element={<AdminUsersPage />} />
-        <Route path="/diseases" element={<AdminDiseasesPage />} />
+        <Route path="/diseases" element={<AdminDiseasesPage />}>
+          <Route path="pending" element={<AdminDiseasesPendingPage />} />
+        </Route>
         <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
       </Routes>
     </DashboardLayout>

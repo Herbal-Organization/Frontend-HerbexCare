@@ -26,15 +26,11 @@ export const getPendingDiseases = async () => {
 };
 
 export const approveDisease = async (id) => {
-  const { data } = await httpClient.patch(
-    `/api/admin/diseases/${id}/approve`,
-  );
+  const { data } = await httpClient.patch(`/api/admin/diseases/${id}/approve`);
   return data;
 };
 
 export const rejectDisease = async (id) => {
-  const { data } = await httpClient.delete(
-    `/api/admin/diseases/${id}/reject`,
-  );
+  const { data } = await httpClient.delete(`/api/admin/diseases/${id}/reject`);
   return data;
 };
