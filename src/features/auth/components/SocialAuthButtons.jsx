@@ -5,7 +5,6 @@ import {
   storeAuthTokens,
   getPostLoginRoute,
 } from "@features/auth/services/authSession";
-import { getUserRole } from "@utils/auth";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
@@ -30,8 +29,7 @@ function SocialAuthButtons() {
         storeAuthTokens(data);
         toast.success(t("auth.login.success"));
 
-        const role = getUserRole();
-        navigate(getPostLoginRoute(role));
+        navigate(getPostLoginRoute(data));
       }
     } catch (error) {
       console.error("Google Login Error:", error);
