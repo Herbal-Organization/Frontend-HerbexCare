@@ -157,7 +157,7 @@ function AiChatRecipeReviewsSection({ recipeId }) {
         </form>
       ) : (
         <div className="mb-5 rounded-xl border border-slate-100 bg-slate-50 p-4 text-center text-xs text-slate-400">
-          Log in as a patient to leave a review.
+          Log in to leave a review.
         </div>
       )}
 
@@ -184,14 +184,16 @@ function AiChatRecipeReviewsSection({ recipeId }) {
               <div className="mb-4 flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-emerald-100 bg-emerald-50 text-sm font-bold text-emerald-700 shadow-inner">
-                    {review.patientName?.charAt(0).toUpperCase() || "P"}
+                    {(review.reviewerName || review.patientName)
+                      ?.charAt(0)
+                      .toUpperCase() || "?"}
                   </div>
                   <div>
                     <p className="mb-0.5 text-[10px] font-bold uppercase tracking-widest text-emerald-700">
-                      Patient
+                      {review.reviewerRole || "Patient"}
                     </p>
                     <p className="text-sm font-bold leading-none text-slate-900">
-                      {review.patientName || "Anonymous"}
+                      {review.reviewerName || review.patientName || "Anonymous"}
                     </p>
                   </div>
                 </div>

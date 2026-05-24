@@ -20,6 +20,7 @@ import {
   removeInventoryAiChatRecipe,
 } from "@api/inventoryAiChatRecipes";
 import { normalizeGeneratedRecipe } from "@features/patient/pages/ai-pages/aiConsultationUtils";
+import AiChatRecipeReviewsSection from "@features/patient/pages/ai-chat/AiChatRecipeReviewsSection";
 
 const extractArray = (payload) => {
   if (Array.isArray(payload)) return payload;
@@ -750,6 +751,14 @@ function HerbalistManageAIChatRecipes() {
                     </div>
                   </dl>
                 )}
+
+                {!isDetailLoading && getAiRecipeId(detailRecipe) ? (
+                  <div className="mt-8">
+                    <AiChatRecipeReviewsSection
+                      recipeId={getAiRecipeId(detailRecipe)}
+                    />
+                  </div>
+                ) : null}
               </div>
             </motion.div>
           </motion.div>

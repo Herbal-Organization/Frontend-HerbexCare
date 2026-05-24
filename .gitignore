@@ -32,3 +32,4 @@ swagger.json
 
 .github
 verify_endpoints.cjs
+passwords

@@ -6,32 +6,56 @@ import {
   submitAiChatRecipeReview,
 } from "@api/aiChatRecipeReviews";
 
-export const normalizeAiChatRecipeReview = (review, fallbackKey) => ({
-  id:
-    review?.id ??
-    review?.reviewId ??
-    review?.aiChatRecipeReviewId ??
-    review?.recipeReviewId ??
-    fallbackKey,
-  comment: review?.comment || "",
-  ratingValue: Number(review?.ratingValue ?? review?.rating ?? 0),
-  createdDate:
-    review?.ratingDate ||
-    review?.createdDate ||
-    review?.createdAt ||
-    review?.dateCreated ||
-    null,
-  patientName:
-    review?.patientName ||
-    review?.patient?.fullName ||
-    review?.patient?.name ||
-    review?.patient?.userName ||
-    review?.userName ||
-    review?.username ||
-    review?.fullName ||
-    review?.name ||
-    "Patient",
-});
+const resolveReviewerName = (review) =>
+  review?.herbalistName ||
+  review?.herbalist?.fullName ||
+  review?.herbalist?.name ||
+  review?.herbalist?.userName ||
+  review?.patientName ||
+  review?.patient?.fullName ||
+  review?.patient?.name ||
+  review?.patient?.userName ||
+  review?.userName ||
+  review?.username ||
+  review?.fullName ||
+  review?.name ||
+  null;
+
+const resolveReviewerRole = (review) => {
+  if (
+    review?.herbalistName ||
+    review?.herbalistId ||
+    review?.herbalist
+  ) {
+    return "Herbalist";
+  }
+  return "Patient";
+};
+
+export const normalizeAiChatRecipeReview = (review, fallbackKey) => {
+  const reviewerName = resolveReviewerName(review);
+  const reviewerRole = resolveReviewerRole(review);
+
+  return {
+    id:
+      review?.id ??
+      review?.reviewId ??
+      review?.aiChatRecipeReviewId ??
+      review?.recipeReviewId ??
+      fallbackKey,
+    comment: review?.comment || "",
+    ratingValue: Number(review?.ratingValue ?? review?.rating ?? 0),
+    createdDate:
+      review?.ratingDate ||
+      review?.createdDate ||
+      review?.createdAt ||
+      review?.dateCreated ||
+      null,
+    reviewerName: reviewerName || (reviewerRole === "Herbalist" ? "Herbalist" : "Patient"),
+    reviewerRole,
+    patientName: reviewerName || "Patient",
+  };
+};
 
 const extractReviewList = (payload) => {
   if (Array.isArray(payload)) return payload;
