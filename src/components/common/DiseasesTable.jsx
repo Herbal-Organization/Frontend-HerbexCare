@@ -45,12 +45,14 @@ export default function DiseasesTable({
 
   if (diseases.length === 0) {
     return (
-      <div className="rounded-3xl border-2 border-dashed border-slate-200 bg-white p-16 text-center flex flex-col items-center justify-center">
-        <div className="h-24 w-24 rounded-3xl bg-slate-50 flex items-center justify-center mb-6 rotate-3">
+      <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-200 bg-white p-8 text-center sm:p-12 lg:p-16">
+        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-slate-50 rotate-3 sm:h-24 sm:w-24">
           <FaVirus className="h-10 w-10 text-slate-200" />
         </div>
-        <h3 className="text-2xl font-black text-slate-900">No diseases yet</h3>
-        <p className="text-slate-500 font-medium max-w-sm mt-3 mb-8">
+        <h3 className="text-xl font-black text-slate-900 sm:text-2xl">
+          No diseases yet
+        </h3>
+        <p className="mb-8 mt-3 max-w-sm text-sm font-medium text-slate-500 sm:text-base">
           Start by adding your first disease entry to the system. This will help
           you organize and manage recipes better.
         </p>
@@ -65,8 +67,74 @@ export default function DiseasesTable({
   }
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-      <div className="overflow-x-auto">
+    <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+      <div className="space-y-3 p-3 sm:p-4 lg:hidden">
+        {diseases.map((disease) => {
+          const symptoms = parseSymptoms(disease.symptoms);
+          const visibleSymptoms = symptoms.slice(0, 3);
+
+          return (
+            <article
+              key={disease.diseaseId}
+              className="rounded-2xl border border-slate-200 bg-slate-50/50 p-4"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                    <FaVirus className="text-sm" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="truncate text-sm font-black text-slate-900">
+                      {disease.diseaseName}
+                    </h3>
+                    <p className="mt-0.5 text-xs font-semibold text-slate-500">
+                      {disease.diseaseType || "General condition"}
+                    </p>
+                  </div>
+                </div>
+                {showAiSupport ? renderAiSupport(disease) : null}
+              </div>
+
+              <p className="mt-3 text-sm text-slate-600 line-clamp-2">
+                {disease.description || "No description"}
+              </p>
+
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {visibleSymptoms.length ? (
+                  visibleSymptoms.map((symptom, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-700"
+                    >
+                      {symptom}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-xs italic text-slate-400">
+                    No symptoms
+                  </span>
+                )}
+                {symptoms.length > 3 && (
+                  <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">
+                    +{symptoms.length - 3}
+                  </span>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => onViewDetails?.(disease)}
+                className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white text-xs font-black uppercase tracking-widest text-slate-600 transition-all hover:border-indigo-500 hover:text-indigo-600"
+              >
+                <FaEye className="text-[10px]" />
+                View Details
+              </button>
+            </article>
+          );
+        })}
+      </div>
+
+      <div className="hidden overflow-x-auto lg:block">
         <table className="w-full">
           <thead>
             <tr className="border-b border-slate-100 bg-slate-50">

@@ -191,34 +191,82 @@ function HerbalistManageDiseases() {
     setSelectedDisease(null);
   };
 
+  const aiSupportedCount = useMemo(
+    () => allDiseases.filter((disease) => disease.isSupportedByAi).length,
+    [allDiseases],
+  );
+
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-8">
+    <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="space-y-8"
+        className="space-y-6 lg:space-y-8"
       >
         {/* Header Section */}
         <motion.div
           variants={itemVariants}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-6"
+          className="rounded-3xl border border-emerald-200 bg-linear-to-br from-emerald-50 via-white to-amber-50 p-5 sm:p-6 lg:p-8"
         >
-          <div className="space-y-1">
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-              Manage Diseases
-            </h1>
-            <p className="text-slate-500 font-medium">
-              Create and organize disease entries for your recipes and
-              consultations.
-            </p>
-          </div>
+          <div className="flex flex-col gap-6">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex min-w-0 items-start gap-3 sm:gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-lg shadow-emerald-600/25">
+                  <FaLeaf className="text-lg" />
+                </div>
+                <div className="min-w-0">
+                  <h1 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
+                    Manage Diseases
+                  </h1>
+                  <p className="mt-1 max-w-2xl text-sm font-medium text-slate-600 sm:text-base">
+                    Create and organize disease entries for your recipes and
+                    consultations.
+                  </p>
+                </div>
+              </div>
 
-          <div className="flex items-center gap-3">
+              {!showCreateForm && (
+                <button
+                  onClick={() => setShowCreateForm(true)}
+                  className="hidden shrink-0 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition-all hover:-translate-y-0.5 hover:bg-emerald-700 md:inline-flex"
+                >
+                  <FaPlus className="text-xs" /> New Disease
+                </button>
+              )}
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                  Total
+                </p>
+                <p className="mt-1 text-2xl font-black text-slate-900">
+                  {allDiseases.length}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                  AI Supported
+                </p>
+                <p className="mt-1 text-2xl font-black text-emerald-700">
+                  {aiSupportedCount}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                  Showing
+                </p>
+                <p className="mt-1 text-2xl font-black text-slate-900">
+                  {filteredDiseases.length}
+                </p>
+              </div>
+            </div>
+
             {!showCreateForm && (
-              <>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 start-0 ps-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+              <div className="flex flex-col gap-3 md:flex-row md:items-center">
+                <div className="relative group w-full md:max-w-md">
+                  <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5 text-slate-400 transition-colors group-focus-within:text-emerald-600">
                     <FaSearch className="text-sm" />
                   </div>
                   <input
@@ -226,16 +274,16 @@ function HerbalistManageDiseases() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search diseases..."
-                    className="ps-10 pe-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all w-48 md:w-64"
+                    className="w-full rounded-xl border border-slate-200 bg-white py-3 pe-4 ps-10 text-sm font-medium text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
                   />
                 </div>
                 <button
                   onClick={() => setShowCreateForm(true)}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-primary/20 hover:bg-primary/90 hover:-translate-y-0.5 transition-all"
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition-all hover:-translate-y-0.5 hover:bg-emerald-700 md:hidden"
                 >
                   <FaPlus className="text-xs" /> New Disease
                 </button>
-              </>
+              </div>
             )}
           </div>
         </motion.div>
@@ -244,7 +292,7 @@ function HerbalistManageDiseases() {
         {error && (
           <motion.div
             variants={itemVariants}
-            className="rounded-2xl border border-eed-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-600"
+            className="rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-600"
           >
             {error}
           </motion.div>
@@ -268,7 +316,7 @@ function HerbalistManageDiseases() {
         </AnimatePresence>
 
         {/* Diseases Table */}
-        <motion.div variants={itemVariants}>
+        <motion.div variants={itemVariants} className="rounded-3xl bg-white/70">
           <DiseasesTable
             diseases={paginatedDiseases}
             isLoading={isLoading}

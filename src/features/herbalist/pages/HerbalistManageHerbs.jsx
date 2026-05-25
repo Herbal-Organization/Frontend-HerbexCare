@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   FaLeaf,
   FaUpload,
@@ -7,15 +6,20 @@ import {
   FaTrash,
   FaCheckCircle,
   FaBookOpen,
-  FaGlobe,
+  FaEye,
   FaPlus,
   FaSearch,
   FaTimes,
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "motion/react";
-import ProfileLayout from "@components/common/ProfileLayout";
-import { createHerb, getAllHerbs, updateHerb, deleteHerb } from "@api/herbs";
+import {
+  createHerb,
+  getAllHerbs,
+  getHerbById,
+  updateHerb,
+  deleteHerb,
+} from "@api/herbs";
 import { addHerbToInventory } from "@api/inventory";
 import { normalizeHerb } from "@features/browse/services/herbs";
 
@@ -28,6 +32,8 @@ const INITIAL_FORM = {
   warnings: "",
   image: null,
 };
+
+const PAGE_SIZE = 50;
 
 const getLocallyStoredHerbIds = (herbalistId) => {
   if (!herbalistId) return [];
@@ -56,77 +62,135 @@ const extractHerbsArray = (responseData) => {
   return [];
 };
 
+const toIdString = (value) => String(value ?? "");
+
+const isManagedHerb = (herb, herbalistId, ownedHerbIdsSet) => {
+  const ownerId = herb?.herbalistId ?? herb?.addedByHerbalistId;
+  if (
+    ownerId !== undefined &&
+    ownerId !== null &&
+    herbalistId !== undefined &&
+    herbalistId !== null &&
+    Number(ownerId) === Number(herbalistId)
+  ) {
+    return true;
+  }
+
+  return ownedHerbIdsSet.has(toIdString(herb?.herbId));
+};
+
 function HerbalistManageHerbs({ user, dashboardData }) {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("my-herbs"); // "my-herbs" or "global-registry"
   const [form, setForm] = useState(INITIAL_FORM);
   const [editingHerbId, setEditingHerbId] = useState(null);
-  const [myHerbs, setMyHerbs] = useState([]);
-  const [otherHerbs, setOtherHerbs] = useState([]);
+  const [showFormModal, setShowFormModal] = useState(false);
+
+  const [herbs, setHerbs] = useState([]);
+  const [ownedHerbIds, setOwnedHerbIds] = useState([]);
+
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [error, setError] = useState("");
-  const [globalSearchQuery, setGlobalSearchQuery] = useState("");
+  const [loadError, setLoadError] = useState("");
+  const [formError, setFormError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedHerbDetails, setSelectedHerbDetails] = useState(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isDetailsLoading, setIsDetailsLoading] = useState(false);
 
-  // Add to Inventory Modal States
   const [selectedHerbForInventory, setSelectedHerbForInventory] =
     useState(null);
   const [pricePerKilo, setPricePerKilo] = useState("");
   const [isAddingToInventory, setIsAddingToInventory] = useState(false);
 
-  const herbalistId = useMemo(() => {
-    return dashboardData?.herbalistProfile?.id || user?.id;
-  }, [dashboardData?.herbalistProfile?.id, user?.id]);
+  const herbalistId = useMemo(
+    () => dashboardData?.herbalistProfile?.id || user?.id || null,
+    [dashboardData?.herbalistProfile?.id, user?.id],
+  );
 
-  const imageName = useMemo(() => form.image?.name || "", [form.image]);
+  useEffect(() => {
+    setOwnedHerbIds(getLocallyStoredHerbIds(herbalistId));
+  }, [herbalistId]);
 
-  const loadHerbs = async () => {
-    if (!herbalistId) {
-      setMyHerbs([]);
-      setOtherHerbs([]);
-      return;
-    }
+  const ownedHerbIdsSet = useMemo(
+    () => new Set(ownedHerbIds.map(toIdString)),
+    [ownedHerbIds],
+  );
 
+  const loadHerbs = useCallback(async () => {
     setIsLoading(true);
+    setLoadError("");
+
     try {
-      const data = await getAllHerbs(1, 1000);
-      const allHerbs = extractHerbsArray(data).map(normalizeHerb);
+      let currentPage = 1;
+      let totalPages = 1;
+      const collectedHerbs = [];
 
-      const mine = [];
-      const others = [];
+      do {
+        const response = await getAllHerbs(currentPage, PAGE_SIZE);
+        const pageHerbs = extractHerbsArray(response).map(normalizeHerb);
+        collectedHerbs.push(...pageHerbs);
 
-      const localIds = getLocallyStoredHerbIds(herbalistId);
+        const parsedTotalPages = Number(
+          response?.totalPages || response?.meta?.totalPages || 1,
+        );
+        totalPages =
+          Number.isFinite(parsedTotalPages) && parsedTotalPages > 0
+            ? parsedTotalPages
+            : 1;
 
-      for (const herb of allHerbs) {
-        if (
-          (herb.herbalistId &&
-            Number(herb.herbalistId) === Number(herbalistId)) ||
-          localIds.includes(herb.herbId) ||
-          localIds.includes(String(herb.herbId))
-        ) {
-          mine.push(herb);
-        } else {
-          others.push(herb);
-        }
-      }
+        currentPage += 1;
+      } while (currentPage <= totalPages);
 
-      setMyHerbs(mine);
-      setOtherHerbs(others);
+      const deduped = Array.from(
+        new Map(
+          collectedHerbs.map((herb) => [toIdString(herb.herbId), herb]),
+        ).values(),
+      );
+
+      setHerbs(deduped);
+      return deduped;
     } catch (err) {
       const message =
         err.response?.data?.message ||
         err.response?.data?.title ||
         "Failed to load herbs.";
-      setError(message);
+      setLoadError(message);
+      return [];
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadHerbs();
-  }, [herbalistId]);
+  }, [loadHerbs]);
+
+  const filteredHerbs = useMemo(() => {
+    if (!searchQuery.trim()) return herbs;
+    const query = searchQuery.trim().toLowerCase();
+    return herbs.filter((herb) =>
+      [herb.herbName, herb.scientificName, herb.description]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+        .includes(query),
+    );
+  }, [herbs, searchQuery]);
+
+  const managedCount = useMemo(
+    () =>
+      herbs.filter((herb) =>
+        isManagedHerb(herb, herbalistId, ownedHerbIdsSet),
+      ).length,
+    [herbs, herbalistId, ownedHerbIdsSet],
+  );
+
+  const approvedCount = useMemo(
+    () => herbs.filter((herb) => herb.isApproved === true).length,
+    [herbs],
+  );
+
+  const imageName = useMemo(() => form.image?.name || "", [form.image]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -144,10 +208,21 @@ function HerbalistManageHerbs({ user, dashboardData }) {
     }));
   };
 
-  const resetForm = () => {
+  const resetFormState = () => {
     setForm(INITIAL_FORM);
     setEditingHerbId(null);
-    setError("");
+    setFormError("");
+  };
+
+  const openCreateModal = () => {
+    resetFormState();
+    setShowFormModal(true);
+  };
+
+  const closeFormModal = () => {
+    if (isSaving) return;
+    setShowFormModal(false);
+    resetFormState();
   };
 
   const startEditing = (herb) => {
@@ -161,75 +236,72 @@ function HerbalistManageHerbs({ user, dashboardData }) {
       warnings: herb.warnings || "",
       image: null,
     });
-    setError("");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setFormError("");
+    setShowFormModal(true);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError("");
+    setFormError("");
 
     if (!form.herbName.trim()) {
-      setError("Herb name is required.");
+      setFormError("Herb name is required.");
       return;
     }
     if (!form.scientificName.trim()) {
-      setError("Scientific name is required.");
+      setFormError("Scientific name is required.");
       return;
     }
     if (!form.description.trim()) {
-      setError("Description is required.");
+      setFormError("Description is required.");
       return;
     }
 
+    const payload = {
+      herbName: form.herbName.trim(),
+      scientificName: form.scientificName.trim(),
+      description: form.description.trim(),
+      benefits: form.benefits.trim(),
+      dosage: form.dosage.trim(),
+      warnings: form.warnings.trim(),
+      image: form.image,
+    };
+
     setIsSaving(true);
     try {
-      const payload = {
-        herbName: form.herbName.trim(),
-        scientificName: form.scientificName.trim(),
-        description: form.description.trim(),
-        benefits: form.benefits.trim(),
-        dosage: form.dosage.trim(),
-        warnings: form.warnings.trim(),
-        image: form.image,
-      };
-
       if (editingHerbId) {
         await updateHerb(editingHerbId, payload);
         toast.success("Herb updated successfully!");
-        resetForm();
         await loadHerbs();
       } else {
-        const oldIds = new Set(
-          [...myHerbs, ...otherHerbs].map((h) => h.herbId),
-        );
+        const oldIds = new Set(herbs.map((herb) => toIdString(herb.herbId)));
         await createHerb(payload);
         toast.success("Herb added successfully!");
 
-        // Diff to assign new herb to current user
-        const newData = await getAllHerbs(1, 1000);
-        const allHerbsRefetched = extractHerbsArray(newData).map(normalizeHerb);
-        const newlyAdded = allHerbsRefetched.filter(
-          (h) => !oldIds.has(h.herbId),
-        );
+        const refreshed = await loadHerbs();
+        const createdIds = refreshed
+          .filter((herb) => !oldIds.has(toIdString(herb.herbId)))
+          .map((herb) => toIdString(herb.herbId));
 
-        if (newlyAdded.length > 0) {
-          const stored = getLocallyStoredHerbIds(herbalistId);
-          newlyAdded.forEach((h) => {
-            if (!stored.includes(h.herbId)) stored.push(h.herbId);
+        if (createdIds.length > 0 && herbalistId) {
+          setOwnedHerbIds((current) => {
+            const next = Array.from(
+              new Set([...current.map(toIdString), ...createdIds]),
+            );
+            saveLocallyStoredHerbIds(herbalistId, next);
+            return next;
           });
-          saveLocallyStoredHerbIds(herbalistId, stored);
         }
-
-        resetForm();
-        await loadHerbs();
       }
+
+      setShowFormModal(false);
+      resetFormState();
     } catch (err) {
       const message =
         err.response?.data?.message ||
         err.response?.data?.title ||
         `Failed to ${editingHerbId ? "update" : "add"} herb.`;
-      setError(message);
+      setFormError(message);
       toast.error(message);
     } finally {
       setIsSaving(false);
@@ -244,25 +316,33 @@ function HerbalistManageHerbs({ user, dashboardData }) {
     ) {
       return;
     }
+
     setIsDeleting(true);
-    setError("");
     try {
       await deleteHerb(herbId);
       toast.success("Herb deleted successfully!");
       await loadHerbs();
+
+      if (herbalistId) {
+        setOwnedHerbIds((current) => {
+          const next = current.filter(
+            (id) => toIdString(id) !== toIdString(herbId),
+          );
+          saveLocallyStoredHerbIds(herbalistId, next);
+          return next;
+        });
+      }
     } catch (err) {
       const message =
         err.response?.data?.message ||
         err.response?.data?.title ||
         "Failed to delete herb.";
-      setError(message);
       toast.error(message);
     } finally {
       setIsDeleting(false);
     }
   };
 
-  // Inventory Modal Logic
   const openInventoryModal = (herb) => {
     setSelectedHerbForInventory(herb);
     setPricePerKilo("");
@@ -273,8 +353,8 @@ function HerbalistManageHerbs({ user, dashboardData }) {
     setPricePerKilo("");
   };
 
-  const handleAddToInventory = async (e) => {
-    e.preventDefault();
+  const handleAddToInventory = async (event) => {
+    event.preventDefault();
     if (!selectedHerbForInventory) return;
 
     const parsedPrice = Number(pricePerKilo);
@@ -304,272 +384,375 @@ function HerbalistManageHerbs({ user, dashboardData }) {
     }
   };
 
-  // Filter other herbs for global registry
-  const filteredGlobalHerbs = useMemo(() => {
-    if (!globalSearchQuery.trim()) return otherHerbs;
-    const query = globalSearchQuery.toLowerCase().trim();
-    return otherHerbs.filter(
-      (herb) =>
-        herb.herbName?.toLowerCase().includes(query) ||
-        herb.scientificName?.toLowerCase().includes(query),
-    );
-  }, [otherHerbs, globalSearchQuery]);
+  const openDetailsModal = async (herb) => {
+    const herbId = herb?.herbId || herb?.id;
+    if (!herbId) return;
 
-  const renderHerbCard = (herb, isMine) => (
-    <motion.div
-      key={herb.herbId || herb.id}
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="group relative flex flex-col overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-[0_10px_40px_rgb(0,0,0,0.06)] hover:border-emerald-200"
-    >
-      <div className="absolute inset-0 bg-linear-to-br from-emerald-50/20 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+    setIsDetailsOpen(true);
+    setIsDetailsLoading(true);
+    setSelectedHerbDetails(herb);
 
-      <div className="relative p-6 flex flex-col h-full">
-        <div className="flex items-start gap-4">
-          <div className="h-14 w-14 rounded-2xl overflow-hidden shrink-0 bg-slate-50 border border-slate-100 flex items-center justify-center">
-            {herb.imageURL ? (
-              <img
-                src={herb.imageURL}
-                alt={herb.herbName}
-                className="object-cover w-full h-full"
-              />
-            ) : (
-              <FaLeaf className="text-emerald-200/50 text-2xl" />
-            )}
+    try {
+      const data = await getHerbById(herbId);
+      const normalized = normalizeHerb(data?.data || data || herb);
+      setSelectedHerbDetails(normalized);
+    } catch (err) {
+      setSelectedHerbDetails(herb);
+      const message =
+        err.response?.data?.message ||
+        err.response?.data?.title ||
+        "Failed to load herb details.";
+      toast.error(message);
+    } finally {
+      setIsDetailsLoading(false);
+    }
+  };
+
+  const closeDetailsModal = () => {
+    setIsDetailsOpen(false);
+    setSelectedHerbDetails(null);
+    setIsDetailsLoading(false);
+  };
+
+  const renderHerbCard = (herb) => {
+    const canManage = isManagedHerb(herb, herbalistId, ownedHerbIdsSet);
+    const approved = herb.isApproved === true;
+
+    return (
+      <motion.article
+        key={herb.herbId || herb.id}
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-[0_10px_30px_rgb(0,0,0,0.08)]"
+      >
+        <div className="p-5 sm:p-6">
+          <div className="flex items-start gap-3">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-slate-100">
+              {herb.imageURL ? (
+                <img
+                  src={herb.imageURL}
+                  alt={herb.herbName}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <FaLeaf className="text-2xl text-emerald-300" />
+              )}
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <div className="flex items-start justify-between gap-2">
+                <h3 className="truncate text-lg font-black text-slate-900">
+                  {herb.herbName}
+                </h3>
+                <span
+                  className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wider ${
+                    approved
+                      ? "bg-emerald-100 text-emerald-700"
+                      : "bg-amber-100 text-amber-700"
+                  }`}
+                >
+                  {approved ? "Approved" : "Pending"}
+                </span>
+              </div>
+              <p className="truncate text-xs font-semibold italic text-slate-500">
+                {herb.scientificName}
+              </p>
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="text-xl font-extrabold text-slate-900 leading-tight truncate">
-              {herb.herbName}
-            </h3>
-            <p className="mt-0.5 text-xs font-medium italic text-slate-500 truncate">
-              {herb.scientificName}
+
+          <p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-600">
+            {herb.description}
+          </p>
+
+          <div className="mt-4 grid gap-2 text-xs text-slate-500 sm:grid-cols-2">
+            <p className="line-clamp-2 rounded-xl bg-slate-50 px-3 py-2">
+              <span className="font-bold text-slate-700">Benefits:</span>{" "}
+              {herb.benefits || "—"}
+            </p>
+            <p className="line-clamp-2 rounded-xl bg-slate-50 px-3 py-2">
+              <span className="font-bold text-slate-700">Dosage:</span>{" "}
+              {herb.dosage || "—"}
             </p>
           </div>
         </div>
 
-        <p className="mt-5 line-clamp-3 text-sm leading-relaxed text-slate-600 flex-1">
-          {herb.description}
-        </p>
+          <div className="mt-auto border-t border-slate-100 bg-slate-50/80 p-4">
+          <div className="flex flex-col gap-2 sm:flex-row">
+            {canManage ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => startEditing(herb)}
+                  className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-white text-xs font-bold text-emerald-700 transition-colors hover:bg-emerald-50"
+                >
+                  <FaPen className="text-[10px]" />
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(herb.herbId, herb.herbName)}
+                  disabled={isDeleting}
+                  className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-red-200 bg-white text-xs font-bold text-red-700 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <FaTrash className="text-[10px]" />
+                  Delete
+                </button>
+              </>
+            ) : (
+              <div className="inline-flex h-10 w-full items-center justify-center rounded-xl border border-slate-200 bg-white text-xs font-bold uppercase tracking-wider text-slate-500">
+                Read Only
+              </div>
+            )}
+          </div>
 
-        <div className="mt-6 flex flex-col gap-3">
-          {isMine && (
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => startEditing(herb)}
-                className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-white border border-emerald-100 px-3 py-2.5 text-xs font-bold text-emerald-600 shadow-sm transition-colors hover:bg-emerald-50"
-              >
-                <FaPen className="text-[10px]" /> Edit
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDelete(herb.herbId, herb.herbName)}
-                disabled={isDeleting}
-                className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-white border border-red-100 px-3 py-2.5 text-xs font-bold text-red-600 shadow-sm transition-colors hover:bg-red-50 disabled:opacity-50"
-              >
-                <FaTrash className="text-[10px]" /> Delete
-              </button>
-            </div>
-          )}
+          <button
+            type="button"
+            onClick={() => openDetailsModal(herb)}
+            className="mt-2 inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white text-xs font-bold uppercase tracking-wider text-slate-700 transition-colors hover:border-emerald-300 hover:text-emerald-700"
+          >
+            <FaEye className="text-[10px]" />
+            View Details
+          </button>
 
           <button
             type="button"
             onClick={() => openInventoryModal(herb)}
-            className="w-full relative overflow-hidden flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition-all hover:bg-slate-800 hover:shadow-lg hover:-translate-y-0.5 focus:ring-4 focus:ring-slate-900/20"
+            className="mt-2 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 text-sm font-bold text-white transition-colors hover:bg-slate-800"
           >
-            <FaBookOpen className="text-xs text-emerald-400" />
+            <FaBookOpen className="text-xs text-emerald-300" />
             Add to Inventory
           </button>
         </div>
-      </div>
-    </motion.div>
-  );
+      </motion.article>
+    );
+  };
 
   return (
-    <div className="space-y-8 relative min-h-screen">
-      {/* Tab Navigation */}
-      <div className="flex items-center gap-4 border-b border-slate-200">
-        <button
-          onClick={() => {
-            setActiveTab("my-herbs");
-            setError("");
-          }}
-          className={`px-6 py-3 font-bold text-lg transition-all border-b-2 ${
-            activeTab === "my-herbs"
-              ? "border-emerald-600 text-emerald-600"
-              : "border-transparent text-slate-500 hover:text-slate-700"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <FaLeaf className="text-lg" />
-            My Herbs
-          </div>
-        </button>
-        <button
-          onClick={() => {
-            setActiveTab("global-registry");
-            setGlobalSearchQuery("");
-          }}
-          className={`px-6 py-3 font-bold text-lg transition-all border-b-2 ${
-            activeTab === "global-registry"
-              ? "border-emerald-600 text-emerald-600"
-              : "border-transparent text-slate-500 hover:text-slate-700"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <FaGlobe className="text-lg" />
-            Global Registry
-          </div>
-        </button>
-      </div>
-
-      {/* My Herbs Tab Content */}
-      {activeTab === "my-herbs" && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-12"
-        >
-          {/* Creation/Edit Form Section */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="relative z-10"
-          >
-            <div className="flex flex-col gap-2 mb-6">
-              <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 drop-shadow-sm">
-                Registry Configuration
-              </h1>
-              <p className="text-lg text-slate-500 font-medium">
-                Draft, edit, and formulate proprietary blends for your active
-                catalog.
-              </p>
+    <div className="mx-auto max-w-7xl space-y-6 px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+      <section className="rounded-3xl border border-emerald-200 bg-linear-to-br from-emerald-50 via-white to-slate-50 p-5 sm:p-6 lg:p-8">
+        <div className="flex flex-col gap-5">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex min-w-0 items-start gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-lg shadow-emerald-600/25">
+                <FaLeaf className="text-lg" />
+              </div>
+              <div className="min-w-0">
+                <h1 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
+                  Manage Herbs
+                </h1>
+                <p className="mt-1 text-sm font-medium text-slate-600 sm:text-base">
+                  Displaying all herbs in the application from{" "}
+                  <span className="font-bold text-slate-800">
+                    /api/Herbs/all
+                  </span>
+                  .
+                </p>
+              </div>
             </div>
 
-            <motion.div
-              layout
-              className="overflow-hidden rounded-4xl border border-white/60 bg-white/60 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-2xl"
+            <button
+              type="button"
+              onClick={openCreateModal}
+              className="hidden h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition-all hover:-translate-y-0.5 hover:bg-emerald-700 md:inline-flex"
             >
-              <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="rounded-xl bg-emerald-100 p-3 shadow-inner text-emerald-600">
-                    <FaLeaf className="text-xl" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-slate-800">
-                      {editingHerbId ? "Edit Custom Herb" : "Create New Herb"}
-                    </h2>
-                    <p className="mt-1 text-sm font-medium text-slate-500">
-                      {editingHerbId
-                        ? "Update the details of your authored herb entry."
-                        : "Contribute a new herb configuration to the system registry."}
-                    </p>
-                  </div>
+              <FaPlus className="text-xs" />
+              Add Herb
+            </button>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                Total Herbs
+              </p>
+              <p className="mt-1 text-2xl font-black text-slate-900">
+                {herbs.length}
+              </p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                Approved
+              </p>
+              <p className="mt-1 text-2xl font-black text-emerald-700">
+                {approvedCount}
+              </p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                Manageable
+              </p>
+              <p className="mt-1 text-2xl font-black text-slate-900">
+                {managedCount}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 md:flex-row md:items-center">
+            <div className="relative w-full md:max-w-md">
+              <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5 text-slate-400">
+                <FaSearch className="text-sm" />
+              </div>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search by herb, scientific name, description..."
+                className="w-full rounded-xl border border-slate-200 bg-white py-3 pe-4 ps-10 text-sm font-medium text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={openCreateModal}
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition-all hover:-translate-y-0.5 hover:bg-emerald-700 md:hidden"
+            >
+              <FaPlus className="text-xs" />
+              Add Herb
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {loadError ? (
+        <div className="rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-700">
+          {loadError}
+        </div>
+      ) : null}
+
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-slate-200 bg-white py-20">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-emerald-500/30 border-t-emerald-500" />
+          <p className="text-sm font-bold uppercase tracking-widest text-slate-400">
+            Loading Herbs...
+          </p>
+        </div>
+      ) : filteredHerbs.length === 0 ? (
+        <div className="rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50 py-20 text-center">
+          <FaLeaf className="mx-auto mb-4 text-5xl text-slate-300" />
+          <p className="text-xl font-bold text-slate-700">No Herbs Found</p>
+          <p className="mt-2 text-sm font-medium text-slate-500">
+            No herbs match your current search.
+          </p>
+        </div>
+      ) : (
+        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {filteredHerbs.map((herb) => renderHerbCard(herb))}
+        </section>
+      )}
+
+      <AnimatePresence>
+        {showFormModal ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/45 p-4 backdrop-blur-md sm:items-center"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              className="w-full max-w-3xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl"
+            >
+              <div className="flex items-start justify-between gap-4 border-b border-slate-100 bg-slate-50 px-6 py-5">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-700">
+                    Herb Registry
+                  </p>
+                  <h2 className="mt-1 text-xl font-black text-slate-900 sm:text-2xl">
+                    {editingHerbId ? "Update Herb" : "Add New Herb"}
+                  </h2>
                 </div>
+                <button
+                  type="button"
+                  onClick={closeFormModal}
+                  disabled={isSaving}
+                  className="rounded-full bg-white p-2 text-slate-400 shadow-sm transition-all hover:bg-slate-100 hover:text-slate-700 disabled:opacity-60"
+                >
+                  <FaTimes />
+                </button>
               </div>
 
-              <form onSubmit={handleSubmit}>
-                {error ? (
-                  <div className="mb-6 rounded-2xl border border-red-100 bg-red-50/80 backdrop-blur-sm px-5 py-4 text-sm font-bold text-red-700 shadow-sm">
-                    <FaTimes className="inline me-2" /> {error}
+              <form onSubmit={handleSubmit} className="max-h-[80vh] overflow-y-auto p-6 sm:p-8">
+                {formError ? (
+                  <div className="mb-6 rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-700">
+                    {formError}
                   </div>
                 ) : null}
 
-                {editingHerbId ? (
-                  <div className="mb-6 flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50/80 backdrop-blur-sm px-6 py-5 text-sm shadow-sm">
-                    <span className="font-bold flex items-center gap-2 text-emerald-800 tracking-wide">
-                      <FaPen className="text-emerald-500" /> Active Edit Session
-                    </span>
-                    <button
-                      type="button"
-                      onClick={resetForm}
-                      className="font-bold text-emerald-600 flex items-center gap-2 bg-white px-4 py-2 rounded-xl shadow-sm border border-emerald-100 transition-all hover:bg-emerald-500 hover:text-white"
-                    >
-                      <FaTimes /> Override & Cancel
-                    </button>
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div>
+                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500">
+                      Herb Name
+                    </label>
+                    <input
+                      type="text"
+                      name="herbName"
+                      value={form.herbName}
+                      onChange={handleChange}
+                      placeholder="e.g. Chamomile"
+                      className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
+                    />
                   </div>
-                ) : null}
-
-                <div className="mb-8">
-                  <h3 className="mb-4 text-xs font-black text-slate-400 uppercase tracking-widest">
-                    General Information
-                  </h3>
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
-                        Herb Name
-                      </label>
-                      <input
-                        type="text"
-                        name="herbName"
-                        value={form.herbName}
-                        onChange={handleChange}
-                        placeholder="e.g. Ginseng"
-                        className="block w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-bold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
-                        Scientific Name
-                      </label>
-                      <input
-                        type="text"
-                        name="scientificName"
-                        value={form.scientificName}
-                        onChange={handleChange}
-                        placeholder="e.g. Panax ginseng"
-                        className="block w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-bold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
-                      />
-                    </div>
+                  <div>
+                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500">
+                      Scientific Name
+                    </label>
+                    <input
+                      type="text"
+                      name="scientificName"
+                      value={form.scientificName}
+                      onChange={handleChange}
+                      placeholder="e.g. Matricaria chamomilla"
+                      className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
+                    />
                   </div>
                 </div>
 
-                <div className="mb-8 space-y-2">
-                  <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
-                    Detailed Description
+                <div className="mt-5">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500">
+                    Description
                   </label>
                   <textarea
                     name="description"
                     value={form.description}
                     onChange={handleChange}
-                    placeholder="Share the origins, appearance, and standard implementations..."
-                    className="block min-h-35 w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-semibold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                    rows={4}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
                   />
                 </div>
 
-                <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
-                      Medicinal Benefits
+                <div className="mt-5 grid gap-5 md:grid-cols-2">
+                  <div>
+                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500">
+                      Benefits
                     </label>
                     <textarea
                       name="benefits"
                       value={form.benefits}
                       onChange={handleChange}
-                      placeholder="e.g. Boosts energy, lowers blood sugar..."
-                      className="block min-h-30 w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-semibold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                      rows={3}
+                      className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
                     />
                   </div>
-
-                  <div className="space-y-2">
-                    <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
-                      Clinical Warnings
+                  <div>
+                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500">
+                      Warnings
                     </label>
                     <textarea
                       name="warnings"
                       value={form.warnings}
                       onChange={handleChange}
-                      placeholder="e.g. Not recommended for pregnant women..."
-                      className="block min-h-30 w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-semibold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-amber-500 focus:bg-white focus:ring-4 focus:ring-amber-500/10"
+                      rows={3}
+                      className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition-all focus:border-amber-600 focus:ring-2 focus:ring-amber-600/10"
                     />
                   </div>
                 </div>
 
-                <div className="mb-10 grid grid-cols-1 gap-6 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
-                      Dosage Instructions
+                <div className="mt-5 grid gap-5 md:grid-cols-2">
+                  <div>
+                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500">
+                      Dosage
                     </label>
                     <input
                       type="text"
@@ -577,20 +760,21 @@ function HerbalistManageHerbs({ user, dashboardData }) {
                       value={form.dosage}
                       onChange={handleChange}
                       placeholder="e.g. 1-3 grams daily"
-                      className="block w-full rounded-2xl border-2 border-slate-200/50 bg-white/80 backdrop-blur-sm px-5 py-4 text-base font-bold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                      className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide">
-                      Visual Media Target
+                  <div>
+                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500">
+                      Image
                     </label>
-                    <label className="flex h-14 w-full cursor-pointer items-center justify-between overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 px-5 text-sm text-slate-600 transition-all hover:bg-slate-100 hover:border-emerald-400">
-                      <span className="truncate font-semibold text-slate-500">
-                        {imageName || "Assign High-Res Imagery"}
+                    <label className="flex h-11 cursor-pointer items-center justify-between rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 text-xs font-semibold text-slate-600 transition-colors hover:border-emerald-400 hover:bg-slate-100">
+                      <span className="truncate">
+                        {imageName || "Upload herb image"}
                       </span>
-                      <span className="shrink-0 inline-flex items-center gap-2 font-black text-emerald-700 bg-emerald-100 shadow-sm px-4 py-1.5 rounded-xl">
-                        <FaUpload /> Attach File
+                      <span className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-emerald-100 px-2.5 py-1 text-emerald-700">
+                        <FaUpload className="text-[10px]" />
+                        Select
                       </span>
                       <input
                         type="file"
@@ -602,160 +786,170 @@ function HerbalistManageHerbs({ user, dashboardData }) {
                   </div>
                 </div>
 
-                <div className="border-t border-slate-200/50 flex justify-end">
+                <div className="mt-8 flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
+                  <button
+                    type="button"
+                    onClick={closeFormModal}
+                    disabled={isSaving}
+                    className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 px-5 text-sm font-bold text-slate-600 transition-colors hover:bg-slate-50 disabled:opacity-60"
+                  >
+                    Cancel
+                  </button>
                   <button
                     type="submit"
                     disabled={isSaving}
-                    className="group relative flex h-14 w-full md:w-auto min-w-50 md:float-right items-center justify-center gap-2 overflow-hidden rounded-2xl bg-slate-900 px-8 font-bold text-white transition-all hover:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 hover:shadow-[0_8px_20px_rgb(15,23,42,0.3)] hover:-translate-y-0.5"
+                    className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 text-sm font-bold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isSaving ? (
-                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
                     ) : (
-                      <>
-                        <FaCheckCircle className="text-emerald-400" />
-                        <span>
-                          {editingHerbId
-                            ? "Finalize Edits"
-                            : "Deploy Configuration"}
-                        </span>
-                      </>
+                      <FaCheckCircle className="text-emerald-300" />
                     )}
+                    {editingHerbId ? "Save Changes" : "Create Herb"}
                   </button>
-                  {/* Clear float block */}
-                  <div className="clear-both"></div>
                 </div>
               </form>
             </motion.div>
           </motion.div>
+        ) : null}
+      </AnimatePresence>
 
-          {/* My Herbs Section */}
-          <section className="relative z-10">
-            <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <h2 className="text-2xl font-extrabold text-slate-900 flex items-center gap-3">
-                  <div className="p-2 bg-emerald-100 text-emerald-600 rounded-xl shadow-inner">
-                    <FaCheckCircle className="text-xl" />
-                  </div>
-                  My Managed Herbs
-                </h2>
-                <p className="mt-2 text-sm text-slate-500 max-w-lg leading-relaxed">
-                  Herbs natively configured and managed by you. You retain full
-                  editing privileges over their details.
-                </p>
-              </div>
-              {myHerbs.length > 0 && (
-                <div className="text-xs font-bold uppercase tracking-widest text-slate-400 bg-white shadow-sm border border-slate-200 px-4 py-2 rounded-full">
-                  {myHerbs.length} Record{myHerbs.length === 1 ? "" : "s"}
-                </div>
-              )}
-            </div>
-
-            {isLoading ? (
-              <div className="py-12 flex justify-center">
-                <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-500/30 border-t-emerald-500" />
-              </div>
-            ) : myHerbs.length === 0 ? (
-              <div className="py-16 text-center rounded-4xl border-2 border-dashed border-slate-200 bg-slate-50">
-                <FaLeaf className="mx-auto text-4xl text-slate-300 mb-4" />
-                <p className="text-lg font-bold text-slate-600">
-                  No Custom Herbs
-                </p>
-                <p className="text-sm text-slate-500 mt-1 max-w-sm mx-auto">
-                  You have not created any proprietary herbs. Use the form above
-                  to deploy your initial formulas.
-                </p>
-              </div>
-            ) : (
-              <div className="grid gap-6 md:grid-cols-2 xlg:grid-cols-3">
-                {myHerbs.map((herb) => renderHerbCard(herb, true))}
-              </div>
-            )}
-          </section>
-        </motion.div>
-      )}
-
-      {/* Global Registry Tab Content */}
-      {activeTab === "global-registry" && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-8"
-        >
-          {/* Header and Search */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="flex flex-col gap-2">
-              <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">
-                Global Herb Registry
-              </h1>
-              <p className="text-lg text-slate-500 font-medium">
-                Explore and search the complete system catalog to expand your
-                practice.
-              </p>
-            </div>
-
-            {/* Search Bar */}
-            <div className="relative w-full md:w-96 group">
-              <div className="absolute inset-y-0 inset-s-0 flex items-center ps-5 text-slate-400 group-focus-within:text-emerald-500 transition-colors">
-                <FaSearch />
-              </div>
-              <input
-                type="text"
-                value={globalSearchQuery}
-                onChange={(e) => setGlobalSearchQuery(e.target.value)}
-                placeholder="Search herbs or scientific names..."
-                className="block w-full rounded-2xl border-2 border-slate-200 bg-white px-12 py-4 text-sm font-bold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
-              />
-            </div>
-          </div>
-
-          {/* Grid Section */}
-          <div className="relative z-10">
-            {isLoading ? (
-              <div className="py-24 flex flex-col items-center justify-center gap-4">
-                <div className="h-12 w-12 animate-spin rounded-full border-4 border-emerald-500/30 border-t-emerald-500" />
-                <p className="text-slate-500 font-bold animate-pulse">
-                  Synchronizing with registry...
-                </p>
-              </div>
-            ) : filteredGlobalHerbs.length === 0 ? (
-              <div className="py-24 text-center rounded-4xl border-2 border-dashed border-slate-200 bg-slate-50">
-                <FaLeaf className="mx-auto text-5xl text-slate-200 mb-4" />
-                <p className="text-xl font-bold text-slate-600">
-                  No Herbs Found
-                </p>
-                <p className="text-sm text-slate-400 mt-2">
-                  {otherHerbs.length === 0
-                    ? "No additional herbs are available in the global registry."
-                    : "We couldn't find any herbs matching your search criteria."}
-                </p>
-              </div>
-            ) : (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {filteredGlobalHerbs.map((herb) => renderHerbCard(herb, false))}
-              </div>
-            )}
-          </div>
-        </motion.div>
-      )}
-
-      {/* Inventory Modal */}
       <AnimatePresence>
-        {selectedHerbForInventory && (
+        {isDetailsOpen ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-md"
+            className="fixed inset-0 z-[58] flex items-end justify-center bg-slate-900/45 p-4 backdrop-blur-md sm:items-center"
           >
             <motion.div
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
-              className="w-full max-w-md overflow-hidden rounded-[2.5rem] bg-white shadow-2xl"
+              className="w-full max-w-2xl overflow-hidden rounded-3xl bg-white shadow-2xl"
             >
-              <div className="flex items-center justify-between border-b border-slate-100 px-8 py-5 bg-slate-50/50">
+              <div className="flex items-start justify-between gap-4 border-b border-slate-100 bg-slate-50 px-6 py-5">
+                <div className="min-w-0">
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-700">
+                    Herb Details
+                  </p>
+                  <h3 className="truncate text-xl font-black text-slate-900 sm:text-2xl">
+                    {selectedHerbDetails?.herbName || "Herb"}
+                  </h3>
+                  <p className="truncate text-xs font-semibold italic text-slate-500">
+                    {selectedHerbDetails?.scientificName || "Scientific name"}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={closeDetailsModal}
+                  className="rounded-full bg-white p-2 text-slate-400 shadow-sm transition-all hover:bg-slate-100 hover:text-slate-700"
+                >
+                  <FaTimes />
+                </button>
+              </div>
+
+              <div className="max-h-[75vh] overflow-y-auto p-6">
+                {isDetailsLoading ? (
+                  <div className="flex justify-center py-12">
+                    <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-500/30 border-t-emerald-500" />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="grid gap-4 sm:grid-cols-[120px_1fr]">
+                      <div className="h-30 w-30 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
+                        {selectedHerbDetails?.imageURL ? (
+                          <img
+                            src={selectedHerbDetails.imageURL}
+                            alt={selectedHerbDetails.herbName}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-emerald-300">
+                            <FaLeaf className="text-3xl" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                            Herb ID
+                          </p>
+                          <p className="text-sm font-bold text-slate-800">
+                            {selectedHerbDetails?.herbId || "—"}
+                          </p>
+                        </div>
+                        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                            Status
+                          </p>
+                          <p className="text-sm font-bold text-slate-800">
+                            {selectedHerbDetails?.isApproved ? "Approved" : "Pending"}
+                          </p>
+                        </div>
+                        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 sm:col-span-2">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                            Dosage
+                          </p>
+                          <p className="text-sm font-semibold text-slate-700">
+                            {selectedHerbDetails?.dosage || "No dosage provided."}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                        Description
+                      </p>
+                      <p className="mt-1 text-sm leading-6 text-slate-700">
+                        {selectedHerbDetails?.description ||
+                          "No description provided."}
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                        Benefits
+                      </p>
+                      <p className="mt-1 text-sm leading-6 text-slate-700">
+                        {selectedHerbDetails?.benefits || "No benefits provided."}
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-amber-200 bg-amber-50/60 px-4 py-3">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700">
+                        Warnings
+                      </p>
+                      <p className="mt-1 text-sm leading-6 text-amber-900/80">
+                        {selectedHerbDetails?.warnings || "No warnings provided."}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {selectedHerbForInventory ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/45 p-4 backdrop-blur-md"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              className="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl"
+            >
+              <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-6 py-5">
                 <h3 className="text-xl font-extrabold text-slate-900">
-                  Push to Inventory
+                  Add to Inventory
                 </h3>
                 <button
                   type="button"
@@ -767,69 +961,65 @@ function HerbalistManageHerbs({ user, dashboardData }) {
                 </button>
               </div>
 
-              <form onSubmit={handleAddToInventory} className="p-8">
-                <div className="mb-6 rounded-3xl bg-emerald-50/50 p-5 border border-emerald-100/50">
-                  <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-emerald-600/70">
-                    Configuration Target
+              <form onSubmit={handleAddToInventory} className="p-6">
+                <div className="mb-6 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700/70">
+                    Selected Herb
                   </p>
-                  <p className="text-xl font-black text-slate-900 leading-tight block truncate">
+                  <p className="mt-1 truncate text-lg font-black text-slate-900">
                     {selectedHerbForInventory.herbName}
                   </p>
-                  <p className="text-xs font-semibold italic text-slate-500 truncate">
+                  <p className="truncate text-xs font-semibold italic text-slate-500">
                     {selectedHerbForInventory.scientificName}
                   </p>
                 </div>
 
-                <div className="mb-8">
-                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-700">
-                    Selling Price / Kg
-                  </label>
-                  <div className="relative">
-                    <span className="absolute inset-s-4 top-1/2 -translate-y-1/2 font-extrabold text-slate-400">
-                      EGP
-                    </span>
-                    <input
-                      autoFocus
-                      type="number"
-                      min="0.01"
-                      step="0.01"
-                      value={pricePerKilo}
-                      onChange={(e) => setPricePerKilo(e.target.value)}
-                      placeholder="Pricing estimate..."
-                      className="block w-full rounded-2xl border-2 border-slate-200/50 ps-14 pe-4 py-4 text-lg font-black text-slate-900 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 placeholder:font-medium placeholder:text-slate-300"
-                      disabled={isAddingToInventory}
-                    />
-                  </div>
+                <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500">
+                  Selling Price / Kg
+                </label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 start-0 flex items-center ps-4 text-sm font-extrabold text-slate-400">
+                    EGP
+                  </span>
+                  <input
+                    autoFocus
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    value={pricePerKilo}
+                    onChange={(event) => setPricePerKilo(event.target.value)}
+                    placeholder="0.00"
+                    className="w-full rounded-xl border border-slate-200 py-3 pe-4 ps-14 text-base font-black text-slate-900 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
+                    disabled={isAddingToInventory}
+                  />
                 </div>
 
-                <div className="flex flex-col gap-3">
+                <div className="mt-6 flex flex-col gap-3">
                   <button
                     type="submit"
                     disabled={isAddingToInventory || !pricePerKilo}
-                    className="group flex w-full h-14 items-center justify-center gap-2 rounded-2xl bg-slate-900 font-bold text-white shadow-[0_8px_20px_rgb(15,23,42,0.2)] transition-all hover:-translate-y-0.5 hover:bg-slate-800 disabled:pointer-events-none disabled:opacity-50"
+                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 text-sm font-bold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isAddingToInventory ? (
-                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-white"></div>
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
                     ) : (
-                      <>
-                        <FaPlus className="text-xs text-emerald-400" /> Confirm
-                        Listing Deployment
-                      </>
+                      <FaPlus className="text-xs text-emerald-300" />
                     )}
+                    Confirm
                   </button>
                   <button
                     type="button"
                     onClick={closeInventoryModal}
-                    className="flex w-full h-14 items-center justify-center rounded-2xl border-2 border-slate-100 bg-transparent font-bold text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50"
                     disabled={isAddingToInventory}
+                    className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-slate-200 text-sm font-bold text-slate-600 transition-colors hover:bg-slate-50 disabled:opacity-60"
                   >
-                    Cancel Action
+                    Cancel
                   </button>
                 </div>
               </form>
             </motion.div>
           </motion.div>
-        )}
+        ) : null}
       </AnimatePresence>
     </div>
   );
