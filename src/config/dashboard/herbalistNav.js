@@ -5,7 +5,6 @@ import {
   MdMenuBook,
   MdAutoAwesome,
   MdBiotech,
-  MdInventory,
   MdShoppingCart,
   MdPerson,
   MdSettings,
@@ -20,7 +19,7 @@ export const getHerbalistNavConfig = (t, { ordersCount } = {}) => [
   },
   {
     name: t("herbalistSidebar.manageHerbs"),
-    href: "/herbalist/dashboard/herbs",
+    href: "/herbalist/dashboard/herbs/managed",
     icon: MdLocalFlorist,
   },
   {
@@ -42,11 +41,6 @@ export const getHerbalistNavConfig = (t, { ordersCount } = {}) => [
     name: t("herbalistSidebar.manageDiseases"),
     href: "/herbalist/dashboard/diseases",
     icon: MdBiotech,
-  },
-  {
-    name: t("herbalistSidebar.inventory"),
-    href: "/herbalist/dashboard/inventory",
-    icon: MdInventory,
   },
   {
     name: t("herbalistSidebar.orders"),

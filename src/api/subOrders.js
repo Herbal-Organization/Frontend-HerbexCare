@@ -19,3 +19,10 @@ export const getMyFinancials = async () => {
   const { data } = await httpClient.get("/api/SubOrders/my-financials");
   return data;
 };
+
+export const cancelSubOrder = async (subOrderId) => {
+  const { data } = await httpClient.put(
+    `/api/SubOrders/sub-orders/${subOrderId}/cancel`,
+  );
+  return data;
+};

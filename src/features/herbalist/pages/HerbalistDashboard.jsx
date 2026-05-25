@@ -11,7 +11,6 @@ import HerbalistManageRecipes from "./HerbalistManageRecipes";
 import HerbalistManageAIRecipes from "./HerbalistManageAIRecipes";
 import HerbalistManageAIChatRecipes from "./HerbalistManageAIChatRecipes";
 import HerbalistManageDiseases from "./HerbalistManageDiseases";
-import HerbalistInventory from "./HerbalistInventory";
 import HerbalistDashboardHome from "./HerbalistDashboardHome";
 import HerbalistProfile from "./HerbalistProfile";
 import HerbalistSettings from "./HerbalistSettings";
@@ -151,9 +150,36 @@ function HerbalistDashboard() {
           <Route
             path="/herbs"
             element={
+              <Navigate to="/herbalist/dashboard/herbs/managed" replace />
+            }
+          />
+          <Route
+            path="/herbs/managed"
+            element={
               <HerbalistManageHerbs
                 user={displayUser}
                 dashboardData={dashboardData}
+                view="managed"
+              />
+            }
+          />
+          <Route
+            path="/herbs/readonly"
+            element={
+              <HerbalistManageHerbs
+                user={displayUser}
+                dashboardData={dashboardData}
+                view="readonly"
+              />
+            }
+          />
+          <Route
+            path="/herbs/inventory"
+            element={
+              <HerbalistManageHerbs
+                user={displayUser}
+                dashboardData={dashboardData}
+                view="inventory"
               />
             }
           />
@@ -167,9 +193,17 @@ function HerbalistDashboard() {
             }
           />
           <Route path="/ai-recipes" element={<HerbalistManageAIRecipes />} />
-          <Route path="/ai-chat-recipes" element={<HerbalistManageAIChatRecipes />} />
+          <Route
+            path="/ai-chat-recipes"
+            element={<HerbalistManageAIChatRecipes />}
+          />
           <Route path="/diseases" element={<HerbalistManageDiseases />} />
-          <Route path="/inventory" element={<HerbalistInventory />} />
+          <Route
+            path="/inventory"
+            element={
+              <Navigate to="/herbalist/dashboard/herbs/inventory" replace />
+            }
+          />
           <Route path="/orders" element={<HerbalistSubOrders />} />
           <Route path="/orders/:id" element={<SubOrderDetails />} />
           <Route
