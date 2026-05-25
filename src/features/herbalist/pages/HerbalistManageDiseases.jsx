@@ -10,6 +10,38 @@ import { getAllDiseases, createDisease } from "@api/diseases";
 
 const DISEASES_PER_PAGE = 10;
 
+const normalizeDiseaseProposalPayload = (payload = {}) => ({
+  diseaseName: String(payload.diseaseName || "").trim(),
+  diseaseType: String(payload.diseaseType || "").trim(),
+  description: String(payload.description || "").trim(),
+  symptoms: String(payload.symptoms || "").trim(),
+  isSupportedByAi:
+    payload.isSupportedByAi === true ||
+    payload.isSupportedByAi === "true" ||
+    payload.isSupportedByAi === "True" ||
+    payload.isSupportedByAi === 1,
+});
+
+const toBoolean = (value) =>
+  value === true || value === "true" || value === "True" || value === 1;
+
+const normalizeDisease = (disease = {}, fallback = {}) => ({
+  diseaseId:
+    disease.diseaseId ??
+    disease.id ??
+    fallback.diseaseId ??
+    fallback.diseaseName,
+  diseaseName:
+    disease.diseaseName ?? disease.name ?? fallback.diseaseName ?? "",
+  diseaseType:
+    disease.diseaseType ?? disease.type ?? fallback.diseaseType ?? "",
+  description: disease.description ?? fallback.description ?? "",
+  symptoms: disease.symptoms ?? fallback.symptoms ?? "",
+  isSupportedByAi: toBoolean(
+    disease.isSupportedByAi ?? fallback.isSupportedByAi,
+  ),
+});
+
 // Framer Motion variants
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -65,13 +97,9 @@ function HerbalistManageDiseases() {
 
         // Normalize diseases
         const normalized = diseaseList
-          .map((disease, index) => ({
-            diseaseId: disease.diseaseId ?? disease.id ?? index,
-            diseaseName: disease.diseaseName ?? disease.name ?? "",
-            diseaseType: disease.diseaseType ?? disease.type ?? "",
-            description: disease.description ?? "",
-            symptoms: disease.symptoms ?? "",
-          }))
+          .map((disease, index) =>
+            normalizeDisease(disease, { diseaseId: index }),
+          )
           .filter((d) => d.diseaseName);
 
         setAllDiseases(normalized);
@@ -122,19 +150,15 @@ function HerbalistManageDiseases() {
     setIsSubmitting(true);
 
     try {
-      const createdDisease = await createDisease(payload);
-
-      // Add the new disease to the list
-      const newDisease = {
-        diseaseId:
-          createdDisease?.diseaseId ??
-          createdDisease?.id ??
-          payload.diseaseName,
-        diseaseName: createdDisease?.diseaseName ?? payload.diseaseName,
-        diseaseType: createdDisease?.diseaseType ?? payload.diseaseType ?? "",
-        description: createdDisease?.description ?? payload.description ?? "",
-        symptoms: createdDisease?.symptoms ?? payload.symptoms ?? "",
-      };
+      const proposalPayload = normalizeDiseaseProposalPayload(payload);
+      const createdDisease = await createDisease(proposalPayload);
+      const newDisease = normalizeDisease(
+        {
+          ...createdDisease,
+          isSupportedByAi: proposalPayload.isSupportedByAi,
+        },
+        proposalPayload,
+      );
 
       setAllDiseases((prev) => [newDisease, ...prev]);
       setDiseases((prev) => [newDisease, ...prev]);
@@ -238,6 +262,7 @@ function HerbalistManageDiseases() {
               onSubmit={handleCreateDisease}
               isSubmitting={isSubmitting}
               error={formError}
+              showAiSupport
             />
           )}
         </AnimatePresence>
@@ -249,6 +274,7 @@ function HerbalistManageDiseases() {
             isLoading={isLoading}
             onAddClick={() => setShowCreateForm(true)}
             onViewDetails={handleViewDiseaseDetails}
+            showAiSupport
           />
         </motion.div>
 

@@ -11,8 +11,23 @@ export const getAllDiseaseNames = async () => {
 };
 
 export const createDisease = async (payload) => {
-  const { data } = await httpClient.post("/api/Diseases/propose", payload);
-  return data;
+  const proposalPayload = {
+    diseaseName: String(payload?.diseaseName || "").trim(),
+    diseaseType: String(payload?.diseaseType || "").trim(),
+    description: String(payload?.description || "").trim(),
+    symptoms: String(payload?.symptoms || "").trim(),
+    isSupportedByAi:
+      payload?.isSupportedByAi === true ||
+      payload?.isSupportedByAi === "true" ||
+      payload?.isSupportedByAi === "True" ||
+      payload?.isSupportedByAi === 1,
+  };
+
+  const { data } = await httpClient.post(
+    "/api/Diseases/propose",
+    proposalPayload,
+  );
+  return data?.data ?? data;
 };
 
 export const addAdminDisease = async (payload) => {
