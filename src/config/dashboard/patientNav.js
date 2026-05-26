@@ -58,6 +58,11 @@ export const getPatientNavConfig = (t) => [
     icon: FaUser,
   },
   {
+    name: t("patientSidebar.feedbackHistory"),
+    href: "/patient/dashboard/feedbacks",
+    icon: FaComments,
+  },
+  {
     name: t("patientSidebar.settings"),
     href: "/patient/dashboard/settings",
     icon: FaCog,

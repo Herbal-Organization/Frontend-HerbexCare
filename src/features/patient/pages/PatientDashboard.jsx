@@ -15,6 +15,7 @@ import PatientPaymentSimulation from "./PaymentSimulationPage";
 import OrderSuccessPage from "./OrderSuccessPage";
 import PatientFavorites from "./PatientFavorites";
 import PatientSettings from "./PatientSettings";
+import FeedbackHistoryPage from "./FeedbackHistoryPage";
 import AiConsultationPage from "./ai-pages/AiConsultationPage";
 import AiChatPage from "./ai-chat/AiChatPage";
 import usePatientDashboardData from "@features/patient/hooks/usePatientDashboardData";
@@ -83,8 +84,6 @@ function PatientDashboard() {
     });
   }, [user, dashboardData?.userDetails]);
 
-
-
   if (!displayUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -140,7 +139,10 @@ function PatientDashboard() {
           path="/settings"
           element={<PatientSettings user={displayUser} />}
         />
-        <Route path="/cart" element={<PatientCart dashboardData={dashboardData} />} />
+        <Route
+          path="/cart"
+          element={<PatientCart dashboardData={dashboardData} />}
+        />
         <Route path="/orders" element={<PatientOrders />} />
         <Route path="/orders/success" element={<OrderSuccessPage />} />
         <Route
@@ -149,6 +151,7 @@ function PatientDashboard() {
         />
         <Route path="/orders/:orderId" element={<PatientOrderDetails />} />
         <Route path="/favorites" element={<PatientFavorites />} />
+        <Route path="/feedbacks" element={<FeedbackHistoryPage />} />
         <Route
           path="/recipes"
           element={<Navigate to="/patient/dashboard/favorites" replace />}

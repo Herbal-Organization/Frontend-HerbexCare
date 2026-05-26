@@ -56,7 +56,9 @@ export const deleteMyAiRecipeFeedback = async (id) => {
 };
 
 // My feedback history
-export const getMyFeedbackHistory = async () => {
-  const { data } = await httpClient.get("/api/Feedbacks/my-history");
+export const getMyFeedbackHistory = async (pageNumber = 1, pageSize = 10) => {
+  const { data } = await httpClient.get("/api/Feedbacks/my-history", {
+    params: { pageNumber, pageSize },
+  });
   return data;
 };

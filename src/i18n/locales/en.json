@@ -94,6 +94,9 @@
     "dark": "Switch to dark mode",
     "light": "Switch to light mode"
   },
+  "common": {
+    "loading": "Loading..."
+  },
   "patientHome": {
     "badge": "Patient Home",
     "welcome": "Welcome back, {{name}}",
@@ -145,11 +148,25 @@
     "herbLibrary": "Herb Library",
     "recipeLibrary": "Recipe Library",
     "profile": "Profile",
+    "feedbackHistory": "Feedback History",
     "settings": "Settings",
     "home": "Home",
     "signOut": "Sign Out",
     "patient": "Patient",
     "member": "Member"
+  },
+  "feedbackHistoryPage": {
+    "title": "My Feedback History",
+    "description": "View and manage all the reviews and ratings you have shared.",
+    "noFeedback": "You haven't added any feedback yet.",
+    "rating": "Rating",
+    "comment": "Comment",
+    "date": "Date",
+    "type": "Type",
+    "recipe": "Recipe",
+    "aiRecipe": "AI Recipe",
+    "aiChatRecipe": "AI Chat Recipe",
+    "totalFeedbacks": "Total Feedbacks"
   },
   "herbalistSidebar": {
     "brand": "HerbexCare",

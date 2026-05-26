@@ -94,6 +94,9 @@
     "dark": "التبديل إلى الوضع الداكن",
     "light": "التبديل إلى الوضع الفاتح"
   },
+  "common": {
+    "loading": "جاري التحميل..."
+  },
   "patientHome": {
     "badge": "الصفحة الرئيسية للمريض",
     "welcome": "مرحبًا بعودتك , {{name }}",
@@ -164,11 +167,25 @@
     "herbLibrary": "مكتبة الأعشاب",
     "recipeLibrary": "مكتبة الوصفات",
     "profile": "الملف الشخصي",
+    "feedbackHistory": "سجل التقييمات",
     "settings": "الإعدادات",
     "home": "الرئيسية",
     "signOut": "تسجيل الخروج",
     "patient": "مريض",
     "member": "عضو"
+  },
+  "feedbackHistoryPage": {
+    "title": "سجل التقييمات الخاص بي",
+    "description": "عرض وإدارة جميع المراجعات والتقييمات التي قمت بمشاركتها.",
+    "noFeedback": "لم تقم بإضافة أي تقييمات بعد.",
+    "rating": "التقييم",
+    "comment": "التعليق",
+    "date": "التاريخ",
+    "type": "النوع",
+    "recipe": "وصفة",
+    "aiRecipe": "وصفة ذكاء اصطناعي",
+    "aiChatRecipe": "وصفة دردشة ذكاء اصطناعي",
+    "totalFeedbacks": "إجمالي التقييمات"
   },
   "herbalistSidebar": {
     "brand": "HerbexCare",
