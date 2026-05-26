@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import useHerbalistOrder from "../hooks/useHerbalistOrder";
 import HerbOrderItem from "../components/HerbOrderItem";
+import RecipeOrderItem from "../components/RecipeOrderItem";
 import StatusBadge from "@components/common/StatusBadge";
 
 const formatCurrency = (value) => `${Number(value || 0).toFixed(2)} EGP`;
@@ -22,6 +23,9 @@ function SubOrderDetails() {
   const { order, isLoading, error } = useHerbalistOrder(id);
   const herbItems = Array.isArray(order?.items)
     ? order.items.filter((item) => item.herbId)
+    : [];
+  const recipeItems = Array.isArray(order?.items)
+    ? order.items.filter((item) => item.recipeId)
     : [];
 
   if (isLoading) {
@@ -76,23 +80,44 @@ function SubOrderDetails() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="mb-5 flex items-center gap-2 border-b border-slate-100 pb-4 text-lg font-extrabold text-slate-900">
-            <FaLeaf /> Ordered Herbs
-          </h2>
-          {herbItems.length > 0 ? (
-            <div className="space-y-3">
-              {herbItems.map((item, index) => (
-                <HerbOrderItem key={index} item={item} />
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center">
-              <p className="text-sm font-bold text-slate-600">
-                No herbs in the order.
-              </p>
-            </div>
-          )}
+        <div className="flex flex-col gap-6">
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-5 flex items-center gap-2 border-b border-slate-100 pb-4 text-lg font-extrabold text-slate-900">
+              <FaLeaf /> Ordered Herbs
+            </h2>
+            {herbItems.length > 0 ? (
+              <div className="space-y-3">
+                {herbItems.map((item, index) => (
+                  <HerbOrderItem key={index} item={item} />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center">
+                <p className="text-sm font-bold text-slate-600">
+                  No herbs in the order.
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-5 flex items-center gap-2 border-b border-slate-100 pb-4 text-lg font-extrabold text-slate-900">
+              <FaLeaf /> Ordered Recipes
+            </h2>
+            {recipeItems.length > 0 ? (
+              <div className="space-y-3">
+                {recipeItems.map((item, index) => (
+                  <RecipeOrderItem key={index} item={item} />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center">
+                <p className="text-sm font-bold text-slate-600">
+                  No recipes in the order.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="space-y-6">

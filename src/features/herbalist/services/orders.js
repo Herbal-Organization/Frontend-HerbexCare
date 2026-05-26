@@ -1,4 +1,5 @@
 import { getHerbById } from "@api/herbs";
+import { getRecipeById } from "@api/recipes";
 
 const normalizeOrder = (order) => {
   const details = order.order || order.parentOrder || {};
@@ -43,6 +44,18 @@ export const enrichOrderItems = async (items) => {
         } catch (error) {
           console.error(
             `Failed to fetch details for herb ${item.herbId}`,
+            error,
+          );
+          return item;
+        }
+      }
+      if (item.recipeId) {
+        try {
+          const recipeDetails = await getRecipeById(item.recipeId);
+          return { ...item, ...recipeDetails };
+        } catch (error) {
+          console.error(
+            `Failed to fetch details for recipe ${item.recipeId}`,
             error,
           );
           return item;

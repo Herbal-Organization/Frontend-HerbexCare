@@ -1,9 +1,9 @@
 import httpClient from "./httpClient";
 
-const basePath = (id) => `/api/ai-chat-recipe/${id}/reviews`;
+const basePath = (id) => `/api/Feedbacks/ai-chat-recipe/${id}`;
 
 /**
- * GET /api/ai-chat-recipe/{id}/reviews/all
+ * GET /api/Feedbacks/ai-chat-recipe/{id}/all
  */
 export const getAllAiChatRecipeReviews = async (id) => {
   if (!id) throw new Error("AI chat recipe ID is required");
@@ -12,7 +12,7 @@ export const getAllAiChatRecipeReviews = async (id) => {
 };
 
 /**
- * GET /api/ai-chat-recipe/{id}/reviews/get-me
+ * GET /api/Feedbacks/ai-chat-recipe/{id}/get-me
  */
 export const getMyAiChatRecipeReview = async (id) => {
   if (!id) throw new Error("AI chat recipe ID is required");
@@ -21,7 +21,7 @@ export const getMyAiChatRecipeReview = async (id) => {
 };
 
 /**
- * POST /api/ai-chat-recipe/{id}/reviews/submit
+ * POST /api/Feedbacks/ai-chat-recipe/{id}/submit
  * @param {{ ratingValue: number, comment?: string }} payload
  */
 export const submitAiChatRecipeReview = async (id, payload) => {
@@ -34,7 +34,7 @@ export const submitAiChatRecipeReview = async (id, payload) => {
 };
 
 /**
- * DELETE /api/ai-chat-recipe/{id}/reviews/delete-me
+ * DELETE /api/Feedbacks/ai-chat-recipe/{id}/delete-me
  */
 export const deleteMyAiChatRecipeReview = async (id) => {
   if (!id) throw new Error("AI chat recipe ID is required");

@@ -4,7 +4,9 @@ import httpClient from "./httpClient";
  * GET /api/inventory-ai-recipes/my-inventory
  */
 export const getMyInventoryAIRecipes = async () => {
-  const { data } = await httpClient.get("/api/inventory-ai-recipes/my-inventory");
+  const { data } = await httpClient.get(
+    "/api/inventory-ai-recipes/my-inventory",
+  );
   return data;
 };
 
