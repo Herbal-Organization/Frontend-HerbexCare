@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { getSubOrderById } from "@api/subOrders";
-import { normalizeOrders } from "../services/orders";
+import { normalizeOrders, enrichOrderItems } from "../services/orders";
 
 const useHerbalistOrder = (orderId) => {
   const [order, setOrder] = useState(null);
@@ -13,7 +13,9 @@ const useHerbalistOrder = (orderId) => {
     setError(null);
     try {
       const response = await getSubOrderById(orderId);
-      setOrder(normalizeOrders([response])[0]);
+      const normalizedOrder = normalizeOrders([response])[0];
+      const enrichedItems = await enrichOrderItems(normalizedOrder.items);
+      setOrder({ ...normalizedOrder, items: enrichedItems });
     } catch (err) {
       setError(err);
     } finally {

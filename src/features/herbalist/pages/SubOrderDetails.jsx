@@ -11,6 +11,7 @@ import {
   FaUser,
 } from "react-icons/fa";
 import useHerbalistOrder from "../hooks/useHerbalistOrder";
+import HerbOrderItem from "../components/HerbOrderItem";
 import StatusBadge from "@components/common/StatusBadge";
 
 const formatCurrency = (value) => `${Number(value || 0).toFixed(2)} EGP`;
@@ -19,6 +20,9 @@ function SubOrderDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { order, isLoading, error } = useHerbalistOrder(id);
+  const herbItems = Array.isArray(order?.items)
+    ? order.items.filter((item) => item.herbId)
+    : [];
 
   if (isLoading) {
     return (
@@ -76,25 +80,19 @@ function SubOrderDetails() {
           <h2 className="mb-5 flex items-center gap-2 border-b border-slate-100 pb-4 text-lg font-extrabold text-slate-900">
             <FaLeaf /> Ordered Herbs
           </h2>
-          <div className="space-y-3">
-            {order.items.map((item, index) => (
-              <div
-                key={index}
-                className="grid gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:grid-cols-[1fr_auto_auto_auto] sm:items-center"
-              >
-                <p className="font-bold text-slate-900">{item.herbName}</p>
-                <p className="text-sm font-bold text-slate-700">
-                  {item.quantityPerGram}g
-                </p>
-                <p className="text-sm font-bold text-slate-700">
-                  {formatCurrency(item.unitPricePerKilo)}/kg
-                </p>
-                <p className="text-sm font-black text-emerald-700">
-                  {formatCurrency(item.subTotal)}
-                </p>
-              </div>
-            ))}
-          </div>
+          {herbItems.length > 0 ? (
+            <div className="space-y-3">
+              {herbItems.map((item, index) => (
+                <HerbOrderItem key={index} item={item} />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center">
+              <p className="text-sm font-bold text-slate-600">
+                No herbs in the order.
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="space-y-6">
