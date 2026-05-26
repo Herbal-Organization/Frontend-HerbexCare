@@ -5,6 +5,8 @@ import {
   FaClipboardCheck,
   FaBrain,
   FaLeaf,
+  FaUsers,
+  FaCommentDots,
 } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import PatientNavbar from "@components/features/browse/PatientNavbar";
@@ -45,6 +47,18 @@ function PatientHome() {
       to: "/patient/dashboard/profile",
       icon: FaClipboardCheck,
       color: "bg-purple-50 text-purple-700 border-purple-200",
+    },
+    {
+      key: "herbalists",
+      to: "/patient/home/herbalists",
+      icon: FaUsers,
+      color: "bg-indigo-50 text-indigo-700 border-indigo-200",
+    },
+    {
+      key: "feedbacks",
+      to: "/patient/dashboard/feedbacks",
+      icon: FaCommentDots,
+      color: "bg-orange-50 text-orange-700 border-orange-200",
     },
   ];
 
@@ -94,7 +108,7 @@ function PatientHome() {
                 </p>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
                 {facilities.map((facility) => {
                   const IconComponent = facility.icon;
 

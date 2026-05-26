@@ -95,7 +95,8 @@
     "light": "Switch to light mode"
   },
   "common": {
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "explore": "Explore"
   },
   "patientHome": {
     "badge": "Patient Home",
@@ -133,6 +134,16 @@
         "title": "My Profile",
         "description": "Update personal and medical details.",
         "cta": "Open Profile"
+      },
+      "herbalists": {
+        "title": "Herbalists",
+        "description": "Find and connect with expert herbalists.",
+        "cta": "Browse Herbalists"
+      },
+      "feedbacks": {
+        "title": "My Feedbacks",
+        "description": "View and manage your feedback history.",
+        "cta": "View History"
       }
     }
   },
@@ -154,6 +165,23 @@
     "signOut": "Sign Out",
     "patient": "Patient",
     "member": "Member"
+  },
+  "dashboard": {
+    "quickAccess": {
+      "sectionTitle": "Quick Access",
+      "herbalists": {
+        "title": "All Herbalists",
+        "desc": "Browse professional herbalists and their natural recipes."
+      },
+      "feedbacks": {
+        "title": "My Feedbacks",
+        "desc": "Explore your previous reviews, ratings, and shared insights."
+      },
+      "consultation": {
+        "title": "AI Consultation",
+        "desc": "Generate personalized herbal recipes tailored to your needs."
+      }
+    }
   },
   "feedbackHistoryPage": {
     "title": "My Feedback History",

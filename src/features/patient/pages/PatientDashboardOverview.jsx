@@ -3,6 +3,7 @@ import PatientAddressCard from "@features/patient/components/PatientAddressCard"
 import PatientDashboardState from "@features/patient/components/PatientDashboardState";
 import PatientMedicalSummary from "@features/patient/components/PatientMedicalSummary";
 import PatientOverviewHero from "@features/patient/components/PatientOverviewHero";
+import PatientQuickAccess from "@features/patient/components/PatientQuickAccess";
 import { useTranslation } from "react-i18next";
 
 const containerVariants = {
@@ -78,6 +79,8 @@ function PatientDashboardOverview({
       className="p-8 space-y-8 max-w-7xl mx-auto"
     >
       <PatientOverviewHero user={user} profile={profile} />
+
+      <PatientQuickAccess />
 
       <section className="grid gap-8 lg:grid-cols-[1.2fr_1fr] xl:grid-cols-[1.3fr_0.9fr]">
         <PatientMedicalSummary profile={profile} />
