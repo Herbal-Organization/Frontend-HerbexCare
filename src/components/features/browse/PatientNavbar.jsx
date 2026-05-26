@@ -36,15 +36,23 @@ function PatientNavbar() {
   }, []);
 
   const navItems = [
-    { label: t("navbar.home"), path: "/patient/home", exact: true, icon: FaHome },
+    {
+      label: t("navbar.home"),
+      path: "/patient/home",
+      exact: true,
+      icon: FaHome,
+    },
     { label: t("navbar.herbs"), path: "/patient/home/herbs", icon: FaLeaf },
-    { label: t("navbar.recipes"), path: "/patient/home/recipes", icon: FaBookOpen },
+    {
+      label: t("navbar.recipes"),
+      path: "/patient/home/recipes",
+      icon: FaBookOpen,
+    },
     {
       label: t("navbar.herbalists"),
       path: "/patient/home/herbalists",
       icon: FaUserMd,
     },
-    { label: t("navbar.profile"), path: "/patient/dashboard/profile", icon: FaUser },
   ];
 
   const isActive = ({ path, exact }) => {
@@ -63,24 +71,21 @@ function PatientNavbar() {
   };
 
   return (
-    <header 
+    <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled 
-          ? "bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.05)] py-2" 
+        scrolled
+          ? "bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.05)] py-2"
           : "bg-white/50 backdrop-blur-md border-b border-primary/10 py-3"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
           {/* Logo Section */}
-          <Link
-            to="/patient/home"
-            className="flex items-center gap-3 group"
-          >
-            <div className="p-2 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-xl text-white shadow-md shadow-emerald-200 transform group-hover:scale-105 group-hover:rotate-3 transition-all duration-300 flex items-center justify-center">
+          <Link to="/patient/home" className="flex items-center gap-3 group">
+            <div className="p-2 bg-linear-to-tr from-emerald-500 to-teal-400 rounded-xl text-white shadow-md shadow-emerald-200 transform group-hover:scale-105 group-hover:rotate-3 transition-all duration-300 flex items-center justify-center">
               <FaLeaf className="text-xl drop-shadow-sm" />
             </div>
-            <h1 className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-700 via-teal-600 to-emerald-500 bg-clip-text text-transparent transition-all duration-300">
+            <h1 className="text-2xl font-extrabold tracking-tight bg-linear-to-r from-emerald-700 via-teal-600 to-emerald-500 bg-clip-text text-transparent transition-all duration-300">
               {t("navbar.brand")}
             </h1>
           </Link>
@@ -100,18 +105,20 @@ function PatientNavbar() {
                       : "text-slate-500 hover:text-emerald-600 hover:bg-emerald-50/50"
                   }`}
                 >
-                  <Icon className={`text-base transition-transform duration-300 ${active ? "scale-110" : "group-hover:scale-110"}`} />
+                  <Icon
+                    className={`text-base transition-transform duration-300 ${active ? "scale-110" : "group-hover:scale-110"}`}
+                  />
                   <span className="relative z-10">{item.label}</span>
-                  
+
                   {/* Underline for active state */}
                   {active && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 h-1 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-t-full" />
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 h-1 bg-linear-to-r from-emerald-400 to-teal-400 rounded-t-full" />
                   )}
                   {/* Hover underline effect */}
                   {!active && (
                     <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-1 bg-emerald-300/50 rounded-t-full transition-all duration-300 group-hover:w-4/5" />
                   )}
-                  
+
                   {/* Hover effect background */}
                   <span className="absolute inset-0 bg-emerald-100/0 group-hover:bg-emerald-100/30 transform scale-0 group-hover:scale-100 transition-transform duration-300 rounded-xl origin-center" />
                 </Link>
@@ -128,7 +135,7 @@ function PatientNavbar() {
             >
               <FaShoppingCart className="text-lg group-hover:scale-110 transition-transform duration-300" />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -end-1 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 text-[11px] font-bold text-white shadow-md border-2 border-white animate-pulse">
+                <span className="absolute -top-1 -inset-e-1 flex h-5 w-5 items-center justify-center rounded-full bg-linear-to-tr from-rose-500 to-pink-500 text-[11px] font-bold text-white shadow-md border-2 border-white animate-pulse">
                   {cartCount}
                 </span>
               )}
@@ -151,7 +158,7 @@ function PatientNavbar() {
               </div>
               <Link
                 to="/patient/dashboard/profile"
-                className="h-10 w-10 rounded-full bg-gradient-to-tr from-emerald-100 to-teal-50 flex items-center justify-center border-2 border-white shadow-sm shadow-emerald-100 overflow-hidden hover:shadow-md hover:border-emerald-100 transition-all duration-300 transform hover:scale-105 group"
+                className="h-10 w-10 rounded-full bg-linear-to-tr from-emerald-100 to-teal-50 flex items-center justify-center border-2 border-white shadow-sm shadow-emerald-100 overflow-hidden hover:shadow-md hover:border-emerald-100 transition-all duration-300 transform hover:scale-105 group"
               >
                 <FaUserCircle className="text-emerald-500 text-2xl group-hover:text-emerald-600 transition-colors" />
               </Link>
@@ -180,9 +187,11 @@ function PatientNavbar() {
         </div>
 
         {/* Mobile Menu */}
-        <div 
+        <div
           className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            isMobileMenuOpen ? "max-h-96 opacity-100 mt-4 pb-4" : "max-h-0 opacity-0"
+            isMobileMenuOpen
+              ? "max-h-96 opacity-100 mt-4 pb-4"
+              : "max-h-0 opacity-0"
           }`}
         >
           <nav className="flex flex-col gap-2 p-4 bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg border border-slate-100">
@@ -200,7 +209,9 @@ function PatientNavbar() {
                       : "text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50"
                   }`}
                 >
-                  <Icon className={`text-lg ${active ? "text-emerald-500" : "text-slate-400 group-hover:text-emerald-500"}`} />
+                  <Icon
+                    className={`text-lg ${active ? "text-emerald-500" : "text-slate-400 group-hover:text-emerald-500"}`}
+                  />
                   {item.label}
                 </Link>
               );
@@ -239,4 +250,3 @@ function PatientNavbar() {
 }
 
 export default PatientNavbar;
-
