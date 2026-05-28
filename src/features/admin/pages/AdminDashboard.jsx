@@ -13,6 +13,7 @@ import AdminOverviewPage from "./AdminOverviewPage";
 import AdminUsersPage from "./AdminUsersPage";
 import AdminDiseasesPage from "./AdminDiseasesPage";
 import AdminAiChatConsultationsPage from "./AdminAiChatConsultationsPage";
+import AdminInventoryAiChatPage from "./AdminInventoryAiChatPage";
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -72,6 +73,10 @@ function AdminDashboard() {
         <Route
           path="/ai-chat"
           element={<AdminAiChatConsultationsPage />}
+        />
+        <Route 
+          path="/inventory" 
+          element={<AdminInventoryAiChatPage />} 
         />
         <Route path="*" element={<Navigate to="/admin/dashboard/overview" replace />} />
       </Routes>

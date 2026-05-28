@@ -12,6 +12,17 @@ export const getMyInventoryAiChatRecipes = async () => {
 };
 
 /**
+ * Get all AI Chat recipes across all herbalists for admin.
+ * GET /api/admin/inventory-ai-chat-recipes
+ */
+export const getAdminInventoryAiChatRecipes = async (params) => {
+  const { data } = await httpClient.get("/api/admin/inventory-ai-chat-recipes", {
+    params,
+  });
+  return data;
+};
+
+/**
  * Add an AI Chat recipe to inventory with a selling price.
  * POST /api/inventory-ai-chat-recipes/add
  */
@@ -59,6 +70,7 @@ export const removeInventoryAiChatRecipe = async (inventoryId) => {
 
 export default {
   getMyInventoryAiChatRecipes,
+  getAdminInventoryAiChatRecipes,
   addInventoryAiChatRecipe,
   updateInventoryAiChatRecipePrice,
   toggleInventoryAiChatRecipeStatus,

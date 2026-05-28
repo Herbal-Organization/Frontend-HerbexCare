@@ -7,6 +7,7 @@ import {
   MdSmartToy,
   MdOpenInNew,
   MdSettings,
+  MdInventory,
 } from "react-icons/md";
 
 export const getAdminNavConfig = (t) => [
@@ -41,9 +42,9 @@ export const getAdminNavConfig = (t) => [
     icon: MdSmartToy,
   },
   {
-    name: t("adminSidebar.apiDocs"),
-    href: "/admin/dashboard#api",
-    icon: MdOpenInNew,
+    name: t("adminSidebar.inventory", "Inventory"),
+    href: "/admin/dashboard/inventory",
+    icon: MdInventory,
   },
   {
     name: t("adminSidebar.settings"),
