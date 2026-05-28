@@ -23,6 +23,17 @@ export const getAdminInventoryAiChatRecipes = async (params) => {
 };
 
 /**
+ * Delete an inventory AI Chat recipe record for a specific herbalist.
+ * DELETE /api/admin/inventory-ai-chat-recipes/{herbalistId}/{recipeId}
+ */
+export const deleteAdminInventoryAiChatRecipe = async (herbalistId, recipeId) => {
+  const { data } = await httpClient.delete(
+    `/api/admin/inventory-ai-chat-recipes/${herbalistId}/${recipeId}`
+  );
+  return data;
+};
+
+/**
  * Add an AI Chat recipe to inventory with a selling price.
  * POST /api/inventory-ai-chat-recipes/add
  */
@@ -71,6 +82,7 @@ export const removeInventoryAiChatRecipe = async (inventoryId) => {
 export default {
   getMyInventoryAiChatRecipes,
   getAdminInventoryAiChatRecipes,
+  deleteAdminInventoryAiChatRecipe,
   addInventoryAiChatRecipe,
   updateInventoryAiChatRecipePrice,
   toggleInventoryAiChatRecipeStatus,

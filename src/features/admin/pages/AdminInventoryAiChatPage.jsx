@@ -9,9 +9,13 @@ import {
   FaFilter,
   FaSearch,
   FaSyncAlt,
+  FaTrash,
 } from "react-icons/fa";
 import { MdInventory } from "react-icons/md";
-import { getAdminInventoryAiChatRecipes } from "@api/inventoryAiChatRecipes";
+import { 
+  getAdminInventoryAiChatRecipes,
+  deleteAdminInventoryAiChatRecipe,
+} from "@api/inventoryAiChatRecipes";
 
 const DEFAULT_PAGE_SIZE = 10;
 const PAGE_SIZE_OPTIONS = [10, 20, 50];
@@ -59,6 +63,7 @@ function AdminInventoryAiChatPage() {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [deletingItemId, setDeletingItemId] = useState(null);
 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
@@ -92,6 +97,28 @@ function AdminInventoryAiChatPage() {
       toast.error(message);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async (herbalistId, aiChatRecipeId) => {
+    if (!window.confirm("Are you sure you want to delete this inventory record?")) return;
+
+    const itemId = `${herbalistId}-${aiChatRecipeId}`;
+    setDeletingItemId(itemId);
+    
+    try {
+      await deleteAdminInventoryAiChatRecipe(herbalistId, aiChatRecipeId);
+      toast.success("Inventory record deleted successfully.");
+      // Reload the data
+      await load({ nextPageNumber: pageNumber, nextPageSize: pageSize });
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        err?.response?.data?.title ||
+        "Unable to delete inventory item.";
+      toast.error(message);
+    } finally {
+      setDeletingItemId(null);
     }
   };
 
@@ -231,6 +258,9 @@ function AdminInventoryAiChatPage() {
                       <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
                         Status
                       </th>
+                      <th className="px-5 py-3 text-right text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 bg-white">
@@ -276,6 +306,24 @@ function AdminInventoryAiChatPage() {
                             >
                               {active ? "Active" : "Inactive"}
                             </span>
+                          </td>
+                          <td className="px-5 py-4 text-right">
+                            <button
+                              type="button"
+                              disabled={deletingItemId === `${item.herbalistId}-${item.aiChatRecipeId}`}
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                handleDelete(item.herbalistId, item.aiChatRecipeId);
+                              }}
+                              className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700 transition-colors hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                              {deletingItemId === `${item.herbalistId}-${item.aiChatRecipeId}` ? (
+                                <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                              ) : (
+                                <FaTrash className="text-[10px]" />
+                              )}
+                              Delete
+                            </button>
                           </td>
                         </tr>
                       );
