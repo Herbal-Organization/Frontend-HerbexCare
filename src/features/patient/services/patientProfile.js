@@ -1,5 +1,5 @@
 import { getMyProfile, updateMyProfile } from "@api/patients";
-import { getUserById, updateUsersAddress } from "@api/users";
+import { getUserById, updateUsersAddress, getMyUserDetails } from "@api/users";
 import {
   getMyMedicalHistory,
   saveMyMedicalHistory,
@@ -187,20 +187,34 @@ const normalizePatientInfo = (patientInfo = {}) => {
   };
 };
 
-export const normalizePatientUser = (user = {}) => ({
-  ...user,
-  id: pickFirstDefined(user.id, user.userId, user.userID),
-  userId: pickFirstDefined(user.userId, user.id, user.userID),
-  fullName: pickFirstDefined(user.fullName, user.name),
-  name: pickFirstDefined(user.name, user.fullName),
-  userName: pickFirstDefined(user.userName, user.username),
-  username: pickFirstDefined(user.username, user.userName),
-  email: pickFirstDefined(user.email, user.mail),
-  phone: pickFirstDefined(user.phone, user.phoneNumber),
-  governorate: pickFirstDefined(user.governorate),
-  city: pickFirstDefined(user.city),
-  street: pickFirstDefined(user.street),
-});
+export const normalizePatientUser = (user = {}) => {
+  const id = pickFirstDefined(user.id, user.userId, user.userID);
+  const userId = pickFirstDefined(user.userId, user.id, user.userID);
+  const fullName = pickFirstDefined(user.fullName, user.name);
+  const name = pickFirstDefined(user.name, user.fullName);
+  const userName = pickFirstDefined(user.userName, user.username);
+  const username = pickFirstDefined(user.username, user.userName);
+  const email = pickFirstDefined(user.email, user.mail);
+  const phone = pickFirstDefined(user.phone, user.phoneNumber);
+  const governorate = pickFirstDefined(user.governorate);
+  const city = pickFirstDefined(user.city);
+  const street = pickFirstDefined(user.street);
+
+  const res = { ...user };
+  if (id !== undefined) res.id = id;
+  if (userId !== undefined) res.userId = userId;
+  if (fullName !== undefined) res.fullName = fullName;
+  if (name !== undefined) res.name = name;
+  if (userName !== undefined) res.userName = userName;
+  if (username !== undefined) res.username = username;
+  if (email !== undefined) res.email = email;
+  if (phone !== undefined) res.phone = phone;
+  if (governorate !== undefined) res.governorate = governorate;
+  if (city !== undefined) res.city = city;
+  if (street !== undefined) res.street = street;
+
+  return res;
+};
 
 export const getPersistedPatientUser = () => {
   const persistedUser = getStoredPatientUser();
@@ -312,7 +326,7 @@ export const getPatientDashboardData = async (userId) => {
   }
 
   const [userDetails, patientInfo] = await Promise.all([
-    userId ? getUserById(userId).catch(() => null) : Promise.resolve(null),
+    userId ? getMyUserDetails(userId).catch(() => null) : Promise.resolve(null),
     getMyProfile().catch(() => null),
   ]);
 

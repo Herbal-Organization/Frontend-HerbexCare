@@ -12,6 +12,11 @@ export const getUserById = async (id) => {
   return data;
 };
 
+export const getMyUserDetails = async (id) => {
+  const { data } = await httpClient.get(`/api/Users/get/${id}`);
+  return data;
+};
+
 export const updateUser = async (id, payload) => {
   const { data } = await httpClient.put(`/api/admin/users/${id}`, payload);
   return data;
