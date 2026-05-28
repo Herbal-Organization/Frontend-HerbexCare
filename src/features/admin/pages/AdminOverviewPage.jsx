@@ -322,7 +322,7 @@ function AdminOverviewPage() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => navigate("/admin/dashboard/ai-consultations")}
+                  onClick={() => navigate("/admin/dashboard/ai-chat")}
                   className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-emerald-700"
                 >
                   {t("adminDashboard.quickActions.viewConsultations")}

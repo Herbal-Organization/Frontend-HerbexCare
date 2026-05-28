@@ -70,7 +70,7 @@ function AdminDashboard() {
         <Route path="/users" element={<AdminUsersPage />} />
         <Route path="/diseases" element={<AdminDiseasesPage />} />
         <Route
-          path="/ai-consultations"
+          path="/ai-chat"
           element={<AdminAiChatConsultationsPage />}
         />
         <Route path="*" element={<Navigate to="/admin/dashboard/overview" replace />} />

@@ -221,7 +221,7 @@
     "patients": "Patients",
     "herbalists": "Herbalists",
     "diseases": "Diseases",
-    "aiConsultations": "AI Consultations",
+    "aiConsultations": "AI Chat",
     "apiDocs": "API Docs",
     "settings": "Settings",
     "signOut": "Sign Out",
@@ -241,8 +241,8 @@
     "sections": {
       "platform": "Platform",
       "platformDescription": "Registered users and catalogue size across the system.",
-      "aiConsultations": "AI consultations",
-      "aiConsultationsDescription": "Consultation activity from the AI chat service.",
+      "aiConsultations": "AI Chat",
+      "aiConsultationsDescription": "Chat activity from the AI chat service.",
       "users": "User Registry",
       "patients": "Patient Registry",
       "herbalists": "Herbalist Registry",
@@ -260,19 +260,19 @@
       "herbs": "Herbs",
       "herbsHint": "Herbs in the catalogue",
       "api": "Published API",
-      "totalConsultations": "Total consultations",
-      "totalConsultationsHint": "All AI chat consultations in the system",
+      "totalConsultations": "Total chats",
+      "totalConsultationsHint": "All AI chats in the system",
       "activeConsultations": "Active",
       "activeConsultationsHint": "{{rate}}% of total are active",
       "blockedConsultations": "Blocked",
-      "blockedConsultationsHint": "Consultations marked as blocked",
+      "blockedConsultationsHint": "Chats marked as blocked",
       "topCategory": "Top category",
       "topCategoryHint": "Most requested herb category"
     },
     "quickActions": {
-      "title": "Manage consultations",
+      "title": "Manage AI chats",
       "subtitle": "Open the full list to review recipes, match scores, and alternatives.",
-      "viewConsultations": "View all consultations"
+      "viewConsultations": "View all AI chats"
     },
     "summary": {
       "activeShare": "Active share",

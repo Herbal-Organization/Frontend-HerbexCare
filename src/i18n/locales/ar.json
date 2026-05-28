@@ -240,7 +240,7 @@
     "patients": "المرضى",
     "herbalists": "الأعشابيون",
     "diseases": "الأمراض",
-    "aiConsultations": "استشارات الذكاء الاصطناعي",
+    "aiConsultations": "دردشة الذكاء الاصطناعي",
     "apiDocs": "وثائق API",
     "settings": "الإعدادات",
     "signOut": "تسجيل الخروج",
@@ -260,8 +260,8 @@
     "sections": {
       "platform": "المنصة",
       "platformDescription": "المستخدمون المسجلون وحجم الكتالوج في النظام.",
-      "aiConsultations": "استشارات الذكاء الاصطناعي",
-      "aiConsultationsDescription": "نشاط الاستشارات من خدمة الدردشة بالذكاء الاصطناعي.",
+      "aiConsultations": "دردشة الذكاء الاصطناعي",
+      "aiConsultationsDescription": "نشاط الدردشة من خدمة دردشة الذكاء الاصطناعي.",
       "users": "سجل المستخدمين",
       "patients": "سجل المرضى",
       "herbalists": "سجل الأعشبيين",
@@ -279,19 +279,19 @@
       "herbs": "الأعشاب",
       "herbsHint": "الأعشاب في الكتالوج",
       "api": "API المنشور",
-      "totalConsultations": "إجمالي الاستشارات",
-      "totalConsultationsHint": "جميع استشارات الدردشة بالذكاء الاصطناعي",
+      "totalConsultations": "إجمالي المحادثات",
+      "totalConsultationsHint": "جميع محادثات الذكاء الاصطناعي في النظام",
       "activeConsultations": "نشطة",
       "activeConsultationsHint": "{{rate}}% من الإجمالي نشطة",
       "blockedConsultations": "محظورة",
-      "blockedConsultationsHint": "استشارات محددة كمحظورة",
+      "blockedConsultationsHint": "محادثات محددة كمحظورة",
       "topCategory": "أفضل فئة",
       "topCategoryHint": "أكثر فئة أعشاب طلباً"
     },
     "quickActions": {
-      "title": "إدارة الاستشارات",
+      "title": "إدارة محادثات الذكاء الاصطناعي",
       "subtitle": "افتح القائمة الكاملة لمراجعة الوصفات ونسب التطابق والبدائل.",
-      "viewConsultations": "عرض كل الاستشارات"
+      "viewConsultations": "عرض كل محادثات الذكاء الاصطناعي"
     },
     "summary": {
       "activeShare": "نسبة النشطة",

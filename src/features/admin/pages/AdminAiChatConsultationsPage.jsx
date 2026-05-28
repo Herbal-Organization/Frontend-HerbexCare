@@ -83,10 +83,10 @@ function ConsultationDetailsModal({
         <div className="flex items-start justify-between gap-4 border-b border-slate-100 bg-slate-50 px-6 py-5">
           <div className="min-w-0">
             <p className="text-[11px] font-black uppercase tracking-[0.22em] text-emerald-700">
-              AI Consultation
+              AI Chat
             </p>
             <h2 className="mt-2 truncate text-xl font-black text-slate-900">
-              {item.recommendedRecipeName || "Consultation details"}
+              {item.recommendedRecipeName || "AI chat details"}
             </h2>
             <p className="mt-1 text-sm text-slate-500">
               Recipe ID:{" "}
@@ -274,7 +274,7 @@ function AdminAiChatConsultationsPage() {
       const message =
         err?.response?.data?.message ||
         err?.response?.data?.title ||
-        "Unable to load AI consultations.";
+        "Unable to load AI chats.";
       setError(message);
       toast.error(message);
     } finally {
@@ -396,7 +396,7 @@ function AdminAiChatConsultationsPage() {
               AI Chat
             </span>
             <h1 className="mt-4 text-3xl font-black tracking-tight md:text-5xl">
-              All consultations
+              All AI chats
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-200 md:text-base">
               {t(
@@ -429,7 +429,7 @@ function AdminAiChatConsultationsPage() {
         <div className="flex flex-col gap-4 border-b border-slate-100 pb-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <h2 className="text-xl font-bold text-slate-900">
-              Consultations list
+              AI chats list
             </h2>
             <p className="mt-1 text-sm text-slate-500">
               Showing page <span className="font-semibold">{pageNumber}</span> of{" "}
@@ -479,7 +479,7 @@ function AdminAiChatConsultationsPage() {
           </div>
         ) : !error && filteredItems.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-12 text-center text-sm text-slate-500">
-            No consultations found on this page.
+            No AI chats found on this page.
           </div>
         ) : (
           <div className="pt-5">
@@ -535,9 +535,6 @@ function AdminAiChatConsultationsPage() {
                           <td className="px-5 py-4">
                             <p className="text-sm font-bold text-slate-900">
                               {item.recommendedRecipeName || "N/A"}
-                            </p>
-                            <p className="mt-1 text-xs text-slate-500">
-                              ID: {item.aiChatRecipeId}
                             </p>
                           </td>
                           <td className="px-5 py-4">

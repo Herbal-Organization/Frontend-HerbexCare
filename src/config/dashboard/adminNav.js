@@ -36,8 +36,8 @@ export const getAdminNavConfig = (t) => [
     icon: MdLocalHospital,
   },
   {
-    name: t("adminSidebar.aiConsultations", "AI Consultations"),
-    href: "/admin/dashboard/ai-consultations",
+    name: t("adminSidebar.aiConsultations", "AI Chat"),
+    href: "/admin/dashboard/ai-chat",
     icon: MdSmartToy,
   },
   {
