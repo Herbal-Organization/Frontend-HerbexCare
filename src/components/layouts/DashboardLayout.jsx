@@ -59,7 +59,7 @@ function DashboardLayout({
         </div>
 
         {/* Content Area */}
-        <main className="flex min-h-0 flex-1 flex-col">
+        <main className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
           <div className="flex min-h-0 flex-1 flex-col">
             {error && (
               <div className="m-4 lg:m-8 rounded-2xl border border-red-100 bg-red-50/50 px-4 py-3 text-sm font-medium text-red-700 shadow-sm shadow-red-100/50 backdrop-blur-sm dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">

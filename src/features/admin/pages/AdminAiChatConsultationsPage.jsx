@@ -79,8 +79,9 @@ function ConsultationDetailsModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/45 p-4 backdrop-blur-sm sm:items-center">
-      <div className="w-full max-w-3xl overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-xl">
-        <div className="flex items-start justify-between gap-4 border-b border-slate-100 bg-slate-50 px-6 py-5">
+      <div className="w-full max-w-3xl overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-xl max-h-[90vh] flex flex-col">
+        {/* Header - Fixed/Sticky */}
+        <div className="flex items-start justify-between gap-4 border-b border-slate-100 bg-slate-50 px-6 py-5 shrink-0">
           <div className="min-w-0">
             <p className="text-[11px] font-black uppercase tracking-[0.22em] text-emerald-700">
               AI Chat
@@ -105,8 +106,8 @@ function ConsultationDetailsModal({
               </span>
               {typeof item.matchPercentage === "number" ? (
                 <>
-                  {" "}
-                  • Match:{" "}
+                  {" · "}
+                  Match:{" "}
                   <span className="font-semibold">{item.matchPercentage}%</span>
                 </>
               ) : null}
@@ -115,124 +116,128 @@ function ConsultationDetailsModal({
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 transition-colors hover:border-rose-200 hover:text-rose-700"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 transition-colors hover:border-rose-200 hover:text-rose-700 shrink-0"
             aria-label="Close"
           >
             <FaTimes />
           </button>
         </div>
 
-        <div className="grid gap-4 px-6 py-6 md:grid-cols-2">
-          <div className="rounded-3xl border border-slate-200 bg-white p-5">
-            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-400">
-              Herb
-            </p>
-            <p className="mt-2 text-lg font-black text-slate-900">
-              {item.mainHerb || "N/A"}
-            </p>
-            <p className="mt-1 text-sm text-slate-500">
-              {item.scientificName || "No scientific name"}
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {item.category ? (
-                <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-700">
-                  {item.category}
-                </span>
-              ) : null}
-              {typeof item.matchPercentage === "number" ? (
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-slate-700">
-                  {item.matchPercentage}% match
-                </span>
-              ) : null}
+        {/* Scrollable Content Body */}
+        <div className="overflow-y-auto flex-1 p-6 custom-scrollbar">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-3xl border border-slate-200 bg-white p-5">
+              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-400">
+                Herb
+              </p>
+              <p className="mt-2 text-lg font-black text-slate-900">
+                {item.mainHerb || "N/A"}
+              </p>
+              <p className="mt-1 text-sm text-slate-500">
+                {item.scientificName || "No scientific name"}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {item.category ? (
+                  <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-700">
+                    {item.category}
+                  </span>
+                ) : null}
+                {typeof item.matchPercentage === "number" ? (
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-slate-700">
+                    {item.matchPercentage}% match
+                  </span>
+                ) : null}
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-5">
+              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-400">
+                Dosage & Warnings
+              </p>
+              <dl className="mt-3 space-y-3">
+                <div className="rounded-2xl bg-slate-50 px-4 py-3">
+                  <dt className="text-xs font-bold text-slate-600">Dosage</dt>
+                  <dd className="mt-1 text-sm text-slate-700">
+                    {item.dosage || "N/A"}
+                  </dd>
+                </div>
+                <div className="rounded-2xl bg-rose-50/60 px-4 py-3">
+                  <dt className="text-xs font-bold text-rose-700">
+                    Contraindications
+                  </dt>
+                  <dd className="mt-1 text-sm text-rose-900/80">
+                    {item.contraindications || "N/A"}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 md:col-span-2">
+              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-400">
+                Preparation
+              </p>
+              <p className="mt-3 text-sm leading-6 text-slate-700">
+                {item.preparation || "N/A"}
+              </p>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 md:col-span-2">
+              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-400">
+                Other possibilities
+              </p>
+              {Array.isArray(item.otherPossibilities) &&
+              item.otherPossibilities.length ? (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {item.otherPossibilities.map((opt) => (
+                    <span
+                      key={opt}
+                      className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700"
+                    >
+                      {opt}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-3 text-sm text-slate-500">No alternatives.</p>
+              )}
             </div>
           </div>
+        </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-5">
-            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-400">
-              Dosage & Warnings
-            </p>
-            <dl className="mt-3 space-y-3">
-              <div className="rounded-2xl bg-slate-50 px-4 py-3">
-                <dt className="text-xs font-bold text-slate-600">Dosage</dt>
-                <dd className="mt-1 text-sm text-slate-700">
-                  {item.dosage || "N/A"}
-                </dd>
-              </div>
-              <div className="rounded-2xl bg-rose-50/60 px-4 py-3">
-                <dt className="text-xs font-bold text-rose-700">
-                  Contraindications
-                </dt>
-                <dd className="mt-1 text-sm text-rose-900/80">
-                  {item.contraindications || "N/A"}
-                </dd>
-              </div>
-            </dl>
-          </div>
-
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 md:col-span-2">
-            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-400">
-              Preparation
-            </p>
-            <p className="mt-3 text-sm leading-6 text-slate-700">
-              {item.preparation || "N/A"}
-            </p>
-          </div>
-
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 md:col-span-2">
-            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-400">
-              Other possibilities
-            </p>
-            {Array.isArray(item.otherPossibilities) &&
-            item.otherPossibilities.length ? (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {item.otherPossibilities.map((opt) => (
-                  <span
-                    key={opt}
-                    className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700"
-                  >
-                    {opt}
-                  </span>
-                ))}
-              </div>
-            ) : (
-              <p className="mt-3 text-sm text-slate-500">No alternatives.</p>
+        {/* Footer with actions - Sticky/Fixed */}
+        <div className="border-t border-slate-100 bg-slate-50 px-6 py-4 shrink-0 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <p className="text-xs text-slate-500 max-w-md">
+            {t(
+              "adminAiConsultations.toggle.modalHint",
+              "Blocking a recipe removes it from AI recommendations for patients. Active recipes can still be suggested in consultations.",
             )}
-          </div>
-
-          <div className="border-t border-slate-100 px-6 py-5">
-            <p className="text-sm text-slate-600">
-              {t(
-                "adminAiConsultations.toggle.modalHint",
-                "Blocking a recipe removes it from AI recommendations for patients. Active recipes can still be suggested in consultations.",
-              )}
-            </p>
-            <button
-              type="button"
-              disabled={isToggling}
-              onClick={() => onToggleStatus(item)}
-              className={`mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
-                active
-                  ? "border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100"
-                  : "bg-emerald-600 text-white hover:bg-emerald-700"
-              }`}
-            >
-              {isToggling ? (
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-              ) : active ? (
-                <FaBan className="text-sm" />
-              ) : (
-                <FaCheckCircle className="text-sm" />
-              )}
-              {isToggling
-                ? t("adminAiConsultations.toggle.updating", "Updating...")
-                : active
-                  ? t("adminAiConsultations.toggle.blockRecipe", "Block recipe")
-                  : t(
-                      "adminAiConsultations.toggle.activateRecipe",
-                      "Activate recipe",
-                    )}
-            </button>
-          </div>
+          </p>
+          <button
+            type="button"
+            disabled={isToggling}
+            onClick={() => onToggleStatus(item)}
+            className={`inline-flex w-full md:w-auto items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-60 shrink-0 min-w-[160px] ${
+              active
+                ? "border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100"
+                : "bg-emerald-600 text-white hover:bg-emerald-700"
+            }`}
+          >
+            {isToggling ? (
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+            ) : active ? (
+              <FaBan className="text-sm" />
+            ) : (
+              <FaCheckCircle className="text-sm" />
+            )}
+            {isToggling
+              ? t("adminAiConsultations.toggle.updating", "Updating...")
+              : active
+                ? t("adminAiConsultations.toggle.blockRecipe", "Block recipe")
+                : t(
+                    "adminAiConsultations.toggle.activateRecipe",
+                    "Activate recipe",
+                  )}
+          </button>
         </div>
       </div>
     </div>
@@ -501,9 +506,6 @@ function AdminAiChatConsultationsPage() {
                         Match
                       </th>
                       <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
-                        Preparation
-                      </th>
-                      <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
                         {t("adminAiConsultations.table.status", "Status")}
                       </th>
                       <th className="px-5 py-3 text-right text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
@@ -566,14 +568,6 @@ function AdminAiChatConsultationsPage() {
                                 {match}%
                               </span>
                             )}
-                          </td>
-                          <td className="px-5 py-4">
-                            <p className="max-w-md truncate text-sm text-slate-700">
-                              {item.preparation || "N/A"}
-                            </p>
-                            <p className="mt-1 text-xs text-slate-500">
-                              {item.dosage || "No dosage"}
-                            </p>
                           </td>
                           <td className="px-5 py-4">
                             <span
