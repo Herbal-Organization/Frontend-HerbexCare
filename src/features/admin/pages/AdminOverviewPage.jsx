@@ -13,6 +13,9 @@ import {
   FaUser,
   FaUsers,
   FaUserMd,
+  FaHeart,
+  FaStar,
+  FaTrophy,
 } from "react-icons/fa";
 import { MdSmartToy } from "react-icons/md";
 import { fetchAdminAiChatStatistics } from "@api/aiChat";
@@ -20,9 +23,11 @@ import { getAdminAiConsultationsStatistics } from "@api/aiConsultations";
 import { getAllUsers } from "@api/users";
 import { getAllPatients } from "@api/patients";
 import { getAllHerbalists } from "@api/herbalists";
-import { getAllRecipes } from "@api/recipes";
-import { getAllHerbs } from "@api/herbs";
+import { getAllRecipes, getRecipeById } from "@api/recipes";
+import { getAllHerbs, getHerbById } from "@api/herbs";
 import { normalizeUsersResponse } from "@features/admin/services/adminUsers";
+import { getAdminFavoritesOverview, getAdminFavoritesTopStats } from "@api/favorites";
+import { getUserById } from "@api/users";
 
 const extractListCount = (payload) => {
   if (payload == null) return 0;
@@ -92,6 +97,8 @@ function AdminOverviewPage() {
   const [error, setError] = useState("");
   const [aiStats, setAiStats] = useState(null);
   const [aiConsultationsStats, setAiConsultationsStats] = useState(null);
+  const [favoritesOverview, setFavoritesOverview] = useState(null);
+  const [favoritesTopStats, setFavoritesTopStats] = useState(null);
   const [platformStats, setPlatformStats] = useState({
     users: 0,
     patients: 0,
@@ -113,6 +120,8 @@ function AdminOverviewPage() {
         recipesResult,
         herbsResult,
         aiConsultationsResult,
+        favOverviewResult,
+        favTopStatsResult,
       ] = await Promise.allSettled([
         fetchAdminAiChatStatistics(),
         getAllUsers({ PageNumber: 1, PageSize: 1 }),
@@ -121,6 +130,8 @@ function AdminOverviewPage() {
         getAllRecipes(1, 1),
         getAllHerbs(1, 1),
         getAdminAiConsultationsStatistics(),
+        getAdminFavoritesOverview(),
+        getAdminFavoritesTopStats(),
       ]);
 
       if (aiResult.status === "fulfilled") {
@@ -139,6 +150,52 @@ function AdminOverviewPage() {
         setAiConsultationsStats(aiConsultationsResult.value);
       } else {
         setAiConsultationsStats(null);
+      }
+
+      if (favOverviewResult.status === "fulfilled") {
+        setFavoritesOverview(favOverviewResult.value);
+      } else {
+        setFavoritesOverview(null);
+      }
+
+      if (favTopStatsResult.status === "fulfilled" && favTopStatsResult.value) {
+        const topStats = { ...favTopStatsResult.value };
+        const fetches = [];
+
+        if (topStats.mostFavoritedHerbId) {
+          fetches.push(
+            getHerbById(topStats.mostFavoritedHerbId)
+              .then((herb) => {
+                topStats.mostFavoritedHerbName = herb.herbName;
+              })
+              .catch(() => {})
+          );
+        }
+
+        if (topStats.mostFavoritedRecipeId) {
+          fetches.push(
+            getRecipeById(topStats.mostFavoritedRecipeId)
+              .then((recipe) => {
+                topStats.mostFavoritedRecipeName = recipe.title || recipe.recipeName || recipe.recommendedRecipeName || recipe.name;
+              })
+              .catch(() => {})
+          );
+        }
+
+        if (topStats.mostFavoritedHerbalistId) {
+          fetches.push(
+            getUserById(topStats.mostFavoritedHerbalistId)
+              .then((user) => {
+                topStats.mostFavoritedHerbalistName = user.fullName || user.userName || user.name;
+              })
+              .catch(() => {})
+          );
+        }
+
+        await Promise.allSettled(fetches);
+        setFavoritesTopStats(topStats);
+      } else {
+        setFavoritesTopStats(null);
       }
 
       setPlatformStats({
@@ -343,6 +400,85 @@ function AdminOverviewPage() {
                   label={t("adminDashboard.stats.mostDiagnosed", "Most Diagnosed Condition")}
                   value={aiConsultationsStats.mostDiagnosedCondition || "—"}
                   tone="amber"
+                />
+              </div>
+            </section>
+          ) : null}
+
+          {favoritesOverview ? (
+            <section>
+              <SectionHeading
+                title={t("adminDashboard.sections.favoritesOverview", "Favorites Overview")}
+                description={t("adminDashboard.sections.favoritesOverviewDesc", "Overall statistics of favorited items across the platform.")}
+              />
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+                <StatCard
+                  icon={<FaHeart className="text-2xl" />}
+                  label={t("adminDashboard.stats.totalFavs", "Total Favorites")}
+                  value={favoritesOverview.totalSystemFavorites ?? 0}
+                  tone="emerald"
+                />
+                <StatCard
+                  icon={<FaSeedling className="text-2xl" />}
+                  label={t("adminDashboard.stats.totalHerbsFaved", "Favorited Herbs")}
+                  value={favoritesOverview.totalHerbsFaved ?? 0}
+                  tone="slate"
+                />
+                <StatCard
+                  icon={<FaBook className="text-2xl" />}
+                  label={t("adminDashboard.stats.totalRecipesFaved", "Favorited Recipes")}
+                  value={favoritesOverview.totalRecipesFaved ?? 0}
+                  tone="amber"
+                />
+                <StatCard
+                  icon={<MdSmartToy className="text-2xl" />}
+                  label={t("adminDashboard.stats.totalAiRecipesFaved", "Favorited AI Recipes")}
+                  value={favoritesOverview.totalAiRecipesFaved ?? 0}
+                  tone="sky"
+                />
+                <StatCard
+                  icon={<MdSmartToy className="text-2xl" />}
+                  label={t("adminDashboard.stats.totalAiChatRecipesFaved", "Favorited AI Chat")}
+                  value={favoritesOverview.totalAiChatRecipesFaved ?? 0}
+                  tone="violet"
+                />
+                <StatCard
+                  icon={<FaUserMd className="text-2xl" />}
+                  label={t("adminDashboard.stats.totalHerbalistsFaved", "Favorited Herbalists")}
+                  value={favoritesOverview.totalHerbalistsFaved ?? 0}
+                  tone="emerald"
+                />
+              </div>
+            </section>
+          ) : null}
+
+          {favoritesTopStats ? (
+            <section>
+              <SectionHeading
+                title={t("adminDashboard.sections.favoritesTopStats", "Top Favorited Entities")}
+                description={t("adminDashboard.sections.favoritesTopStatsDesc", "Most popular items favorited by users.")}
+              />
+              <div className="grid gap-4 md:grid-cols-3">
+                <StatCard
+                  icon={<FaStar className="text-2xl" />}
+                  label={t("adminDashboard.stats.mostFavoritedHerb", "Most Favorited Herb")}
+                  value={favoritesTopStats.mostFavoritedHerbName || `ID: ${favoritesTopStats.mostFavoritedHerbId ?? "N/A"}`}
+                  hint={favoritesTopStats.mostFavoritedHerbId ? `Favorited ${favoritesTopStats.mostFavoritedHerbCount ?? 0} times` : ""}
+                  tone="slate"
+                />
+                <StatCard
+                  icon={<FaTrophy className="text-2xl" />}
+                  label={t("adminDashboard.stats.mostFavoritedRecipe", "Most Favorited Recipe")}
+                  value={favoritesTopStats.mostFavoritedRecipeName || `ID: ${favoritesTopStats.mostFavoritedRecipeId ?? "N/A"}`}
+                  hint={favoritesTopStats.mostFavoritedRecipeId ? `Favorited ${favoritesTopStats.mostFavoritedRecipeCount ?? 0} times` : ""}
+                  tone="amber"
+                />
+                <StatCard
+                  icon={<FaUserMd className="text-2xl" />}
+                  label={t("adminDashboard.stats.mostFavoritedHerbalist", "Most Favorited Herbalist")}
+                  value={favoritesTopStats.mostFavoritedHerbalistName || `ID: ${favoritesTopStats.mostFavoritedHerbalistId ?? "N/A"}`}
+                  hint={favoritesTopStats.mostFavoritedHerbalistId ? `Favorited ${favoritesTopStats.mostFavoritedHerbalistCount ?? 0} times` : ""}
+                  tone="emerald"
                 />
               </div>
             </section>

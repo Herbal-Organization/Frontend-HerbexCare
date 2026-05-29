@@ -32,3 +32,14 @@ export const toggleFavorite = async (payload) => {
   const { data } = await httpsClient.post("/api/Favorites/toggle", payload);
   return data;
 };
+
+// Admin Endpoints
+export const getAdminFavoritesOverview = async () => {
+  const { data } = await httpsClient.get("/api/admin/favorites/overview");
+  return data;
+};
+
+export const getAdminFavoritesTopStats = async () => {
+  const { data } = await httpsClient.get("/api/admin/favorites/top-stats");
+  return data;
+};
