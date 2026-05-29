@@ -73,6 +73,15 @@ export const generateConsultation = async (payload) => {
   };
 };
 
+/**
+ * Fetch AI Consultations statistics for admin overview.
+ * GET /api/admin/ai-consultations/statistics
+ */
+export const getAdminAiConsultationsStatistics = async () => {
+  const { data } = await httpClient.get("/api/admin/ai-consultations/statistics");
+  return data;
+};
+
 export const getAllCatalogs = fetchConsultationCatalog;
 export const myAllConsultations = fetchMyConsultations;
 export const generateAiConsultation = generateConsultation;
@@ -84,6 +93,7 @@ export default {
   fetchMyConsultations,
   fetchMyConsultationById,
   generateConsultation,
+  getAdminAiConsultationsStatistics,
   getAllCatalogs,
   myAllConsultations,
   generateAiConsultation,

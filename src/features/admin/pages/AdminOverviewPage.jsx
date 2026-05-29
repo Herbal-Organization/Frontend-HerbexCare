@@ -16,6 +16,7 @@ import {
 } from "react-icons/fa";
 import { MdSmartToy } from "react-icons/md";
 import { fetchAdminAiChatStatistics } from "@api/aiChat";
+import { getAdminAiConsultationsStatistics } from "@api/aiConsultations";
 import { getAllUsers } from "@api/users";
 import { getAllPatients } from "@api/patients";
 import { getAllHerbalists } from "@api/herbalists";
@@ -90,6 +91,7 @@ function AdminOverviewPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [aiStats, setAiStats] = useState(null);
+  const [aiConsultationsStats, setAiConsultationsStats] = useState(null);
   const [platformStats, setPlatformStats] = useState({
     users: 0,
     patients: 0,
@@ -110,6 +112,7 @@ function AdminOverviewPage() {
         herbalistsResult,
         recipesResult,
         herbsResult,
+        aiConsultationsResult,
       ] = await Promise.allSettled([
         fetchAdminAiChatStatistics(),
         getAllUsers({ PageNumber: 1, PageSize: 1 }),
@@ -117,6 +120,7 @@ function AdminOverviewPage() {
         getAllHerbalists(),
         getAllRecipes(1, 1),
         getAllHerbs(1, 1),
+        getAdminAiConsultationsStatistics(),
       ]);
 
       if (aiResult.status === "fulfilled") {
@@ -129,6 +133,12 @@ function AdminOverviewPage() {
           t("adminDashboard.loadError", "Unable to load overview statistics.");
         setError(message);
         toast.error(message);
+      }
+
+      if (aiConsultationsResult.status === "fulfilled") {
+        setAiConsultationsStats(aiConsultationsResult.value);
+      } else {
+        setAiConsultationsStats(null);
       }
 
       setPlatformStats({
@@ -303,6 +313,35 @@ function AdminOverviewPage() {
                   label={t("adminDashboard.stats.topCategory")}
                   value={aiStats.mostRequestedCategory || "—"}
                   hint={t("adminDashboard.stats.topCategoryHint")}
+                  tone="amber"
+                />
+              </div>
+            </section>
+          ) : null}
+
+          {aiConsultationsStats ? (
+            <section>
+              <SectionHeading
+                title={t("adminDashboard.sections.aiConsultationsStats", "AI Diagnoses Statistics")}
+                description={t("adminDashboard.sections.aiConsultationsStatsDesc", "Overview of AI medical consultations and diagnoses.")}
+              />
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                <StatCard
+                  icon={<MdSmartToy className="text-2xl" />}
+                  label={t("adminDashboard.stats.totalAiConsultations", "Total AI Consultations")}
+                  value={aiConsultationsStats.totalAiConsultations ?? 0}
+                  tone="emerald"
+                />
+                <StatCard
+                  icon={<FaCheckCircle className="text-2xl" />}
+                  label={t("adminDashboard.stats.avgConfidence", "Average Confidence Score")}
+                  value={`${aiConsultationsStats.averageConfidenceScore?.toFixed(1) ?? 0}%`}
+                  tone="sky"
+                />
+                <StatCard
+                  icon={<FaLayerGroup className="text-2xl" />}
+                  label={t("adminDashboard.stats.mostDiagnosed", "Most Diagnosed Condition")}
+                  value={aiConsultationsStats.mostDiagnosedCondition || "—"}
                   tone="amber"
                 />
               </div>
