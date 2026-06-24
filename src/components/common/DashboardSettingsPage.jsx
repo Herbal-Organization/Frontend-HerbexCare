@@ -285,7 +285,7 @@ function DashboardSettingsPage({
   return (
     <div className="relative min-h-full bg-slate-50 dark:bg-slate-950">
       <div className="absolute inset-x-0 top-0 h-64 bg-[radial-gradient(circle_at_top,rgba(56,161,105,0.16),transparent_68%)]" />
-      <div className="relative mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8 w-full">
         <motion.section
           variants={containerVariants}
           initial="hidden"
