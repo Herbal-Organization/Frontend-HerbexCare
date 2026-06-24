@@ -106,7 +106,7 @@ function PatientOrderDetails() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-center px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-center px-4 py-16 sm:px-6 lg:px-8">
         <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-500" />
         <p className="mt-6 text-sm font-bold uppercase tracking-widest text-slate-400">
           Loading order details
@@ -117,7 +117,7 @@ function PatientOrderDetails() {
 
   if (error || !order) {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <Link
           to="/patient/dashboard/orders"
           className="mb-8 inline-flex items-center gap-2 text-sm font-bold text-slate-500 transition-colors hover:text-emerald-600"
@@ -144,7 +144,7 @@ function PatientOrderDetails() {
   const orderDate = order.orderDate || order.createdAt;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <Link
         to="/patient/dashboard/orders"
         className="mb-8 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-bold text-slate-500 shadow-sm transition-colors hover:text-emerald-600"

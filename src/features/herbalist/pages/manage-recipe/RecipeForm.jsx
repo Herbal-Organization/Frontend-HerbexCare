@@ -71,7 +71,7 @@ export default function RecipeForm({
         </div>
 
         <div className="p-6 md:p-10">
-          <div className="max-w-4xl mx-auto space-y-12">
+          <div className="max-w-7xl mx-auto space-y-12">
             {error && (
               <motion.div
                 initial={{ opacity: 0, x: -10 }}

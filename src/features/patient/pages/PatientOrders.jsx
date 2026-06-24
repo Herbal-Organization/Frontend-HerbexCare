@@ -190,7 +190,7 @@ function PatientOrders() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-center py-20">
           <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-500 shadow-sm" />
           <p className="mt-6 text-sm font-bold uppercase tracking-widest text-slate-400">
@@ -203,7 +203,7 @@ function PatientOrders() {
 
   if (error) {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-center py-20">
           <FaExclamationCircle className="h-12 w-12 text-red-500" />
           <p className="mt-4 text-center text-slate-600">{error}</p>
@@ -214,7 +214,7 @@ function PatientOrders() {
 
   if (orders.length === 0) {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-center py-20">
           <FaShoppingBag className="h-12 w-12 text-slate-300" />
           <p className="mt-4 text-slate-500">No orders found</p>
@@ -227,7 +227,7 @@ function PatientOrders() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <header className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600 shadow-sm transition-transform hover:scale-105">

@@ -129,7 +129,7 @@ function MyConsultations() {
 
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
         <div className="flex items-center gap-6">

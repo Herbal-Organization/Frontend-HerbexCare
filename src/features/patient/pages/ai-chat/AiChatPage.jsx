@@ -91,7 +91,7 @@ const AiChatPage = () => {
     <div className="flex h-full min-h-0 flex-1 flex-col bg-linear-to-b from-emerald-50/40 via-slate-50 to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Page header */}
       <header className="shrink-0 border-b border-slate-200/80 bg-white/90 px-4 py-4 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/90 sm:px-6">
-        <div className="mx-auto flex max-w-5xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25">
               <FaLeaf className="text-lg" />
@@ -138,7 +138,7 @@ const AiChatPage = () => {
       </header>
 
       {/* Content */}
-      <div className="mx-auto flex min-h-0 w-full max-w-5xl flex-1 flex-col px-3 py-3 sm:px-4 sm:py-4">
+      <div className="mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col px-3 py-3 sm:px-4 sm:py-4">
         {activeView === "chat" ? (
           <ChatLayout
             messages={messages}

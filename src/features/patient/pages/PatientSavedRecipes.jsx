@@ -72,7 +72,7 @@ function PatientSavedRecipes() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-center py-20">
           <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-500 shadow-sm" />
           <p className="mt-6 text-sm font-bold uppercase tracking-widest text-slate-400">
@@ -84,7 +84,7 @@ function PatientSavedRecipes() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-10 flex flex-col gap-2">
         <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-3">
           <div className="rounded-xl bg-emerald-100 p-3 text-emerald-600 shadow-inner">

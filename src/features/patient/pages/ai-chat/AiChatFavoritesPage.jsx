@@ -75,7 +75,7 @@ function AiChatFavoritesPage() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-10 flex items-center gap-6">
         <div className="rounded-4xl bg-linear-to-br from-rose-500 to-red-600 p-5 text-white shadow-2xl shadow-rose-200">
