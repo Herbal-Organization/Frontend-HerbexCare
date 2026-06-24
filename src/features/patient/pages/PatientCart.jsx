@@ -374,7 +374,7 @@ function PatientCart({ dashboardData }) {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+    <div className="mx-auto max-w-7xl w-full flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
       <div className="space-y-6 sm:space-y-8">
         <CartPageHeader cartCount={cartCount} />
 
