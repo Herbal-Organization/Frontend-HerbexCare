@@ -31,7 +31,7 @@ function DashboardLayout({
         onClose={() => setSidebarOpen(false)}
       />
 
-      <div className="flex h-dvh min-h-0 flex-1 flex-col lg:ms-72">
+      <div className="flex min-h-dvh flex-1 flex-col lg:ms-72">
         {/* Mobile top bar */}
         <div className="sticky top-0 z-30 flex items-center gap-3 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm shadow-slate-100/50 px-4 py-3 lg:hidden dark:bg-slate-900/80 dark:border-slate-800 dark:shadow-slate-900/50">
           <button
@@ -59,8 +59,8 @@ function DashboardLayout({
         </div>
 
         {/* Content Area */}
-        <main className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
-          <div className="flex min-h-0 flex-1 flex-col">
+        <main className="flex flex-1 flex-col overflow-x-hidden">
+          <div className="flex flex-1 flex-col">
             {error && (
               <div className="m-4 lg:m-8 rounded-2xl border border-red-100 bg-red-50/50 px-4 py-3 text-sm font-medium text-red-700 shadow-sm shadow-red-100/50 backdrop-blur-sm dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">
                 {error}

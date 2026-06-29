@@ -4,8 +4,6 @@ import {
   FaShoppingCart,
   FaBookOpen,
   FaUser,
-  FaLeaf,
-  FaReceipt,
   FaBrain,
   FaComments,
   FaCog,
@@ -42,16 +40,7 @@ export const getPatientNavConfig = (t) => [
     href: "/patient/dashboard/ai-chat",
     icon: FaComments,
   },
-  {
-    name: t("patientSidebar.herbLibrary"),
-    href: "/patient/home/herbs",
-    icon: FaLeaf,
-  },
-  {
-    name: t("patientSidebar.recipeLibrary"),
-    href: "/patient/home/recipes",
-    icon: FaReceipt,
-  },
+
   {
     name: t("patientSidebar.profile"),
     href: "/patient/dashboard/profile",

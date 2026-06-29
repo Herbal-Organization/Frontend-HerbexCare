@@ -17,6 +17,7 @@ export function normalizeHerbalist(raw = {}) {
     userId: pickFirst(raw.userId, raw.userID, raw.userId),
     fullName: pickFirst(
       raw.fullName,
+      raw.herbalistName,
       raw.name,
       raw.userName,
       raw.username,
