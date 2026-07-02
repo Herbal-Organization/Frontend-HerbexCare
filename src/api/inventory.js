@@ -53,3 +53,25 @@ export const deleteInventoryHerb = async (herbId) => {
   const { data } = await httpClient.delete(`/api/Inventory/${herbId}/delete`);
   return data;
 };
+
+export const getHerbalistsForInventoryHerb = async (id, params = {}) => {
+  const { data } = await httpClient.get(
+    `/api/inventory-herbs/${id}/herbalists`,
+    { params },
+  );
+  return data;
+};
+
+export const getAdminInventoryHerbs = async (params = {}) => {
+  const { data } = await httpClient.get("/api/admin/inventory-herbs", {
+    params,
+  });
+  return data;
+};
+
+export const deleteAdminInventoryHerb = async (herbalistId, herbId) => {
+  const { data } = await httpClient.delete(
+    `/api/admin/inventory-herbs/${herbalistId}/${herbId}`,
+  );
+  return data;
+};

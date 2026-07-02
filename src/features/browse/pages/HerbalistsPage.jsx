@@ -127,7 +127,7 @@ function HerbalistsPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900">
       <PatientNavbar />
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <BrowseFilters
@@ -145,23 +145,23 @@ function HerbalistsPage() {
 
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-500" />
-            <p className="mt-6 text-sm font-bold uppercase tracking-widest text-slate-400">
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-emerald-500" />
+            <p className="mt-6 text-sm font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
               Loading herbalists
             </p>
           </div>
         ) : null}
 
         {!isLoading && error ? (
-          <div className="rounded-2xl border border-red-100 bg-red-50 p-8 text-center">
-            <p className="text-sm font-semibold text-red-700">{error}</p>
+          <div className="rounded-2xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-8 text-center">
+            <p className="text-sm font-semibold text-red-700 dark:text-red-400">{error}</p>
           </div>
         ) : null}
 
         {!isLoading && !error && paginatedHerbalists.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-white p-14 text-center">
-            <h2 className="text-xl font-bold text-slate-700">No herbalists found</h2>
-            <p className="mt-2 text-sm text-slate-500">
+          <div className="rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-14 text-center">
+            <h2 className="text-xl font-bold text-slate-700 dark:text-slate-300">No herbalists found</h2>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
               Try adjusting your search or check back later.
             </p>
           </div>

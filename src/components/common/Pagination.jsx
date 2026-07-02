@@ -58,20 +58,20 @@ export default function Pagination({
         <button
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
-          className="inline-flex items-center justify-center rounded-lg border border-slate-100 bg-white p-2 text-slate-600 hover:border-indigo-600 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
+          className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-300 hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-50 transition-all"
           aria-label="Previous page"
         >
           <FiChevronLeft className="text-lg" />
         </button>
 
-        <span className="text-sm font-semibold text-slate-600 min-w-24 text-center">
+        <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 min-w-24 text-center">
           {currentPage} of {totalPages}
         </span>
 
         <button
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages}
-          className="inline-flex items-center justify-center rounded-lg border border-slate-100 bg-white p-2 text-slate-600 hover:border-indigo-600 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
+          className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-300 hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-50 transition-all"
           aria-label="Next page"
         >
           <FiChevronRight className="text-lg" />
@@ -86,7 +86,7 @@ export default function Pagination({
           whileTap={{ scale: 0.95 }}
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
-          className="inline-flex items-center justify-center rounded-2xl border border-slate-100 bg-white p-2.5 text-slate-600 hover:border-indigo-600 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
+          className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-2.5 text-slate-600 dark:text-slate-300 hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-50 transition-all"
           aria-label="Previous page"
         >
           <FiChevronLeft className="text-lg" />
@@ -115,8 +115,8 @@ export default function Pagination({
               onClick={() => onPageChange(item)}
               className={`inline-flex items-center justify-center rounded-2xl px-3.5 py-2 font-bold text-sm transition-all ${
                 isActive
-                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
-                  : "border border-slate-100 bg-white text-slate-600 hover:border-indigo-600 hover:text-indigo-600"
+                  ? "bg-primary text-white shadow-lg shadow-primary/20"
+                  : "border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-primary hover:text-primary"
               }`}
               aria-label={`Go to page ${item}`}
               aria-current={isActive ? "page" : undefined}
@@ -132,7 +132,7 @@ export default function Pagination({
           whileTap={{ scale: 0.95 }}
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages}
-          className="inline-flex items-center justify-center rounded-2xl border border-slate-100 bg-white p-2.5 text-slate-600 hover:border-indigo-600 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
+          className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-2.5 text-slate-600 dark:text-slate-300 hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-50 transition-all"
           aria-label="Next page"
         >
           <FiChevronRight className="text-lg" />

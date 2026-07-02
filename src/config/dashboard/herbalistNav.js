@@ -9,6 +9,8 @@ import {
   MdPerson,
   MdSettings,
   MdChat,
+  MdInventory,
+  MdAttachMoney,
 } from "react-icons/md";
 
 export const getHerbalistNavConfig = (t, { ordersCount } = {}) => [
@@ -38,6 +40,11 @@ export const getHerbalistNavConfig = (t, { ordersCount } = {}) => [
     icon: MdChat,
   },
   {
+    name: t("herbalistSidebar.inventoryRecipes", "Inventory Recipes"),
+    href: "/herbalist/dashboard/inventory-recipes",
+    icon: MdInventory,
+  },
+  {
     name: t("herbalistSidebar.manageDiseases"),
     href: "/herbalist/dashboard/diseases",
     icon: MdBiotech,
@@ -57,5 +64,10 @@ export const getHerbalistNavConfig = (t, { ordersCount } = {}) => [
     name: t("herbalistSidebar.settings"),
     href: "/herbalist/dashboard/settings",
     icon: MdSettings,
+  },
+  {
+    name: t("herbalistSidebar.earnings", "Earnings"),
+    href: "/herbalist/dashboard/earnings",
+    icon: MdAttachMoney,
   },
 ];

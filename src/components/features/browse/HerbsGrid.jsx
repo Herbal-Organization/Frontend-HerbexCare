@@ -25,7 +25,7 @@ function HerbsGrid({
         {Array.from({ length: 8 }).map((_, index) => (
           <div
             key={`herb-skeleton-${index}`}
-            className="group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white text-start shadow-sm"
+            className="group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-slate-200/80 dark:border-slate-700 bg-white dark:bg-slate-800 text-start shadow-sm"
           >
             <div className="relative">
               <Skeleton
@@ -90,11 +90,11 @@ function HerbsGrid({
 
   if (error) {
     return (
-      <div className="mx-auto mt-12 max-w-2xl rounded-3xl border border-red-100 bg-red-50 p-12 text-center shadow-sm sm:p-16">
-        <h2 className="text-xl font-extrabold text-red-800">
+      <div className="mx-auto mt-12 max-w-2xl rounded-3xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-12 text-center shadow-sm sm:p-16">
+        <h2 className="text-xl font-extrabold text-red-800 dark:text-red-300">
           Unable to load herbs
         </h2>
-        <p className="mt-3 text-sm font-medium text-red-600">{error}</p>
+        <p className="mt-3 text-sm font-medium text-red-600 dark:text-red-400">{error}</p>
         <button
           type="button"
           onClick={onRetry}
@@ -108,10 +108,10 @@ function HerbsGrid({
 
   if (!herbs || herbs.length === 0) {
     return (
-      <div className="mx-auto mt-12 max-w-2xl rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-sm sm:p-16">
+      <div className="mx-auto mt-12 max-w-2xl rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-12 text-center shadow-sm sm:p-16">
         <div className="mb-6 text-6xl">🌿</div>
-        <h3 className="text-2xl font-bold text-slate-800">No herbs found</h3>
-        <p className="mt-2 text-slate-500 font-medium">
+        <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-200">No herbs found</h3>
+        <p className="mt-2 text-slate-500 dark:text-slate-400 font-medium">
           Try adjusting your search criteria to find what you're looking for.
         </p>
       </div>

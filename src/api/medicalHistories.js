@@ -25,3 +25,10 @@ export const getPatientMedicalHistory = async (id) => {
   });
   return data;
 };
+
+export const deleteAdminPatientMedicalHistory = async (patientId) => {
+  const { data } = await httpClient.delete(
+    `/api/admin/medical-histories/patient/${patientId}`,
+  );
+  return data;
+};

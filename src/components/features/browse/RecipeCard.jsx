@@ -58,7 +58,7 @@ function RecipeCard({
       variants={itemVariants}
       whileHover={{ y: -6 }}
       onClick={() => navigate(`/patient/home/recipes/${id || recipeId}`)}
-      className="group flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-500/10"
+      className="group flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-slate-200/80 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm transition-all duration-300 hover:border-emerald-200 dark:hover:border-emerald-700 hover:shadow-xl hover:shadow-emerald-500/10"
     >
       <div className="border-b border-emerald-100/80 bg-linear-to-br from-emerald-600 to-teal-700 p-5 text-white">
         <div className="mb-3 flex items-center justify-between gap-2">
@@ -77,7 +77,7 @@ function RecipeCard({
 
       <div className="flex flex-1 flex-col p-5">
         <div className="mb-4">
-          <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-emerald-700">
+          <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-400">
             Targets
           </p>
           <div className="flex flex-wrap gap-1.5">
@@ -87,28 +87,28 @@ function RecipeCard({
                   key={disease.diseaseId}
                   type="button"
                   onClick={(e) => handleDiseaseClick(e, disease.diseaseId)}
-                  className="relative z-10 whitespace-nowrap rounded-full border border-sky-100 bg-sky-50 px-2.5 py-0.5 text-[10px] font-bold text-sky-800 transition-all hover:border-sky-200 hover:bg-sky-100 active:scale-95"
+                  className="relative z-10 whitespace-nowrap rounded-full border border-sky-100 dark:border-sky-800 bg-sky-50 dark:bg-sky-900/30 px-2.5 py-0.5 text-[10px] font-bold text-sky-800 dark:text-sky-300 transition-all hover:border-sky-200 dark:hover:border-sky-700 hover:bg-sky-100 dark:hover:bg-sky-900/50 active:scale-95"
                   title="View condition details"
                 >
                   {disease.diseaseName}
                 </button>
               ))
             ) : (
-              <span className="text-[10px] italic text-slate-400">
+              <span className="text-[10px] italic text-slate-400 dark:text-slate-500">
                 General wellness
               </span>
             )}
           </div>
         </div>
 
-        <div className="mt-auto flex items-end justify-between gap-3 border-t border-slate-100 pt-4">
+        <div className="mt-auto flex items-end justify-between gap-3 border-t border-slate-100 dark:border-slate-700 pt-4">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
               Price
             </span>
-            <p className="text-xl font-black tabular-nums text-emerald-600">
+            <p className="text-xl font-black tabular-nums text-emerald-600 dark:text-emerald-400">
               {Number(price || 0).toLocaleString()}{" "}
-              <span className="text-sm font-bold text-slate-500">EGP</span>
+              <span className="text-sm font-bold text-slate-500 dark:text-slate-400">EGP</span>
             </p>
           </div>
 
@@ -118,8 +118,8 @@ function RecipeCard({
             disabled={isFavoriteUpdating}
             className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all ${
               isFavorite
-                ? "border-rose-200 bg-rose-50 text-rose-600"
-                : "border-emerald-100 bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white"
+                ? "border-rose-200 dark:border-rose-800 bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400"
+                : "border-emerald-100 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 group-hover:bg-emerald-600 group-hover:text-white"
             } ${isFavoriteUpdating ? "cursor-not-allowed opacity-60" : ""}`}
             aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
           >

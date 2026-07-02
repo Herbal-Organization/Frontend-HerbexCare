@@ -5,6 +5,7 @@ import PatientMedicalSummary from "@features/patient/components/PatientMedicalSu
 import PatientOverviewHero from "@features/patient/components/PatientOverviewHero";
 import PatientQuickAccess from "@features/patient/components/PatientQuickAccess";
 import { useTranslation } from "react-i18next";
+import { Spinner } from "@components/common";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -31,7 +32,7 @@ function PatientDashboardOverview({
           title={t("dashboard.states.loadingTitle")}
           description={t("dashboard.states.loadingDesc")}
           action={
-            <div className="mx-auto h-10 w-10 animate-spin rounded-full border-b-2 border-emerald-600" />
+            <Spinner size="md" />
           }
         />
       </div>

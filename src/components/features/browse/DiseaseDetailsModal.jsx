@@ -29,7 +29,7 @@ export default function DiseaseDetailsModal({ disease, isOpen, onClose }) {
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl"
+          className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-2xl"
         >
           {/* Header */}
           <div className="relative bg-emerald-900 px-6 py-8 text-white">
@@ -57,12 +57,12 @@ export default function DiseaseDetailsModal({ disease, isOpen, onClose }) {
             {/* Disease Type */}
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <FaTags className="text-emerald-600 text-xs" />
-                <h3 className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                <FaTags className="text-emerald-600 dark:text-emerald-400 text-xs" />
+                <h3 className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                   Disease Type
                 </h3>
               </div>
-              <p className="inline-flex rounded-full bg-emerald-50 border border-emerald-100 px-3 py-1 text-sm font-bold text-emerald-700">
+              <p className="inline-flex rounded-full bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-100 dark:border-emerald-800 px-3 py-1 text-sm font-bold text-emerald-700 dark:text-emerald-300">
                 {disease.diseaseType || "General Condition"}
               </p>
             </div>
@@ -70,12 +70,12 @@ export default function DiseaseDetailsModal({ disease, isOpen, onClose }) {
             {/* Description */}
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <FaInfoCircle className="text-emerald-600 text-xs" />
-                <h3 className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                <FaInfoCircle className="text-emerald-600 dark:text-emerald-400 text-xs" />
+                <h3 className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                   Description
                 </h3>
               </div>
-              <p className="text-sm leading-relaxed text-slate-600 font-medium bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400 font-medium bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-700">
                 {disease.description ||
                   "No description available for this condition."}
               </p>
@@ -84,8 +84,8 @@ export default function DiseaseDetailsModal({ disease, isOpen, onClose }) {
             {/* Symptoms */}
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <FaStethoscope className="text-emerald-600 text-xs" />
-                <h3 className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                <FaStethoscope className="text-emerald-600 dark:text-emerald-400 text-xs" />
+                <h3 className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                   Symptoms
                 </h3>
               </div>
@@ -94,15 +94,15 @@ export default function DiseaseDetailsModal({ disease, isOpen, onClose }) {
                   {parseSymptoms(disease.symptoms).map((symptom, idx) => (
                     <span
                       key={idx}
-                      className="inline-flex items-center rounded-full bg-amber-50 border border-amber-200 px-3 py-1.5 text-xs font-bold text-amber-700"
+                      className="inline-flex items-center rounded-full bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 px-3 py-1.5 text-xs font-bold text-amber-700 dark:text-amber-300"
                     >
                       {symptom}
                     </span>
                   ))}
                 </div>
               ) : (
-                <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/50">
-                  <p className="text-sm leading-relaxed text-emerald-900 font-medium">
+                <div className="bg-emerald-50/50 dark:bg-emerald-900/20 p-4 rounded-2xl border border-emerald-100/50 dark:border-emerald-800/50">
+                  <p className="text-sm leading-relaxed text-emerald-900 dark:text-emerald-300 font-medium">
                     Commonly recognized symptoms for this condition.
                   </p>
                 </div>
@@ -111,10 +111,10 @@ export default function DiseaseDetailsModal({ disease, isOpen, onClose }) {
           </div>
 
           {/* Footer */}
-          <div className="border-t border-slate-100 p-6 bg-slate-50 flex justify-end">
+          <div className="border-t border-slate-100 dark:border-slate-700 p-6 bg-slate-50 dark:bg-slate-900/50 flex justify-end">
             <button
               onClick={onClose}
-              className="rounded-xl bg-slate-900 px-6 py-2.5 text-sm font-bold text-white transition-all hover:bg-slate-800 hover:shadow-lg active:scale-95"
+              className="rounded-xl bg-slate-900 dark:bg-slate-700 px-6 py-2.5 text-sm font-bold text-white transition-all hover:bg-slate-800 dark:hover:bg-slate-600 hover:shadow-lg active:scale-95"
             >
               Close
             </button>

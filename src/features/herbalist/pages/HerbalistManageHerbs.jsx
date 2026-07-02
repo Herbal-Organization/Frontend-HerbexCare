@@ -234,8 +234,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
   );
 
   const displayedHerbs = useMemo(
-    () =>
-      isManagedPage ? managedHerbs : isReadOnlyPage ? readOnlyHerbs : [],
+    () => (isManagedPage ? managedHerbs : isReadOnlyPage ? readOnlyHerbs : []),
     [isManagedPage, isReadOnlyPage, managedHerbs, readOnlyHerbs],
   );
 
@@ -416,8 +415,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
           (herb) => toIdString(herb?.herbId) === toIdString(editingHerbId),
         );
         if (isHerbLocked(targetHerb)) {
-          const lockMessage =
-            "Approved herb: changes require admin action.";
+          const lockMessage = "Approved herb: changes require admin action.";
           setFormError(lockMessage);
           toast.error(lockMessage);
           return;
@@ -693,7 +691,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
         key={herb.herbId || herb.id}
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-[0_10px_30px_rgb(0,0,0,0.08)]"
+        className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-200 dark:hover:border-emerald-700 hover:shadow-[0_10px_30px_rgb(0,0,0,0.08)]"
       >
         <div className="p-5 sm:p-6">
           <div className="flex items-start gap-3">
@@ -711,40 +709,40 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
 
             <div className="min-w-0 flex-1">
               <div className="flex items-start justify-between gap-2">
-                <h3 className="truncate text-lg font-black text-slate-900">
+                <h3 className="truncate text-lg font-black text-slate-900 dark:text-slate-100">
                   {herb.herbName}
                 </h3>
                 <span
                   className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wider ${
                     approved
-                      ? "bg-emerald-100 text-emerald-700"
-                      : "bg-amber-100 text-amber-700"
+                      ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+                      : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
                   }`}
                 >
                   {approved ? "Approved (Locked)" : "Pending"}
                 </span>
               </div>
-              <p className="truncate text-xs font-semibold italic text-slate-500">
+              <p className="truncate text-xs font-semibold italic text-slate-500 dark:text-slate-400">
                 {herb.scientificName}
               </p>
             </div>
           </div>
 
-          <p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-600">
+          <p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
             {herb.description}
           </p>
 
-          <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+          <div className="mt-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 dark:text-slate-500">
               Created By
             </p>
-            <p className="mt-1 truncate text-sm font-bold text-slate-700">
+            <p className="mt-1 truncate text-sm font-bold text-slate-700 dark:text-slate-300">
               {creatorName}
             </p>
           </div>
         </div>
 
-        <div className="mt-auto border-t border-slate-100 bg-slate-50/80 p-4">
+        <div className="mt-auto border-t border-slate-100 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/50 p-4">
           <div className="flex flex-col gap-2 sm:flex-row">
             {canManage ? (
               <>
@@ -752,7 +750,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                   type="button"
                   onClick={() => startEditing(herb)}
                   disabled={!canEdit}
-                  className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-white text-xs font-bold text-emerald-700 transition-colors hover:bg-emerald-50"
+                  className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-emerald-200 dark:border-emerald-800 bg-white dark:bg-slate-800 text-xs font-bold text-emerald-700 dark:text-emerald-400 transition-colors hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
                 >
                   <FaPen className="text-[10px]" />
                   Edit
@@ -761,14 +759,14 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                   type="button"
                   onClick={() => handleDelete(herb.herbId, herb.herbName)}
                   disabled={isDeleting || !canEdit}
-                  className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-red-200 bg-white text-xs font-bold text-red-700 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-red-200 dark:border-red-800 bg-white dark:bg-slate-800 text-xs font-bold text-red-700 dark:text-red-400 transition-colors hover:bg-red-50 dark:hover:bg-red-900/30 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <FaTrash className="text-[10px]" />
                   Delete
                 </button>
               </>
             ) : (
-              <div className="inline-flex h-10 w-full items-center justify-center rounded-xl border border-slate-200 bg-white text-xs font-bold uppercase tracking-wider text-slate-500">
+              <div className="inline-flex h-10 w-full items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Read Only
               </div>
             )}
@@ -777,7 +775,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
           {canManage && isLocked ? (
             <p
               title="Approved herb: changes require admin action."
-              className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-800"
+              className="mt-2 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/30 px-3 py-2 text-[11px] font-semibold text-amber-800 dark:text-amber-300"
             >
               Approved herb: changes require admin action.
             </p>
@@ -786,7 +784,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
           <button
             type="button"
             onClick={() => openDetailsModal(herb)}
-            className="mt-2 inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white text-xs font-bold uppercase tracking-wider text-slate-700 transition-colors hover:border-emerald-300 hover:text-emerald-700"
+            className="mt-2 inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 transition-colors hover:border-emerald-300 dark:hover:border-emerald-700 hover:text-emerald-700 dark:hover:text-emerald-400"
           >
             <FaEye className="text-[10px]" />
             View Details
@@ -795,7 +793,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
           <button
             type="button"
             onClick={() => openInventoryModal(herb)}
-            className="mt-2 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 text-sm font-bold text-white transition-colors hover:bg-slate-800"
+            className="mt-2 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 dark:bg-slate-700 text-sm font-bold text-white transition-colors hover:bg-slate-800 dark:hover:bg-slate-600"
           >
             <FaBookOpen className="text-xs text-emerald-300" />
             Add to Inventory
@@ -810,7 +808,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
       key={item.inventoryId || item.id || item.herbId}
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-[0_10px_30px_rgb(0,0,0,0.08)]"
+      className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-200 dark:hover:border-emerald-700 hover:shadow-[0_10px_30px_rgb(0,0,0,0.08)]"
     >
       <div className="p-5 sm:p-6">
         <div className="flex items-start gap-3">
@@ -837,7 +835,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
         </div>
 
         <div className="mt-4 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700/70">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700/70 dark:text-emerald-400/70">
             Price / Kg
           </p>
           <p className="mt-1 text-xl font-black text-emerald-700">
@@ -881,7 +879,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
-      <section className="rounded-3xl border border-emerald-200 bg-linear-to-br from-emerald-50 via-white to-slate-50 p-5 sm:p-6 lg:p-8">
+      <section className="rounded-3xl border border-emerald-200 dark:border-emerald-800 bg-linear-to-br from-emerald-50 via-white to-slate-50 dark:from-emerald-950/30 dark:via-slate-800 dark:to-slate-800 p-5 sm:p-6 lg:p-8">
         <div className="flex flex-col gap-5">
           <div className="flex items-start justify-between gap-4">
             <div className="flex min-w-0 items-start gap-3">
@@ -889,14 +887,14 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                 <FaLeaf className="text-lg" />
               </div>
               <div className="min-w-0">
-                <h1 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
+                <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-slate-100 sm:text-3xl">
                   {isManagedPage
                     ? "My Added Herbs"
                     : isReadOnlyPage
                       ? "Read-Only Herbs"
                       : "Herb Inventory"}
                 </h1>
-                <p className="mt-1 text-sm font-medium text-slate-600 sm:text-base">
+                <p className="mt-1 text-sm font-medium text-slate-600 dark:text-slate-400 sm:text-base">
                   {isManagedPage
                     ? "Herbs you added and can fully manage."
                     : isReadOnlyPage
@@ -918,23 +916,23 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
             ) : null}
           </div>
 
-          <div className="inline-flex w-full rounded-xl border border-slate-200 bg-white p-1 sm:w-fit">
+          <div className="inline-flex w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1 sm:w-fit">
             <Link
               to="/herbalist/dashboard/herbs/managed"
               className={`inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-bold uppercase tracking-wider transition-colors sm:px-4 ${
                 isManagedPage
                   ? "bg-emerald-600 text-white"
-                  : "text-slate-600 hover:bg-slate-100"
+                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
               }`}
             >
               My Added Herbs
             </Link>
             <Link
               to="/herbalist/dashboard/herbs/readonly"
-                className={`inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-bold uppercase tracking-wider transition-colors sm:px-4 ${
+              className={`inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-bold uppercase tracking-wider transition-colors sm:px-4 ${
                 isReadOnlyPage
                   ? "bg-emerald-600 text-white"
-                  : "text-slate-600 hover:bg-slate-100"
+                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
               }`}
             >
               Read-Only Herbs
@@ -944,7 +942,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
               className={`inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-bold uppercase tracking-wider transition-colors sm:px-4 ${
                 isInventoryPage
                   ? "bg-emerald-600 text-white"
-                  : "text-slate-600 hover:bg-slate-100"
+                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
               }`}
             >
               Inventory
@@ -952,43 +950,43 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                 Total Herbs
               </p>
-              <p className="mt-1 text-2xl font-black text-slate-900">
+              <p className="mt-1 text-2xl font-black text-slate-900 dark:text-slate-100">
                 {herbs.length}
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                 Approved
               </p>
-              <p className="mt-1 text-2xl font-black text-emerald-700">
+              <p className="mt-1 text-2xl font-black text-emerald-700 dark:text-emerald-400">
                 {approvedCount}
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                 Manageable
               </p>
-              <p className="mt-1 text-2xl font-black text-slate-900">
+              <p className="mt-1 text-2xl font-black text-slate-900 dark:text-slate-100">
                 {managedCount}
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                 Read-Only
               </p>
-              <p className="mt-1 text-2xl font-black text-slate-900">
+              <p className="mt-1 text-2xl font-black text-slate-900 dark:text-slate-100">
                 {readOnlyCount}
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 sm:col-span-2 xl:col-span-4">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 sm:col-span-2 xl:col-span-4">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                 Inventory Items
               </p>
-              <p className="mt-1 text-2xl font-black text-slate-900">
+              <p className="mt-1 text-2xl font-black text-slate-900 dark:text-slate-100">
                 {inventoryCount}
               </p>
             </div>
@@ -1008,7 +1006,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                     ? "Search inventory herbs..."
                     : "Search by herb, scientific name, description..."
                 }
-                className="w-full rounded-xl border border-slate-200 bg-white py-3 pe-4 ps-10 text-sm font-medium text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
+                className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-3 pe-4 ps-10 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
               />
             </div>
 
@@ -1027,26 +1025,26 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
       </section>
 
       {loadError ? (
-        <div className="rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-700">
+        <div className="rounded-2xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 px-5 py-4 text-sm font-bold text-red-700 dark:text-red-300">
           {loadError}
         </div>
       ) : null}
 
       {isInventoryPage ? (
         isInventoryLoading ? (
-          <div className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-slate-200 bg-white py-20">
+          <div className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-20">
             <div className="h-12 w-12 animate-spin rounded-full border-4 border-emerald-500/30 border-t-emerald-500" />
-            <p className="text-sm font-bold uppercase tracking-widest text-slate-400">
+            <p className="text-sm font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
               Loading Inventory...
             </p>
           </div>
         ) : filteredInventoryItems.length === 0 ? (
-          <div className="rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50 py-20 text-center">
-            <FaBookOpen className="mx-auto mb-4 text-5xl text-slate-300" />
-            <p className="text-xl font-bold text-slate-700">
+          <div className="rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 py-20 text-center">
+            <FaBookOpen className="mx-auto mb-4 text-5xl text-slate-300 dark:text-slate-600" />
+            <p className="text-xl font-bold text-slate-700 dark:text-slate-300">
               No Inventory Herbs Found
             </p>
-            <p className="mt-2 text-sm font-medium text-slate-500">
+            <p className="mt-2 text-sm font-medium text-slate-500 dark:text-slate-400">
               Add herbs from managed or read-only pages to see them here.
             </p>
           </div>
@@ -1056,17 +1054,17 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
           </section>
         )
       ) : isLoading ? (
-        <div className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-slate-200 bg-white py-20">
+        <div className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-20">
           <div className="h-12 w-12 animate-spin rounded-full border-4 border-emerald-500/30 border-t-emerald-500" />
-          <p className="text-sm font-bold uppercase tracking-widest text-slate-400">
+          <p className="text-sm font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
             Loading Herbs...
           </p>
         </div>
       ) : filteredHerbs.length === 0 ? (
-        <div className="rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50 py-20 text-center">
-          <FaLeaf className="mx-auto mb-4 text-5xl text-slate-300" />
-          <p className="text-xl font-bold text-slate-700">No Herbs Found</p>
-          <p className="mt-2 text-sm font-medium text-slate-500">
+        <div className="rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 py-20 text-center">
+          <FaLeaf className="mx-auto mb-4 text-5xl text-slate-300 dark:text-slate-600" />
+          <p className="text-xl font-bold text-slate-700 dark:text-slate-300">No Herbs Found</p>
+          <p className="mt-2 text-sm font-medium text-slate-500 dark:text-slate-400">
             {isManagedPage
               ? "No managed herbs match your current search."
               : "No read-only herbs match your current search."}
@@ -1090,14 +1088,14 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
-              className="w-full max-w-7xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl"
+              className="w-full max-w-7xl overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-2xl"
             >
-              <div className="flex items-start justify-between gap-4 border-b border-slate-100 bg-slate-50 px-6 py-5">
+              <div className="flex items-start justify-between gap-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-6 py-5">
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-700">
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-400">
                     Herb Registry
                   </p>
-                  <h2 className="mt-1 text-xl font-black text-slate-900 sm:text-2xl">
+                  <h2 className="mt-1 text-xl font-black text-slate-900 dark:text-slate-100 sm:text-2xl">
                     {editingHerbId ? "Update Herb" : "Add New Herb"}
                   </h2>
                 </div>
@@ -1105,7 +1103,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                   type="button"
                   onClick={closeFormModal}
                   disabled={isSaving}
-                  className="rounded-full bg-white p-2 text-slate-400 shadow-sm transition-all hover:bg-slate-100 hover:text-slate-700 disabled:opacity-60"
+                  className="rounded-full bg-white dark:bg-slate-700 p-2 text-slate-400 dark:text-slate-500 shadow-sm transition-all hover:bg-slate-100 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-60"
                 >
                   <FaTimes />
                 </button>
@@ -1116,14 +1114,14 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                 className="max-h-[80vh] overflow-y-auto p-6 sm:p-8"
               >
                 {formError ? (
-                  <div className="mb-6 rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-700">
+                  <div className="mb-6 rounded-2xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 px-5 py-4 text-sm font-bold text-red-700 dark:text-red-300">
                     {formError}
                   </div>
                 ) : null}
 
                 <div className="grid gap-5 md:grid-cols-2">
                   <div>
-                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500">
+                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                       Herb Name
                     </label>
                     <input
@@ -1132,11 +1130,11 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                       value={form.herbName}
                       onChange={handleChange}
                       placeholder="e.g. Chamomile"
-                      className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
+                      className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-semibold text-slate-900 dark:text-slate-100 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
                     />
                   </div>
                   <div>
-                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500">
+                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                       Scientific Name
                     </label>
                     <input
@@ -1145,7 +1143,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                       value={form.scientificName}
                       onChange={handleChange}
                       placeholder="e.g. Matricaria chamomilla"
-                      className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
+                      className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-semibold text-slate-900 dark:text-slate-100 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
                     />
                   </div>
                 </div>
@@ -1159,13 +1157,13 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                     value={form.description}
                     onChange={handleChange}
                     rows={4}
-                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-semibold text-slate-900 dark:text-slate-100 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
                   />
                 </div>
 
                 <div className="mt-5 grid gap-5 md:grid-cols-2">
                   <div>
-                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500">
+                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                       Benefits
                     </label>
                     <textarea
@@ -1173,11 +1171,11 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                       value={form.benefits}
                       onChange={handleChange}
                       rows={3}
-                      className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
+                      className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-semibold text-slate-900 dark:text-slate-100 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
                     />
                   </div>
                   <div>
-                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500">
+                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                       Warnings
                     </label>
                     <textarea
@@ -1185,14 +1183,14 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                       value={form.warnings}
                       onChange={handleChange}
                       rows={3}
-                      className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition-all focus:border-amber-600 focus:ring-2 focus:ring-amber-600/10"
+                      className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-semibold text-slate-900 dark:text-slate-100 outline-none transition-all focus:border-amber-600 focus:ring-2 focus:ring-amber-600/10"
                     />
                   </div>
                 </div>
 
                 <div className="mt-5 grid gap-5 md:grid-cols-2">
                   <div>
-                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500">
+                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                       Dosage
                     </label>
                     <input
@@ -1201,19 +1199,19 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                       value={form.dosage}
                       onChange={handleChange}
                       placeholder="e.g. 1-3 grams daily"
-                      className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
+                      className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-semibold text-slate-900 dark:text-slate-100 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500">
+                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                       Image
                     </label>
-                    <label className="flex h-11 cursor-pointer items-center justify-between rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 text-xs font-semibold text-slate-600 transition-colors hover:border-emerald-400 hover:bg-slate-100">
+                    <label className="flex h-11 cursor-pointer items-center justify-between rounded-xl border border-dashed border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 px-4 text-xs font-semibold text-slate-600 dark:text-slate-400 transition-colors hover:border-emerald-400 dark:hover:border-emerald-600 hover:bg-slate-100 dark:hover:bg-slate-800">
                       <span className="truncate">
                         {imageName || "Upload herb image"}
                       </span>
-                      <span className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-emerald-100 px-2.5 py-1 text-emerald-700">
+                      <span className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 px-2.5 py-1 text-emerald-700 dark:text-emerald-400">
                         <FaUpload className="text-[10px]" />
                         Select
                       </span>
@@ -1227,19 +1225,19 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                   </div>
                 </div>
 
-                <div className="mt-8 flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
+                <div className="mt-8 flex flex-col-reverse gap-3 border-t border-slate-100 dark:border-slate-700 pt-5 sm:flex-row sm:justify-end">
                   <button
                     type="button"
                     onClick={closeFormModal}
                     disabled={isSaving}
-                    className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 px-5 text-sm font-bold text-slate-600 transition-colors hover:bg-slate-50 disabled:opacity-60"
+                    className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 px-5 text-sm font-bold text-slate-600 dark:text-slate-400 transition-colors hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-60"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isSaving}
-                    className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 text-sm font-bold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-slate-900 dark:bg-emerald-600 px-6 text-sm font-bold text-white transition-colors hover:bg-slate-800 dark:hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isSaving ? (
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -1267,28 +1265,28 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
-              className="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl"
+              className="w-full max-w-md overflow-hidden rounded-3xl bg-white dark:bg-slate-800 shadow-2xl"
             >
-              <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-6 py-5">
-                <h3 className="text-xl font-extrabold text-slate-900">
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-6 py-5">
+                <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100">
                   Update Inventory Price
                 </h3>
                 <button
                   type="button"
                   onClick={closeInventoryEditModal}
                   disabled={isUpdatingInventoryItem}
-                  className="rounded-full bg-white p-2 text-slate-400 shadow-sm transition-all hover:bg-slate-100 hover:text-slate-700 disabled:opacity-60"
+                  className="rounded-full bg-white dark:bg-slate-700 p-2 text-slate-400 dark:text-slate-500 shadow-sm transition-all hover:bg-slate-100 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-60"
                 >
                   <FaTimes />
                 </button>
               </div>
 
               <form onSubmit={handleUpdateInventoryItem} className="p-6">
-                <div className="mb-4 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700/70">
+                <div className="mb-4 rounded-2xl border border-emerald-100 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/30 p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700/70 dark:text-emerald-400/70">
                     Herb
                   </p>
-                  <p className="mt-1 text-lg font-black text-slate-900">
+                  <p className="mt-1 text-lg font-black text-slate-900 dark:text-slate-100">
                     {selectedInventoryItem.herbName}
                   </p>
                 </div>
@@ -1297,7 +1295,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                   Price / Kg
                 </label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 start-0 flex items-center ps-4 text-sm font-extrabold text-slate-400">
+                  <span className="absolute inset-y-0 start-0 flex items-center ps-4 text-sm font-extrabold text-slate-400 dark:text-slate-500">
                     EGP
                   </span>
                   <input
@@ -1306,9 +1304,11 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                     min="0.01"
                     step="0.01"
                     value={inventoryPriceValue}
-                    onChange={(event) => setInventoryPriceValue(event.target.value)}
+                    onChange={(event) =>
+                      setInventoryPriceValue(event.target.value)
+                    }
                     placeholder="0.00"
-                    className="w-full rounded-xl border border-slate-200 py-3 pe-4 ps-14 text-base font-black text-slate-900 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-3 pe-4 ps-14 text-base font-black text-slate-900 dark:text-slate-100 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
                     disabled={isUpdatingInventoryItem}
                   />
                 </div>
@@ -1317,7 +1317,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                   <button
                     type="submit"
                     disabled={isUpdatingInventoryItem || !inventoryPriceValue}
-                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 text-sm font-bold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 dark:bg-emerald-600 text-sm font-bold text-white transition-colors hover:bg-slate-800 dark:hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isUpdatingInventoryItem ? (
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -1330,7 +1330,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                     type="button"
                     onClick={closeInventoryEditModal}
                     disabled={isUpdatingInventoryItem}
-                    className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-slate-200 text-sm font-bold text-slate-600 transition-colors hover:bg-slate-50 disabled:opacity-60"
+                    className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-600 dark:text-slate-400 transition-colors hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-60"
                   >
                     Cancel
                   </button>
@@ -1353,24 +1353,24 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
-              className="w-full max-w-2xl overflow-hidden rounded-3xl bg-white shadow-2xl"
+              className="w-full max-w-2xl overflow-hidden rounded-3xl bg-white dark:bg-slate-800 shadow-2xl"
             >
-              <div className="flex items-start justify-between gap-4 border-b border-slate-100 bg-slate-50 px-6 py-5">
+              <div className="flex items-start justify-between gap-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-6 py-5">
                 <div className="min-w-0">
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-700">
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-400">
                     Herb Details
                   </p>
-                  <h3 className="truncate text-xl font-black text-slate-900 sm:text-2xl">
+                  <h3 className="truncate text-xl font-black text-slate-900 dark:text-slate-100 sm:text-2xl">
                     {selectedHerbDetails?.herbName || "Herb"}
                   </h3>
-                  <p className="truncate text-xs font-semibold italic text-slate-500">
+                  <p className="truncate text-xs font-semibold italic text-slate-500 dark:text-slate-400">
                     {selectedHerbDetails?.scientificName || "Scientific name"}
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={closeDetailsModal}
-                  className="rounded-full bg-white p-2 text-slate-400 shadow-sm transition-all hover:bg-slate-100 hover:text-slate-700"
+                  className="rounded-full bg-white dark:bg-slate-700 p-2 text-slate-400 dark:text-slate-500 shadow-sm transition-all hover:bg-slate-100 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-200"
                 >
                   <FaTimes />
                 </button>
@@ -1384,7 +1384,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                 ) : (
                   <div className="space-y-4">
                     <div className="grid gap-4 sm:grid-cols-[120px_1fr]">
-                      <div className="h-30 w-30 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
+                      <div className="h-30 w-30 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800">
                         {selectedHerbDetails?.imageURL ? (
                           <img
                             src={selectedHerbDetails.imageURL}
@@ -1398,45 +1398,45 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                         )}
                       </div>
                       <div className="grid gap-2 sm:grid-cols-2">
-                        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                             Herb ID
                           </p>
-                          <p className="text-sm font-bold text-slate-800">
+                          <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
                             {selectedHerbDetails?.herbId || "—"}
                           </p>
                         </div>
-                        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                             Status
                           </p>
-                          <p className="text-sm font-bold text-slate-800">
+                          <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
                             {selectedHerbDetails?.isApproved
                               ? "Approved"
                               : "Pending"}
                           </p>
                         </div>
-                        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                             Created By
                           </p>
-                          <p className="text-sm font-bold text-slate-800">
+                          <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
                             {selectedHerbDetails?.herbalistName || "Unknown"}
                           </p>
                         </div>
-                        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                             Herbalist ID
                           </p>
-                          <p className="text-sm font-bold text-slate-800">
+                          <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
                             {selectedHerbDetails?.herbalistId ?? "—"}
                           </p>
                         </div>
-                        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 sm:col-span-2">
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 sm:col-span-2">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                             Dosage
                           </p>
-                          <p className="text-sm font-semibold text-slate-700">
+                          <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                             {selectedHerbDetails?.dosage ||
                               "No dosage provided."}
                           </p>
@@ -1444,31 +1444,31 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                       </div>
                     </div>
 
-                    <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                    <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-3">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                         Description
                       </p>
-                      <p className="mt-1 text-sm leading-6 text-slate-700">
+                      <p className="mt-1 text-sm leading-6 text-slate-700 dark:text-slate-300">
                         {selectedHerbDetails?.description ||
                           "No description provided."}
                       </p>
                     </div>
 
-                    <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                    <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-3">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                         Benefits
                       </p>
-                      <p className="mt-1 text-sm leading-6 text-slate-700">
+                      <p className="mt-1 text-sm leading-6 text-slate-700 dark:text-slate-300">
                         {selectedHerbDetails?.benefits ||
                           "No benefits provided."}
                       </p>
                     </div>
 
-                    <div className="rounded-xl border border-amber-200 bg-amber-50/60 px-4 py-3">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700">
+                    <div className="rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50/60 dark:bg-amber-900/20 px-4 py-3">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700 dark:text-amber-400">
                         Warnings
                       </p>
-                      <p className="mt-1 text-sm leading-6 text-amber-900/80">
+                      <p className="mt-1 text-sm leading-6 text-amber-900/80 dark:text-amber-300/80">
                         {selectedHerbDetails?.warnings ||
                           "No warnings provided."}
                       </p>
@@ -1493,16 +1493,16 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
-              className="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl"
+              className="w-full max-w-md overflow-hidden rounded-3xl bg-white dark:bg-slate-800 shadow-2xl"
             >
-              <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-6 py-5">
-                <h3 className="text-xl font-extrabold text-slate-900">
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-6 py-5">
+                <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100">
                   Add to Inventory
                 </h3>
                 <button
                   type="button"
                   onClick={closeInventoryModal}
-                  className="rounded-full bg-white p-2 text-slate-400 shadow-sm transition-all hover:bg-slate-100 hover:text-slate-700"
+                  className="rounded-full bg-white dark:bg-slate-700 p-2 text-slate-400 dark:text-slate-500 shadow-sm transition-all hover:bg-slate-100 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-200"
                   disabled={isAddingToInventory}
                 >
                   <FaTimes />
@@ -1510,14 +1510,14 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
               </div>
 
               <form onSubmit={handleAddToInventory} className="p-6">
-                <div className="mb-6 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700/70">
+                <div className="mb-6 rounded-2xl border border-emerald-100 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/30 p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700/70 dark:text-emerald-400/70">
                     Selected Herb
                   </p>
-                  <p className="mt-1 truncate text-lg font-black text-slate-900">
+                  <p className="mt-1 truncate text-lg font-black text-slate-900 dark:text-slate-100">
                     {selectedHerbForInventory.herbName}
                   </p>
-                  <p className="truncate text-xs font-semibold italic text-slate-500">
+                  <p className="truncate text-xs font-semibold italic text-slate-500 dark:text-slate-400">
                     {selectedHerbForInventory.scientificName}
                   </p>
                 </div>
@@ -1526,7 +1526,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                   Selling Price / Kg
                 </label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 start-0 flex items-center ps-4 text-sm font-extrabold text-slate-400">
+                  <span className="absolute inset-y-0 start-0 flex items-center ps-4 text-sm font-extrabold text-slate-400 dark:text-slate-500">
                     EGP
                   </span>
                   <input
@@ -1537,7 +1537,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                     value={pricePerKilo}
                     onChange={(event) => setPricePerKilo(event.target.value)}
                     placeholder="0.00"
-                    className="w-full rounded-xl border border-slate-200 py-3 pe-4 ps-14 text-base font-black text-slate-900 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-3 pe-4 ps-14 text-base font-black text-slate-900 dark:text-slate-100 outline-none transition-all focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
                     disabled={isAddingToInventory}
                   />
                 </div>
@@ -1546,7 +1546,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                   <button
                     type="submit"
                     disabled={isAddingToInventory || !pricePerKilo}
-                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 text-sm font-bold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 dark:bg-emerald-600 text-sm font-bold text-white transition-colors hover:bg-slate-800 dark:hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isAddingToInventory ? (
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -1559,7 +1559,7 @@ function HerbalistManageHerbs({ user, dashboardData, view = "managed" }) {
                     type="button"
                     onClick={closeInventoryModal}
                     disabled={isAddingToInventory}
-                    className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-slate-200 text-sm font-bold text-slate-600 transition-colors hover:bg-slate-50 disabled:opacity-60"
+                    className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-600 dark:text-slate-400 transition-colors hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-60"
                   >
                     Cancel
                   </button>

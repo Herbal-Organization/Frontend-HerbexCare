@@ -14,16 +14,45 @@ const getAiRecipeId = (recipe) => {
   return Number.isFinite(candidate) && candidate > 0 ? candidate : null;
 };
 
+const getProviderId = (p) =>
+  String(p?.herbalistId ?? p?.userId ?? p?.id ?? "");
+const getProviderName = (p) =>
+  p?.herbalistName || p?.fullName || p?.name || p?.userName || "Licensed Herbalist";
+const getProviderPrice = (p) => {
+  const v = p?.price ?? p?.pricePerKilo ?? p?.inventoryPrice;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+};
+
 function AiRecipeAddToCartAction({
   recipe,
   recipeTitle,
+  providers = [],
   buttonClassName = "",
 }) {
   const { addAiRecipeToCart } = useCart();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quantity, setQuantity] = useState("1");
+  const [selectedProviderId, setSelectedProviderId] = useState("");
 
   const aiRecipeId = useMemo(() => getAiRecipeId(recipe), [recipe]);
+
+  const sortedProviders = useMemo(() => {
+    const seen = new Set();
+    return [...(providers || [])]
+      .filter((p) => {
+        const id = getProviderId(p);
+        if (!id || seen.has(id)) return false;
+        seen.add(id);
+        return true;
+      })
+      .sort((a, b) => (getProviderPrice(a) || Infinity) - (getProviderPrice(b) || Infinity));
+  }, [providers]);
+
+  const selectedProvider = useMemo(
+    () => sortedProviders.find((p) => getProviderId(p) === String(selectedProviderId)),
+    [selectedProviderId, sortedProviders],
+  );
 
   const openModal = () => {
     if (!aiRecipeId) {
@@ -32,11 +61,13 @@ function AiRecipeAddToCartAction({
     }
     setIsModalOpen(true);
     setQuantity("1");
+    setSelectedProviderId("");
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setQuantity("1");
+    setSelectedProviderId("");
   };
 
   const handleAddToCart = () => {
@@ -51,16 +82,23 @@ function AiRecipeAddToCartAction({
       return;
     }
 
-    const unitPrice = Number(recipe?.price || recipe?.unitPrice || 0);
+    if (sortedProviders.length > 0 && !selectedProviderId) {
+      toast.error("Please select a herbalist.");
+      return;
+    }
+
+    const unitPrice = selectedProvider
+      ? getProviderPrice(selectedProvider) || Number(recipe?.price || recipe?.unitPrice || 0)
+      : Number(recipe?.price || recipe?.unitPrice || 0);
 
     addAiRecipeToCart({
       aiRecipeId,
-      herbalistId: 0,
+      herbalistId: selectedProviderId ? Number(selectedProviderId) : 0,
       quantity: parsedQuantity,
       unitPrice,
       price: unitPrice,
       _previewName: recipeTitle || recipe?.recommendedRecipeName || recipe?.recipeName || "AI Recipe",
-      _providerName: "Platform",
+      _providerName: selectedProvider ? getProviderName(selectedProvider) : "Platform",
       _itemType: "ai-recipe",
     });
 
@@ -99,6 +137,39 @@ function AiRecipeAddToCartAction({
             <p className="mb-6 line-clamp-2 text-sm font-semibold text-slate-700">
               {recipeTitle || recipe?.recommendedRecipeName || recipe?.recipeName || "AI Recipe"}
             </p>
+
+            {sortedProviders.length > 0 && (
+              <div className="mb-6">
+                <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500">
+                  Select Herbalist
+                </label>
+                <select
+                  value={selectedProviderId}
+                  onChange={(e) => setSelectedProviderId(e.target.value)}
+                  className="w-full rounded-2xl border-2 border-slate-200 bg-white px-3 py-3 text-sm font-semibold text-slate-900 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all appearance-none cursor-pointer"
+                >
+                  <option value="">Choose a herbalist...</option>
+                  {sortedProviders.map((p) => {
+                    const pid = getProviderId(p);
+                    const name = getProviderName(p);
+                    const price = getProviderPrice(p);
+                    return (
+                      <option key={pid} value={pid}>
+                        {name}{price ? ` • ${price} EGP` : ""}
+                      </option>
+                    );
+                  })}
+                </select>
+                {selectedProvider && (
+                  <div className="mt-2 p-2 bg-emerald-50 rounded-xl border border-emerald-200">
+                    <p className="text-xs font-semibold text-emerald-800">
+                      {getProviderName(selectedProvider)}
+                      {getProviderPrice(selectedProvider) > 0 && ` — ${getProviderPrice(selectedProvider)} EGP`}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="mb-8">
               <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500">

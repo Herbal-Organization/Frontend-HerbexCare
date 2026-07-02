@@ -75,7 +75,7 @@ function PatientSavedRecipes() {
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-center py-20">
           <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-500 shadow-sm" />
-          <p className="mt-6 text-sm font-bold uppercase tracking-widest text-slate-400">
+          <p className="mt-6 text-sm font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
             Loading Saved Recipes
           </p>
         </div>
@@ -86,31 +86,31 @@ function PatientSavedRecipes() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-10 flex flex-col gap-2">
-        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-3">
-          <div className="rounded-xl bg-emerald-100 p-3 text-emerald-600 shadow-inner">
+        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-3">
+          <div className="rounded-xl bg-emerald-100 dark:bg-emerald-900/30 p-3 text-emerald-600 dark:text-emerald-400 shadow-inner">
             <FaBookOpen className="text-2xl" />
           </div>
           Saved Recipes
         </h1>
-        <p className="text-lg font-medium text-slate-500">
+        <p className="text-lg font-medium text-slate-500 dark:text-slate-400">
           Recipes collected from your favorite orders.
         </p>
       </div>
 
       {error && (
-        <div className="mb-8 rounded-3xl border border-eed-100 bg-red-50 p-8 shadow-sm text-center">
+        <div className="mb-8 rounded-3xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-8 shadow-sm text-center">
           <FaExclamationCircle className="mx-auto text-4xl text-red-400 mb-4" />
-          <p className="text-lg font-bold text-red-700">{error}</p>
+          <p className="text-lg font-bold text-red-700 dark:text-red-400">{error}</p>
         </div>
       )}
 
       {!error && savedRecipes.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-[3rem] border-2 border-dashed border-slate-200 bg-slate-50/50 py-24 text-center shadow-sm">
-          <FaBookOpen className="text-5xl text-slate-300 mb-6" />
-          <h2 className="text-2xl font-bold text-slate-700">
+        <div className="flex flex-col items-center justify-center rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 py-24 text-center shadow-sm">
+          <FaBookOpen className="text-5xl text-slate-300 dark:text-slate-600 mb-6" />
+          <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-300">
             No Saved Recipes Yet
           </h2>
-          <p className="mt-2 text-slate-500 mb-8 max-w-sm font-medium">
+          <p className="mt-2 text-slate-500 dark:text-slate-400 mb-8 max-w-sm font-medium">
             Favorite an order that contains recipes to see them here.
           </p>
           <Link
@@ -125,26 +125,26 @@ function PatientSavedRecipes() {
           {savedRecipes.map((recipe) => (
             <div
               key={recipe.recipeId}
-              className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-lg"
+              className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm transition-all hover:shadow-lg"
             >
               <div className="mb-4 flex items-center justify-between">
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-slate-500 border border-slate-200">
+                <span className="rounded-full bg-slate-100 dark:bg-slate-900 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
                   Recipe #{String(recipe.recipeId).slice(0, 8)}
                 </span>
                 <FaFlask className="text-emerald-600" />
               </div>
 
-              <h3 className="text-lg font-bold text-slate-900 line-clamp-2">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 line-clamp-2">
                 {recipe.recipeName}
               </h3>
 
               {recipe.description ? (
-                <p className="mt-2 text-sm text-slate-500 line-clamp-2">
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
                   {recipe.description}
                 </p>
               ) : null}
 
-              <div className="mt-4 space-y-2 text-sm text-slate-600">
+              <div className="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-400">
                 {recipe.savedDate ? (
                   <p>
                     <span className="font-semibold">Last saved:</span>{" "}

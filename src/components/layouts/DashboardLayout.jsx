@@ -1,5 +1,6 @@
 import React from "react";
 import DashboardSidebar from "./DashboardSidebar";
+import NotificationBell from "@components/common/NotificationBell";
 import { FaBars, FaShieldAlt, FaSpa } from "react-icons/fa";
 import { MdEco } from "react-icons/md";
 import { useTranslation } from "react-i18next";
@@ -42,7 +43,7 @@ function DashboardLayout({
           >
             <FaBars className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-1">
             <div className="bg-primary rounded-lg p-1.5 text-white">
               {isPatient ? (
                 <FaSpa className="text-lg" />
@@ -56,6 +57,12 @@ function DashboardLayout({
               {t(`${role}Sidebar.brand`, "Herbal Care AI")}
             </span>
           </div>
+          <NotificationBell />
+        </div>
+
+        {/* Desktop top bar */}
+        <div className="hidden lg:flex items-center justify-end gap-3 px-6 py-3 border-b border-slate-100 dark:border-slate-800">
+          <NotificationBell />
         </div>
 
         {/* Content Area */}

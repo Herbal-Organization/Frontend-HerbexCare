@@ -8,12 +8,22 @@ import {
   logout,
 } from "@utils/auth";
 import DashboardLayout from "@components/layouts/DashboardLayout";
+import { Spinner } from "@components/common";
 import { getAdminNavConfig } from "@config/dashboard/adminNav";
 import AdminOverviewPage from "./AdminOverviewPage";
 import AdminUsersPage from "./AdminUsersPage";
 import AdminDiseasesPage from "./AdminDiseasesPage";
 import AdminAiChatConsultationsPage from "./AdminAiChatConsultationsPage";
 import AdminInventoryAiChatPage from "./AdminInventoryAiChatPage";
+import AdminNotificationsPage from "./AdminNotificationsPage";
+import AdminHerbsPage from "./AdminHerbsPage";
+import AdminRecipesPage from "./AdminRecipesPage";
+import AdminOrdersPage from "./AdminOrdersPage";
+import AdminSubOrdersPage from "./AdminSubOrdersPage";
+import AdminHerbalistsPage from "./AdminHerbalistsPage";
+import AdminPatientsPage from "./AdminPatientsPage";
+import AdminFeedbacksPage from "./AdminFeedbacksPage";
+import AdminReviewsPage from "./AdminReviewsPage";
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -51,7 +61,7 @@ function AdminDashboard() {
   if (!displayUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary" />
+        <Spinner size="xl" />
       </div>
     );
   }
@@ -74,10 +84,19 @@ function AdminDashboard() {
           path="/ai-chat"
           element={<AdminAiChatConsultationsPage />}
         />
-        <Route 
-          path="/inventory" 
-          element={<AdminInventoryAiChatPage />} 
+        <Route
+          path="/inventory"
+          element={<AdminInventoryAiChatPage />}
         />
+        <Route path="/notifications" element={<AdminNotificationsPage />} />
+        <Route path="/herbs" element={<AdminHerbsPage />} />
+        <Route path="/recipes" element={<AdminRecipesPage />} />
+        <Route path="/orders" element={<AdminOrdersPage />} />
+        <Route path="/sub-orders" element={<AdminSubOrdersPage />} />
+        <Route path="/herbalists" element={<AdminHerbalistsPage />} />
+        <Route path="/patients" element={<AdminPatientsPage />} />
+        <Route path="/feedbacks" element={<AdminFeedbacksPage />} />
+        <Route path="/reviews" element={<AdminReviewsPage />} />
         <Route path="*" element={<Navigate to="/admin/dashboard/overview" replace />} />
       </Routes>
     </DashboardLayout>

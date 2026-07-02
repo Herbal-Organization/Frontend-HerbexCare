@@ -346,8 +346,8 @@ function PatientFavorites() {
     return (
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-center py-20">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-500" />
-          <p className="mt-6 text-sm font-bold uppercase tracking-widest text-slate-400">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-emerald-500" />
+          <p className="mt-6 text-sm font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
             Loading Favorites
           </p>
         </div>
@@ -356,24 +356,24 @@ function PatientFavorites() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-center gap-3">
-          <div className="rounded-xl bg-rose-100 p-3 text-rose-600">
+          <div className="rounded-xl bg-rose-100 dark:bg-rose-900/30 p-3 text-rose-600 dark:text-rose-400">
             <FaHeart className="text-xl" />
           </div>
           <div>
-            <h1 className="text-3xl font-black tracking-tight text-slate-900">
+            <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-100">
               Favorites
             </h1>
-            <p className="text-sm font-medium text-slate-500">
+            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
               Manage your favorite recipes, herbs, herbalists, and orders in one
               place.
             </p>
           </div>
         </div>
 
-        <div className="border-b border-slate-200 bg-white sticky top-0 z-20 shadow-sm rounded-t-2xl">
+        <div className="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 sticky top-0 z-20 shadow-sm rounded-t-2xl">
           <div className="flex gap-1 overflow-x-auto px-2">
             <button
               type="button"
@@ -381,7 +381,7 @@ function PatientFavorites() {
               className={`px-6 py-4 font-semibold text-sm transition border-b-2 whitespace-nowrap flex items-center gap-2 ${
                 activeTab === "recipes"
                   ? "border-emerald-600 text-emerald-600"
-                  : "border-transparent text-slate-600 hover:text-slate-900"
+                  : "border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
               <FaBookOpen className="text-base" />
@@ -393,7 +393,7 @@ function PatientFavorites() {
               className={`px-6 py-4 font-semibold text-sm transition border-b-2 whitespace-nowrap flex items-center gap-2 ${
                 activeTab === "herbs"
                   ? "border-emerald-600 text-emerald-600"
-                  : "border-transparent text-slate-600 hover:text-slate-900"
+                  : "border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
               <FaLeaf className="text-base" />
@@ -405,7 +405,7 @@ function PatientFavorites() {
               className={`px-6 py-4 font-semibold text-sm transition border-b-2 whitespace-nowrap flex items-center gap-2 ${
                 activeTab === "herbalists"
                   ? "border-emerald-600 text-emerald-600"
-                  : "border-transparent text-slate-600 hover:text-slate-900"
+                  : "border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
               <FaUserMd className="text-base" />
@@ -417,7 +417,7 @@ function PatientFavorites() {
               className={`px-6 py-4 font-semibold text-sm transition border-b-2 whitespace-nowrap flex items-center gap-2 ${
                 activeTab === "orders"
                   ? "border-emerald-600 text-emerald-600"
-                  : "border-transparent text-slate-600 hover:text-slate-900"
+                  : "border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
               <FaShoppingBag className="text-base" />
@@ -426,21 +426,21 @@ function PatientFavorites() {
           </div>
         </div>
 
-        <div className="rounded-b-2xl border border-t-0 border-slate-200 bg-white p-6 sm:p-8">
+        <div className="rounded-b-2xl border border-t-0 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 sm:p-8">
           {error ? (
-            <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
-              <p className="text-sm font-semibold text-red-700">{error}</p>
+            <div className="rounded-2xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-6 text-center">
+              <p className="text-sm font-semibold text-red-700 dark:text-red-400">{error}</p>
             </div>
           ) : null}
 
           {!error && activeTab === "recipes" ? (
             sortedRecipes.length === 0 ? (
-              <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 p-14 text-center">
-                <FaBookOpen className="mx-auto text-4xl text-slate-300" />
-                <h2 className="mt-4 text-xl font-bold text-slate-700">
+              <div className="rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-14 text-center">
+                <FaBookOpen className="mx-auto text-4xl text-slate-300 dark:text-slate-600" />
+                <h2 className="mt-4 text-xl font-bold text-slate-700 dark:text-slate-300">
                   No Favorite Recipes Yet
                 </h2>
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                   Add recipes to favorites from the recipe library.
                 </p>
                 <Link
@@ -479,12 +479,12 @@ function PatientFavorites() {
 
           {!error && activeTab === "herbs" ? (
             sortedHerbs.length === 0 ? (
-              <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 p-14 text-center">
-                <FaSeedling className="mx-auto text-4xl text-slate-300" />
-                <h2 className="mt-4 text-xl font-bold text-slate-700">
+              <div className="rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-14 text-center">
+                <FaSeedling className="mx-auto text-4xl text-slate-300 dark:text-slate-600" />
+                <h2 className="mt-4 text-xl font-bold text-slate-700 dark:text-slate-300">
                   No Favorite Herbs Yet
                 </h2>
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                   Add herbs to favorites from the herb library.
                 </p>
                 <Link
@@ -517,12 +517,12 @@ function PatientFavorites() {
 
           {!error && activeTab === "herbalists" ? (
             sortedHerbalists.length === 0 ? (
-              <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 p-14 text-center">
-                <FaUserMd className="mx-auto text-4xl text-slate-300" />
-                <h2 className="mt-4 text-xl font-bold text-slate-700">
+              <div className="rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-14 text-center">
+                <FaUserMd className="mx-auto text-4xl text-slate-300 dark:text-slate-600" />
+                <h2 className="mt-4 text-xl font-bold text-slate-700 dark:text-slate-300">
                   No Favorite Herbalists Yet
                 </h2>
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                   Save herbalists from the directory or when browsing herb
                   providers.
                 </p>
@@ -556,12 +556,12 @@ function PatientFavorites() {
 
           {!error && activeTab === "orders" ? (
             sortedOrders.length === 0 ? (
-              <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 p-14 text-center">
-                <FaShoppingBag className="mx-auto text-4xl text-slate-300" />
-                <h2 className="mt-4 text-xl font-bold text-slate-700">
+              <div className="rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-14 text-center">
+                <FaShoppingBag className="mx-auto text-4xl text-slate-300 dark:text-slate-600" />
+                <h2 className="mt-4 text-xl font-bold text-slate-700 dark:text-slate-300">
                   No Favorite Orders Yet
                 </h2>
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                   Mark orders as favorites to see them here.
                 </p>
                 <Link

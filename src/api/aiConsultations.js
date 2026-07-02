@@ -82,6 +82,20 @@ export const getAdminAiConsultationsStatistics = async () => {
   return data;
 };
 
+export const getAdminAiConsultations = async (params = {}) => {
+  const { data } = await httpClient.get("/api/admin/ai-consultations", {
+    params,
+  });
+  return data;
+};
+
+export const deleteAdminAiConsultation = async (id) => {
+  const { data } = await httpClient.delete(
+    `/api/admin/ai-consultations/${id}`,
+  );
+  return data;
+};
+
 export const getAllCatalogs = fetchConsultationCatalog;
 export const myAllConsultations = fetchMyConsultations;
 export const generateAiConsultation = generateConsultation;

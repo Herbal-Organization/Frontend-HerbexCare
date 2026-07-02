@@ -10,10 +10,12 @@ import HerbalistManageHerbs from "./HerbalistManageHerbs";
 import HerbalistManageRecipes from "./HerbalistManageRecipes";
 import HerbalistManageAIRecipes from "./HerbalistManageAIRecipes";
 import HerbalistManageAIChatRecipes from "./HerbalistManageAIChatRecipes";
+import HerbalistManageInventoryRecipes from "./HerbalistManageInventoryRecipes";
 import HerbalistManageDiseases from "./HerbalistManageDiseases";
 import HerbalistDashboardHome from "./HerbalistDashboardHome";
 import HerbalistProfile from "./HerbalistProfile";
 import HerbalistSettings from "./HerbalistSettings";
+import HerbalistFinancials from "./HerbalistFinancials";
 import HerbalistSubOrders from "./HerbalistSubOrders";
 import SubOrderDetails from "./SubOrderDetails";
 import useHerbalistDashboardData from "@features/herbalist/hooks/useHerbalistDashboardData";
@@ -25,6 +27,7 @@ import {
 import { getMySubOrders } from "@api/subOrders";
 import { useTranslation } from "react-i18next";
 import DashboardLayout from "@components/layouts/DashboardLayout";
+import { Spinner } from "@components/common";
 import { getHerbalistNavConfig } from "@config/dashboard/herbalistNav";
 
 function HerbalistDashboard() {
@@ -102,7 +105,7 @@ function HerbalistDashboard() {
   if (!displayUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary" />
+        <Spinner size="xl" />
       </div>
     );
   }
@@ -119,7 +122,7 @@ function HerbalistDashboard() {
       setSidebarOpen={setSidebarOpen}
       error={dashboardError}
     >
-      <div className="p-4 md:p-8 max-w-7xl mx-auto">
+      <div className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <Routes>
           <Route
             path="/"
@@ -146,6 +149,10 @@ function HerbalistDashboard() {
           <Route
             path="/settings"
             element={<HerbalistSettings user={displayUser} />}
+          />
+          <Route
+            path="/earnings"
+            element={<HerbalistFinancials />}
           />
           <Route
             path="/herbs"
@@ -196,6 +203,10 @@ function HerbalistDashboard() {
           <Route
             path="/ai-chat-recipes"
             element={<HerbalistManageAIChatRecipes />}
+          />
+          <Route
+            path="/inventory-recipes"
+            element={<HerbalistManageInventoryRecipes />}
           />
           <Route path="/diseases" element={<HerbalistManageDiseases />} />
           <Route

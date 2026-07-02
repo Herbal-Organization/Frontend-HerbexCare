@@ -331,7 +331,7 @@ function DashboardSettingsPage({
           >
             <form onSubmit={handleProfileSubmit} className="space-y-4">
               {profileError ? (
-                <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+                <div className="rounded-2xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-300">
                   {profileError}
                 </div>
               ) : null}
@@ -479,7 +479,7 @@ function DashboardSettingsPage({
           >
             <form onSubmit={handlePasswordSubmit} className="space-y-4">
               {passwordError ? (
-                <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+                <div className="rounded-2xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-300">
                   {passwordError}
                 </div>
               ) : null}

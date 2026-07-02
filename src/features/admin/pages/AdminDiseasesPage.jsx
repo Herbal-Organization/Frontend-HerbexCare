@@ -65,7 +65,7 @@ const parseSymptoms = (symptomsString) => {
 function StatCard({ label, value, hint, icon, tone = "emerald" }) {
   const tones = {
     emerald: "bg-emerald-50 text-emerald-700 border-emerald-100",
-    amber: "bg-amber-50 text-amber-700 border-amber-100",
+    amber: "bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-100",
     slate: "bg-slate-50 text-slate-700 border-slate-100",
   };
 
@@ -77,7 +77,7 @@ function StatCard({ label, value, hint, icon, tone = "emerald" }) {
             {label}
           </p>
           <p className="mt-3 text-3xl font-black text-slate-900">{value}</p>
-          {hint ? <p className="mt-2 text-sm text-slate-500">{hint}</p> : null}
+          {hint ? <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{hint}</p> : null}
         </div>
         <div className={`rounded-2xl border p-3 ${tones[tone]}`}>{icon}</div>
       </div>
@@ -316,22 +316,22 @@ function AdminDiseasesPage() {
       </div>
 
       {error ? (
-        <div className="rounded-3xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
+        <div className="rounded-3xl border border-rose-100 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/40 px-4 py-3 text-sm font-medium text-rose-700 dark:text-rose-400">
           {error}
         </div>
       ) : null}
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-4 border-b border-slate-100 pb-4 lg:flex-row lg:items-end lg:justify-between">
+      <section className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+        <div className="flex flex-col gap-4 border-b border-slate-100 dark:border-slate-700 pb-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h2 className="text-xl font-bold text-slate-900">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
               Pending approvals
             </h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               Approve or reject diseases that are waiting for moderation.
             </p>
           </div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-amber-700">
+          <div className="inline-flex items-center gap-2 rounded-full bg-amber-50 dark:bg-amber-900/30 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-amber-700 dark:text-amber-400">
             <FaClock className="text-[10px]" />
             {pendingDiseases.length} awaiting review
           </div>
@@ -339,10 +339,10 @@ function AdminDiseasesPage() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-500" />
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-emerald-500" />
           </div>
         ) : pendingDiseases.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-10 text-center text-sm text-slate-500">
+          <div className="rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-10 text-center text-sm text-slate-500 dark:text-slate-400">
             No diseases are waiting for approval.
           </div>
         ) : (
@@ -353,19 +353,19 @@ function AdminDiseasesPage() {
               return (
                 <article
                   key={disease.diseaseId}
-                  className="rounded-3xl border border-slate-200 bg-slate-50/70 p-5"
+                  className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/70 p-5"
                 >
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="text-lg font-bold text-slate-900">
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
                           {disease.diseaseName}
                         </h3>
-                        <span className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-amber-700">
+                        <span className="inline-flex rounded-full bg-amber-100 dark:bg-amber-900/40 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-amber-700 dark:text-amber-400">
                           Pending review
                         </span>
                       </div>
-                      <p className="mt-1 text-sm text-slate-500">
+                      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                         {disease.diseaseType || "No disease type provided"}
                       </p>
                     </div>
@@ -373,7 +373,7 @@ function AdminDiseasesPage() {
                     <button
                       type="button"
                       onClick={() => handleOpenDetails(disease)}
-                      className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-black uppercase tracking-widest text-slate-600 transition-colors hover:border-emerald-500 hover:text-emerald-700"
+                      className="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 transition-colors hover:border-emerald-500 hover:text-emerald-700"
                     >
                       <FaEye className="text-[10px]" />
                       View
@@ -381,7 +381,7 @@ function AdminDiseasesPage() {
                   </div>
 
                   <div className="mt-4 space-y-4">
-                    <p className="text-sm leading-6 text-slate-600">
+                    <p className="text-sm leading-6 text-slate-600 dark:text-slate-400">
                       {disease.description || "No description provided."}
                     </p>
 
@@ -392,7 +392,7 @@ function AdminDiseasesPage() {
                           .map((symptom) => (
                             <span
                               key={symptom}
-                              className="inline-flex rounded-full bg-amber-50 border border-amber-200 px-3 py-1 text-[11px] font-bold text-amber-700"
+                              className="inline-flex rounded-full bg-amber-50 dark:bg-amber-900/30 border border-amber-200 px-3 py-1 text-[11px] font-bold text-amber-700 dark:text-amber-400"
                             >
                               {symptom}
                             </span>
@@ -434,13 +434,13 @@ function AdminDiseasesPage() {
         )}
       </section>
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-4 border-b border-slate-100 pb-4 lg:flex-row lg:items-end lg:justify-between">
+      <section className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+        <div className="flex flex-col gap-4 border-b border-slate-100 dark:border-slate-700 pb-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h2 className="text-xl font-bold text-slate-900">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
               Disease registry
             </h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               Search and review the complete disease catalogue.
             </p>
           </div>
@@ -461,15 +461,15 @@ function AdminDiseasesPage() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-500" />
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-emerald-500" />
           </div>
         ) : filteredDiseases.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-12 text-center text-sm text-slate-500">
+          <div className="rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-12 text-center text-sm text-slate-500 dark:text-slate-400">
             No diseases match your search.
           </div>
         ) : (
           <div className="space-y-5 pt-5">
-            <div className="flex items-center justify-between gap-3 text-sm text-slate-500">
+            <div className="flex items-center justify-between gap-3 text-sm text-slate-500 dark:text-slate-400">
               <p>
                 Showing{" "}
                 {Math.min((currentPage - 1) * PAGE_SIZE + 1, totalItems)}-

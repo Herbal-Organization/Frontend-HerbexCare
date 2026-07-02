@@ -113,3 +113,38 @@ export const getHerbalistsForHerb = async (herbId) => {
   });
   return data;
 };
+
+export const getPendingHerbs = async (params = {}) => {
+  const { data } = await httpClient.get("/api/admin/herbs/pending", {
+    params,
+  });
+  return data;
+};
+
+export const approveHerb = async (id) => {
+  const { data } = await httpClient.patch(`/api/admin/herbs/${id}/approve`);
+  return data;
+};
+
+export const adminCreateHerb = async (payload) => {
+  const formData = buildHerbFormData(payload);
+  const { data } = await httpClient.post("/api/admin/herbs/add", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data;
+};
+
+export const adminUpdateHerb = async (id, payload) => {
+  const formData = buildHerbFormData(payload);
+  const { data } = await httpClient.put(
+    `/api/admin/herbs/${id}`,
+    formData,
+    { headers: { "Content-Type": "multipart/form-data" } },
+  );
+  return data;
+};
+
+export const adminDeleteHerb = async (id) => {
+  const { data } = await httpClient.delete(`/api/admin/herbs/${id}`);
+  return data;
+};

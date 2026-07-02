@@ -16,18 +16,18 @@ function CheckoutPanel({
   onPaymentChange,
 }) {
   return (
-    <div className="overflow-hidden rounded-4xl border border-slate-200 bg-white/95 p-4 shadow-sm backdrop-blur sm:p-6 lg:rounded-[2.5rem] lg:p-8">
-      <div className="mb-6 border-b border-slate-100 pb-4">
-        <h2 className="flex items-center gap-2 text-lg font-extrabold text-slate-900 sm:text-xl">
+    <div className="overflow-hidden rounded-4xl border border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-800/95 p-4 shadow-sm backdrop-blur sm:p-6 lg:rounded-[2.5rem] lg:p-8">
+      <div className="mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
+        <h2 className="flex items-center gap-2 text-lg font-extrabold text-slate-900 dark:text-slate-100 sm:text-xl">
           Logistics & Verification
         </h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400">
           Complete shipping and payment details to place the order.
         </p>
       </div>
 
       {error && (
-        <div className="mb-6 rounded-2xl border border-eed-100 bg-red-50 p-4 text-sm font-bold text-red-600">
+        <div className="mb-6 rounded-2xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-4 text-sm font-bold text-red-600 dark:text-red-400">
           {error}
         </div>
       )}
@@ -36,7 +36,7 @@ function CheckoutPanel({
 
 
         <div>
-          <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500">
+          <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
             <FaMapMarkerAlt />
             Shipping Address
           </label>
@@ -44,13 +44,13 @@ function CheckoutPanel({
             value={shippingAddress}
             onChange={(event) => onAddressChange(event.target.value)}
             placeholder="24th Medical Quarter Ave, Suite B..."
-            className="min-h-28 w-full rounded-2xl border-2 border-slate-200/50 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition-all placeholder:font-medium placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+            className="min-h-28 w-full rounded-2xl border-2 border-slate-200/50 dark:border-slate-600/50 bg-slate-50 dark:bg-slate-900 px-4 py-3 text-sm font-semibold text-slate-900 dark:text-slate-100 outline-none transition-all placeholder:font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/10"
             disabled={isSubmitting}
           />
         </div>
 
         <div>
-          <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500">
+          <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
             <FaCreditCard />
             Payment Method
           </label>
@@ -58,7 +58,7 @@ function CheckoutPanel({
             <select
               value={paymentMethod}
               onChange={(event) => onPaymentChange(event.target.value)}
-              className="w-full appearance-none rounded-2xl border-2 border-slate-200/50 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+              className="w-full appearance-none rounded-2xl border-2 border-slate-200/50 dark:border-slate-600/50 bg-slate-50 dark:bg-slate-900 px-4 py-3 text-sm font-bold text-slate-900 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/10"
               disabled={isSubmitting}
             >
               <option value="" disabled>
@@ -72,7 +72,7 @@ function CheckoutPanel({
         </div>
       </div>
 
-      <div className="mt-8 border-t border-slate-100 pt-6">
+      <div className="mt-8 border-t border-slate-100 dark:border-slate-700 pt-6">
         <button
           type="submit"
           disabled={

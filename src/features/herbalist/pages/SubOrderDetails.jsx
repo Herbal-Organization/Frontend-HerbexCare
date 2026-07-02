@@ -30,9 +30,9 @@ function SubOrderDetails() {
 
   if (isLoading) {
     return (
-      <div className="flex h-64 flex-col items-center justify-center rounded-3xl border border-slate-200 bg-white shadow-lg">
+      <div className="flex h-64 flex-col items-center justify-center rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg">
         <FaSpinner className="animate-spin text-3xl text-emerald-600" />
-        <p className="mt-4 text-sm font-bold uppercase tracking-widest text-slate-400">
+        <p className="mt-4 text-sm font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
           Loading order
         </p>
       </div>
@@ -41,9 +41,9 @@ function SubOrderDetails() {
 
   if (error || !order) {
     return (
-      <div className="rounded-3xl border border-rose-100 bg-rose-50 p-10 text-center shadow-sm">
+      <div className="rounded-3xl border border-rose-100 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/40 p-10 text-center shadow-sm">
         <FaExclamationCircle className="mx-auto text-4xl text-rose-500" />
-        <p className="mt-4 font-semibold text-rose-700">
+        <p className="mt-4 font-semibold text-rose-700 dark:text-rose-400">
           {error ? "Failed to load order." : "Order not found."}
         </p>
         <button
@@ -61,17 +61,17 @@ function SubOrderDetails() {
       <button
         type="button"
         onClick={() => navigate("/herbalist/dashboard/orders")}
-        className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-600 transition-all duration-200 hover:bg-slate-50 hover:shadow-sm"
+        className="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 dark:text-slate-400 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-sm"
       >
         <FaArrowLeft /> Back
       </button>
 
-      <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:flex-row sm:items-start sm:justify-between">
+      <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm sm:flex-row sm:items-start sm:justify-between">
         <div className="flex-1">
-          <h1 className="text-2xl font-extrabold text-slate-900 sm:text-3xl">
+          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 sm:text-3xl">
             Order #{order.id}
           </h1>
-          <p className="mt-2 flex items-center gap-2 text-sm font-semibold text-slate-500">
+          <p className="mt-2 flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400">
             <FaCalendarAlt />
             {new Date(order.date).toLocaleString()}
           </p>
@@ -81,8 +81,8 @@ function SubOrderDetails() {
 
       <div className="grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
         <div className="flex flex-col gap-6">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-5 flex items-center gap-2 border-b border-slate-100 pb-4 text-lg font-extrabold text-slate-900">
+          <div className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+            <h2 className="mb-5 flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-4 text-lg font-extrabold text-slate-900 dark:text-slate-100">
               <FaLeaf /> Ordered Herbs
             </h2>
             {herbItems.length > 0 ? (
@@ -92,16 +92,16 @@ function SubOrderDetails() {
                 ))}
               </div>
             ) : (
-              <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center">
-                <p className="text-sm font-bold text-slate-600">
+              <div className="rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-6 text-center">
+                <p className="text-sm font-bold text-slate-600 dark:text-slate-400">
                   No herbs in the order.
                 </p>
               </div>
             )}
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-5 flex items-center gap-2 border-b border-slate-100 pb-4 text-lg font-extrabold text-slate-900">
+          <div className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+            <h2 className="mb-5 flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-4 text-lg font-extrabold text-slate-900 dark:text-slate-100">
               <FaLeaf /> Ordered Recipes
             </h2>
             {recipeItems.length > 0 ? (
@@ -111,8 +111,8 @@ function SubOrderDetails() {
                 ))}
               </div>
             ) : (
-              <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center">
-                <p className="text-sm font-bold text-slate-600">
+              <div className="rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-6 text-center">
+                <p className="text-sm font-bold text-slate-600 dark:text-slate-400">
                   No recipes in the order.
                 </p>
               </div>
@@ -121,39 +121,39 @@ function SubOrderDetails() {
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-5 flex items-center gap-2 border-b border-slate-100 pb-4 text-lg font-extrabold text-slate-900">
+          <div className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+            <h2 className="mb-5 flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-4 text-lg font-extrabold text-slate-900 dark:text-slate-100">
               <FaUser /> Customer
             </h2>
-            <p className="font-bold text-slate-900">{order.customer.name}</p>
-            <p className="mt-2 text-sm font-semibold text-slate-500">
+            <p className="font-bold text-slate-900 dark:text-slate-100">{order.customer.name}</p>
+            <p className="mt-2 text-sm font-semibold text-slate-500 dark:text-slate-400">
               {order.customer.contact}
             </p>
-            <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-              <p className="mb-2 flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400">
+            <div className="mt-4 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4">
+              <p className="mb-2 flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
                 <FaMapMarkerAlt /> Shipping
               </p>
-              <p className="whitespace-pre-wrap text-sm font-semibold text-slate-700">
+              <p className="whitespace-pre-wrap text-sm font-semibold text-slate-700 dark:text-slate-300">
                 {order.customer.address}
               </p>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-5 flex items-center gap-2 border-b border-slate-100 pb-4 text-lg font-extrabold text-slate-900">
+          <div className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+            <h2 className="mb-5 flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-4 text-lg font-extrabold text-slate-900 dark:text-slate-100">
               <FaCreditCard /> Payment
             </h2>
             <div className="flex items-center justify-between">
-              <span className="text-sm font-bold text-slate-500">Status</span>
-              <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-black text-slate-700">
+              <span className="text-sm font-bold text-slate-500 dark:text-slate-400">Status</span>
+              <span className="rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-1 text-xs font-black text-slate-700 dark:text-slate-300">
                 {order.paymentStatus}
               </span>
             </div>
-            <div className="mt-4 flex items-center justify-between rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
-              <span className="text-sm font-black uppercase tracking-widest text-emerald-800">
+            <div className="mt-4 flex items-center justify-between rounded-2xl border border-emerald-100 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/30 p-4">
+              <span className="text-sm font-black uppercase tracking-widest text-emerald-800 dark:text-emerald-400">
                 Total
               </span>
-              <span className="text-xl font-black text-emerald-700">
+              <span className="text-xl font-black text-emerald-700 dark:text-emerald-400">
                 {formatCurrency(order.subTotal)}
               </span>
             </div>

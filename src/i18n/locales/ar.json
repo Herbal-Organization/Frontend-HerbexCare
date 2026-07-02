@@ -11,7 +11,13 @@
     "logout": "تسجيل الخروج",
     "myCart": "سلتي",
     "user": "المستخدم",
-    "saved": "محفوظ"
+    "saved": "محفوظ",
+    "menu": "القائمة",
+    "dashboard": "لوحة التحكم",
+    "orders": "الطلبات",
+    "favorites": "المفضلة",
+    "settings": "الإعدادات",
+    "account": "الحساب"
   },
   "hero": {
     "badge": "شفاء طبيعي مدعوم بالذكاء الاصطناعي",
@@ -214,7 +220,29 @@
     "recipe": "وصفة",
     "aiRecipe": "وصفة ذكاء اصطناعي",
     "aiChatRecipe": "وصفة دردشة ذكاء اصطناعي",
-    "totalFeedbacks": "إجمالي التقييمات"
+    "totalFeedbacks": "إجمالي التقييمات",
+    "averageRating": "متوسط التقييم",
+    "allTypes": "الكل",
+    "sortBy": "ترتيب حسب",
+    "sortNewest": "الأحدث أولاً",
+    "sortOldest": "الأقدم أولاً",
+    "sortHighest": "الأعلى تقييماً",
+    "sortLowest": "الأقل تقييماً",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "editTitle": "تعديل تقييمك",
+    "yourRating": "تقييمك",
+    "yourComment": "تعليقك",
+    "commentPlaceholder": "شاركنا رأيك (اختياري)",
+    "save": "حفظ التغييرات",
+    "cancel": "إلغاء",
+    "deleteTitle": "حذف هذا التقييم؟",
+    "deleteConfirm": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف تقييمك وتعليقك نهائياً.",
+    "deleting": "جارٍ الحذف…",
+    "saving": "جارٍ الحفظ…",
+    "noResults": "لا توجد تقييمات مطابقة لهذا التصفية.",
+    "updateError": "تعذّر تحديث تقييمك. حاول مرة أخرى.",
+    "deleteError": "تعذّر حذف تقييمك. حاول مرة أخرى."
   },
   "herbalistSidebar": {
     "brand": "HerbexCare",
@@ -231,6 +259,77 @@
     "profile": "الملف الشخصي",
     "settings": "الإعدادات",
     "member": "أعشابي"
+  },
+  "herbalistDashboard": {
+    "eyebrow": "مِرْشَد الصيدلية العشبية",
+    "greeting": "مرحباً بعودتك، {{name}}",
+    "subtitle": "أعشابك ووصفاتك ومخزونك وطلبات المرضى — في مكان واحد.",
+    "today": "اليوم",
+    "loadingMetrics": "جاري تحميل مقاييس ممارستك…",
+    "partialError": "تعذّر تحميل بعض المقاييس. نعرض ما توفّر.",
+    "stats": {
+      "herbs": "أعشاب في متحفك النباتي",
+      "herbsHint": "نباتات أضفتها إلى السجل",
+      "recipes": "مدخلات الصيدلية",
+      "recipesHint": "{{active}} وصفة نشطة",
+      "inventory": "المخزون المتاح",
+      "inventoryHint": "{{active}} عرض نشط",
+      "price": "متوسط سعر العرض",
+      "priceHint": "عبر أعشاب المخزون"
+    },
+    "workshop": {
+      "title": "ورشة العمل",
+      "subtitle": "انتقل مباشرة إلى المهمة التي تحتاجها.",
+      "herbs": "إدارة الأعشاب",
+      "herbsDesc": "أضف وعدّل ورتّب كتالوج النباتات",
+      "recipes": "إدارة الوصفات",
+      "recipesDesc": "أنشئ وانشر التركيبات العلاجية",
+      "inventory": "إدارة المخزون",
+      "inventoryDesc": "حدّد الأسعار والتوفر",
+      "orders": "عرض الطلبات",
+      "ordersDesc": "نفّذ طلبات المرضى الفرعية",
+      "profile": "تحديث الملف",
+      "profileDesc": "السيرة والمواعيد والظهور العام"
+    },
+    "practice": {
+      "title": "بطاقة الممارسة",
+      "subtitle": "ما يراه المرضى عند العثور عليك.",
+      "bio": "السيرة",
+      "bioDone": "مكتملة",
+      "bioMissing": "لم تُضف بعد",
+      "availability": "التوفر",
+      "availabilitySet": "{{from}} – {{to}}",
+      "availabilityMissing": "لم تُحدد المواعيد",
+      "rating": "التقييم",
+      "ratingValue": "{{rating}} / 5",
+      "ratingMissing": "لا توجد تقييمات بعد",
+      "account": "الحساب",
+      "readiness": "جاهزية الملف",
+      "readinessComplete": "جاهز لاستقبال المرضى",
+      "readinessPartial": "{{count}} من 3 تفاصيل مكتملة"
+    }
+  },
+  "herbalistOrders": {
+    "title": "الطلبات",
+    "subtitle": "أدر طلبات الأعشاب من الاستلام حتى التسليم.",
+    "searchPlaceholder": "ابحث برقم الطلب أو اسم المريض...",
+    "filters": "التصفية",
+    "total": "{{count}} طلب",
+    "loading": "جاري تحميل الطلبات",
+    "error": "تعذّر تحميل الطلبات. حاول مرة أخرى.",
+    "emptyTitle": "لا توجد طلبات بعد",
+    "emptyDescription": "ستظهر هنا الطلبات الجديدة المخصصة لمخزونك.",
+    "emptyFilterTitle": "لا توجد طلبات مطابقة",
+    "emptyFilterDescription": "جرّب تعديل البحث أو عوامل التصفية.",
+    "clearFilters": "مسح التصفية",
+    "status": {
+      "all": "الكل",
+      "pending": "قيد الانتظار",
+      "preparing": "قيد التحضير",
+      "shipped": "تم الشحن",
+      "delivered": "تم التسليم",
+      "cancelled": "ملغى"
+    }
   },
   "adminSidebar": {
     "brand": "إدارة HerbexCare",
@@ -897,5 +996,17 @@
       "noDataDesc": "بمجرد توفر بيانات ملفك الشخصي، ستظهر هنا.",
       "retry": "حاول مرة أخرى"
     }
+  },
+  "notFound": {
+    "title": "خطأ 404!",
+    "line1": "لا تقلق، لا أحد يعرف حتى ما يعنيه \"404\".",
+    "line2": "لكن لا تقلق، كل شيء سيكون على ما يرام.",
+    "line3": "فقط اضغط على سهم الرجوع في الأعلى.",
+    "backHome": "العودة للرئيسية"
+  },
+  "orderSuccess": {
+    "title": "تم تقديم الطلب بنجاح!",
+    "description": "تم إرسال طلبك بنجاح إلى المعالج بالأعشاب.",
+    "ok": "متابعة إلى الطلبات"
   }
 }

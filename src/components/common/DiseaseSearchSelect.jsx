@@ -95,7 +95,7 @@ export default function DiseaseSearchSelect({
   return (
     <div className="space-y-3">
       <div className="relative">
-        <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-5 text-slate-400">
+        <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-5 text-slate-400 dark:text-slate-500">
           <FaSearch className="text-sm" />
         </div>
         <input
@@ -105,7 +105,7 @@ export default function DiseaseSearchSelect({
           onFocus={() => setShowDropdown(true)}
           placeholder="Search diseases..."
           disabled={disabled || isLoading || isLoadingDiseases}
-          className="block w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-3 ps-12 pe-4 outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 text-slate-900 text-sm font-medium transition-all hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+          className="block w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 py-3 ps-12 pe-4 outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 text-slate-900 dark:text-slate-100 text-sm font-medium transition-all hover:bg-white dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
         />
       </div>
 
@@ -136,7 +136,7 @@ export default function DiseaseSearchSelect({
             className="fixed inset-0 z-40"
             onClick={() => setShowDropdown(false)}
           />
-          <div className="relative z-50 rounded-2xl border border-slate-100 bg-white shadow-lg">
+          <div className="relative z-50 rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg">
             <div className="max-h-48 overflow-auto">
               {isLoadingDiseases ? (
                 <div className="flex items-center justify-center p-6">
@@ -154,7 +154,7 @@ export default function DiseaseSearchSelect({
                       key={disease.diseaseId}
                       type="button"
                       onClick={() => handleToggle(disease.diseaseId)}
-                      className={`w-full text-start px-4 py-2.5 text-sm font-medium transition-colors border-s-2 ${isSelected ? "border-s-primary bg-primary/5 text-primary" : "border-s-transparent text-slate-900 hover:bg-slate-50"}`}
+                      className={`w-full text-start px-4 py-2.5 text-sm font-medium transition-colors border-s-2 ${isSelected ? "border-s-primary bg-primary/5 text-primary" : "border-s-transparent text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700"}`}
                     >
                       <span className="flex items-center justify-between">
                         {disease.diseaseName}
@@ -164,7 +164,7 @@ export default function DiseaseSearchSelect({
                   );
                 })
               ) : (
-                <div className="p-4 text-sm text-slate-500 text-center">
+                <div className="p-4 text-sm text-slate-500 dark:text-slate-400 text-center">
                   No diseases found
                 </div>
               )}

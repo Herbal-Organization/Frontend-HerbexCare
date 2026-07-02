@@ -79,6 +79,14 @@ export const removeInventoryAiChatRecipe = async (inventoryId) => {
   return data;
 };
 
+export const getHerbalistsForAiChatRecipe = async (id, isActive = true) => {
+  const { data } = await httpClient.get(
+    `/api/inventory-ai-chat-recipes/${id}/herbalists`,
+    { params: { isActive } },
+  );
+  return data;
+};
+
 export default {
   getMyInventoryAiChatRecipes,
   getAdminInventoryAiChatRecipes,
@@ -87,4 +95,5 @@ export default {
   updateInventoryAiChatRecipePrice,
   toggleInventoryAiChatRecipeStatus,
   removeInventoryAiChatRecipe,
+  getHerbalistsForAiChatRecipe,
 };

@@ -70,3 +70,47 @@ export const toggleRecipeAvailability = async (id) => {
   );
   return data;
 };
+
+export const getHerbalistsForRecipe = async (id) => {
+  const { data } = await httpClient.get(`/api/Recipes/${id}/herbalists`, {
+    headers: RECIPES_LANG_HEADERS,
+  });
+  return data;
+};
+
+export const getRecipeWithHerbalist = async (id) => {
+  const { data } = await httpClient.get(`/api/Recipes/${id}/with-herbalist`, {
+    headers: RECIPES_LANG_HEADERS,
+  });
+  return data;
+};
+
+export const getPendingRecipes = async (params = {}) => {
+  const { data } = await httpClient.get("/api/admin/recipes/pending", {
+    params,
+  });
+  return data;
+};
+
+export const approveRecipe = async (id) => {
+  const { data } = await httpClient.patch(`/api/admin/recipes/${id}/approve`);
+  return data;
+};
+
+export const adminCreateRecipe = async (payload) => {
+  const { data } = await httpClient.post("/api/admin/recipes/add", payload);
+  return data;
+};
+
+export const adminUpdateRecipe = async (id, payload) => {
+  const { data } = await httpClient.put(
+    `/api/admin/recipes/${id}`,
+    payload,
+  );
+  return data;
+};
+
+export const adminDeleteRecipe = async (id) => {
+  const { data } = await httpClient.delete(`/api/admin/recipes/${id}`);
+  return data;
+};

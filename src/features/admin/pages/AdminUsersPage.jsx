@@ -254,29 +254,29 @@ function AdminUsersPage() {
         />
 
         {isLoading ? (
-          <div className="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
-            <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-500" />
-            <p className="mt-4 text-sm font-semibold uppercase tracking-[0.25em] text-slate-400">
+          <div className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-10 text-center shadow-sm">
+            <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-emerald-500" />
+            <p className="mt-4 text-sm font-semibold uppercase tracking-[0.25em] text-slate-400 dark:text-slate-500">
               Loading users
             </p>
           </div>
         ) : null}
 
         {!isLoading && error ? (
-          <div className="rounded-3xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
+          <div className="rounded-3xl border border-rose-100 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/40 px-4 py-3 text-sm font-medium text-rose-700 dark:text-rose-400">
             {error}
           </div>
         ) : null}
 
         {!isLoading && !error && paginatedUsers.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-slate-200 bg-white p-14 text-center shadow-sm">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
+          <div className="rounded-3xl border border-dashed border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-14 text-center shadow-sm">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400">
               <FiDatabase className="text-2xl" />
             </div>
-            <h2 className="mt-5 text-2xl font-black text-slate-900">
+            <h2 className="mt-5 text-2xl font-black text-slate-900 dark:text-slate-100">
               No users found
             </h2>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
               Try a different search term or role filter.
             </p>
           </div>

@@ -353,22 +353,22 @@ function HerbalistManageAIChatRecipes() {
         key={aiRecipeId || index}
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="group relative flex flex-col overflow-hidden rounded-4xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-emerald-200 hover:shadow-[0_10px_40px_rgb(0,0,0,0.06)]"
+        className="group relative flex flex-col overflow-hidden rounded-4xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm transition-all hover:border-emerald-200 hover:shadow-[0_10px_40px_rgb(0,0,0,0.06)]"
       >
         <div className="absolute inset-0 bg-linear-to-br from-emerald-50/30 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
 
         <div className="relative flex h-full flex-col">
           <div className="flex items-start justify-between gap-4">
             <div className="flex min-w-0 items-start gap-3">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-100 bg-emerald-50 text-emerald-600">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-100 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
                 <FaComments className="text-xl" />
               </div>
               <div className="min-w-0">
-                <h3 className="truncate text-lg font-extrabold text-slate-900">
+                <h3 className="truncate text-lg font-extrabold text-slate-900 dark:text-slate-100">
                   {recipeTitle}
                 </h3>
                 {recipeSubtitle ? (
-                  <p className="mt-1 truncate text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <p className="mt-1 truncate text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                     {recipeSubtitle}
                   </p>
                 ) : null}
@@ -376,20 +376,20 @@ function HerbalistManageAIChatRecipes() {
             </div>
 
             {isInInventory ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-700">
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">
                 <FaCheckCircle /> Listed
               </span>
             ) : null}
           </div>
 
-          <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-            <p className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
+          <div className="mt-4 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4">
+            <p className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
               {normalized.preparationInstructions.length > 0
                 ? "Preparation Steps"
                 : "Recipe Summary"}
             </p>
             {normalized.preparationInstructions.length > 0 ? (
-              <ul className="space-y-2 text-sm font-medium leading-relaxed text-slate-700">
+              <ul className="space-y-2 text-sm font-medium leading-relaxed text-slate-700 dark:text-slate-300">
                 {normalized.preparationInstructions
                   .slice(0, 3)
                   .map((step, idx) => (
@@ -399,7 +399,7 @@ function HerbalistManageAIChatRecipes() {
                   ))}
               </ul>
             ) : (
-              <p className="text-sm font-medium text-slate-500">
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
                 {recipe?.description || "No recipe summary available."}
               </p>
             )}
@@ -410,7 +410,7 @@ function HerbalistManageAIChatRecipes() {
               type="button"
               onClick={() => openCatalogDetail(recipe)}
               disabled={!aiRecipeId}
-              className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border-2 border-slate-200 text-sm font-bold text-slate-700 transition-all hover:border-emerald-300 hover:text-emerald-700 disabled:pointer-events-none disabled:opacity-50"
+              className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border-2 border-slate-200 dark:border-slate-600 text-sm font-bold text-slate-700 dark:text-slate-300 transition-all hover:border-emerald-300 hover:text-emerald-700 dark:hover:text-emerald-400 disabled:pointer-events-none disabled:opacity-50"
             >
               <FaEye className="text-xs" />
               View Details
@@ -419,7 +419,7 @@ function HerbalistManageAIChatRecipes() {
               type="button"
               onClick={() => openInventoryModal(recipe, "", false)}
               disabled={isInInventory || !aiRecipeId}
-              className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-slate-800 disabled:pointer-events-none disabled:opacity-50"
+              className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 dark:bg-slate-700 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-slate-800 dark:hover:bg-slate-600 disabled:pointer-events-none disabled:opacity-50"
             >
               <FaPlus className="text-xs text-emerald-400" />
               {isInInventory ? "Listed" : "Add"}
@@ -435,14 +435,14 @@ function HerbalistManageAIChatRecipes() {
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <div className="rounded-2xl bg-emerald-100 p-3 text-emerald-600 shadow-inner">
+            <div className="rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 p-3 text-emerald-600 dark:text-emerald-400 shadow-inner">
               <FaListUl className="text-2xl" />
             </div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">
+            <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
               AI Chat Recipes
             </h1>
           </div>
-          <p className="mt-2 max-w-2xl text-sm font-medium text-slate-500">
+          <p className="mt-2 max-w-2xl text-sm font-medium text-slate-500 dark:text-slate-400">
             Browse your AI Chat catalog and add recipes to your inventory.
           </p>
         </div>
@@ -456,18 +456,18 @@ function HerbalistManageAIChatRecipes() {
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder="Search AI chat recipes by title or description..."
-            className="block w-full rounded-2xl border-2 border-slate-200 bg-white px-12 py-4 text-sm font-bold text-slate-900 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
+            className="block w-full rounded-2xl border-2 border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 px-12 py-4 text-sm font-bold text-slate-900 dark:text-slate-100 shadow-sm outline-none transition-all placeholder:font-medium placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
           />
         </div>
       </div>
 
-      <div className="flex gap-2 border-b border-slate-200">
+      <div className="flex gap-2 border-b border-slate-200 dark:border-slate-700">
         <button
           onClick={() => setActiveTab("catalog")}
           className={`px-4 py-2 font-bold text-sm transition-colors border-b-2 ${
             activeTab === "catalog"
               ? "border-emerald-500 text-emerald-600"
-              : "border-transparent text-slate-500 hover:text-slate-700"
+              : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
           }`}
         >
           Catalog ({recipes.length})
@@ -477,7 +477,7 @@ function HerbalistManageAIChatRecipes() {
           className={`px-4 py-2 font-bold text-sm transition-colors border-b-2 ${
             activeTab === "inventory"
               ? "border-emerald-500 text-emerald-600"
-              : "border-transparent text-slate-500 hover:text-slate-700"
+              : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
           }`}
         >
           My Inventory ({inventoryItems.length})
@@ -485,26 +485,26 @@ function HerbalistManageAIChatRecipes() {
       </div>
 
       {error ? (
-        <div className="rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-700">
+        <div className="rounded-2xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 px-5 py-4 text-sm font-bold text-red-700 dark:text-red-400">
           {error}
         </div>
       ) : null}
 
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center gap-4 rounded-4xl border-2 border-slate-100 bg-white py-20">
+        <div className="flex flex-col items-center justify-center gap-4 rounded-4xl border-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 py-20">
           <div className="h-12 w-12 animate-spin rounded-full border-4 border-emerald-500/30 border-t-emerald-500" />
-          <p className="text-sm font-bold uppercase tracking-widest text-slate-400">
+          <p className="text-sm font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
             Loading Data...
           </p>
         </div>
       ) : activeTab === "catalog" ? (
         filteredRecipes.length === 0 ? (
-          <div className="rounded-4xl border-2 border-dashed border-slate-200 bg-slate-50 py-20 text-center">
-            <FaComments className="mx-auto mb-4 text-5xl text-slate-300" />
+          <div className="rounded-4xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 py-20 text-center">
+            <FaComments className="mx-auto mb-4 text-5xl text-slate-300 dark:text-slate-600" />
             <p className="text-xl font-bold text-slate-700">
               No AI chat recipes found
             </p>
-            <p className="mt-2 text-sm font-medium text-slate-500">
+            <p className="mt-2 text-sm font-medium text-slate-500 dark:text-slate-400">
               Try a different search or reload the catalog.
             </p>
           </div>
@@ -521,17 +521,17 @@ function HerbalistManageAIChatRecipes() {
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="px-4 py-2 text-sm font-bold text-slate-600 bg-white border-2 border-slate-200 rounded-xl hover:border-emerald-500 hover:text-emerald-600 disabled:opacity-50 disabled:pointer-events-none transition-all"
+                  className="px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl hover:border-emerald-500 hover:text-emerald-600 disabled:opacity-50 disabled:pointer-events-none transition-all"
                 >
                   Previous
                 </button>
-                <span className="text-sm font-bold text-slate-500">
+                <span className="text-sm font-bold text-slate-500 dark:text-slate-400">
                   Page {currentPage} of {totalPages}
                 </span>
                 <button
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                  className="px-4 py-2 text-sm font-bold text-slate-600 bg-white border-2 border-slate-200 rounded-xl hover:border-emerald-500 hover:text-emerald-600 disabled:opacity-50 disabled:pointer-events-none transition-all"
+                  className="px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl hover:border-emerald-500 hover:text-emerald-600 disabled:opacity-50 disabled:pointer-events-none transition-all"
                 >
                   Next
                 </button>
@@ -542,12 +542,12 @@ function HerbalistManageAIChatRecipes() {
       ) : (
         /* Inventory Tab */
         inventoryItems.length === 0 ? (
-          <div className="rounded-4xl border-2 border-dashed border-slate-200 bg-slate-50 py-20 text-center">
-            <FaComments className="mx-auto mb-4 text-5xl text-slate-300" />
+          <div className="rounded-4xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 py-20 text-center">
+            <FaComments className="mx-auto mb-4 text-5xl text-slate-300 dark:text-slate-600" />
             <p className="text-xl font-bold text-slate-700">
               Your inventory is empty
             </p>
-            <p className="mt-2 text-sm font-medium text-slate-500">
+            <p className="mt-2 text-sm font-medium text-slate-500 dark:text-slate-400">
               Add AI chat recipes from the catalog to see them here.
             </p>
           </div>
@@ -575,20 +575,20 @@ function HerbalistManageAIChatRecipes() {
               return (
                 <div
                   key={inventoryId || recipeId || index}
-                  className="group relative flex flex-col overflow-hidden rounded-4xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-emerald-200 hover:shadow-[0_10px_40px_rgb(0,0,0,0.06)]"
+                  className="group relative flex flex-col overflow-hidden rounded-4xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm transition-all hover:border-emerald-200 hover:shadow-[0_10px_40px_rgb(0,0,0,0.06)]"
                 >
                   <div className="relative flex h-full flex-col">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex min-w-0 items-start gap-3">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-100 bg-emerald-50 text-emerald-600">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-100 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
                           <FaComments className="text-xl" />
                         </div>
                         <div className="min-w-0">
-                          <h3 className="truncate text-lg font-extrabold text-slate-900">
+                          <h3 className="truncate text-lg font-extrabold text-slate-900 dark:text-slate-100">
                             {recipeTitle}
                           </h3>
                           {recipeSubtitle ? (
-                            <p className="mt-1 truncate text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            <p className="mt-1 truncate text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                               {recipeSubtitle}
                             </p>
                           ) : null}
@@ -596,25 +596,25 @@ function HerbalistManageAIChatRecipes() {
                       </div>
                     </div>
 
-                    <div className="mt-4 rounded-2xl bg-slate-50 p-4 border border-slate-100">
+                    <div className="mt-4 rounded-2xl bg-slate-50 dark:bg-slate-900 p-4 border border-slate-100 dark:border-slate-700">
                       <div className="flex items-center justify-between gap-4">
                         <div>
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">
                             Price
                           </p>
-                          <p className="text-2xl font-black text-emerald-600">
+                          <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
                             {item.price} EGP
                           </p>
                         </div>
 
                         <div className="flex flex-col items-end gap-1.5">
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                             Availability
                           </p>
                           <div className="flex items-center gap-2.5">
                             <span
                               className={`text-[10px] font-bold uppercase ${
-                                active ? "text-emerald-700" : "text-slate-500"
+                                active ? "text-emerald-700 dark:text-emerald-400" : "text-slate-500 dark:text-slate-400"
                               }`}
                             >
                               {active ? "Active" : "Inactive"}
@@ -631,7 +631,7 @@ function HerbalistManageAIChatRecipes() {
                               disabled={isToggling || !inventoryId}
                               onClick={() => handleToggleInventoryStatus(item)}
                               className={`relative inline-flex h-7 w-12 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 ${
-                                active ? "bg-emerald-500" : "bg-slate-300"
+                                active ? "bg-emerald-500" : "bg-slate-300 dark:bg-slate-600"
                               }`}
                             >
                               <span
@@ -660,7 +660,7 @@ function HerbalistManageAIChatRecipes() {
                             item,
                           )
                         }
-                        className="flex h-10 items-center justify-center gap-1 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                        className="flex h-10 items-center justify-center gap-1 rounded-lg border border-slate-200 dark:border-slate-600 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
                       >
                         Edit Price
                       </button>
@@ -674,7 +674,7 @@ function HerbalistManageAIChatRecipes() {
                                 aiChatRecipeId: recipeId,
                               })
                         }
-                        className="col-span-2 flex h-10 items-center justify-center gap-1 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                        className="col-span-2 flex h-10 items-center justify-center gap-1 rounded-lg border border-slate-200 dark:border-slate-600 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
                       >
                         <FaEye className="text-[10px]" />
                         View Catalog Details
@@ -682,7 +682,7 @@ function HerbalistManageAIChatRecipes() {
                       <button
                         type="button"
                         onClick={() => handleRemoveFromInventory(item)}
-                        className="col-span-2 flex h-10 items-center justify-center gap-1 rounded-lg border border-red-200 text-xs font-bold text-red-600 hover:bg-red-50"
+                        className="col-span-2 flex h-10 items-center justify-center gap-1 rounded-lg border border-red-200 dark:border-red-800 text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40"
                       >
                         Remove from Inventory
                       </button>
@@ -707,14 +707,14 @@ function HerbalistManageAIChatRecipes() {
               initial={{ scale: 0.96, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.96, y: 20 }}
-              className="max-h-[90vh] w-full max-w-2xl overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-2xl"
+              className="max-h-[90vh] w-full max-w-2xl overflow-hidden rounded-4xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-2xl"
             >
-              <div className="flex items-start justify-between gap-4 border-b border-slate-100 bg-slate-50 px-6 py-5">
+              <div className="flex items-start justify-between gap-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-6 py-5">
                 <div className="min-w-0">
-                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-emerald-700">
+                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-emerald-700 dark:text-emerald-400">
                     Catalog Recipe
                   </p>
-                  <h3 className="mt-1 truncate text-xl font-black text-slate-900">
+                  <h3 className="mt-1 truncate text-xl font-black text-slate-900 dark:text-slate-100">
                     {detailRecipe?.recommendedRecipeName ||
                       getRecipeTitle(detailRecipe || {})}
                   </h3>
@@ -722,7 +722,7 @@ function HerbalistManageAIChatRecipes() {
                 <button
                   type="button"
                   onClick={closeCatalogDetail}
-                  className="rounded-full bg-white p-2 text-slate-400 shadow-sm hover:bg-slate-100 hover:text-slate-700"
+                  className="rounded-full bg-white dark:bg-slate-700 p-2 text-slate-400 dark:text-slate-300 shadow-sm hover:bg-slate-100 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-100"
                 >
                   <FaTimes />
                 </button>
@@ -735,46 +735,46 @@ function HerbalistManageAIChatRecipes() {
                   </div>
                 ) : (
                   <dl className="grid gap-4 sm:grid-cols-2">
-                    <div className="rounded-2xl bg-slate-50 p-4 sm:col-span-2">
-                      <dt className="text-xs font-bold uppercase text-slate-400">
+                    <div className="rounded-2xl bg-slate-50 dark:bg-slate-900 p-4 sm:col-span-2">
+                      <dt className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">
                         Main herb
                       </dt>
-                      <dd className="mt-1 font-bold text-slate-900">
+                      <dd className="mt-1 font-bold text-slate-900 dark:text-slate-100">
                         {detailRecipe?.mainHerb || "—"}
                       </dd>
-                      <dd className="text-sm text-slate-500">
+                      <dd className="text-sm text-slate-500 dark:text-slate-400">
                         {detailRecipe?.scientificName || ""}
                       </dd>
                     </div>
-                    <div className="rounded-2xl bg-slate-50 p-4">
-                      <dt className="text-xs font-bold uppercase text-slate-400">
+                    <div className="rounded-2xl bg-slate-50 dark:bg-slate-900 p-4">
+                      <dt className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">
                         Category
                       </dt>
-                      <dd className="mt-1 font-semibold text-slate-800">
+                      <dd className="mt-1 font-semibold text-slate-800 dark:text-slate-200">
                         {detailRecipe?.category || "—"}
                       </dd>
                     </div>
-                    <div className="rounded-2xl bg-slate-50 p-4">
-                      <dt className="text-xs font-bold uppercase text-slate-400">
+                    <div className="rounded-2xl bg-slate-50 dark:bg-slate-900 p-4">
+                      <dt className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">
                         Dosage
                       </dt>
-                      <dd className="mt-1 text-sm text-slate-700">
+                      <dd className="mt-1 text-sm text-slate-700 dark:text-slate-300">
                         {detailRecipe?.dosage || "—"}
                       </dd>
                     </div>
-                    <div className="rounded-2xl bg-slate-50 p-4 sm:col-span-2">
-                      <dt className="text-xs font-bold uppercase text-slate-400">
+                    <div className="rounded-2xl bg-slate-50 dark:bg-slate-900 p-4 sm:col-span-2">
+                      <dt className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">
                         Preparation
                       </dt>
-                      <dd className="mt-1 text-sm leading-6 text-slate-700">
+                      <dd className="mt-1 text-sm leading-6 text-slate-700 dark:text-slate-300">
                         {detailRecipe?.preparation || "—"}
                       </dd>
                     </div>
-                    <div className="rounded-2xl bg-rose-50/70 p-4 sm:col-span-2">
-                      <dt className="text-xs font-bold uppercase text-rose-700">
+                    <div className="rounded-2xl bg-rose-50/70 dark:bg-rose-900/30 p-4 sm:col-span-2">
+                      <dt className="text-xs font-bold uppercase text-rose-700 dark:text-rose-400">
                         Contraindications
                       </dt>
-                      <dd className="mt-1 text-sm text-rose-900/80">
+                      <dd className="mt-1 text-sm text-rose-900/80 dark:text-rose-300">
                         {detailRecipe?.contraindications || "—"}
                       </dd>
                     </div>
@@ -806,38 +806,38 @@ function HerbalistManageAIChatRecipes() {
               initial={{ scale: 0.96, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.96, y: 20 }}
-              className="w-full max-w-md overflow-hidden rounded-[2.5rem] bg-white shadow-2xl"
+              className="w-full max-w-md overflow-hidden rounded-[2.5rem] bg-white dark:bg-slate-800 shadow-2xl"
             >
-              <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/60 px-8 py-5">
-                <h3 className="text-xl font-extrabold text-slate-900">
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/60 px-8 py-5">
+                <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100">
                   {isEditingPrice ? "Edit Selling Price" : "Add AI Chat Recipe"}
                 </h3>
                 <button
                   type="button"
                   onClick={closeInventoryModal}
                   disabled={isAddingToInventory}
-                  className="rounded-full bg-white p-2 text-slate-400 shadow-sm transition-all hover:bg-slate-100 hover:text-slate-700"
+                  className="rounded-full bg-white dark:bg-slate-700 p-2 text-slate-400 dark:text-slate-300 shadow-sm transition-all hover:bg-slate-100 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-100"
                 >
                   <FaTimes />
                 </button>
               </div>
 
               <form onSubmit={handleInventorySubmit} className="p-8">
-                <div className="mb-6 rounded-3xl border border-emerald-100 bg-emerald-50/60 p-5">
-                  <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-emerald-700/70">
+                <div className="mb-6 rounded-3xl border border-emerald-100 dark:border-emerald-800 bg-emerald-50/60 dark:bg-emerald-900/30 p-5">
+                  <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-emerald-700/70 dark:text-emerald-400/70">
                     Selected Recipe
                   </p>
-                  <p className="truncate text-lg font-black text-slate-900">
+                  <p className="truncate text-lg font-black text-slate-900 dark:text-slate-100">
                     {normalizeGeneratedRecipe(selectedRecipeForInventory).title}
                   </p>
                 </div>
 
                 <div className="mb-8">
-                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-700">
+                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300">
                     Selling Price
                   </label>
                   <div className="relative">
-                    <span className="absolute inset-s-4 top-1/2 -translate-y-1/2 font-extrabold text-slate-400">
+                    <span className="absolute inset-s-4 top-1/2 -translate-y-1/2 font-extrabold text-slate-400 dark:text-slate-500">
                       EGP
                     </span>
                     <input
@@ -848,7 +848,7 @@ function HerbalistManageAIChatRecipes() {
                       value={price}
                       onChange={(event) => setPrice(event.target.value)}
                       placeholder="Set selling price"
-                      className="block w-full rounded-2xl border-2 border-slate-200/60 py-4 ps-14 pe-4 text-lg font-black text-slate-900 outline-none transition-all placeholder:font-medium placeholder:text-slate-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
+                      className="block w-full rounded-2xl border-2 border-slate-200/60 dark:border-slate-600 py-4 ps-14 pe-4 text-lg font-black text-slate-900 dark:text-slate-100 outline-none transition-all placeholder:font-medium placeholder:text-slate-300 dark:placeholder:text-slate-500 dark:bg-slate-900 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
                       disabled={isAddingToInventory}
                     />
                   </div>
@@ -858,7 +858,7 @@ function HerbalistManageAIChatRecipes() {
                   <button
                     type="submit"
                     disabled={isAddingToInventory || !price}
-                    className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 font-bold text-white shadow-[0_8px_20px_rgb(15,23,42,0.2)] transition-all hover:-translate-y-0.5 hover:bg-slate-800 disabled:pointer-events-none disabled:opacity-50"
+                    className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 dark:bg-slate-700 font-bold text-white shadow-[0_8px_20px_rgb(15,23,42,0.2)] transition-all hover:-translate-y-0.5 hover:bg-slate-800 dark:hover:bg-slate-600 disabled:pointer-events-none disabled:opacity-50"
                   >
                     {isAddingToInventory ? (
                       <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-white" />
@@ -873,7 +873,7 @@ function HerbalistManageAIChatRecipes() {
                     type="button"
                     onClick={closeInventoryModal}
                     disabled={isAddingToInventory}
-                    className="flex h-14 w-full items-center justify-center rounded-2xl border-2 border-slate-100 bg-white font-bold text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50"
+                    className="flex h-14 w-full items-center justify-center rounded-2xl border-2 border-slate-100 dark:border-slate-600 bg-white dark:bg-slate-800 font-bold text-slate-600 dark:text-slate-400 transition-colors hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-200 disabled:opacity-50"
                   >
                     Cancel
                   </button>

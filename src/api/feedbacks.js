@@ -62,3 +62,44 @@ export const getMyFeedbackHistory = async (pageNumber = 1, pageSize = 10) => {
   });
   return data;
 };
+
+// AI Chat Recipe feedbacks
+export const getAiChatRecipeFeedbacks = async (id) => {
+  const { data } = await httpClient.get(
+    `/api/Feedbacks/ai-chat-recipe/${id}/all`,
+  );
+  return data;
+};
+
+export const getMyAiChatRecipeFeedback = async (id) => {
+  const { data } = await httpClient.get(
+    `/api/Feedbacks/ai-chat-recipe/${id}/get-me`,
+  );
+  return data;
+};
+
+export const submitAiChatRecipeFeedback = async (id, payload) => {
+  const { data } = await httpClient.post(
+    `/api/Feedbacks/ai-chat-recipe/${id}/submit`,
+    payload,
+  );
+  return data;
+};
+
+export const deleteMyAiChatRecipeFeedback = async (id) => {
+  const { data } = await httpClient.delete(
+    `/api/Feedbacks/ai-chat-recipe/${id}/delete-me`,
+  );
+  return data;
+};
+
+// Admin feedbacks
+export const getAdminFeedbacks = async (params = {}) => {
+  const { data } = await httpClient.get("/api/admin/feedbacks", { params });
+  return data;
+};
+
+export const deleteAdminFeedback = async (id) => {
+  const { data } = await httpClient.delete(`/api/admin/feedbacks/${id}`);
+  return data;
+};

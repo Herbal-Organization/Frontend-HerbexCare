@@ -34,7 +34,7 @@ function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fafafa] text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
       <header
         className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-slate-100 dark:bg-slate-900/80 dark:border-slate-800"
         dir={isRTL ? "rtl" : "ltr"}

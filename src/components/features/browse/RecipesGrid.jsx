@@ -25,7 +25,7 @@ function RecipesGrid({
         {Array.from({ length: 8 }).map((_, index) => (
           <div
             key={`recipe-skeleton-${index}`}
-            className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white"
+            className="overflow-hidden rounded-3xl border border-slate-200/80 dark:border-slate-700 bg-white dark:bg-slate-800"
           >
             <div className="p-6" style={{ background: "#1a2e1a" }}>
               <Skeleton
@@ -77,11 +77,11 @@ function RecipesGrid({
 
   if (error) {
     return (
-      <div className="mx-auto mt-12 max-w-2xl rounded-3xl border border-red-100 bg-red-50 p-12 text-center shadow-sm sm:p-16">
-        <h3 className="text-xl font-extrabold text-red-800">
+      <div className="mx-auto mt-12 max-w-2xl rounded-3xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-12 text-center shadow-sm sm:p-16">
+        <h3 className="text-xl font-extrabold text-red-800 dark:text-red-300">
           Unable to load recipes
         </h3>
-        <p className="mt-3 text-sm font-medium text-red-600">{error}</p>
+        <p className="mt-3 text-sm font-medium text-red-600 dark:text-red-400">{error}</p>
         <button
           type="button"
           onClick={onRetry}
@@ -95,10 +95,10 @@ function RecipesGrid({
 
   if (!recipes.length) {
     return (
-      <div className="mx-auto mt-12 max-w-2xl rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-sm sm:p-16">
+      <div className="mx-auto mt-12 max-w-2xl rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-12 text-center shadow-sm sm:p-16">
         <div className="mb-6 text-6xl">🍵</div>
-        <h3 className="text-2xl font-bold text-slate-900">No recipes found</h3>
-        <p className="mt-3 text-slate-500 font-medium">
+        <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">No recipes found</h3>
+        <p className="mt-3 text-slate-500 dark:text-slate-400 font-medium">
           Try a different search term or check back later for new herbal
           recipes.
         </p>

@@ -6,12 +6,10 @@ export const getMyProfile = async () => {
 };
 
 export const updateMyProfile = async (payload) => {
-  const { data } = await httpClient.put("/api/Patients/me", payload);
-  return data;
-};
-
-export const getPatientById = async (id) => {
-  const { data } = await httpClient.get(`/api/Patients/${id}`);
+  const { data } = await httpClient.put(
+    "/api/Patients/update-profile/me",
+    payload,
+  );
   return data;
 };
 
@@ -22,7 +20,7 @@ export const getAllPatients = async (
   sortColumn = "",
   sortDirection = "",
 ) => {
-  const { data } = await httpClient.get("/api/Patients/all", {
+  const { data } = await httpClient.get("/api/admin/patients", {
     params: {
       PageNumber: pageNumber,
       PageSize: pageSize,
@@ -31,5 +29,15 @@ export const getAllPatients = async (
       SortDirection: sortDirection,
     },
   });
+  return data;
+};
+
+export const getAdminPatientStats = async () => {
+  const { data } = await httpClient.get("/api/admin/patients/stats");
+  return data;
+};
+
+export const deleteAdminPatient = async (id) => {
+  const { data } = await httpClient.delete(`/api/admin/patients/${id}`);
   return data;
 };

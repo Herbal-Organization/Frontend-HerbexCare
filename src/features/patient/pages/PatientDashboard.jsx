@@ -26,6 +26,7 @@ import {
 } from "@features/patient/services/patientProfile";
 import { useTranslation } from "react-i18next";
 import DashboardLayout from "@components/layouts/DashboardLayout";
+import { Spinner } from "@components/common";
 import { getPatientNavConfig } from "@config/dashboard/patientNav";
 import { useCart } from "@context/CartContext";
 
@@ -87,7 +88,7 @@ function PatientDashboard() {
   if (!displayUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+        <Spinner size="xl" />
       </div>
     );
   }

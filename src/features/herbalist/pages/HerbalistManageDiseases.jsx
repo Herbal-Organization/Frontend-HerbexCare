@@ -207,7 +207,7 @@ function HerbalistManageDiseases() {
         {/* Header Section */}
         <motion.div
           variants={itemVariants}
-          className="rounded-3xl border border-emerald-200 bg-linear-to-br from-emerald-50 via-white to-amber-50 p-5 sm:p-6 lg:p-8"
+          className="rounded-3xl border border-emerald-200 dark:border-emerald-800 bg-linear-to-br from-emerald-50 via-white to-amber-50 dark:from-emerald-950/30 dark:via-slate-800 dark:to-amber-950/20 p-5 sm:p-6 lg:p-8"
         >
           <div className="flex flex-col gap-6">
             <div className="flex items-start justify-between gap-4">
@@ -216,10 +216,10 @@ function HerbalistManageDiseases() {
                   <FaLeaf className="text-lg" />
                 </div>
                 <div className="min-w-0">
-                  <h1 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
+                  <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-slate-100 sm:text-3xl">
                     Manage Diseases
                   </h1>
-                  <p className="mt-1 max-w-2xl text-sm font-medium text-slate-600 sm:text-base">
+                  <p className="mt-1 max-w-2xl text-sm font-medium text-slate-600 dark:text-slate-400 sm:text-base">
                     Create and organize disease entries for your recipes and
                     consultations.
                   </p>
@@ -237,27 +237,27 @@ function HerbalistManageDiseases() {
             </div>
 
             <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                   Total
                 </p>
-                <p className="mt-1 text-2xl font-black text-slate-900">
+                <p className="mt-1 text-2xl font-black text-slate-900 dark:text-slate-100">
                   {allDiseases.length}
                 </p>
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                   AI Supported
                 </p>
-                <p className="mt-1 text-2xl font-black text-emerald-700">
+                <p className="mt-1 text-2xl font-black text-emerald-700 dark:text-emerald-400">
                   {aiSupportedCount}
                 </p>
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                   Showing
                 </p>
-                <p className="mt-1 text-2xl font-black text-slate-900">
+                <p className="mt-1 text-2xl font-black text-slate-900 dark:text-slate-100">
                   {filteredDiseases.length}
                 </p>
               </div>
@@ -274,7 +274,7 @@ function HerbalistManageDiseases() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search diseases..."
-                    className="w-full rounded-xl border border-slate-200 bg-white py-3 pe-4 ps-10 text-sm font-medium text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-3 pe-4 ps-10 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/10"
                   />
                 </div>
                 <button
@@ -292,7 +292,7 @@ function HerbalistManageDiseases() {
         {error && (
           <motion.div
             variants={itemVariants}
-            className="rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-600"
+            className="rounded-2xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 px-5 py-4 text-sm font-bold text-red-600 dark:text-red-400"
           >
             {error}
           </motion.div>
@@ -310,19 +310,17 @@ function HerbalistManageDiseases() {
               onSubmit={handleCreateDisease}
               isSubmitting={isSubmitting}
               error={formError}
-              showAiSupport
             />
           )}
         </AnimatePresence>
 
         {/* Diseases Table */}
-        <motion.div variants={itemVariants} className="rounded-3xl bg-white/70">
+        <motion.div variants={itemVariants} className="rounded-3xl bg-white/70 dark:bg-slate-800/70">
           <DiseasesTable
             diseases={paginatedDiseases}
             isLoading={isLoading}
             onAddClick={() => setShowCreateForm(true)}
             onViewDetails={handleViewDiseaseDetails}
-            showAiSupport
           />
         </motion.div>
 

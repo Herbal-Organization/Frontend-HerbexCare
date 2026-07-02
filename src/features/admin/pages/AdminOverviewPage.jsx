@@ -53,25 +53,25 @@ const extractListCount = (payload) => {
 
 function StatCard({ icon, label, value, hint, tone = "emerald" }) {
   const tones = {
-    emerald: "bg-emerald-50 text-emerald-700 border-emerald-100",
-    sky: "bg-sky-50 text-sky-700 border-sky-100",
-    rose: "bg-rose-50 text-rose-700 border-rose-100",
-    amber: "bg-amber-50 text-amber-700 border-amber-100",
-    violet: "bg-violet-50 text-violet-700 border-violet-100",
-    slate: "bg-slate-50 text-slate-700 border-slate-100",
+    emerald: "bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800",
+    sky: "bg-sky-50 text-sky-700 border-sky-100 dark:bg-sky-900/30 dark:text-sky-400 dark:border-sky-800",
+    rose: "bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-900/30 dark:text-rose-400 dark:border-rose-800",
+    amber: "bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800",
+    violet: "bg-violet-50 text-violet-700 border-violet-100 dark:bg-violet-900/30 dark:text-violet-400 dark:border-violet-800",
+    slate: "bg-slate-50 text-slate-700 border-slate-100 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700",
   };
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">
             {label}
           </p>
-          <p className="mt-3 truncate text-3xl font-black text-slate-900">
+          <p className="mt-3 truncate text-3xl font-black text-slate-900 dark:text-slate-100">
             {value}
           </p>
-          {hint ? <p className="mt-2 text-sm text-slate-500">{hint}</p> : null}
+          {hint ? <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{hint}</p> : null}
         </div>
         <div className={`rounded-2xl border p-3 ${tones[tone]}`}>{icon}</div>
       </div>
@@ -82,9 +82,9 @@ function StatCard({ icon, label, value, hint, tone = "emerald" }) {
 function SectionHeading({ title, description }) {
   return (
     <div className="mb-4">
-      <h2 className="text-lg font-bold text-slate-900">{title}</h2>
+      <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">{title}</h2>
       {description ? (
-        <p className="mt-1 text-sm text-slate-500">{description}</p>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{description}</p>
       ) : null}
     </div>
   );
@@ -275,15 +275,15 @@ function AdminOverviewPage() {
       </section>
 
       {error ? (
-        <div className="rounded-3xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
+        <div className="rounded-3xl border border-rose-100 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/40 px-4 py-3 text-sm font-medium text-rose-700 dark:text-rose-300">
           {error}
         </div>
       ) : null}
 
       {isLoading ? (
-        <div className="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-500" />
-          <p className="mt-4 text-sm font-semibold uppercase tracking-[0.25em] text-slate-400">
+        <div className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-10 text-center shadow-sm">
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-emerald-500" />
+          <p className="mt-4 text-sm font-semibold uppercase tracking-[0.25em] text-slate-400 dark:text-slate-500">
             {t("adminDashboard.loading", "Loading statistics")}
           </p>
         </div>
@@ -485,13 +485,13 @@ function AdminOverviewPage() {
           ) : null}
 
           {aiStats ? (
-            <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <section className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h2 className="text-xl font-bold text-slate-900">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                     {t("adminDashboard.quickActions.title")}
                   </h2>
-                  <p className="mt-1 text-sm text-slate-500">
+                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                     {t("adminDashboard.quickActions.subtitle")}
                   </p>
                 </div>
@@ -506,19 +506,19 @@ function AdminOverviewPage() {
               </div>
 
               <div className="mt-6 grid gap-4 md:grid-cols-3">
-                <div className="rounded-2xl bg-slate-50 px-4 py-4">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+                <div className="rounded-2xl bg-slate-50 dark:bg-slate-900 px-4 py-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
                     {t("adminDashboard.summary.activeShare")}
                   </p>
-                  <p className="mt-2 text-2xl font-black text-slate-900">
+                  <p className="mt-2 text-2xl font-black text-slate-900 dark:text-slate-100">
                     {activeRate}%
                   </p>
                 </div>
-                <div className="rounded-2xl bg-slate-50 px-4 py-4">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+                <div className="rounded-2xl bg-slate-50 dark:bg-slate-900 px-4 py-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
                     {t("adminDashboard.summary.blockedShare")}
                   </p>
-                  <p className="mt-2 text-2xl font-black text-slate-900">
+                  <p className="mt-2 text-2xl font-black text-slate-900 dark:text-slate-100">
                     {aiStats.totalAiConsultations > 0
                       ? Math.round(
                           (aiStats.blockedConsultations /
@@ -529,11 +529,11 @@ function AdminOverviewPage() {
                     %
                   </p>
                 </div>
-                <div className="rounded-2xl bg-emerald-50/80 px-4 py-4">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
+                <div className="rounded-2xl bg-emerald-50/80 dark:bg-emerald-900/30 px-4 py-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-400">
                     {t("adminDashboard.summary.leadingCategory")}
                   </p>
-                  <p className="mt-2 text-lg font-black text-emerald-900">
+                  <p className="mt-2 text-lg font-black text-emerald-900 dark:text-emerald-300">
                     {aiStats.mostRequestedCategory || "—"}
                   </p>
                 </div>

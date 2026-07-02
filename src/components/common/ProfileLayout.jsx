@@ -5,10 +5,10 @@ import { HiRefresh } from "react-icons/hi";
 function ProfileLayout({ title, subtitle, saving, onSubmit, children }) {
   return (
     <div className="max-w-7xl mx-auto p-6 md:p-8 lg:p-10 w-full flex-1">
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200">
-        <div className="p-6 border-b border-slate-200">
-          <h1 className="text-2xl font-bold text-slate-900">{title}</h1>
-          {subtitle && <p className="text-slate-600 mt-1">{subtitle}</p>}
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+        <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{title}</h1>
+          {subtitle && <p className="text-slate-600 dark:text-slate-400 mt-1">{subtitle}</p>}
         </div>
 
         <div className="p-6">

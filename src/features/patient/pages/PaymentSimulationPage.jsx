@@ -112,13 +112,13 @@ function PaymentSimulationPage() {
   if (isLoading) {
     return (
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-center px-4 py-20 text-center sm:px-6 lg:px-8">
-        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 shadow-sm">
+        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 shadow-sm">
           <FaSpinner className="animate-spin text-3xl" />
         </div>
-        <h1 className="mt-6 text-2xl font-extrabold text-slate-900">
+        <h1 className="mt-6 text-2xl font-extrabold text-slate-900 dark:text-slate-100">
           Preparing payment simulation
         </h1>
-        <p className="mt-2 max-w-lg text-sm text-slate-500">
+        <p className="mt-2 max-w-lg text-sm text-slate-500 dark:text-slate-400">
           We are verifying the order and forwarding it through the payment mock.
         </p>
       </div>
@@ -129,21 +129,21 @@ function PaymentSimulationPage() {
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <Link
         to={`/patient/dashboard/orders/${orderId}`}
-        className="mb-8 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-bold text-slate-600 shadow-sm transition-colors hover:text-emerald-600"
+        className="mb-8 inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 shadow-sm transition-colors hover:text-emerald-600"
       >
         <FaArrowLeft /> Back to order
       </Link>
 
-      <div className="rounded-[2.5rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+      <div className="rounded-[2.5rem] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm sm:p-8">
         <div className="flex items-start gap-4">
-          <div className="rounded-2xl bg-emerald-50 p-4 text-emerald-600">
+          <div className="rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 p-4 text-emerald-600 dark:text-emerald-400">
             <FaCreditCard className="text-2xl" />
           </div>
           <div className="flex-1">
-            <h1 className="text-2xl font-extrabold text-slate-900">
+            <h1 className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">
               Payment simulation
             </h1>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
               Order #{orderId}
               {order?.paymentMethod ? ` · ${order.paymentMethod}` : ""}
             </p>
@@ -151,14 +151,14 @@ function PaymentSimulationPage() {
         </div>
 
         {error ? (
-          <div className="mt-6 rounded-2xl border border-eed-100 bg-red-50 p-4 text-sm font-semibold text-red-700">
+          <div className="mt-6 rounded-2xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-4 text-sm font-semibold text-red-700 dark:text-red-400">
             <div className="flex items-center gap-2">
               <FaExclamationCircle />
               <span>{error}</span>
             </div>
           </div>
         ) : (
-          <div className="mt-6 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800">
+          <div className="mt-6 rounded-2xl border border-emerald-100 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/30 p-4 text-sm font-semibold text-emerald-800 dark:text-emerald-300">
             This order uses {order?.paymentMethod || "wallet or credit card"}.
             Click below to confirm payment and call the simulation endpoint.
           </div>
@@ -169,7 +169,7 @@ function PaymentSimulationPage() {
             type="button"
             onClick={handleRetry}
             disabled={isSimulating}
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-slate-900 dark:bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-slate-800 dark:hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isSimulating ? (
               <FaSpinner className="animate-spin" />
@@ -180,7 +180,7 @@ function PaymentSimulationPage() {
           </button>
           <Link
             to={`/patient/dashboard/orders/${orderId}`}
-            className="inline-flex flex-1 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50"
+            className="inline-flex flex-1 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 py-3 text-sm font-bold text-slate-700 dark:text-slate-300 transition-colors hover:bg-slate-50 dark:hover:bg-slate-700"
           >
             View order details
           </Link>

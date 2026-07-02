@@ -53,6 +53,31 @@ export const removeInventoryAIRecipe = async (inventoryId) => {
   return data;
 };
 
+export const getHerbalistsForAiRecipe = async (id, isActive = true) => {
+  const { data } = await httpClient.get(
+    `/api/inventory-ai-recipes/${id}/herbalists`,
+    { params: { isActive } },
+  );
+  return data;
+};
+
+export const getAdminInventoryAiRecipes = async (params = {}) => {
+  const { data } = await httpClient.get("/api/admin/inventory-ai-recipes", {
+    params,
+  });
+  return data;
+};
+
+export const deleteAdminInventoryAiRecipe = async (
+  herbalistId,
+  recipeId,
+) => {
+  const { data } = await httpClient.delete(
+    `/api/admin/inventory-ai-recipes/${herbalistId}/${recipeId}`,
+  );
+  return data;
+};
+
 /** @deprecated Use addInventoryAIRecipe */
 export const addInventoryAIRecipes = async (payload) =>
   addInventoryAIRecipe(payload?.aiRecipeId, payload?.price);

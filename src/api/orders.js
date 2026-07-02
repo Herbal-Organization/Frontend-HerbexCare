@@ -75,3 +75,21 @@ export const getFavoriteOrders = async () => {
   const { data } = await httpClient.get("/api/Orders/favorites");
   return data;
 };
+
+// NOTE: no matching route in swagger.json — returns 404 until the backend
+// exposes an admin pending-unapproved orders endpoint.
+export const getPendingUnapprovedOrders = async (params = {}) => {
+  const { data } = await httpClient.get("/api/Orders/pending-unapproved", {
+    params,
+  });
+  return data;
+};
+
+// NOTE: no matching route in swagger.json — returns 404 until the backend
+// exposes an admin all-orders endpoint.
+export const getAdminAllOrders = async (params = {}) => {
+  const { data } = await httpClient.get("/api/Orders/admin/all-orders", {
+    params,
+  });
+  return data;
+};

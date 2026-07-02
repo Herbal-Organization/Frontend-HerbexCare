@@ -2,7 +2,8 @@ import { useEffect, useState, useCallback } from "react";
 import {
   getMySubOrders,
   getSubOrderById,
-  updateSubOrderStatus,
+  approveSubOrder,
+  rejectSubOrder,
 } from "@api/subOrders";
 
 export default function useSubOrders() {
@@ -15,29 +16,6 @@ export default function useSubOrders() {
     setError(null);
     try {
       const resp = await getMySubOrders();
-      console.log("SubOrders API Response:", resp);
-      if (Array.isArray(resp) && resp.length > 0) {
-        console.log("First order sample:", resp[0]);
-        console.log("Patient fields:", {
-          patient: resp[0]?.patient,
-          patientName: resp[0]?.patientName,
-          customerName: resp[0]?.customerName,
-          contactName: resp[0]?.contactName,
-          userName: resp[0]?.userName,
-          customer: resp[0]?.customer,
-        });
-        console.log("Date fields:", {
-          orderDate: resp[0]?.orderDate,
-          createdAt: resp[0]?.createdAt,
-          date: resp[0]?.date,
-        });
-        console.log("Total fields:", {
-          totalPrice: resp[0]?.totalPrice,
-          total: resp[0]?.total,
-          totalCost: resp[0]?.totalCost,
-          subtotal: resp[0]?.subtotal,
-        });
-      }
       setData(Array.isArray(resp) ? resp : (resp?.items ?? []));
     } catch (err) {
       setError(
@@ -89,13 +67,25 @@ export default function useSubOrders() {
     }
   }, []);
 
-  const setStatus = useCallback(
-    async (id, status) => {
+  const approve = useCallback(
+    async (id) => {
       setIsLoading(true);
       try {
-        const payload =
-          status && typeof status === "object" ? status : { status };
-        const resp = await updateSubOrderStatus(id, payload);
+        const resp = await approveSubOrder(id);
+        await load();
+        return resp;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [load],
+  );
+
+  const reject = useCallback(
+    async (id) => {
+      setIsLoading(true);
+      try {
+        const resp = await rejectSubOrder(id);
         await load();
         return resp;
       } finally {
@@ -111,6 +101,7 @@ export default function useSubOrders() {
     error,
     refresh,
     getById,
-    setStatus,
+    approve,
+    reject,
   };
 }

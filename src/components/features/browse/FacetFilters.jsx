@@ -32,15 +32,15 @@ function FacetFilters({
 
   return (
     <div ref={panelRef} className="mb-8">
-      <div className="rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm backdrop-blur-sm sm:rounded-3xl sm:p-5">
-        <div className="mb-4 flex items-center justify-between gap-3 border-b border-slate-100 pb-3">
-          <div className="flex items-center gap-2 text-slate-700">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+      <div className="rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 p-4 shadow-sm backdrop-blur-sm sm:rounded-3xl sm:p-5">
+        <div className="mb-4 flex items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-700 pb-3">
+          <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
               <FaFilter className="text-sm" />
             </span>
             <div>
-              <p className="text-sm font-bold text-slate-900">Filters</p>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-sm font-bold text-slate-900 dark:text-slate-100">Filters</p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 Refine your browse results
               </p>
             </div>
@@ -49,7 +49,7 @@ function FacetFilters({
             <button
               type="button"
               onClick={onClearFilters}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-600 transition-colors hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-xs font-bold text-slate-600 dark:text-slate-400 transition-colors hover:border-rose-200 dark:hover:border-rose-800 hover:bg-rose-50 dark:hover:bg-rose-900/30 hover:text-rose-700 dark:hover:text-rose-400"
             >
               <FaTimes className="text-[10px]" />
               Clear all
@@ -69,11 +69,11 @@ function FacetFilters({
                   }}
                   className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all ${
                     showSingleDropdown || singleFilter.value !== "all"
-                      ? "border-emerald-300 bg-emerald-50 text-emerald-800 shadow-sm"
-                      : "border-slate-200 bg-slate-50 text-slate-700 hover:border-emerald-200 hover:bg-white"
+                      ? "border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 shadow-sm"
+                      : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:border-emerald-200 dark:hover:border-emerald-700 hover:bg-white dark:hover:bg-slate-800"
                   }`}
                 >
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                     {singleFilter.label}
                   </span>
                   <span>{singleLabel}</span>
@@ -85,7 +85,7 @@ function FacetFilters({
                 </button>
 
                 {showSingleDropdown ? (
-                  <div className="absolute start-0 top-full z-30 mt-2 min-w-52 overflow-hidden rounded-2xl border border-slate-200 bg-white py-1 shadow-xl shadow-slate-200/50">
+                  <div className="absolute start-0 top-full z-30 mt-2 min-w-52 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-1 shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50">
                     {singleFilter.options.map((option) => (
                       <button
                         type="button"
@@ -96,8 +96,8 @@ function FacetFilters({
                         }}
                         className={`w-full px-4 py-2.5 text-start text-sm font-medium transition-colors ${
                           singleFilter.value === option.value
-                            ? "bg-emerald-50 text-emerald-800"
-                            : "text-slate-700 hover:bg-slate-50"
+                            ? "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
+                            : "text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
                         }`}
                       >
                         {option.label}
@@ -118,11 +118,11 @@ function FacetFilters({
                   }}
                   className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all ${
                     showMultiDropdown || selectedItems.length > 0
-                      ? "border-emerald-300 bg-emerald-50 text-emerald-800 shadow-sm"
-                      : "border-slate-200 bg-slate-50 text-slate-700 hover:border-emerald-200 hover:bg-white"
+                      ? "border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 shadow-sm"
+                      : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:border-emerald-200 dark:hover:border-emerald-700 hover:bg-white dark:hover:bg-slate-800"
                   }`}
                 >
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                     {multiFilter.label}
                   </span>
                   <span>
@@ -138,24 +138,24 @@ function FacetFilters({
                 </button>
 
                 {showMultiDropdown ? (
-                  <div className="absolute start-0 top-full z-30 mt-2 max-h-72 min-w-[min(100vw-2rem,20rem)] overflow-y-auto rounded-2xl border border-slate-200 bg-white py-1 shadow-xl shadow-slate-200/50 sm:min-w-80">
+                  <div className="absolute start-0 top-full z-30 mt-2 max-h-72 min-w-[min(100vw-2rem,20rem)] overflow-y-auto rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-1 shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 sm:min-w-80">
                     {multiFilter.options.length === 0 ? (
-                      <div className="px-4 py-8 text-center text-sm text-slate-500">
+                      <div className="px-4 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
                         No options available
                       </div>
                     ) : (
                       multiFilter.options.map((option) => (
                         <label
                           key={option}
-                          className="flex cursor-pointer items-center gap-3 border-b border-slate-50 px-4 py-3 transition-colors last:border-b-0 hover:bg-emerald-50/50"
+                          className="flex cursor-pointer items-center gap-3 border-b border-slate-50 dark:border-slate-700/50 px-4 py-3 transition-colors last:border-b-0 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20"
                         >
                           <input
                             type="checkbox"
                             checked={selectedItems.includes(option)}
                             onChange={() => onToggleItem(option)}
-                            className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                            className="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500"
                           />
-                          <span className="flex-1 text-sm font-medium text-slate-700">
+                          <span className="flex-1 text-sm font-medium text-slate-700 dark:text-slate-300">
                             {option}
                           </span>
                         </label>
@@ -175,11 +175,11 @@ function FacetFilters({
         </div>
 
         {selectedItems.length > 0 ? (
-          <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+          <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 dark:border-slate-700 pt-4">
             {selectedItems.map((item) => (
               <span
                 key={item}
-                className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800"
+                className="inline-flex items-center gap-2 rounded-full border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1.5 text-xs font-semibold text-emerald-800 dark:text-emerald-300"
               >
                 {item}
                 <button

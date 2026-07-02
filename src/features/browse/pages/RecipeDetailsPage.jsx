@@ -38,15 +38,15 @@ function SectionCard({
 }) {
   return (
     <div
-      className={`rounded-2xl border border-slate-100 bg-white p-6 ${className}`}
+      className={`rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 ${className}`}
     >
-      <div className="flex items-center gap-3 pb-4 mb-5 border-b border-slate-100">
+      <div className="flex items-center gap-3 pb-4 mb-5 border-b border-slate-100 dark:border-slate-700">
         <div
           className={`w-8 h-8 rounded-lg ${iconBg} flex items-center justify-center shrink-0`}
         >
           {icon}
         </div>
-        <h2 className="text-sm font-medium text-slate-900">{title}</h2>
+        <h2 className="text-sm font-medium text-slate-900 dark:text-slate-100 dark:text-slate-100">{title}</h2>
       </div>
       {children}
     </div>
@@ -56,20 +56,20 @@ function SectionCard({
 /* ── Stat card ── */
 function StatCard({ label, value, hint, accent }) {
   const accentMap = {
-    amber: "bg-[#FAEEDA] border-[#EF9F27]",
-    green: "bg-[#EAF3DE] border-[#97C459]",
-    default: "bg-white border-slate-100",
+    amber: "bg-amber-50 dark:bg-amber-900/30 border-amber-400 dark:border-amber-600",
+    green: "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-400 dark:border-emerald-700",
+    default: "bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700",
   };
   const valueColor = {
-    amber: "text-[#633806]",
-    green: "text-[#27500A]",
-    default: "text-slate-900",
+    amber: "text-amber-800 dark:text-amber-300",
+    green: "text-emerald-800 dark:text-emerald-200",
+    default: "text-slate-900 dark:text-slate-100 dark:text-slate-100",
   };
   return (
     <div
       className={`rounded-xl border p-4 ${accentMap[accent] ?? accentMap.default}`}
     >
-      <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400 mb-1.5">
+      <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">
         {label}
       </p>
       <p
@@ -89,7 +89,7 @@ function HerbItem({ herb }) {
 
   return (
     <div
-      className={`border border-slate-100 rounded-xl mb-4 last:mb-0 transition-all duration-300 bg-white overflow-hidden ${isExpanded ? "shadow-md ring-1 ring-emerald-100" : "hover:bg-slate-50"}`}
+      className={`border border-slate-100 dark:border-slate-700 rounded-xl mb-4 last:mb-0 transition-all duration-300 bg-white dark:bg-slate-800 overflow-hidden ${isExpanded ? "shadow-md ring-1 ring-emerald-100 dark:ring-emerald-800" : "hover:bg-slate-50 dark:hover:bg-slate-700"}`}
     >
       {/* Header / Toggle Area */}
       <div
@@ -105,18 +105,18 @@ function HerbItem({ herb }) {
             />
           ) : (
             <div
-              className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors shrink-0 ${isExpanded ? "bg-emerald-100 text-emerald-700" : "bg-slate-50 text-slate-400 group-hover:bg-emerald-50"}`}
+              className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors shrink-0 ${isExpanded ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400" : "bg-slate-50 dark:bg-slate-700 text-slate-400 dark:text-slate-500 group-hover:bg-emerald-50"}`}
             >
               <FaLeaf size={20} />
             </div>
           )}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-0.5">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-400 mb-0.5">
               Herb Name:
             </p>
             <p
               style={{ fontFamily: "'Instrument Serif', serif" }}
-              className="text-xl text-slate-900 leading-none"
+              className="text-xl text-slate-900 dark:text-slate-100 leading-none"
             >
               {herb.herbName}
             </p>
@@ -124,7 +124,7 @@ function HerbItem({ herb }) {
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-3 py-1 shrink-0">
+          <span className="text-[11px] font-bold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700 rounded-full px-3 py-1 shrink-0">
             {herb.quantity}g
           </span>
           <div
@@ -143,15 +143,15 @@ function HerbItem({ herb }) {
           opacity: isExpanded ? 1 : 0,
         }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="overflow-hidden bg-slate-50/30"
+        className="overflow-hidden bg-slate-50/30 dark:bg-slate-900/30"
       >
-        <div className="p-5 pt-0 space-y-5 border-t border-slate-50">
+        <div className="p-5 pt-0 space-y-5 border-t border-slate-50 dark:border-slate-700">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1.5 flex items-center gap-1">
                 Scientific Name
               </p>
-              <p className="text-sm font-medium italic text-slate-700">
+              <p className="text-sm font-medium italic text-slate-700 dark:text-slate-300">
                 {herb.scientificName || "N/A"}
               </p>
             </div>
@@ -162,7 +162,7 @@ function HerbItem({ herb }) {
                   e.stopPropagation();
                   navigate(`/patient/home/herbs/${herb.herbId}`);
                 }}
-                className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors border border-emerald-100"
+                className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-800/50 rounded-lg transition-colors border border-emerald-100 dark:border-emerald-700"
               >
                 <FaInfoCircle />
                 Full Details
@@ -174,33 +174,33 @@ function HerbItem({ herb }) {
             <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-2">
               Description
             </p>
-            <p className="text-xs leading-relaxed text-slate-600 bg-white p-3 rounded-lg border border-slate-50">
+            <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-50 dark:border-slate-700">
               {herb.description || "No description available."}
             </p>
           </div>
 
           <div className="flex flex-col gap-3">
-            <div className="bg-white border border-slate-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
-              <p className="text-[10px] uppercase tracking-widest text-emerald-600 font-bold sm:w-24 shrink-0">
+            <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+              <p className="text-[10px] uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-bold sm:w-24 shrink-0">
                 Benefits
               </p>
-              <p className="text-sm font-medium text-slate-700 leading-relaxed">
+              <p className="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed">
                 {herb.benefits || "—"}
               </p>
             </div>
-            <div className="bg-white border border-slate-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
-              <p className="text-[10px] uppercase tracking-widest text-sky-600 font-bold sm:w-24 shrink-0">
+            <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+              <p className="text-[10px] uppercase tracking-widest text-sky-600 dark:text-sky-400 font-bold sm:w-24 shrink-0">
                 Dosage
               </p>
-              <p className="text-sm font-medium text-slate-700 leading-relaxed">
+              <p className="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed">
                 {herb.dosage || "—"}
               </p>
             </div>
-            <div className="bg-amber-50 border border-amber-100 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
-              <p className="text-[10px] uppercase tracking-widest text-amber-600 font-bold sm:w-24 shrink-0">
+            <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-100 dark:border-amber-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+              <p className="text-[10px] uppercase tracking-widest text-amber-600 dark:text-amber-400 font-bold sm:w-24 shrink-0">
                 Warnings
               </p>
-              <p className="text-sm font-medium text-amber-800 leading-relaxed">
+              <p className="text-sm font-medium text-amber-800 dark:text-amber-300 leading-relaxed">
                 {herb.warnings || "No specific warnings."}
               </p>
             </div>
@@ -214,17 +214,17 @@ function HerbItem({ herb }) {
 /* ── Review card ── */
 function ReviewCard({ review }) {
   return (
-    <div className="border border-slate-100 rounded-2xl p-5 bg-white mb-4 last:mb-0 shadow-sm transition-all hover:shadow-md hover:border-emerald-100">
+    <div className="border border-slate-100 dark:border-slate-700 rounded-2xl p-5 bg-white dark:bg-slate-800 mb-4 last:mb-0 shadow-sm transition-all hover:shadow-md hover:border-emerald-100 dark:hover:border-emerald-800">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-700 text-sm font-bold shrink-0 shadow-inner">
+          <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-100 dark:border-emerald-800 flex items-center justify-center text-emerald-700 dark:text-emerald-400 text-sm font-bold shrink-0 shadow-inner">
             {review.patientName?.charAt(0).toUpperCase() || "P"}
           </div>
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-0.5">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-400 mb-0.5">
               Patient Name:
             </p>
-            <p className="text-sm font-bold text-slate-900 leading-none">
+            <p className="text-sm font-bold text-slate-900 dark:text-slate-100 leading-none">
               {review.patientName || "Anonymous Patient"}
             </p>
           </div>
@@ -234,11 +234,11 @@ function ReviewCard({ review }) {
             {[...Array(5)].map((_, i) => (
               <FaStar
                 key={i}
-                className={`text-[10px] ${i < review.ratingValue ? "text-amber-400" : "text-slate-200"}`}
+                className={`text-[10px] ${i < review.ratingValue ? "text-amber-400" : "text-slate-200 dark:text-slate-600"}`}
               />
             ))}
           </div>
-          <p className="text-[10px] text-slate-400 font-medium italic">
+          <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium italic">
             {review.createdDate
               ? new Date(review.createdDate).toLocaleDateString("en-US", {
                   month: "short",
@@ -250,11 +250,11 @@ function ReviewCard({ review }) {
         </div>
       </div>
 
-      <div className="bg-slate-50 border border-slate-100 rounded-xl p-4">
-        <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-2">
+      <div className="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-xl p-4">
+        <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
           Patient Comment:
         </p>
-        <p className="text-xs leading-relaxed text-slate-600 font-medium italic">
+        <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium italic">
           "
           {review.comment ||
             "No specific feedback was provided with this rating."}
@@ -281,7 +281,7 @@ const itemVariants = {
 function RecipeDetailsPage() {
   const { recipeId } = useParams();
   const { addRecipeToCart } = useCart();
-  const { recipe, herbs, isLoading, error, reload } =
+  const { recipe, herbs, providers, isLoading, error, reload } =
     useRecipeDetails(recipeId);
   const {
     reviews,
@@ -300,6 +300,34 @@ function RecipeDetailsPage() {
   const [isSavingRecipe, setIsSavingRecipe] = useState(false);
 
   const [recipeQuantity, setRecipeQuantity] = useState(1);
+  const [selectedProviderId, setSelectedProviderId] = useState("");
+
+  const getProviderId = (p) =>
+    String(p?.herbalistId ?? p?.userId ?? p?.id ?? "");
+  const getProviderName = (p) =>
+    p?.herbalistName || p?.fullName || p?.name || p?.userName || "Licensed Herbalist";
+  const getProviderPrice = (p) => {
+    const v = p?.price ?? p?.pricePerKilo ?? p?.inventoryPrice;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  const sortedProviders = useMemo(() => {
+    const seen = new Set();
+    return [...(providers || [])]
+      .filter((p) => {
+        const id = getProviderId(p);
+        if (!id || seen.has(id)) return false;
+        seen.add(id);
+        return true;
+      })
+      .sort((a, b) => (getProviderPrice(a) || Infinity) - (getProviderPrice(b) || Infinity));
+  }, [providers]);
+
+  const selectedProvider = useMemo(
+    () => sortedProviders.find((p) => getProviderId(p) === String(selectedProviderId)),
+    [selectedProviderId, sortedProviders],
+  );
 
   useEffect(() => {
     if (!myReview) return;
@@ -413,13 +441,13 @@ function RecipeDetailsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
       <PatientNavbar />
 
       <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8 flex-1 w-full">
         <Link
           to="/patient/home/recipes"
-          className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 bg-white border border-slate-200 rounded-full px-4 py-2 mb-8 hover:text-[#3B6D11] transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full px-4 py-2 mb-8 hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
         >
           <FaArrowLeft className="text-xs" /> Back to recipes
         </Link>
@@ -427,7 +455,7 @@ function RecipeDetailsPage() {
         {/* Loading */}
         {isLoading && (
           <div className="space-y-5">
-            <div className="rounded-2xl border border-slate-100 bg-white p-8 lg:p-10">
+            <div className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-8 lg:p-10">
               <div className="flex flex-wrap gap-2 mb-5">
                 <Skeleton width={110} height={24} borderRadius={9999} />
                 <Skeleton width={92} height={24} borderRadius={9999} />
@@ -445,7 +473,7 @@ function RecipeDetailsPage() {
               {Array.from({ length: 4 }).map((_, index) => (
                 <div
                   key={`recipe-detail-stat-${index}`}
-                  className="rounded-xl border border-slate-100 bg-white p-4"
+                  className="rounded-xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"
                 >
                   <Skeleton width="55%" height={10} />
                   <Skeleton width="70%" height={24} className="mt-3" />
@@ -456,28 +484,28 @@ function RecipeDetailsPage() {
 
             <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] items-start">
               <div className="space-y-5">
-                <div className="rounded-2xl border border-slate-100 bg-white p-6">
+                <div className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
                   <Skeleton width="35%" height={18} className="mb-5" />
                   <Skeleton count={4} className="mb-3" />
                 </div>
-                <div className="rounded-2xl border border-slate-100 bg-white p-6">
+                <div className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
                   <Skeleton width="30%" height={18} className="mb-5" />
                   <Skeleton count={3} className="mb-3" />
                 </div>
-                <div className="rounded-2xl border border-slate-100 bg-white p-6">
+                <div className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
                   <Skeleton width="32%" height={18} className="mb-5" />
                   <Skeleton count={3} className="mb-3" />
                 </div>
               </div>
 
               <div className="space-y-5">
-                <div className="rounded-2xl border border-slate-100 bg-white p-6">
+                <div className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
                   <Skeleton width="28%" height={18} className="mb-5" />
                   <Skeleton height={52} className="mb-4" />
                   <Skeleton height={52} className="mb-4" />
                   <Skeleton height={52} />
                 </div>
-                <div className="rounded-2xl border border-slate-100 bg-white p-6">
+                <div className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
                   <Skeleton width="28%" height={18} className="mb-5" />
                   <Skeleton count={4} className="mb-3" />
                 </div>
@@ -488,11 +516,11 @@ function RecipeDetailsPage() {
 
         {/* Error */}
         {!isLoading && error && (
-          <div className="rounded-2xl border border-eed-100 bg-red-50 p-14 text-center">
-            <h2 className="text-lg font-medium text-red-800 mb-2">
+          <div className="rounded-2xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-14 text-center">
+            <h2 className="text-lg font-medium text-red-800 dark:text-red-300 mb-2">
               Unable to load recipe
             </h2>
-            <p className="text-sm text-red-500 mb-7">{error}</p>
+            <p className="text-sm text-red-500 dark:text-red-400 mb-7">{error}</p>
             <button
               onClick={reload}
               className="rounded-full bg-red-600 text-white text-sm font-medium px-6 py-2.5 hover:bg-red-700 transition-colors"
@@ -512,26 +540,26 @@ function RecipeDetailsPage() {
             {/* Hero */}
             <motion.div
               variants={itemVariants}
-              className="rounded-2xl border border-slate-100 bg-white p-8 lg:p-10"
+              className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-8 lg:p-10"
             >
               <div className="flex flex-wrap gap-2 mb-5">
-                <span className="text-[10px] font-medium uppercase tracking-wider bg-[#1a2e1a] text-[#a8d878] border border-[#3B6D11] rounded-full px-3 py-1">
+                <span className="text-[10px] font-medium uppercase tracking-wider bg-emerald-950 dark:bg-emerald-800 text-emerald-300 dark:text-emerald-200 border border-emerald-700 dark:border-emerald-600 rounded-full px-3 py-1">
                   {recipe.createdDate}
                 </span>
                 {recipe.createdByAI && (
-                  <span className="text-[10px] font-medium uppercase tracking-wider bg-[#EAF3DE] text-[#27500A] border border-[#97C459] rounded-full px-3 py-1 flex items-center gap-1">
+                  <span className="text-[10px] font-medium uppercase tracking-wider bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200 border border-emerald-400 dark:border-emerald-700 rounded-full px-3 py-1 flex items-center gap-1">
                     <FaRobot className="text-[9px]" /> Generated by AI
                   </span>
                 )}
               </div>
 
               <div className="space-y-4 mb-6">
-                <p className="text-sm leading-relaxed text-slate-500 max-w-2xl">
-                  <span className="font-bold text-slate-700">Description:</span>{" "}
+                <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400 max-w-2xl">
+                  <span className="font-bold text-slate-700 dark:text-slate-300">Description:</span>{" "}
                   {recipe.title}
                 </p>
-                <p className="text-sm leading-relaxed text-slate-500 max-w-2xl">
-                  <span className="font-bold text-slate-700">
+                <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400 max-w-2xl">
+                  <span className="font-bold text-slate-700 dark:text-slate-300">
                     Instructions:
                   </span>{" "}
                   {recipe.description}
@@ -545,8 +573,8 @@ function RecipeDetailsPage() {
                   disabled={isSavingRecipe}
                   className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
                     isRecipeSaved
-                      ? "border-amber-200 bg-amber-50 text-amber-700"
-                      : "border-slate-200 bg-white text-slate-700 hover:border-emerald-200 hover:text-emerald-700"
+                      ? "border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300"
+                      : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-emerald-200 dark:hover:border-emerald-700 hover:text-emerald-700 dark:hover:text-emerald-400"
                   } ${isSavingRecipe ? "opacity-60 cursor-not-allowed" : ""}`}
                 >
                   {isRecipeSaved ? (
@@ -563,7 +591,7 @@ function RecipeDetailsPage() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
                   Target Diseases:
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -571,13 +599,13 @@ function RecipeDetailsPage() {
                     recipe.targetedDiseases.map((d) => (
                       <span
                         key={d.diseaseId}
-                        className="text-xs font-medium bg-slate-50 border border-slate-200 rounded-full px-4 py-1.5 text-slate-700"
+                        className="text-xs font-medium bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-full px-4 py-1.5 text-slate-700 dark:text-slate-300"
                       >
                         {d.diseaseName}
                       </span>
                     ))
                   ) : (
-                    <span className="text-xs font-medium bg-slate-50 border border-slate-200 rounded-full px-4 py-1.5 text-slate-700">
+                    <span className="text-xs font-medium bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-full px-4 py-1.5 text-slate-700 dark:text-slate-300">
                       General wellness
                     </span>
                   )}
@@ -667,9 +695,9 @@ function RecipeDetailsPage() {
                       />
                     </svg>
                   }
-                  iconBg="bg-[#E6F1FB]"
+                  iconBg="bg-sky-50 dark:bg-sky-900/30"
                 >
-                  <pre className="whitespace-pre-line text-xs leading-relaxed text-slate-600 bg-slate-50 border border-slate-100 rounded-xl p-4 font-sans">
+                  <pre className="whitespace-pre-line text-xs leading-relaxed text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-xl p-4 font-sans">
                     {recipe.instructions ||
                       "No specific instructions provided. Consult an expert."}
                   </pre>
@@ -685,7 +713,7 @@ function RecipeDetailsPage() {
                       />
                     </svg>
                   }
-                  iconBg="bg-[#EAF3DE]"
+                  iconBg="bg-emerald-50 dark:bg-emerald-900/30"
                 >
                   {herbs.map((h) => (
                     <HerbItem key={h.herbId} herb={h} />
@@ -715,12 +743,55 @@ function RecipeDetailsPage() {
                       />
                     </svg>
                   }
-                  iconBg="bg-[#EAF3DE]"
+                  iconBg="bg-emerald-50 dark:bg-emerald-900/30"
                 >
-                  <p className="text-xs text-slate-500 mb-4">
-                    Get a freshly customized package of this recipe's herbs,
-                    properly measured out.
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                    {sortedProviders.length > 0
+                      ? "Select a herbalist and quantity to order this recipe."
+                      : "Get a freshly customized package of this recipe's herbs, properly measured out."}
                   </p>
+
+                  {sortedProviders.length > 0 && (
+                    <div className="mb-4">
+                      <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+                        Select herbalist
+                      </label>
+                      <select
+                        value={selectedProviderId}
+                        onChange={(e) => setSelectedProviderId(e.target.value)}
+                        className="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2.5 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-2 focus:ring-emerald-600/10 transition appearance-none cursor-pointer"
+                      >
+                        <option value="">Choose a herbalist...</option>
+                        {sortedProviders.map((p) => {
+                          const pid = getProviderId(p);
+                          const name = getProviderName(p);
+                          const price = getProviderPrice(p);
+                          return (
+                            <option key={pid} value={pid}>
+                              {name}{price ? ` • ${price} EGP` : ""}
+                              {p.averageRating ? ` (${Number(p.averageRating).toFixed(1)} ★)` : ""}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                  )}
+
+                  {selectedProvider && (
+                    <div className="p-3 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg border border-emerald-300 dark:border-emerald-700 mb-4">
+                      <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300 uppercase tracking-wider">
+                        Selected provider
+                      </span>
+                      <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-200 mt-1">
+                        {getProviderName(selectedProvider)}
+                      </p>
+                      {getProviderPrice(selectedProvider) > 0 && (
+                        <p className="text-sm font-bold text-emerald-700 dark:text-emerald-300">
+                          {getProviderPrice(selectedProvider)} EGP
+                        </p>
+                      )}
+                    </div>
+                  )}
 
                   <div className="flex gap-2">
                     <input
@@ -728,26 +799,34 @@ function RecipeDetailsPage() {
                       min="1"
                       value={recipeQuantity}
                       onChange={(e) => setRecipeQuantity(e.target.value)}
-                      placeholder="Orders"
-                      className="w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800 placeholder-slate-400 outline-none focus:border-[#3B6D11] focus:ring-2 focus:ring-[#3B6D11]/10 transition"
+                      placeholder="Qty"
+                      className="w-20 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2 text-sm font-medium text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-2 focus:ring-emerald-600/10 transition"
                     />
                     <button
-                      disabled={!recipeQuantity || Number(recipeQuantity) <= 0}
+                      disabled={
+                        !recipeQuantity ||
+                        Number(recipeQuantity) <= 0 ||
+                        (sortedProviders.length > 0 && !selectedProviderId)
+                      }
                       onClick={() => {
                         const qty = parseInt(recipeQuantity, 10);
                         if (!qty || qty <= 0) return;
-                        const unitPrice = Number(recipe.price || 0);
+                        const unitPrice = selectedProvider
+                          ? getProviderPrice(selectedProvider) || Number(recipe.price || 0)
+                          : Number(recipe.price || 0);
                         addRecipeToCart({
                           recipeId: recipe.recipeId || recipe.id,
+                          herbalistId: selectedProviderId || undefined,
                           quantity: qty,
                           unitPrice,
                           price: unitPrice,
                           totalPrice: unitPrice * qty,
                           _previewName: recipe.title,
+                          _providerName: selectedProvider ? getProviderName(selectedProvider) : undefined,
                         });
-                        setRecipeQuantity(1); // reset after adding
+                        setRecipeQuantity(1);
                       }}
-                      className="flex-1 rounded-lg bg-[#1a2e1a] text-[#a8d878] px-4 py-2.5 text-xs font-bold transition hover:bg-[#3B6D11] disabled:opacity-50 disabled:pointer-events-none"
+                      className="flex-1 rounded-lg bg-emerald-950 dark:bg-emerald-800 text-emerald-300 dark:text-emerald-200 px-4 py-2.5 text-xs font-bold transition hover:bg-emerald-700 dark:hover:bg-emerald-700 disabled:opacity-50 disabled:pointer-events-none"
                     >
                       Add to Cart
                     </button>
@@ -755,10 +834,10 @@ function RecipeDetailsPage() {
                 </SectionCard>
 
                 {/* Reviews */}
-                <div className="rounded-2xl border border-slate-100 bg-white p-6">
-                  <div className="flex items-start justify-between mb-5 pb-4 border-b border-slate-100">
+                <div className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
+                  <div className="flex items-start justify-between mb-5 pb-4 border-b border-slate-100 dark:border-slate-700">
                     <div>
-                      <p className="text-sm font-medium text-slate-900 mb-0.5">
+                      <p className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-0.5">
                         Community feedback
                       </p>
                       <p className="text-[11px] text-slate-400">
@@ -776,7 +855,7 @@ function RecipeDetailsPage() {
                   </div>
 
                   {reviewsError && (
-                    <div className="rounded-xl border border-eed-100 bg-red-50 p-3 text-xs text-red-600 mb-4">
+                    <div className="rounded-xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-3 text-xs text-red-600 dark:text-red-400 mb-4">
                       {reviewsError}
                     </div>
                   )}
@@ -784,9 +863,9 @@ function RecipeDetailsPage() {
                   {canReview ? (
                     <form
                       onSubmit={handleReviewSubmit}
-                      className="bg-slate-50 border border-slate-100 rounded-xl p-4 mb-5"
+                      className="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-xl p-4 mb-5"
                     >
-                      <p className="text-xs font-medium text-slate-500 mb-2.5">
+                      <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2.5">
                         Your rating
                       </p>
                       <div className="flex gap-1.5 mb-3">
@@ -799,12 +878,12 @@ function RecipeDetailsPage() {
                             }
                             className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-colors ${
                               Number(reviewForm.ratingValue) >= v
-                                ? "bg-[#FAEEDA] border-[#EF9F27]"
-                                : "bg-white border-slate-200"
+                                ? "bg-amber-50 dark:bg-amber-900/30 border-amber-400 dark:border-amber-600"
+                                : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600"
                             }`}
                           >
                             <FaStar
-                              className={`text-xs ${Number(reviewForm.ratingValue) >= v ? "text-[#BA7517]" : "text-slate-300"}`}
+                              className={`text-xs ${Number(reviewForm.ratingValue) >= v ? "text-amber-600 dark:text-amber-400" : "text-slate-300"}`}
                             />
                           </button>
                         ))}
@@ -819,13 +898,13 @@ function RecipeDetailsPage() {
                         }
                         rows={3}
                         placeholder="Share your experience..."
-                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs text-slate-700 placeholder-slate-400 outline-none focus:border-[#3B6D11] focus:ring-2 focus:ring-[#3B6D11]/10 resize-none transition"
+                        className="w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2.5 text-xs text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-2 focus:ring-emerald-600/10 resize-none transition"
                       />
                       <div className="mt-3 flex gap-2">
                         <button
                           type="submit"
                           disabled={isSubmitting}
-                          className="bg-[#1a2e1a] text-[#a8d878] text-xs font-medium rounded-lg px-4 py-2 hover:bg-[#3B6D11] transition-colors disabled:opacity-50"
+                          className="bg-emerald-950 dark:bg-emerald-800 text-emerald-300 dark:text-emerald-200 text-xs font-medium rounded-lg px-4 py-2 hover:bg-emerald-700 dark:hover:bg-emerald-700 transition-colors disabled:opacity-50"
                         >
                           {isSubmitting
                             ? "Submitting..."
@@ -838,7 +917,7 @@ function RecipeDetailsPage() {
                             type="button"
                             onClick={handleDelete}
                             disabled={isDeleting}
-                            className="text-xs font-medium text-red-500 bg-red-50 border border-eed-100 rounded-lg px-4 py-2 hover:bg-red-100 transition-colors disabled:opacity-50"
+                            className="text-xs font-medium text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-900/50 rounded-lg px-4 py-2 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors disabled:opacity-50"
                           >
                             {isDeleting ? "Deleting..." : "Delete"}
                           </button>
@@ -846,14 +925,14 @@ function RecipeDetailsPage() {
                       </div>
                     </form>
                   ) : (
-                    <div className="text-xs text-center text-slate-400 bg-slate-50 border border-slate-100 rounded-xl p-4 mb-5">
+                    <div className="text-xs text-center text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-xl p-4 mb-5">
                       Log in as a patient to leave feedback.
                     </div>
                   )}
 
                   {areReviewsLoading && (
                     <div className="flex items-center justify-center gap-2 py-6">
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-200 border-t-[#3B6D11]" />
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-200 dark:border-slate-700 border-t-emerald-600" />
                       <p className="text-xs text-slate-400">
                         Loading reviews...
                       </p>

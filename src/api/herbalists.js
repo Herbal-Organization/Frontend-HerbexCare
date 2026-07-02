@@ -42,3 +42,18 @@ export const resetMyHerbalistAccount = async (payload) => {
   );
   return data;
 };
+
+export const getAdminHerbalists = async (params = {}) => {
+  const { data } = await httpClient.get("/api/admin/herbalists", { params });
+  return data;
+};
+
+export const getAdminHerbalistStats = async () => {
+  const { data } = await httpClient.get("/api/admin/herbalists/stats");
+  return data;
+};
+
+export const deleteAdminHerbalist = async (id) => {
+  const { data } = await httpClient.delete(`/api/admin/herbalists/${id}`);
+  return data;
+};

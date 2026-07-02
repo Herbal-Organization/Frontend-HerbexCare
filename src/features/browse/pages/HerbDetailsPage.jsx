@@ -195,24 +195,24 @@ function AddToCartForm({ providers, herb }) {
   })();
 
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white p-6">
-      <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
-        <div className="w-8 h-8 rounded-lg bg-[#EAF3DE] flex items-center justify-center shrink-0">
-          <FaTags className="text-[#3B6D11] text-sm" />
+    <div className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
+      <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100 dark:border-slate-700">
+        <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
+          <FaTags className="text-emerald-700 dark:text-emerald-300 text-sm" />
         </div>
-        <h2 className="text-sm font-medium text-slate-900">Add to cart</h2>
+        <h2 className="text-sm font-medium text-slate-900 dark:text-slate-100">Add to cart</h2>
       </div>
 
       <div className="space-y-4">
         {/* Herbalist selector */}
         <div>
-          <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+          <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
             Select herbalist
           </label>
           <select
             value={selectedProviderId}
             onChange={(e) => setSelectedProviderId(e.target.value)}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-[#3B6D11] focus:ring-2 focus:ring-[#3B6D11]/10 transition appearance-none cursor-pointer"
+            className="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2.5 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-2 focus:ring-emerald-600/10 transition appearance-none cursor-pointer"
           >
             <option value="">
               {sortedProviders.length > 0
@@ -242,14 +242,14 @@ function AddToCartForm({ providers, herb }) {
 
         {/* Selected provider details */}
         {selectedProvider && (
-          <div className="p-3 bg-[#EAF3DE] rounded-lg border border-[#C0DD97]">
+          <div className="p-3 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg border border-emerald-300 dark:border-emerald-700">
             <div className="flex items-center justify-between mb-2 gap-2">
-              <span className="text-xs font-medium text-[#3B6D11] uppercase tracking-wider">
+              <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300 uppercase tracking-wider">
                 Selected provider
               </span>
               <div className="flex items-center gap-2">
                 {selectedProvider.averageRating ? (
-                  <span className="text-[11px] font-medium bg-white text-[#633806] border border-[#EF9F27] border-opacity-50 rounded px-2 py-0.5">
+                  <span className="text-[11px] font-medium bg-white dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 border border-amber-400 dark:border-amber-600 border-opacity-50 rounded px-2 py-0.5">
                     {Number(selectedProvider.averageRating).toFixed(1)} ★
                   </span>
                 ) : null}
@@ -272,10 +272,10 @@ function AddToCartForm({ providers, herb }) {
                 </button>
               </div>
             </div>
-            <p className="text-sm font-semibold text-[#27500A] mb-1">
+            <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-200 mb-1">
               {resolvedProviderName}
             </p>
-            <p className="text-sm font-bold text-[#3B6D11]">
+            <p className="text-sm font-bold text-emerald-700 dark:text-emerald-300">
               {getProviderPricePerKilo(selectedProvider)
                 ? `${getProviderPricePerKilo(selectedProvider)} EGP/kg`
                 : "Price N/A"}
@@ -285,7 +285,7 @@ function AddToCartForm({ providers, herb }) {
 
         {/* Quantity input */}
         <div>
-          <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+          <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
             Quantity (grams)
           </label>
           <input
@@ -295,34 +295,34 @@ function AddToCartForm({ providers, herb }) {
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
             placeholder="e.g., 100, 250, 500..."
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 placeholder-slate-400 outline-none focus:border-[#3B6D11] focus:ring-2 focus:ring-[#3B6D11]/10 transition"
+            className="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2.5 text-sm font-medium text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-2 focus:ring-emerald-600/10 transition"
           />
         </div>
 
         {/* Price breakdown */}
         {selectedProvider && quantity && (
-          <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+          <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-xs text-slate-600 font-medium">
+              <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                 Unit price:
               </span>
-              <span className="text-sm font-semibold text-slate-900">
+              <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                 {getProviderPricePerKilo(selectedProvider)} EGP/kg
               </span>
             </div>
             <div className="flex justify-between items-center mb-2">
-              <span className="text-xs text-slate-600 font-medium">
+              <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                 Quantity:
               </span>
-              <span className="text-sm font-semibold text-slate-900">
+              <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                 {quantity}g
               </span>
             </div>
-            <div className="pt-2 border-t border-slate-200 flex justify-between items-center">
-              <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center">
+              <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
                 Total:
               </span>
-              <span className="text-lg font-bold text-[#3B6D11]">
+              <span className="text-lg font-bold text-emerald-700 dark:text-emerald-300">
                 {estimatedTotal.toFixed(2)} EGP
               </span>
             </div>
@@ -339,7 +339,7 @@ function AddToCartForm({ providers, herb }) {
             !getProviderPricePerKilo(selectedProvider)
           }
           onClick={handleAdd}
-          className="w-full rounded-lg bg-[#3B6D11] text-white px-4 py-3 text-sm font-semibold transition hover:bg-[#2d5209] disabled:opacity-40 disabled:pointer-events-none uppercase tracking-wider"
+          className="w-full rounded-lg bg-emerald-700 dark:bg-emerald-600 text-white px-4 py-3 text-sm font-semibold transition hover:bg-emerald-800 dark:hover:bg-emerald-500 disabled:opacity-40 disabled:pointer-events-none uppercase tracking-wider"
         >
           Add to cart
         </button>
@@ -351,14 +351,14 @@ function AddToCartForm({ providers, herb }) {
 /* ── Section card wrapper ── */
 function SectionCard({ title, icon, iconBg = "bg-slate-100", children }) {
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white p-6">
-      <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
+    <div className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
+      <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100 dark:border-slate-700">
         <div
           className={`w-8 h-8 rounded-lg ${iconBg} flex items-center justify-center shrink-0`}
         >
           {icon}
         </div>
-        <h2 className="text-sm font-medium text-slate-900">{title}</h2>
+        <h2 className="text-sm font-medium text-slate-900 dark:text-slate-100">{title}</h2>
       </div>
       {children}
     </div>
@@ -394,13 +394,13 @@ function HerbDetailsPage() {
   }, [providers]);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
       <PatientNavbar />
 
       <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8 flex-1 w-full">
         <Link
           to="/patient/home/herbs"
-          className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 bg-white border border-slate-200 rounded-full px-4 py-2 mb-8 hover:text-[#3B6D11] transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full px-4 py-2 mb-8 hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
         >
           <FaArrowLeft className="text-xs" /> Back to herbs
         </Link>
@@ -408,11 +408,11 @@ function HerbDetailsPage() {
         {/* Loading */}
         {isLoading && (
           <div className="space-y-5">
-            <div className="rounded-2xl border border-slate-100 bg-white overflow-hidden grid lg:grid-cols-[340px_1fr]">
-              <div className="min-h-70 bg-[#EAF3DE] p-8">
+            <div className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden grid lg:grid-cols-[340px_1fr]">
+              <div className="min-h-70 bg-emerald-50 dark:bg-emerald-900/30 p-8">
                 <Skeleton height="100%" borderRadius={24} />
               </div>
-              <div className="p-8 lg:p-10 border-t lg:border-t-0 lg:border-s border-slate-100 flex flex-col justify-center space-y-4">
+              <div className="p-8 lg:p-10 border-t lg:border-t-0 lg:border-s border-slate-100 dark:border-slate-700 flex flex-col justify-center space-y-4">
                 <div className="flex flex-wrap gap-2">
                   <Skeleton width={110} height={24} borderRadius={9999} />
                   <Skeleton width={128} height={24} borderRadius={9999} />
@@ -428,7 +428,7 @@ function HerbDetailsPage() {
                 {Array.from({ length: 3 }).map((_, index) => (
                   <div
                     key={`herb-details-left-${index}`}
-                    className="rounded-2xl border border-slate-100 bg-white p-6"
+                    className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-6"
                   >
                     <Skeleton width="30%" height={18} className="mb-5" />
                     <Skeleton count={index === 0 ? 3 : 2} />
@@ -437,7 +437,7 @@ function HerbDetailsPage() {
               </div>
 
               <div className="space-y-5">
-                <div className="rounded-2xl border border-slate-100 bg-white p-6">
+                <div className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
                   <Skeleton width="28%" height={18} className="mb-5" />
                   <div className="space-y-4">
                     <Skeleton height={56} />
@@ -445,7 +445,7 @@ function HerbDetailsPage() {
                     <Skeleton height={56} />
                   </div>
                 </div>
-                <div className="rounded-2xl border border-slate-100 bg-white p-6">
+                <div className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
                   <Skeleton width="30%" height={18} className="mb-5" />
                   <Skeleton count={4} />
                 </div>
@@ -456,11 +456,11 @@ function HerbDetailsPage() {
 
         {/* Error */}
         {!isLoading && error && (
-          <div className="rounded-2xl border border-eed-100 bg-red-50 p-14 text-center">
-            <h2 className="text-lg font-medium text-red-800 mb-2">
+          <div className="rounded-2xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-14 text-center">
+            <h2 className="text-lg font-medium text-red-800 dark:text-red-300 mb-2">
               Unable to load herb details
             </h2>
-            <p className="text-sm text-red-500 mb-7">{error}</p>
+            <p className="text-sm text-red-500 dark:text-red-400 mb-7">{error}</p>
             <button
               onClick={reload}
               className="rounded-full bg-red-600 text-white text-sm font-medium px-6 py-2.5 hover:bg-red-700 transition-colors"
@@ -481,10 +481,10 @@ function HerbDetailsPage() {
             {/* Hero */}
             <motion.div
               variants={itemVariants}
-              className="rounded-2xl border border-slate-100 bg-white overflow-hidden grid lg:grid-cols-[340px_1fr]"
+              className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden grid lg:grid-cols-[340px_1fr]"
             >
               {/* Image panel */}
-              <div className="relative bg-[#EAF3DE] min-h-70 flex items-center justify-center">
+              <div className="relative bg-emerald-50 dark:bg-emerald-900/30 min-h-70 flex items-center justify-center">
                 {herb.imageURL ? (
                   <img
                     src={herb.imageURL}
@@ -540,24 +540,24 @@ function HerbDetailsPage() {
               </div>
 
               {/* Info panel */}
-              <div className="p-8 lg:p-10 border-t lg:border-t-0 lg:border-s border-slate-100 flex flex-col justify-center">
+              <div className="p-8 lg:p-10 border-t lg:border-t-0 lg:border-s border-slate-100 dark:border-slate-700 flex flex-col justify-center">
                 <div className="flex flex-wrap gap-2 mb-5">
-                  <span className="text-[10px] font-medium uppercase tracking-wider bg-slate-100 text-slate-500 rounded-full px-3 py-1">
+                  <span className="text-[10px] font-medium uppercase tracking-wider bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full px-3 py-1">
                     Added By: {herb.herbalistName || "Unknown"}
                   </span>
                 </div>
 
-                <h1 className="text-4xl text-slate-900 leading-tight mb-2">
+                <h1 className="text-4xl text-slate-900 dark:text-slate-100 leading-tight mb-2">
                   {herb.herbName}
                 </h1>
-                <p className="text-base italic text-slate-400 mb-5">
-                  <span className="font-semibold not-italic text-slate-700">
+                <p className="text-base italic text-slate-400 dark:text-slate-500 mb-5">
+                  <span className="font-semibold not-italic text-slate-700 dark:text-slate-300">
                     Scientific Name:
                   </span>{" "}
                   {herb.scientificName}
                 </p>
-                <p className="text-sm leading-relaxed text-slate-500 max-w-lg">
-                  <span className="font-semibold text-slate-700">
+                <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400 max-w-lg">
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">
                     Description:
                   </span>{" "}
                   {herb.description || "No description provided."}
@@ -574,10 +574,10 @@ function HerbDetailsPage() {
               <div className="space-y-5">
                 <SectionCard
                   title="Primary benefits"
-                  icon={<FaCheckCircle className="text-[#3B6D11] text-sm" />}
-                  iconBg="bg-[#EAF3DE]"
+                  icon={<FaCheckCircle className="text-emerald-700 dark:text-emerald-300 text-sm" />}
+                  iconBg="bg-emerald-50 dark:bg-emerald-900/30"
                 >
-                  <p className="text-sm leading-relaxed text-slate-600 mb-4">
+                  <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400 mb-4">
                     {herb.benefits || "No specific benefits noted."}
                   </p>
                   {herb.benefitList?.length > 0 && (
@@ -585,7 +585,7 @@ function HerbDetailsPage() {
                       {herb.benefitList.map((b) => (
                         <span
                           key={b}
-                          className="text-[11px] font-medium bg-[#EAF3DE] text-[#3B6D11] border border-[#C0DD97] rounded-full px-3 py-1"
+                          className="text-[11px] font-medium bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 rounded-full px-3 py-1"
                         >
                           {b}
                         </span>
@@ -598,7 +598,7 @@ function HerbDetailsPage() {
                   title="Dosage guidance"
                   icon={<FaLeaf className="text-slate-500 text-sm" />}
                 >
-                  <p className="text-sm leading-relaxed text-slate-600">
+                  <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                     {herb.dosage ||
                       "Consult your herbalist for proper dosage instructions."}
                   </p>
@@ -607,12 +607,12 @@ function HerbDetailsPage() {
                 <SectionCard
                   title="Warnings & cautions"
                   icon={
-                    <FaExclamationTriangle className="text-[#854F0B] text-sm" />
+                    <FaExclamationTriangle className="text-amber-700 dark:text-amber-400 text-sm" />
                   }
-                  iconBg="bg-[#FAEEDA]"
+                  iconBg="bg-amber-50 dark:bg-amber-900/30"
                 >
-                  <div className="rounded-xl bg-[#FAEEDA] border border-[#EF9F27]/40 p-4">
-                    <p className="text-sm leading-relaxed text-[#412402]">
+                  <div className="rounded-xl bg-amber-50 dark:bg-amber-900/30 border border-amber-400 dark:border-amber-600/40 p-4">
+                    <p className="text-sm leading-relaxed text-amber-950 dark:text-amber-200">
                       {herb.warnings ||
                         "No explicit warnings listed. Always consult a professional before use."}
                     </p>

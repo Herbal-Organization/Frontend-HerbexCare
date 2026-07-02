@@ -35,8 +35,8 @@ function RecipeFilters({
       onToggleItem={onDiseaseChange}
       extraControls={
         <>
-          <div className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+          <div className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2.5">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               Min
             </span>
             <input
@@ -46,13 +46,13 @@ function RecipeFilters({
               value={minPrice}
               onChange={(event) => onMinPriceChange(event.target.value)}
               placeholder="0"
-              className="w-20 border-0 bg-transparent p-0 text-sm font-semibold text-slate-800 outline-none placeholder:text-slate-400 focus:ring-0 sm:w-24"
+              className="w-20 border-0 bg-transparent p-0 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-0 sm:w-24"
               aria-label="Minimum price in EGP"
             />
-            <span className="text-xs font-bold text-emerald-600">EGP</span>
+            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">EGP</span>
           </div>
-          <div className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+          <div className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2.5">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               Max
             </span>
             <input
@@ -62,10 +62,10 @@ function RecipeFilters({
               value={maxPrice}
               onChange={(event) => onMaxPriceChange(event.target.value)}
               placeholder="Any"
-              className="w-20 border-0 bg-transparent p-0 text-sm font-semibold text-slate-800 outline-none placeholder:text-slate-400 focus:ring-0 sm:w-24"
+              className="w-20 border-0 bg-transparent p-0 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-0 sm:w-24"
               aria-label="Maximum price in EGP"
             />
-            <span className="text-xs font-bold text-emerald-600">EGP</span>
+            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">EGP</span>
           </div>
         </>
       }

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getRecipeById } from "@api/recipes";
+import { getRecipeById, getHerbalistsForRecipe } from "@api/recipes";
 import { getHerbById } from "@api/herbs";
 import {
   buildRecipeAdvantages,
@@ -10,6 +10,7 @@ import {
 function useRecipeDetails(recipeId) {
   const [recipe, setRecipe] = useState(null);
   const [herbs, setHerbs] = useState([]);
+  const [providers, setProviders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -24,7 +25,10 @@ function useRecipeDetails(recipeId) {
     setError("");
 
     try {
-      const recipeResponse = await getRecipeById(recipeId);
+      const [recipeResponse, providersData] = await Promise.all([
+        getRecipeById(recipeId),
+        getHerbalistsForRecipe(recipeId).catch(() => []),
+      ]);
       const normalizedRecipe = normalizeRecipe(recipeResponse);
 
       const herbDetails = await Promise.all(
@@ -43,6 +47,11 @@ function useRecipeDetails(recipeId) {
         disadvantages: buildRecipeDisadvantages(normalizedRecipe, herbDetails),
       });
       setHerbs(herbDetails);
+      setProviders(
+        Array.isArray(providersData)
+          ? providersData
+          : providersData?.herbalists || providersData?.items || [],
+      );
     } catch (err) {
       const message =
         err.response?.data?.message ||
@@ -61,6 +70,7 @@ function useRecipeDetails(recipeId) {
   return {
     recipe,
     herbs,
+    providers,
     isLoading,
     error,
     reload: loadRecipeDetails,

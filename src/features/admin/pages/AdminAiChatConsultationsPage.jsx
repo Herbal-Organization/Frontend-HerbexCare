@@ -10,12 +10,14 @@ import {
   FaSearch,
   FaSyncAlt,
   FaTimes,
+  FaTrash,
 } from "react-icons/fa";
 import { MdSmartToy } from "react-icons/md";
 import {
   fetchAdminAllAiChatConsultations,
   toggleAdminAiChatRecipeStatus,
 } from "@api/aiChat";
+import { deleteAdminAiConsultation } from "@api/aiConsultations";
 
 const DEFAULT_PAGE_SIZE = 10;
 const PAGE_SIZE_OPTIONS = [10, 20, 50];
@@ -81,7 +83,7 @@ function ConsultationDetailsModal({
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/45 p-4 backdrop-blur-sm sm:items-center">
       <div className="w-full max-w-7xl overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-xl max-h-[90vh] flex flex-col">
         {/* Header - Fixed/Sticky */}
-        <div className="flex items-start justify-between gap-4 border-b border-slate-100 bg-slate-50 px-6 py-5 shrink-0">
+        <div className="flex items-start justify-between gap-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 px-6 py-5 shrink-0">
           <div className="min-w-0">
             <p className="text-[11px] font-black uppercase tracking-[0.22em] text-emerald-700">
               AI Chat
@@ -89,7 +91,7 @@ function ConsultationDetailsModal({
             <h2 className="mt-2 truncate text-xl font-black text-slate-900">
               {item.recommendedRecipeName || "AI chat details"}
             </h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               Recipe ID:{" "}
               <span className="font-semibold">{item.aiChatRecipeId}</span>
               {" · "}
@@ -133,7 +135,7 @@ function ConsultationDetailsModal({
               <p className="mt-2 text-lg font-black text-slate-900">
                 {item.mainHerb || "N/A"}
               </p>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 {item.scientificName || "No scientific name"}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
@@ -198,7 +200,7 @@ function ConsultationDetailsModal({
                   ))}
                 </div>
               ) : (
-                <p className="mt-3 text-sm text-slate-500">No alternatives.</p>
+                <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">No alternatives.</p>
               )}
             </div>
           </div>
@@ -258,6 +260,7 @@ function AdminAiChatConsultationsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [togglingRecipeIds, setTogglingRecipeIds] = useState([]);
+  const [deletingIds, setDeletingIds] = useState([]);
 
   const load = async ({ nextPageNumber = pageNumber, nextPageSize = pageSize } = {}) => {
     setIsLoading(true);
@@ -391,6 +394,23 @@ function AdminAiChatConsultationsPage() {
     }
   };
 
+  const handleDelete = async (item) => {
+    const id = String(item?.aiChatRecipeId ?? item?.id);
+    if (deletingIds.includes(id)) return;
+    if (!window.confirm("Delete this AI consultation? This cannot be undone.")) return;
+
+    setDeletingIds((prev) => [...prev, id]);
+    try {
+      await deleteAdminAiConsultation(id);
+      toast.success("AI consultation deleted.");
+      await load({ nextPageNumber: pageNumber, nextPageSize: pageSize });
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to delete consultation.");
+    } finally {
+      setDeletingIds((prev) => prev.filter((x) => x !== id));
+    }
+  };
+
   return (
     <div className="space-y-6 p-4 md:p-8">
       <section className="overflow-hidden rounded-4xl border border-slate-200 bg-linear-to-br from-slate-900 via-slate-800 to-emerald-900 px-6 py-8 text-white shadow-xl shadow-slate-900/10 md:px-8">
@@ -425,18 +445,18 @@ function AdminAiChatConsultationsPage() {
       </section>
 
       {error ? (
-        <div className="rounded-3xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
+        <div className="rounded-3xl border border-rose-100 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/40 px-4 py-3 text-sm font-medium text-rose-700 dark:text-rose-400">
           {error}
         </div>
       ) : null}
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-4 border-b border-slate-100 pb-4 lg:flex-row lg:items-end lg:justify-between">
+      <section className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+        <div className="flex flex-col gap-4 border-b border-slate-100 dark:border-slate-700 pb-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h2 className="text-xl font-bold text-slate-900">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
               AI chats list
             </h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               Showing page <span className="font-semibold">{pageNumber}</span> of{" "}
               <span className="font-semibold">{totalPages}</span>.
             </p>
@@ -452,11 +472,11 @@ function AdminAiChatConsultationsPage() {
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 placeholder="Search within current page..."
-                className="block w-full rounded-2xl border border-slate-200 bg-slate-50/70 py-3 ps-11 pe-4 text-sm font-medium text-slate-900 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                className="block w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/70 py-3 ps-11 pe-4 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/10"
               />
             </div>
 
-            <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm font-semibold text-slate-700">
+            <div className="flex items-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/70 px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
               <FaFilter className="text-slate-400" />
               <span className="text-slate-500">Page size</span>
               <select
@@ -466,7 +486,7 @@ function AdminAiChatConsultationsPage() {
                   setPageSize(next);
                   setPageNumber(1);
                 }}
-                className="rounded-xl border border-slate-200 bg-white px-2 py-1 text-sm font-bold text-slate-800 outline-none"
+                className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-1 text-sm font-bold text-slate-800 dark:text-slate-200 outline-none"
               >
                 {PAGE_SIZE_OPTIONS.map((opt) => (
                   <option key={opt} value={opt}>
@@ -480,17 +500,17 @@ function AdminAiChatConsultationsPage() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-500" />
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-emerald-500" />
           </div>
         ) : !error && filteredItems.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-12 text-center text-sm text-slate-500">
+          <div className="rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-12 text-center text-sm text-slate-500 dark:text-slate-400">
             No AI chats found on this page.
           </div>
         ) : (
           <div className="pt-5">
-            <div className="overflow-hidden rounded-3xl border border-slate-200">
+            <div className="overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-700">
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-slate-200">
+                <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                   <thead className="bg-slate-50">
                     <tr>
                       <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
@@ -513,7 +533,7 @@ function AdminAiChatConsultationsPage() {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 bg-white">
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-700 bg-white dark:bg-slate-800">
                     {filteredItems.map((item) => {
                       const recipeId = item.aiChatRecipeId;
                       const active = isRecipeActive(item);
@@ -523,24 +543,24 @@ function AdminAiChatConsultationsPage() {
                         match === null
                           ? "bg-slate-100 text-slate-700"
                           : match >= 70
-                            ? "bg-emerald-100 text-emerald-700"
+                            ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400"
                             : match >= 40
-                              ? "bg-amber-100 text-amber-700"
-                              : "bg-rose-100 text-rose-700";
+                              ? "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400"
+                              : "bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-400";
 
                       return (
                         <tr
                           key={item.aiChatRecipeId}
                           onClick={() => handleOpenDetails(item)}
-                          className="cursor-pointer transition-colors hover:bg-emerald-50/40"
+                          className="cursor-pointer transition-colors hover:bg-emerald-50/40 dark:hover:bg-emerald-900/20"
                         >
                           <td className="px-5 py-4">
-                            <p className="text-sm font-bold text-slate-900">
+                            <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
                               {item.recommendedRecipeName || "N/A"}
                             </p>
                           </td>
                           <td className="px-5 py-4">
-                            <p className="text-sm font-semibold text-slate-800">
+                            <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
                               {item.mainHerb || "N/A"}
                             </p>
                             <p className="mt-1 text-xs text-slate-500">
@@ -549,16 +569,16 @@ function AdminAiChatConsultationsPage() {
                           </td>
                           <td className="px-5 py-4">
                             {item.category ? (
-                              <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
+                              <span className="inline-flex rounded-full bg-slate-100 dark:bg-slate-700 px-3 py-1 text-xs font-bold text-slate-700 dark:text-slate-300">
                                 {item.category}
                               </span>
                             ) : (
-                              <span className="text-sm text-slate-400">—</span>
+                              <span className="text-sm text-slate-400 dark:text-slate-500">—</span>
                             )}
                           </td>
                           <td className="px-5 py-4">
                             {match === null ? (
-                              <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
+                              <span className="inline-flex rounded-full bg-slate-100 dark:bg-slate-700 px-3 py-1 text-xs font-bold text-slate-700 dark:text-slate-300">
                                 —
                               </span>
                             ) : (
@@ -573,8 +593,8 @@ function AdminAiChatConsultationsPage() {
                             <span
                               className={`inline-flex rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide ${
                                 active
-                                  ? "bg-emerald-100 text-emerald-700"
-                                  : "bg-rose-100 text-rose-700"
+                                  ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400"
+                                  : "bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-400"
                               }`}
                             >
                               {active
@@ -583,6 +603,7 @@ function AdminAiChatConsultationsPage() {
                             </span>
                           </td>
                           <td className="px-5 py-4 text-right">
+                            <div className="flex items-center justify-end gap-2">
                             <button
                               type="button"
                               disabled={toggling}
@@ -592,8 +613,8 @@ function AdminAiChatConsultationsPage() {
                               }}
                               className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
                                 active
-                                  ? "border-rose-200 text-rose-700 hover:bg-rose-50"
-                                  : "border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                                  ? "border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/30"
+                                  : "border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
                               }`}
                             >
                               {toggling ? (
@@ -607,6 +628,23 @@ function AdminAiChatConsultationsPage() {
                                 ? t("adminAiConsultations.actions.block", "Block")
                                 : t("adminAiConsultations.actions.activate", "Activate")}
                             </button>
+                            <button
+                              type="button"
+                              disabled={deletingIds.includes(String(item.aiChatRecipeId ?? item.id))}
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                handleDelete(item);
+                              }}
+                              className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 dark:border-rose-800 px-3 py-2 text-xs font-bold text-rose-700 dark:text-rose-400 transition-colors hover:bg-rose-50 dark:hover:bg-rose-900/30 disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                              {deletingIds.includes(String(item.aiChatRecipeId ?? item.id)) ? (
+                                <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                              ) : (
+                                <FaTrash className="text-[10px]" />
+                              )}
+                              Delete
+                            </button>
+                            </div>
                           </td>
                         </tr>
                       );
@@ -617,7 +655,7 @@ function AdminAiChatConsultationsPage() {
             </div>
 
             <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 {filteredItems.length} shown (this page)
               </p>
 

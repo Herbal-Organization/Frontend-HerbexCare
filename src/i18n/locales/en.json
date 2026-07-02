@@ -11,7 +11,13 @@
     "logout": "Logout",
     "myCart": "My Cart",
     "user": "User",
-    "saved": "Saved"
+    "saved": "Saved",
+    "menu": "Menu",
+    "dashboard": "Dashboard",
+    "orders": "Orders",
+    "favorites": "Favorites",
+    "settings": "Settings",
+    "account": "Account"
   },
   "hero": {
     "badge": "Intelligent Natural Healing",
@@ -195,7 +201,29 @@
     "recipe": "Recipe",
     "aiRecipe": "AI Recipe",
     "aiChatRecipe": "AI Chat Recipe",
-    "totalFeedbacks": "Total Feedbacks"
+    "totalFeedbacks": "Total Feedbacks",
+    "averageRating": "Average Rating",
+    "allTypes": "All",
+    "sortBy": "Sort by",
+    "sortNewest": "Newest first",
+    "sortOldest": "Oldest first",
+    "sortHighest": "Highest rated",
+    "sortLowest": "Lowest rated",
+    "edit": "Edit",
+    "delete": "Delete",
+    "editTitle": "Edit your feedback",
+    "yourRating": "Your rating",
+    "yourComment": "Your comment",
+    "commentPlaceholder": "Share your thoughts (optional)",
+    "save": "Save changes",
+    "cancel": "Cancel",
+    "deleteTitle": "Delete this feedback?",
+    "deleteConfirm": "This action can't be undone. Your rating and comment will be permanently removed.",
+    "deleting": "Deleting…",
+    "saving": "Saving…",
+    "noResults": "No feedback matches this filter.",
+    "updateError": "Couldn't update your feedback. Please try again.",
+    "deleteError": "Couldn't delete your feedback. Please try again."
   },
   "herbalistSidebar": {
     "brand": "HerbexCare",
@@ -211,7 +239,79 @@
     "orders": "Orders",
     "profile": "Profile",
     "settings": "Settings",
+    "earnings": "Earnings",
     "member": "Herbalist"
+  },
+  "herbalistDashboard": {
+    "eyebrow": "Apothecary workbench",
+    "greeting": "Welcome back, {{name}}",
+    "subtitle": "Your herbs, recipes, inventory, and patient orders — gathered in one place.",
+    "today": "Today",
+    "loadingMetrics": "Loading your practice metrics…",
+    "partialError": "Some metrics couldn't load. Showing what's available.",
+    "stats": {
+      "herbs": "Herbs in your herbarium",
+      "herbsHint": "Plants you've catalogued",
+      "recipes": "Formulary entries",
+      "recipesHint": "{{active}} active recipes",
+      "inventory": "Stock on hand",
+      "inventoryHint": "{{active}} active listings",
+      "price": "Average listing price",
+      "priceHint": "Across inventory herbs"
+    },
+    "workshop": {
+      "title": "Workshop",
+      "subtitle": "Go straight to the task you need.",
+      "herbs": "Manage herbs",
+      "herbsDesc": "Add, edit, and curate your plant catalogue",
+      "recipes": "Manage recipes",
+      "recipesDesc": "Build and publish healing formulae",
+      "inventory": "Manage inventory",
+      "inventoryDesc": "Set prices and availability",
+      "orders": "View orders",
+      "ordersDesc": "Fulfill patient sub-orders",
+      "profile": "Update profile",
+      "profileDesc": "Bio, hours, and public visibility"
+    },
+    "practice": {
+      "title": "Practice card",
+      "subtitle": "What patients see when they find you.",
+      "bio": "Bio",
+      "bioDone": "Complete",
+      "bioMissing": "Not added yet",
+      "availability": "Availability",
+      "availabilitySet": "{{from}} – {{to}}",
+      "availabilityMissing": "Hours not set",
+      "rating": "Rating",
+      "ratingValue": "{{rating}} / 5",
+      "ratingMissing": "No ratings yet",
+      "account": "Account",
+      "readiness": "Profile readiness",
+      "readinessComplete": "Ready for patients",
+      "readinessPartial": "{{count}} of 3 details filled"
+    }
+  },
+  "herbalistOrders": {
+    "title": "Orders",
+    "subtitle": "Manage customer herb orders from intake through delivery.",
+    "searchPlaceholder": "Search by order ID or patient name...",
+    "filters": "Filters",
+    "total": "{{count}} orders",
+    "loading": "Loading orders",
+    "error": "Failed to load orders. Please try again.",
+    "emptyTitle": "No orders yet",
+    "emptyDescription": "New customer orders assigned to your inventory will appear here.",
+    "emptyFilterTitle": "No matching orders",
+    "emptyFilterDescription": "Try adjusting your search or filters.",
+    "clearFilters": "Clear filters",
+    "status": {
+      "all": "All",
+      "pending": "Pending",
+      "preparing": "Preparing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    }
   },
   "adminSidebar": {
     "brand": "HerbexCare Admin",
@@ -897,5 +997,17 @@
       "noDataDesc": "Once your profile data is available, it will appear here.",
       "retry": "Try Again"
     }
+  },
+  "notFound": {
+    "title": "It's a 404 Error!",
+    "line1": "Don't worry, no one even knows what \"404\" means.",
+    "line2": "But don't fret, everything is gonna be OK.",
+    "line3": "Just hit that back arrow that's somewhere up top?",
+    "backHome": "Back to Home"
+  },
+  "orderSuccess": {
+    "title": "Order Placed Successfully!",
+    "description": "Your order has been successfully sent to the herbalist.",
+    "ok": "Continue to Orders"
   }
 }

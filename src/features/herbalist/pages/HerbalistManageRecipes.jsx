@@ -367,10 +367,10 @@ function HerbalistManageRecipes({ user, dashboardData }) {
           className="flex flex-col md:flex-row md:items-end justify-between gap-6"
         >
           <div className="space-y-1">
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
               Manage Recipes
             </h1>
-            <p className="text-slate-500 font-medium">
+            <p className="text-slate-500 dark:text-slate-400 font-medium">
               Create and manage your professional herbal preparations.
             </p>
           </div>
@@ -387,7 +387,7 @@ function HerbalistManageRecipes({ user, dashboardData }) {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search recipes..."
-                    className="ps-10 pe-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all w-48 md:w-64"
+                    className="ps-10 pe-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all w-48 md:w-64"
                   />
                 </div>
                 <button
@@ -438,17 +438,17 @@ function HerbalistManageRecipes({ user, dashboardData }) {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="rounded-[2.5rem] border-2 border-dashed border-slate-200 bg-white p-20 text-center flex flex-col items-center justify-center"
+                  className="rounded-[2.5rem] border-2 border-dashed border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-20 text-center flex flex-col items-center justify-center"
                 >
-                  <div className="h-24 w-24 rounded-3xl bg-slate-50 flex items-center justify-center mb-6 rotate-3">
-                    <FaLeaf className="h-10 w-10 text-slate-200" />
+                  <div className="h-24 w-24 rounded-3xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center mb-6 rotate-3">
+                    <FaLeaf className="h-10 w-10 text-slate-200 dark:text-slate-600" />
                   </div>
-                  <h3 className="text-2xl font-black text-slate-900">
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100">
                     {searchQuery
                       ? "No matching recipes found"
                       : "Your recipe book is empty"}
                   </h3>
-                  <p className="text-slate-500 font-medium max-w-sm mt-3 mb-8">
+                  <p className="text-slate-500 dark:text-slate-400 font-medium max-w-sm mt-3 mb-8">
                     {searchQuery
                       ? "Try adjusting your search terms to find what you're looking for."
                       : "Start growing your professional catalog by creating your first custom herbal recipe."}
@@ -456,7 +456,7 @@ function HerbalistManageRecipes({ user, dashboardData }) {
                   {!searchQuery && (
                     <button
                       onClick={() => setShowCreateForm(true)}
-                      className="inline-flex items-center gap-3 rounded-2xl bg-slate-900 px-8 py-4 text-sm font-black text-white shadow-xl shadow-slate-900/10 hover:-translate-y-1 transition-all"
+                      className="inline-flex items-center gap-3 rounded-2xl bg-slate-900 dark:bg-slate-700 px-8 py-4 text-sm font-black text-white shadow-xl shadow-slate-900/10 dark:shadow-slate-900/30 hover:-translate-y-1 transition-all"
                     >
                       <FaPlus /> Define New Recipe
                     </button>
@@ -473,19 +473,19 @@ function HerbalistManageRecipes({ user, dashboardData }) {
                       key={recipe.recipeId}
                       variants={itemVariants}
                       whileHover={{ y: -5 }}
-                      className="group rounded-4xl border border-slate-200 bg-white shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 hover:border-primary/30 transition-all duration-500 overflow-hidden flex flex-col"
+                      className="group rounded-4xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 dark:hover:shadow-slate-900/50 hover:border-primary/30 dark:hover:border-primary/30 transition-all duration-500 overflow-hidden flex flex-col"
                     >
                       <div className="p-8 flex-1 flex flex-col">
                         <div className="flex justify-between items-start mb-6">
-                          <div className="h-12 w-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-lg shadow-inner group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500">
+                          <div className="h-12 w-12 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center text-lg shadow-inner group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500">
                             <FaLeaf />
                           </div>
                           <div className="text-end">
-                            <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest leading-none mb-1">
+                            <p className="text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest leading-none mb-1">
                               Price Point
                             </p>
-                            <p className="text-xl font-black text-slate-900">
-                              <span className="text-xs text-slate-400 me-0.5 font-bold">
+                            <p className="text-xl font-black text-slate-900 dark:text-slate-100">
+                              <span className="text-xs text-slate-400 dark:text-slate-500 me-0.5 font-bold">
                                 EGP
                               </span>
                               {recipe.price || 0}
@@ -493,21 +493,21 @@ function HerbalistManageRecipes({ user, dashboardData }) {
                           </div>
                         </div>
 
-                        <h3 className="font-black text-xl text-slate-900 line-clamp-2 mb-3 leading-tight group-hover:text-primary transition-colors">
+                        <h3 className="font-black text-xl text-slate-900 dark:text-slate-100 line-clamp-2 mb-3 leading-tight group-hover:text-primary transition-colors">
                           {recipe.description}
                         </h3>
 
-                        <p className="text-sm font-medium text-slate-500 line-clamp-3 mb-8 flex-1 leading-relaxed">
+                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400 line-clamp-3 mb-8 flex-1 leading-relaxed">
                           {recipe.instructions}
                         </p>
 
                         <div className="space-y-4">
-                          <div className="h-px bg-slate-100" />
+                          <div className="h-px bg-slate-100 dark:bg-slate-700" />
                           <div className="flex flex-wrap gap-1.5">
                             {recipe.herbs?.slice(0, 4).map((herb, idx) => (
                               <span
                                 key={idx}
-                                className="inline-flex px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-100 text-[10px] font-black text-slate-500 uppercase tracking-tighter"
+                                className="inline-flex px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-tighter"
                               >
                                 {herb.herbName}
                               </span>
@@ -521,11 +521,11 @@ function HerbalistManageRecipes({ user, dashboardData }) {
                         </div>
                       </div>
 
-                      <div className="bg-slate-50/50 backdrop-blur-sm border-t border-slate-100 p-6 flex gap-3 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                      <div className="bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-sm border-t border-slate-100 dark:border-slate-700 p-6 flex gap-3 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                         <button
                           type="button"
                           onClick={() => populateFormForEdit(recipe)}
-                          className="flex-1 inline-flex justify-center items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 py-3 text-xs font-black text-slate-700 shadow-sm hover:border-primary hover:text-primary transition-all active:scale-95"
+                          className="flex-1 inline-flex justify-center items-center gap-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-3 text-xs font-black text-slate-700 dark:text-slate-300 shadow-sm hover:border-primary hover:text-primary transition-all active:scale-95"
                         >
                           <FaEdit className="text-sm" /> Edit
                         </button>
@@ -535,8 +535,8 @@ function HerbalistManageRecipes({ user, dashboardData }) {
                           disabled={isDeleting}
                           className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-black text-sm transition-colors disabled:opacity-50 ${
                             recipe.isActive === false
-                              ? "border border-emerald-100 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-                              : "border border-eose-100 bg-rose-50 text-rose-700 hover:bg-rose-100"
+                              ? "border border-emerald-100 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/50"
+                              : "border border-rose-100 dark:border-rose-800 bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/50"
                           }`}
                           title={
                             recipe.isActive === false
