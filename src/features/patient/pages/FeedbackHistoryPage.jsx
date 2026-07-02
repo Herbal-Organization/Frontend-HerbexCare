@@ -26,7 +26,7 @@ import {
   FaTimes,
   FaExclamationTriangle,
 } from "react-icons/fa";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import Pagination from "@components/common/Pagination";
 import { Button } from "@components/ui/button";
 import { cn } from "@utils/cn";
@@ -91,16 +91,8 @@ const Stars = ({ rating, size = "w-4 h-4" }) => (
   </div>
 );
 
-const StatCard = ({ icon: Icon, label, value, accent }) => (
+const StatCard = ({ label, value, accent: _accent }) => (
   <div className="flex items-center gap-3 rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 p-4 shadow-sm">
-    <div
-      className={cn(
-        "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl",
-        accent,
-      )}
-    >
-      <Icon className="text-lg" />
-    </div>
     <div className="min-w-0">
       <p className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
         {label}

@@ -63,7 +63,7 @@ function HerbalistSubOrders() {
     return () => clearTimeout(handle);
   }, [searchInput]);
 
-  const { orders, isLoading, error, updatingId, totalItems, totalPages, approve, reject, fetchOrders } =
+  const { orders, isLoading, error, updatingId, totalItems, totalPages, approve, reject, updateStatus, fetchOrders } =
     useHerbalistOrders({
       pageNumber: currentPage,
       pageSize: ORDERS_PER_PAGE,
@@ -230,6 +230,7 @@ function HerbalistSubOrders() {
                 order={order}
                 onApprove={approve}
                 onReject={reject}
+                onUpdateStatus={updateStatus}
                 isUpdating={updatingId === order.id}
               />
             ))}

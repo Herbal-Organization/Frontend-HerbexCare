@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import { useTranslation } from "react-i18next";
 
 function DeleteAccountModal({

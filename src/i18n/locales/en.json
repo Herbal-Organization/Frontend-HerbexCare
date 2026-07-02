@@ -163,6 +163,7 @@
     "favorites": "Favorites",
     "savedRecipes": "Saved Recipes",
     "aiConsultation": "AI Consultation",
+    "aiChat": "AI Chat",
     "herbLibrary": "Herb Library",
     "recipeLibrary": "Recipe Library",
     "profile": "Profile",
@@ -322,7 +323,11 @@
     "herbalists": "Herbalists",
     "diseases": "Diseases",
     "aiConsultations": "AI Chat",
+    "aiConsultationsList": "AI Consultations",
     "apiDocs": "API Docs",
+    "inventoryHerbs": "Inventory Herbs",
+    "inventoryRecipes": "Inventory Recipes",
+    "inventoryAIRecipes": "Inventory AI Recipes",
     "settings": "Settings",
     "signOut": "Sign Out",
     "member": "Administrator"
@@ -1009,5 +1014,35 @@
     "title": "Order Placed Successfully!",
     "description": "Your order has been successfully sent to the herbalist.",
     "ok": "Continue to Orders"
+  },
+  "aiChatPage": {
+    "welcome": "Welcome to AI Herbal Chat",
+    "title": "AI Herbal Chat",
+    "subtitle": "Personalized herb & recipe guidance",
+    "description": "Describe your symptoms in detail (at least 50 characters) to receive a personalized herbal recipe recommendation.",
+    "tryAsking": "Try asking",
+    "analyzing": "Analyzing your symptoms…",
+    "suggestions": {
+      "tired": "I have been feeling tired and low energy for a week. What herbs might help?",
+      "stress": "Can you suggest something natural for mild stress and trouble sleeping?",
+      "digestion": "I have occasional digestive discomfort after meals. What gentle remedies exist?"
+    },
+    "input": {
+      "placeholder": "Describe your symptoms in detail…",
+      "ariaLabel": "Message to herbal AI assistant",
+      "sendAriaLabel": "Send message",
+      "minCharsAriaLabel": "Enter at least 50 characters",
+      "moreCharsNeeded": "{{count}} more characters needed",
+      "shiftEnterHint": "Shift + Enter for a new line"
+    },
+    "assistant": "Herbal Assistant",
+    "readyToHelp": "Ready to help",
+    "newChat": "New chat",
+    "newChatShort": "New",
+    "nav": {
+      "chat": "Chat",
+      "history": "History",
+      "favorites": "Favorites"
+    }
   }
 }

@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FaPaperPlane } from "react-icons/fa";
-import { toast } from "react-hot-toast";
 
 const MIN_CHARS = 50;
 const MAX_CHARS = 2000;
 
 const ChatInput = ({ onSendMessage, isLoading }) => {
+  const { t } = useTranslation();
   const [message, setMessage] = useState("");
   const textareaRef = useRef(null);
 
@@ -49,21 +50,21 @@ const ChatInput = ({ onSendMessage, isLoading }) => {
             <textarea
               ref={textareaRef}
               className="block w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 pe-4 text-sm leading-relaxed text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:bg-slate-900 sm:rounded-3xl sm:px-5 sm:py-3.5 sm:text-[15px]"
-              placeholder="Describe your symptoms in detail…"
+              placeholder={t("aiChatPage.input.placeholder")}
               rows={1}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               disabled={isLoading}
               maxLength={MAX_CHARS}
-              aria-label="Message to herbal AI assistant"
+              aria-label={t("aiChatPage.input.ariaLabel")}
             />
           </div>
 
           <button
             type="submit"
             disabled={!canSend}
-            aria-label={canSend ? "Send message" : "Enter at least 50 characters"}
+            aria-label={canSend ? t("aiChatPage.input.sendAriaLabel") : t("aiChatPage.input.minCharsAriaLabel")}
             className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition-all sm:h-12 sm:w-12 sm:rounded-2xl ${
               canSend
                 ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/30 hover:bg-emerald-700 active:scale-95"
@@ -83,8 +84,8 @@ const ChatInput = ({ onSendMessage, isLoading }) => {
             }`}
           >
             {charCount > 0 && charCount <= MIN_CHARS
-              ? `${MIN_CHARS - charCount} more characters needed`
-              : "Shift + Enter for a new line"}
+              ? t("aiChatPage.input.moreCharsNeeded", { count: MIN_CHARS - charCount })
+              : t("aiChatPage.input.shiftEnterHint")}
           </p>
           <p className="text-slate-400">
             {charCount}/{MAX_CHARS}

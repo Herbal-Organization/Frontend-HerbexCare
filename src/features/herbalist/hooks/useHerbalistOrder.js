@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import { getSubOrderById } from "@api/subOrders";
+import { getSubOrderById, updateSubOrderStatus } from "@api/subOrders";
 import { normalizeOrders, enrichOrderItems } from "../services/orders";
 
 const useHerbalistOrder = (orderId) => {
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState(null);
 
   const fetchOrder = useCallback(async () => {
@@ -23,6 +24,24 @@ const useHerbalistOrder = (orderId) => {
     }
   }, [orderId]);
 
+  const updateStatus = useCallback(
+    async (status) => {
+      if (!orderId) return;
+      setIsUpdating(true);
+      setError(null);
+      try {
+        await updateSubOrderStatus(orderId, status);
+        setOrder((prev) => (prev ? { ...prev, status } : prev));
+      } catch (err) {
+        setError(err);
+        throw err;
+      } finally {
+        setIsUpdating(false);
+      }
+    },
+    [orderId],
+  );
+
   useEffect(() => {
     fetchOrder();
   }, [fetchOrder]);
@@ -30,8 +49,10 @@ const useHerbalistOrder = (orderId) => {
   return {
     order,
     isLoading,
+    isUpdating,
     error,
     fetchOrder,
+    updateStatus,
   };
 };
 

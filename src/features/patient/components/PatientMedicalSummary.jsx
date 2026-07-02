@@ -1,5 +1,5 @@
-import { getActiveConditions } from "@features/patient/services/patientProfile";
 import { motion } from "motion/react";
+import { getActiveConditions } from "@features/patient/services/patientProfile";
 import { FaHeartbeat } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 

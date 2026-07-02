@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import {
   FaMapMarkerAlt,
   FaEnvelope,
@@ -5,7 +6,6 @@ import {
   FaBirthdayCake,
   FaVenusMars,
 } from "react-icons/fa";
-import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 
 const itemVariants = {

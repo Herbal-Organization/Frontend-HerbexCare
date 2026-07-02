@@ -351,7 +351,7 @@ function Register({ setSuccessMsg }) {
         </div>
       </form>
 
-      <SocialAuthButtons />
+      <SocialAuthButtons role={role} />
 
       <div className="pt-8 text-center">
         <p className="text-sm font-medium text-slate-500 dark:text-slate-500">

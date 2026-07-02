@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API_BASE_URL } from "@api/config";
+import { getUserRole, setStoredRole } from "@utils/auth";
 
 const ACCESS_TOKEN_KEY = "accessToken";
 const REFRESH_TOKEN_KEY = "refreshToken";
@@ -85,4 +86,54 @@ export const getPostLoginRoute = (role) => {
   }
 
   return "/";
+};
+
+/**
+ * Shared post-login logic used by both email/password and Google login flows.
+ * Stores tokens, detects & persists the user role, then navigates to the
+ * correct dashboard after a short delay.
+ *
+ * @param {object}  data           – Raw API response body from the login endpoint.
+ * @param {function} navigate      – react-router navigate function.
+ * @param {object}  [options]
+ * @param {number}  [options.delay=1000]           – Milliseconds before navigating.
+ * @param {function} [options.onBeforeNavigate]     – Callback fired right before navigation.
+ */
+export const handlePostLogin = (
+  data,
+  navigate,
+  { delay = 1000, onBeforeNavigate } = {},
+) => {
+  if (!data) return;
+
+  // Unwrap nested response (handles both flat and wrapped { data: {...} } formats)
+  const payload = data.data ?? data;
+
+  // Store tokens – handles multiple backend naming conventions
+  const normalized = {
+    accessToken:
+      payload.accessToken ??
+      payload.token ??
+      payload.Token ??
+      payload.access_token,
+    refreshToken:
+      payload.refreshToken ??
+      payload.refresh_token ??
+      payload.RefreshToken,
+  };
+  storeAuthTokens(normalized);
+
+  // Detect and store role
+  const detectedRole = payload.role ?? payload.Role ?? getUserRole();
+  const validRoles = ["Patient", "Herbalist", "SuperAdmin"];
+  const finalRole = validRoles.includes(detectedRole)
+    ? detectedRole
+    : "Patient";
+  setStoredRole(finalRole);
+
+  onBeforeNavigate?.();
+
+  window.setTimeout(() => {
+    navigate(getPostLoginRoute(finalRole));
+  }, delay);
 };

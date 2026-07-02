@@ -61,8 +61,6 @@ function HerbalistManageInventoryRecipes() {
   const [isLoading, setIsLoading] = useState(true);
   const [processingIds, setProcessingIds] = useState([]);
   const [priceInputs, setPriceInputs] = useState({});
-  const [detailItem, setDetailItem] = useState(null);
-
   const loadData = async () => {
     setIsLoading(true);
     try {

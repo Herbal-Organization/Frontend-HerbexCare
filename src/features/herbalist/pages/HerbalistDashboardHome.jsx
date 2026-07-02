@@ -158,7 +158,6 @@ function HerbalistDashboardHome({
   user,
   dashboardData,
   isLoadingDashboard,
-  onRetryDashboard,
 }) {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
@@ -170,7 +169,7 @@ function HerbalistDashboardHome({
   );
 
   const [isLoadingStats, setIsLoadingStats] = useState(true);
-  const [statsError, setStatsError] = useState("");
+  const [, setStatsError] = useState("");
   const [stats, setStats] = useState({
     herbsCount: 0,
     recipesCount: 0,
@@ -366,24 +365,6 @@ function HerbalistDashboardHome({
           </div>
         </div>
       </motion.header>
-
-      {statsError ? (
-        <motion.div
-          variants={itemVariants}
-          className="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
-        >
-          {statsError}
-          {onRetryDashboard ? (
-            <button
-              type="button"
-              onClick={onRetryDashboard}
-              className="ms-2 font-semibold text-amber-900 underline underline-offset-2 hover:no-underline dark:text-amber-200"
-            >
-              {t("dashboard.states.retry", "Retry")}
-            </button>
-          ) : null}
-        </motion.div>
-      ) : null}
 
       {isLoadingDashboard || isLoadingStats ? (
         <motion.div

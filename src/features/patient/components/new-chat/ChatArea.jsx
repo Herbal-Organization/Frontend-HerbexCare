@@ -1,16 +1,12 @@
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { FaLeaf } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi2";
 import { MdOutlineChat } from "react-icons/md";
 import ChatBubble from "./ChatBubble";
 
-const SUGGESTED_PROMPTS = [
-  "I have been feeling tired and low energy for a week. What herbs might help?",
-  "Can you suggest something natural for mild stress and trouble sleeping?",
-  "I have occasional digestive discomfort after meals. What gentle remedies exist?",
-];
-
 const ChatArea = ({ messages, isLoading, onSuggestionClick }) => {
+  const { t } = useTranslation();
   const messagesEndRef = useRef(null);
   const scrollContainerRef = useRef(null);
 
@@ -38,20 +34,23 @@ const ChatArea = ({ messages, isLoading, onSuggestionClick }) => {
             </div>
 
             <h2 className="text-center text-xl font-black text-slate-900 dark:text-white sm:text-2xl">
-              Welcome to AI Herbal Chat
+              {t("aiChatPage.welcome")}
             </h2>
             <p className="mt-2 max-w-md text-center text-sm leading-relaxed text-slate-500 dark:text-slate-400 sm:text-base">
-              Describe your symptoms in detail (at least 50 characters) to receive
-              a personalized herbal recipe recommendation.
+              {t("aiChatPage.description")}
             </p>
 
             {onSuggestionClick ? (
               <div className="mt-8 w-full max-w-lg space-y-2">
                 <p className="text-center text-[11px] font-bold uppercase tracking-widest text-slate-400">
-                  Try asking
+                  {t("aiChatPage.tryAsking")}
                 </p>
                 <div className="flex flex-col gap-2">
-                  {SUGGESTED_PROMPTS.map((prompt) => (
+                  {[
+                    t("aiChatPage.suggestions.tired"),
+                    t("aiChatPage.suggestions.stress"),
+                    t("aiChatPage.suggestions.digestion"),
+                  ].map((prompt) => (
                     <button
                       key={prompt}
                       type="button"
@@ -86,7 +85,7 @@ const ChatArea = ({ messages, isLoading, onSuggestionClick }) => {
                   <span className="h-2 w-2 animate-bounce rounded-full bg-emerald-400 [animation-delay:300ms]" />
                 </div>
                 <p className="mt-2 text-xs font-medium text-slate-500">
-                  Analyzing your symptoms…
+                  {t("aiChatPage.analyzing")}
                 </p>
               </div>
             </div>

@@ -48,7 +48,7 @@ const inputClassName =
 const readOnlyInputClassName =
   "block w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900/30 px-4 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 outline-none cursor-not-allowed";
 
-function getReadableName(user, fallbackLabel) {
+function _getReadableName(user, fallbackLabel) {
   return (
     user?.fullName ||
     user?.name ||
@@ -108,11 +108,6 @@ function DashboardSettingsPage({
 
   const resolvedEmail = useMemo(() => user?.email || "", [user?.email]);
   const currentLanguage = i18n.language?.startsWith("ar") ? "ar" : "en";
-  const displayName = useMemo(
-    () => getReadableName(user, t("dashboardSettings.account.unknown")),
-    [t, user],
-  );
-
   useEffect(() => {
     setProfileForm(buildProfileForm(user));
   }, [user]);

@@ -84,7 +84,7 @@ function AddToCartForm({ providers, herb }) {
       try {
         const profile = await getHerbalistById(selectedProviderId);
         setSelectedHerbalistProfile(profile || null);
-      } catch (_error) {
+      } catch {
         setSelectedHerbalistProfile(null);
       }
     };

@@ -4,20 +4,27 @@ import {
   FaBox,
   FaCheck,
   FaChevronRight,
+  FaHome,
   FaSpinner,
   FaTimes,
+  FaTruck,
   FaUser,
 } from "react-icons/fa";
 import StatusBadge from "./StatusBadge";
+import { SUB_ORDER_STATUS } from "@features/herbalist/constants/subOrderStatus";
 
 const HerbalistOrderCard = ({
   order,
   onApprove,
   onReject,
+  onUpdateStatus,
   isUpdating = false,
 }) => {
-  const isPending = (order.status || "Pending") === "Pending";
-  const canAct = isPending && (onApprove || onReject);
+  const status = order.status || SUB_ORDER_STATUS.PENDING;
+  const isPending = status === SUB_ORDER_STATUS.PENDING;
+  const isPreparing = status === SUB_ORDER_STATUS.PREPARING;
+  const isShipped = status === SUB_ORDER_STATUS.SHIPPED;
+  const canAcceptOrDecline = isPending && (onApprove || onReject);
 
   return (
     <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 shadow-sm transition-all duration-300 hover:border-emerald-300 dark:hover:border-emerald-700 hover:shadow-md">
@@ -52,7 +59,7 @@ const HerbalistOrderCard = ({
         </Link>
       </div>
 
-      {canAct && (
+      {canAcceptOrDecline && (
         <div className="mt-3 flex items-center gap-2">
           <button
             type="button"
@@ -75,6 +82,42 @@ const HerbalistOrderCard = ({
           >
             <FaTimes className="h-3.5 w-3.5" />
             Decline
+          </button>
+        </div>
+      )}
+
+      {isPreparing && onUpdateStatus && (
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={() => onUpdateStatus(order.id, SUB_ORDER_STATUS.SHIPPED)}
+            disabled={isUpdating}
+            className="flex w-full items-center justify-center gap-1.5 rounded-md bg-sky-600 px-3 py-2 text-xs font-bold text-white transition-colors hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isUpdating ? (
+              <FaSpinner className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <FaTruck className="h-3.5 w-3.5" />
+            )}
+            Mark as Shipped
+          </button>
+        </div>
+      )}
+
+      {isShipped && onUpdateStatus && (
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={() => onUpdateStatus(order.id, SUB_ORDER_STATUS.DELIVERED)}
+            disabled={isUpdating}
+            className="flex w-full items-center justify-center gap-1.5 rounded-md bg-emerald-600 px-3 py-2 text-xs font-bold text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isUpdating ? (
+              <FaSpinner className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <FaHome className="h-3.5 w-3.5" />
+            )}
+            Mark as Delivered
           </button>
         </div>
       )}

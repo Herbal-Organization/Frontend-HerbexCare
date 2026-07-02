@@ -20,6 +20,7 @@ const AUTH_EXCLUDED_PATHS = [
   "/api/Accounts/reset-password",
   "/api/Accounts/refresh",
   "/api/Accounts/logout",
+  "/api/Accounts/google-login",
 ];
 
 let refreshRequest = null;

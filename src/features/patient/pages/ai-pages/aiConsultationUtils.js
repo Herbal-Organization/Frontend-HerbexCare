@@ -131,7 +131,7 @@ const extractSection = (text, headingPattern) => {
 
   const escaped = headingPattern.source;
   const regex = new RegExp(
-    `${escaped}\s*[:\-]?\s*([\\s\\S]*?)(?=\\n\\s*(?:[#*\\-]?\\s*[A-Za-z][A-Za-z\\s]{2,30}[:\\-])|$)`,
+    `${escaped}\\s*[:-]?\\s*([\\s\\S]*?)(?=\\n\\s*(?:[#*\\-]?\\s*[A-Za-z][A-Za-z\\s]{2,30}[:-])|$)`,
     "i",
   );
   const match = text.match(regex);

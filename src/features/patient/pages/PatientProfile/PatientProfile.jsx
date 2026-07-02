@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
+import { motion } from "motion/react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import ProfileLayout from "@components/common/ProfileLayout";
 import PatientDashboardState from "@features/patient/components/PatientDashboardState";

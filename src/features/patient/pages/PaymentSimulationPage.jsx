@@ -10,11 +10,16 @@ import {
 import { getOrderById, simulatePayment } from "@api/orders";
 import { toast } from "react-hot-toast";
 
-const getStatus = (value) => (value || "").toLowerCase();
+const normalize = (value) => (value || "").trim().toLowerCase();
 
-const createTransactionId = () => {
-  const random = Math.random().toString(16).slice(2, 10).toUpperCase();
-  return `TXN-${random}`;
+const isCancelledOrder = (status) =>
+  ["cancelled", "canceled", "partiallycancelled"].includes(normalize(status));
+
+const isPaidPayment = (paymentStatus) => normalize(paymentStatus) === "paid";
+
+const isSimulatablePaymentMethod = (paymentMethod) => {
+  const method = normalize(paymentMethod);
+  return method === "wallet" || method === "creditcard";
 };
 
 function PaymentSimulationPage() {
@@ -38,21 +43,21 @@ function PaymentSimulationPage() {
 
         setOrder(data);
 
-        const status = getStatus(data?.status);
-        const paymentMethod = getStatus(data?.paymentMethod);
-        const isPaid =
-          status === "pending" ||
-          status === "paid" ||
-          status === "confirmed" ||
-          status === "processing" ||
-          status === "completed";
+        const orderStatus = normalize(data?.status);
+        const paymentStatus = normalize(data?.paymentStatus);
+        const paymentMethod = normalize(data?.paymentMethod);
 
-        if (isPaid || status === "cancelled" || status === "canceled") {
+        if (isCancelledOrder(orderStatus)) {
           navigate(`/patient/dashboard/orders/${orderId}`, { replace: true });
           return;
         }
 
-        if (paymentMethod !== "wallet" && paymentMethod !== "creditcard") {
+        if (isPaidPayment(paymentStatus)) {
+          navigate(`/patient/dashboard/orders/${orderId}`, { replace: true });
+          return;
+        }
+
+        if (!isSimulatablePaymentMethod(paymentMethod)) {
           navigate(`/patient/dashboard/orders/${orderId}`, { replace: true });
           return;
         }
@@ -86,10 +91,7 @@ function PaymentSimulationPage() {
     setError("");
     setIsSimulating(true);
     try {
-      await simulatePayment(orderId, {
-        paymentStatus: "Paid",
-        status: "Pending",
-      });
+      await simulatePayment(orderId);
       toast.success("Payment simulated successfully. Order is now pending.");
       navigate(`/patient/dashboard/orders/${orderId}`, {
         replace: true,

@@ -217,8 +217,6 @@ function PatientCart({ dashboardData }) {
     if (isSubmitting) return;
 
     const normalizedPaymentMethod = paymentMethod.trim().toLowerCase();
-    const currentUser = getUserFromToken() || {};
-
     const invalidHerbSelections = cart.herbs.some(
       (herb) => !herb.herbalistId || Number(herb.pricePerKilo) <= 0,
     );
@@ -258,7 +256,6 @@ function PatientCart({ dashboardData }) {
     setError("");
 
     try {
-      const orderTotal = herbsTotal + recipesTotal + aiRecipesTotal;
       const herbsArray = cart.herbs.map((herb) => ({
         herbId: Number(herb.herbId) || 0,
         herbalistId: Number(herb.herbalistId) || 0,

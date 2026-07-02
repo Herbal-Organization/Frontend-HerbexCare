@@ -13,6 +13,8 @@ import {
   MdStar,
   MdRateReview,
   MdLocalShipping,
+  MdNature,
+  MdPsychology,
 } from "react-icons/md";
 
 export const getAdminNavConfig = (t) => [
@@ -70,6 +72,26 @@ export const getAdminNavConfig = (t) => [
     name: t("adminSidebar.inventory", "Inventory"),
     href: "/admin/dashboard/inventory",
     icon: MdInventory,
+  },
+  {
+    name: t("adminSidebar.inventoryHerbs", "Inventory Herbs"),
+    href: "/admin/dashboard/inventory-herbs",
+    icon: MdNature,
+  },
+  {
+    name: t("adminSidebar.inventoryRecipes", "Inventory Recipes"),
+    href: "/admin/dashboard/inventory-recipes",
+    icon: MdMenuBook,
+  },
+  {
+    name: t("adminSidebar.inventoryAIRecipes", "Inventory AI Recipes"),
+    href: "/admin/dashboard/inventory-ai-recipes",
+    icon: MdSmartToy,
+  },
+  {
+    name: t("adminSidebar.aiConsultationsList", "AI Consultations"),
+    href: "/admin/dashboard/ai-consultations",
+    icon: MdPsychology,
   },
   {
     name: t("adminSidebar.feedbacks", "Feedbacks"),

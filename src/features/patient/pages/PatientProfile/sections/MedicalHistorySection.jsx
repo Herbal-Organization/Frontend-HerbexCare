@@ -1,5 +1,5 @@
-import { FaHeartbeat } from "react-icons/fa";
 import { motion } from "motion/react";
+import { FaHeartbeat } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import { MEDICAL_CONDITIONS } from "@features/patient/services/patientProfile";
 

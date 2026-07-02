@@ -1,6 +1,5 @@
 import {
   clearAuthTokens,
-  endAuthSession,
   getAccessToken,
   getRefreshToken,
   revokeRefreshTokenOnServer,
@@ -88,9 +87,19 @@ export const getUserFromToken = () => {
   };
 };
 
+const USER_ROLE_KEY = "userRole";
+
+export const setStoredRole = (role) => {
+  if (role) localStorage.setItem(USER_ROLE_KEY, role);
+};
+
+export const clearStoredRole = () => {
+  localStorage.removeItem(USER_ROLE_KEY);
+};
+
 export const getUserRole = () => {
   const user = getUserFromToken();
-  return user?.role || null;
+  return user?.role || localStorage.getItem(USER_ROLE_KEY) || null;
 };
 
 export const isAuthenticated = () => {
@@ -113,6 +122,7 @@ export const isAuthenticated = () => {
 export const logout = () => {
   const refreshToken = getRefreshToken();
   clearAuthTokens();
+  clearStoredRole();
   revokeRefreshTokenOnServer(refreshToken);
   window.location.replace("/auth/login");
 };

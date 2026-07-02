@@ -22,7 +22,6 @@ import usePatientDashboardData from "@features/patient/hooks/usePatientDashboard
 import {
   buildPatientDashboardUser,
   getPersistedPatientUser,
-  isProfileComplete,
 } from "@features/patient/services/patientProfile";
 import { useTranslation } from "react-i18next";
 import DashboardLayout from "@components/layouts/DashboardLayout";
@@ -77,6 +76,7 @@ function PatientDashboard() {
     reload: reloadDashboard,
   } = usePatientDashboardData(safeUserId);
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const displayUser = React.useMemo(() => {
     if (!dashboardData?.userDetails) return user;
     return buildPatientDashboardUser({

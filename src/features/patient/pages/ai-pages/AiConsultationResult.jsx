@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import {
@@ -12,6 +12,7 @@ import {
   FaBrain,
 } from "react-icons/fa";
 import { toggleFavorite } from "@api/favorites";
+import { getHerbalistsForAiRecipe } from "@api/inventoryAIRecipes";
 import { normalizeGeneratedRecipe } from "./aiConsultationUtils";
 import AiRecipeAddToCartAction from "./AiRecipeAddToCartAction";
 
@@ -19,6 +20,22 @@ function AiConsultationResult({ result, onNewConsultation }) {
   const { t } = useTranslation();
   const [isSaved, setIsSaved] = useState(false);
   const [savingRecipe, setSavingRecipe] = useState(false);
+  const [providers, setProviders] = useState([]);
+
+  const aiRecipeId = Number(
+    result?.aiRecipeId || result?.recipeId || result?.id || 0,
+  );
+
+  useEffect(() => {
+    if (!aiRecipeId) return;
+    getHerbalistsForAiRecipe(aiRecipeId)
+      .then((res) => {
+        setProviders(
+          Array.isArray(res) ? res : res?.herbalists || res?.items || [],
+        );
+      })
+      .catch(() => setProviders([]));
+  }, [aiRecipeId]);
 
   const handleSaveRecipe = async () => {
     if (savingRecipe) return;
@@ -110,6 +127,7 @@ function AiConsultationResult({ result, onNewConsultation }) {
           <AiRecipeAddToCartAction
             recipe={result}
             recipeTitle={structured.title}
+            providers={providers}
             buttonClassName="flex items-center justify-center gap-2 rounded-2xl px-6 py-3 font-bold text-sm bg-emerald-600 text-white transition hover:bg-emerald-500"
           />
           <button

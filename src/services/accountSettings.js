@@ -17,26 +17,13 @@ export const changePassword = async (email, oldPassword, newPassword) => {
     newPassword,
   };
 
-  try {
-    const response = await resetPasswordAccount(payload);
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  return resetPasswordAccount(payload);
 };
 
 export const deleteUserAccount = async (userId) => {
-  try {
-    // Delete the account via API
-    await deleteAccount(userId);
-
-    // Clear session and redirect to login
-    await endAuthSession();
-
-    return true;
-  } catch (error) {
-    throw error;
-  }
+  await deleteAccount(userId);
+  await endAuthSession();
+  return true;
 };
 
 export const resetHerbalistAccount = async (

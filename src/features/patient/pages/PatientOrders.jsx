@@ -68,6 +68,14 @@ function extractPaginationMeta(payload) {
 
 const normalizeStatus = (status) => (status || "").trim().toLowerCase();
 
+const normalizePaymentMethod = (method) => {
+  const value = String(method || "").trim().toLowerCase();
+  if (value.includes("credit") || value === "creditcard") return "creditcard";
+  if (value.includes("wallet")) return "wallet";
+  if (value.includes("cash")) return "cash";
+  return value;
+};
+
 function PatientOrders() {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -176,7 +184,7 @@ function PatientOrders() {
         ),
       );
       toast.success("Favorite status updated");
-    } catch (err) {
+    } catch {
       toast.error("Failed to update favorite status");
     } finally {
       setBusyKeys((prev) => {
@@ -191,11 +199,10 @@ function PatientOrders() {
     return orders.filter((order) => {
       const matchStatus =
         statusFilter === "all" ||
-        normalizeStatus(order.orderStatus) === statusFilter;
+        normalizeStatus(order.orderStatus || order.status) === statusFilter;
       const matchPayment =
         paymentFilter === "all" ||
-        String(order.paymentMethod).toLowerCase() ===
-          paymentFilter.toLowerCase();
+        normalizePaymentMethod(order.paymentMethod) === paymentFilter;
       return matchStatus && matchPayment;
     });
   }, [orders, statusFilter, paymentFilter]);
@@ -343,7 +350,7 @@ function PatientOrders() {
                 <option value="all">Any Payment</option>
                 <option value="cash">Cash</option>
                 <option value="wallet">Wallet</option>
-                <option value="credit">Credit Card</option>
+                <option value="creditcard">Credit Card</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 dark:text-slate-500 group-hover:text-emerald-500 transition-colors">
                 <FaChevronRight className="h-3 w-3 rotate-90" />

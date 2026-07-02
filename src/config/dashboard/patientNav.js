@@ -36,7 +36,7 @@ export const getPatientNavConfig = (t) => [
     icon: FaBrain,
   },
   {
-    name: "AI Chat",
+    name: t("patientSidebar.aiChat"),
     href: "/patient/dashboard/ai-chat",
     icon: FaComments,
   },

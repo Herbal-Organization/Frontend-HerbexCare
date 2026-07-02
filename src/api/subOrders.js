@@ -32,15 +32,20 @@ export const getMyFinancials = async () => {
   return data;
 };
 
-// NOTE: no matching route in swagger.json — returns 404 until the backend
-// exposes an admin sub-orders endpoint.
+export const cancelSubOrder = async (subOrderId) => {
+  const { data } = await httpClient.put(
+    `/api/SubOrders/sub-orders/${subOrderId}/cancel`,
+  );
+  return data;
+};
+
+// Not in Swagger — backend may return 404 until these admin routes are exposed.
 export const getAdminSubOrders = async (params = {}) => {
   const { data } = await httpClient.get("/api/admin/sub-orders", { params });
   return data;
 };
 
-// NOTE: no matching route in swagger.json — returns 404 until the backend
-// exposes an admin sub-order statistics endpoint.
+// Not in Swagger — backend may return 404 until this admin route is exposed.
 export const getAdminSubOrderStatistics = async () => {
   const { data } = await httpClient.get("/api/admin/sub-orders/statistics");
   return data;

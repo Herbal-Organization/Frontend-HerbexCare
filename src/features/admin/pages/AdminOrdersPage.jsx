@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import {
@@ -9,8 +9,9 @@ import {
   FaSyncAlt,
   FaTimes,
   FaShoppingCart,
+  FaClock,
 } from "react-icons/fa";
-import { getAdminAllOrders } from "@api/orders";
+import { getAdminAllOrders, getPendingUnapprovedOrders } from "@api/orders";
 
 const DEFAULT_PAGE_SIZE = 10;
 const PAGE_SIZE_OPTIONS = [10, 20, 50];
@@ -37,7 +38,7 @@ const statusColor = (status) => {
   return "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300";
 };
 
-function OrderDetailsModal({ isOpen, order, onClose, t }) {
+function OrderDetailsModal({ isOpen, order, onClose, t: _t }) {
   if (!isOpen || !order) return null;
 
   const subOrders = Array.isArray(order.subOrders) ? order.subOrders : [];
@@ -157,6 +158,9 @@ function AdminOrdersPage() {
   const [error, setError] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("all");
+  const [pendingOrders, setPendingOrders] = useState([]);
+  const [pendingLoading, setPendingLoading] = useState(false);
 
   const loadOrders = async ({
     nextPage = pageNumber,
@@ -193,6 +197,33 @@ function AdminOrdersPage() {
       setIsLoading(false);
     }
   };
+
+  const loadPendingOrders = async () => {
+    setPendingLoading(true);
+    try {
+      const response = await getPendingUnapprovedOrders({ PageNumber: 1, PageSize: 50 });
+      const items = Array.isArray(response?.items)
+        ? response.items
+        : Array.isArray(response)
+          ? response
+          : [];
+      setPendingOrders(items);
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        err?.response?.data?.title ||
+        "Unable to load pending orders.";
+      toast.error(message);
+    } finally {
+      setPendingLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "pending") {
+      loadPendingOrders();
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     loadOrders({ nextPage: 1, nextSize: pageSize });
@@ -244,7 +275,138 @@ function AdminOrdersPage() {
         </div>
       )}
 
-      {/* Orders Table */}
+      {/* Tab Switcher */}
+      <div className="flex items-center gap-1 rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1 shadow-sm w-fit">
+        <button
+          type="button"
+          onClick={() => setActiveTab("all")}
+          className={`inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-black uppercase tracking-[0.15em] transition-all ${
+            activeTab === "all"
+              ? "bg-emerald-600 text-white shadow-md shadow-emerald-500/20"
+              : "text-slate-500 hover:text-slate-800"
+          }`}
+        >
+          <FaShoppingCart className="text-[10px]" />
+          All Orders
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("pending")}
+          className={`inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-black uppercase tracking-[0.15em] transition-all ${
+            activeTab === "pending"
+              ? "bg-amber-600 text-white shadow-md shadow-amber-500/20"
+              : "text-slate-500 hover:text-slate-800"
+          }`}
+        >
+          <FaClock className="text-[10px]" />
+          Pending Approval
+          {pendingOrders.length > 0 && (
+            <span className="inline-flex items-center justify-center h-5 min-w-5 rounded-full bg-white/20 px-1.5 text-[10px] font-bold">
+              {pendingOrders.length}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {activeTab === "pending" ? (
+        <section className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+          <div className="flex flex-col gap-4 border-b border-slate-100 dark:border-slate-700 pb-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                Pending Unapproved Orders
+              </h2>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                Orders waiting for approval.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={loadPendingOrders}
+              disabled={pendingLoading}
+              className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/70 px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50"
+            >
+              <FaSyncAlt className="text-sm" />
+              Refresh
+            </button>
+          </div>
+
+          {pendingLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-emerald-500" />
+            </div>
+          ) : pendingOrders.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-12 text-center text-sm text-slate-500 dark:text-slate-400">
+              No pending unapproved orders.
+            </div>
+          ) : (
+            <div className="pt-5">
+              <div className="overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-700">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                    <thead className="bg-slate-50">
+                      <tr>
+                        <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                          Order ID
+                        </th>
+                        <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                          Patient
+                        </th>
+                        <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                          Status
+                        </th>
+                        <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                          Total
+                        </th>
+                        <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                          Date
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-700 bg-white dark:bg-slate-800">
+                      {pendingOrders.map((order) => {
+                        const id = order.orderId ?? order.id;
+                        return (
+                          <tr
+                            key={id}
+                            onClick={() => {
+                              setSelectedOrder(order);
+                              setIsDetailsOpen(true);
+                            }}
+                            className="cursor-pointer transition-colors hover:bg-amber-50/40 dark:hover:bg-amber-900/20"
+                          >
+                            <td className="px-5 py-4">
+                              <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                                #{id}
+                              </p>
+                            </td>
+                            <td className="px-5 py-4 text-sm text-slate-700 dark:text-slate-300">
+                              {order.patientName || order.patientUserName || "—"}
+                            </td>
+                            <td className="px-5 py-4">
+                              <span className={`inline-flex rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide ${statusColor(order.status || order.orderStatus)}`}>
+                                {order.status || order.orderStatus || "—"}
+                              </span>
+                            </td>
+                            <td className="px-5 py-4 text-sm font-semibold text-slate-800 dark:text-slate-200">
+                              {order.totalCost != null ? `$${Number(order.totalCost).toFixed(2)}` : "—"}
+                            </td>
+                            <td className="px-5 py-4 text-sm text-slate-500 dark:text-slate-400">
+                              {formatDate(order.createdAt || order.orderDate)}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <p className="mt-4 text-sm text-slate-500 dark:text-slate-400 text-center">
+                Showing {pendingOrders.length} order{pendingOrders.length !== 1 ? "s" : ""} pending approval.
+              </p>
+            </div>
+          )}
+        </section>
+      ) : (
       <section className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
         <div className="flex flex-col gap-4 border-b border-slate-100 dark:border-slate-700 pb-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -419,6 +581,7 @@ function AdminOrdersPage() {
           </div>
         )}
       </section>
+      )}
 
       <OrderDetailsModal
         isOpen={isDetailsOpen}

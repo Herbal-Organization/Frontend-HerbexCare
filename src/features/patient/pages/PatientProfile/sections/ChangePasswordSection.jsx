@@ -1,5 +1,5 @@
-import { FaLock } from "react-icons/fa";
 import { motion } from "motion/react";
+import { FaLock } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 
 const itemVariants = {

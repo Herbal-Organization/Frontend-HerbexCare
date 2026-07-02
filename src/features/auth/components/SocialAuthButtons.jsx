@@ -1,16 +1,12 @@
 import { useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { googleLoginAccount } from "@api/accounts";
-import {
-  storeAuthTokens,
-  getPostLoginRoute,
-} from "@features/auth/services/authSession";
-import { getUserRole } from "@utils/auth";
+import { handlePostLogin } from "@features/auth/services/authSession";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
-function SocialAuthButtons() {
+function SocialAuthButtons({ role = "Patient" }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -18,20 +14,17 @@ function SocialAuthButtons() {
   const handleSuccess = async (credentialResponse) => {
     setIsGoogleLoading(true);
     try {
-      console.log("Google login success, sending token to backend...");
-
-      // Send id_token to backend
       const data = await googleLoginAccount({
         idToken: credentialResponse.credential,
-        role: "Patient", // Default role for social login
+        role,
       });
 
       if (data) {
-        storeAuthTokens(data);
-        toast.success(t("auth.login.success"));
-
-        const role = getUserRole();
-        navigate(getPostLoginRoute(role));
+        console.log("Google Login Response:", data);
+        handlePostLogin(data, navigate, {
+          delay: 1000,
+          onBeforeNavigate: () => toast.success(t("auth.login.success")),
+        });
       }
     } catch (error) {
       console.error("Google Login Error:", error);

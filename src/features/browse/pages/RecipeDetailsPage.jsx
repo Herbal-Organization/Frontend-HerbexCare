@@ -410,13 +410,6 @@ function RecipeDetailsPage() {
     }
   };
 
-  const averageFromReviews = useMemo(() => {
-    if (!reviews.length) return null;
-    return (
-      reviews.reduce((s, r) => s + r.ratingValue, 0) / reviews.length
-    ).toFixed(1);
-  }, [reviews]);
-
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     const ok = await submitReview({

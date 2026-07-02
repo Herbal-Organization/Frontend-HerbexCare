@@ -4,6 +4,7 @@ import {
   FORM_FIELDS,
   SYMPTOMS_LIST,
   MEDICAL_HISTORY_FIELDS,
+  getInputPlaceholder,
 } from "./aiConsultationConfig";
 
 function AiConsultationForm({

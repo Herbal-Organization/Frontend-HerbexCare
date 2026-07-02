@@ -5,17 +5,12 @@ import { loginAccount, resendConfirmationEmail } from "@api/accounts";
 import AuthAlert from "@features/auth/components/AuthAlert";
 import AuthInput from "@features/auth/components/AuthInput";
 import useAsyncAction from "@hooks/useAsyncAction";
-import {
-  getPostLoginRoute,
-  storeAuthTokens,
-} from "@features/auth/services/authSession";
-import { getUserRole } from "@utils/auth";
+import { handlePostLogin } from "@features/auth/services/authSession";
 import { useTranslation } from "react-i18next";
 import { HiRefresh } from "react-icons/hi";
 import { IoIosMail } from "react-icons/io";
 import { FaLock, FaSignInAlt } from "react-icons/fa";
 import SocialAuthButtons from "./SocialAuthButtons";
-// SocialAuthButtons removed as it's not in the image, or we can keep it at the very bottom. Let's keep it just in case, or maybe remove if we strictly follow image. The image doesn't show it. Let's remove it to match exactly.
 
 function Login({ setSuccessMsg }) {
   const { t } = useTranslation();
@@ -45,13 +40,10 @@ function Login({ setSuccessMsg }) {
   } = useAsyncAction(loginAccount, {
     defaultErrorMessage: t("auth.login.error"),
     onSuccess: (data) => {
-      storeAuthTokens(data ?? {});
-      setSuccessMsg(t("auth.login.success"));
-
-      window.setTimeout(() => {
-        const role = getUserRole();
-        navigate(getPostLoginRoute(role));
-      }, 1000);
+      handlePostLogin(data, navigate, {
+        delay: 1000,
+        onBeforeNavigate: () => setSuccessMsg(t("auth.login.success")),
+      });
     },
     onError: (err, message) => {
       if (

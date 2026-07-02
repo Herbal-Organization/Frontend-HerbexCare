@@ -9,17 +9,17 @@ import { generateChatMessage } from "@api/aiChat";
 import { parseApiError } from "@features/patient/pages/ai-pages/aiConsultationUtils";
 
 const NAV_ITEMS = [
-  { id: "chat", icon: FaComments, labelKey: "patientSidebar.aiChat", fallback: "Chat" },
+  { id: "chat", icon: FaComments, labelKey: "aiChatPage.nav.chat", fallback: "Chat" },
   {
     id: "history",
     icon: FaHistory,
-    labelKey: "aiChat.nav.history",
+    labelKey: "aiChatPage.nav.history",
     fallback: "History",
   },
   {
     id: "favorites",
     icon: FaHeart,
-    labelKey: "aiChat.nav.favorites",
+    labelKey: "aiChatPage.nav.favorites",
     fallback: "Favorites",
     accent: "rose",
   },
@@ -98,10 +98,10 @@ const AiChatPage = () => {
             </div>
             <div>
               <h1 className="text-lg font-black tracking-tight text-slate-900 dark:text-white sm:text-xl">
-                AI Herbal Chat
+                {t("aiChatPage.title")}
               </h1>
               <p className="text-xs font-medium text-slate-500 dark:text-slate-400 sm:text-sm">
-                Personalized herb & recipe guidance
+                {t("aiChatPage.subtitle")}
               </p>
             </div>
           </div>

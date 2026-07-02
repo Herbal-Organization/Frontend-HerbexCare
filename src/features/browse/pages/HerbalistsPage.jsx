@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import PatientNavbar from "@components/features/browse/PatientNavbar";
 import BrowseFilters from "@components/features/browse/BrowseFilters";
 import HerbalistFavoriteCard from "@components/features/browse/HerbalistFavoriteCard";
+import Pagination from "@components/common/Pagination";
 import Footer from "@components/features/landing/Footer";
 import { getAllHerbalists } from "@api/herbalists";
 import {
@@ -13,8 +14,29 @@ import {
   normalizeHerbalist,
 } from "@features/browse/services/herbalists";
 import { toast } from "react-hot-toast";
+import { FaUserMd } from "react-icons/fa";
 
 const HERBALISTS_PER_PAGE = 8;
+
+function LoadingSkeleton() {
+  return (
+    <div className="animate-pulse space-y-6">
+      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className="overflow-hidden rounded-3xl border border-slate-200/80 dark:border-slate-700 bg-white dark:bg-slate-800">
+            <div className="h-28 bg-slate-200 dark:bg-slate-700" />
+            <div className="p-5 space-y-3">
+              <div className="h-3 w-20 bg-slate-200 dark:bg-slate-700 rounded-full" />
+              <div className="h-4 w-3/4 bg-slate-200 dark:bg-slate-700 rounded-lg" />
+              <div className="h-3 w-1/2 bg-slate-200 dark:bg-slate-700 rounded-lg" />
+              <div className="h-3 w-full bg-slate-200 dark:bg-slate-700 rounded-lg" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function HerbalistsPage() {
   const [herbalists, setHerbalists] = useState([]);
@@ -76,11 +98,6 @@ function HerbalistsPage() {
     );
   }, [herbalists, searchTerm]);
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredHerbalists.length / HERBALISTS_PER_PAGE),
-  );
-
   const paginatedHerbalists = filteredHerbalists.slice(
     (currentPage - 1) * HERBALISTS_PER_PAGE,
     currentPage * HERBALISTS_PER_PAGE,
@@ -129,7 +146,7 @@ function HerbalistsPage() {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900">
       <PatientNavbar />
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <BrowseFilters
           title="Herbalists"
           description="Browse licensed herbalists and save your trusted providers to favorites."
@@ -144,12 +161,7 @@ function HerbalistsPage() {
         />
 
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-emerald-500" />
-            <p className="mt-6 text-sm font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
-              Loading herbalists
-            </p>
-          </div>
+          <LoadingSkeleton />
         ) : null}
 
         {!isLoading && error ? (
@@ -159,10 +171,17 @@ function HerbalistsPage() {
         ) : null}
 
         {!isLoading && !error && paginatedHerbalists.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-14 text-center">
-            <h2 className="text-xl font-bold text-slate-700 dark:text-slate-300">No herbalists found</h2>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-              Try adjusting your search or check back later.
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="rounded-full bg-slate-100 dark:bg-slate-800 p-5 mb-5">
+              <FaUserMd className="w-8 h-8 text-slate-400" />
+            </div>
+            <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-1">
+              No herbalists found
+            </h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm">
+              {searchTerm
+                ? "No herbalists match your search. Try a different name or keyword."
+                : "There are no herbalists available yet. Check back later."}
             </p>
           </div>
         ) : null}
@@ -184,26 +203,13 @@ function HerbalistsPage() {
         ) : null}
 
         {!isLoading && !error && filteredHerbalists.length > HERBALISTS_PER_PAGE ? (
-          <div className="mt-8 flex items-center justify-center gap-3">
-            <button
-              type="button"
-              disabled={currentPage <= 1}
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-40"
-            >
-              Previous
-            </button>
-            <span className="text-sm font-medium text-slate-600">
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              type="button"
-              disabled={currentPage >= totalPages}
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-40"
-            >
-              Next
-            </button>
+          <div className="mt-8 sm:mt-10">
+            <Pagination
+              totalItems={filteredHerbalists.length}
+              itemsPerPage={HERBALISTS_PER_PAGE}
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+            />
           </div>
         ) : null}
       </main>

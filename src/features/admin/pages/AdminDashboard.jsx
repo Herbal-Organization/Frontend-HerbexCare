@@ -24,6 +24,10 @@ import AdminHerbalistsPage from "./AdminHerbalistsPage";
 import AdminPatientsPage from "./AdminPatientsPage";
 import AdminFeedbacksPage from "./AdminFeedbacksPage";
 import AdminReviewsPage from "./AdminReviewsPage";
+import AdminInventoryHerbsPage from "./AdminInventoryHerbsPage";
+import AdminInventoryRecipesPage from "./AdminInventoryRecipesPage";
+import AdminInventoryAIRecipesPage from "./AdminInventoryAIRecipesPage";
+import AdminAiConsultationsPage from "./AdminAiConsultationsPage";
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -97,6 +101,10 @@ function AdminDashboard() {
         <Route path="/patients" element={<AdminPatientsPage />} />
         <Route path="/feedbacks" element={<AdminFeedbacksPage />} />
         <Route path="/reviews" element={<AdminReviewsPage />} />
+        <Route path="/inventory-herbs" element={<AdminInventoryHerbsPage />} />
+        <Route path="/inventory-recipes" element={<AdminInventoryRecipesPage />} />
+        <Route path="/inventory-ai-recipes" element={<AdminInventoryAIRecipesPage />} />
+        <Route path="/ai-consultations" element={<AdminAiConsultationsPage />} />
         <Route path="*" element={<Navigate to="/admin/dashboard/overview" replace />} />
       </Routes>
     </DashboardLayout>

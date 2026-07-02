@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
   FaInfoCircle,
@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import AiRecipeAddToCartAction from "../ai-pages/AiRecipeAddToCartAction";
 import { toggleFavorite } from "@api/favorites";
+import { getHerbalistsForAiChatRecipe } from "@api/inventoryAiChatRecipes";
 import AiChatRecipeReviewsSection from "./AiChatRecipeReviewsSection";
 
 function AiChatRecipeDetail({ data }) {
@@ -18,10 +19,22 @@ function AiChatRecipeDetail({ data }) {
     Boolean(data?.isFavorite || data?.saved || false)
   );
   const [savingRecipe, setSavingRecipe] = useState(false);
+  const [providers, setProviders] = useState([]);
 
   // Ensure we map the ID properly so the AddToCart works
   const targetId = data?.aiChatRecipeId || data?.id;
   const recipeItem = { ...data, aiRecipeId: targetId };
+
+  useEffect(() => {
+    if (!targetId) return;
+    getHerbalistsForAiChatRecipe(targetId)
+      .then((res) => {
+        setProviders(
+          Array.isArray(res) ? res : res?.herbalists || res?.items || [],
+        );
+      })
+      .catch(() => setProviders([]));
+  }, [targetId]);
 
   const handleSaveRecipe = async () => {
     if (savingRecipe || !targetId) return;
@@ -58,6 +71,7 @@ function AiChatRecipeDetail({ data }) {
                 <AiRecipeAddToCartAction
                   recipe={recipeItem}
                   recipeTitle={data.recommendedRecipeName || data.recipeName}
+                  providers={providers}
                   buttonClassName="inline-flex items-center gap-2 rounded-2xl px-5 py-3 font-bold text-sm bg-emerald-600 text-white transition hover:bg-emerald-500 shadow-md"
                 />
                 <button

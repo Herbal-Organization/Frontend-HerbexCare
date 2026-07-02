@@ -20,7 +20,6 @@ import HerbalistSubOrders from "./HerbalistSubOrders";
 import SubOrderDetails from "./SubOrderDetails";
 import useHerbalistDashboardData from "@features/herbalist/hooks/useHerbalistDashboardData";
 import {
-  getHerbalistDisplayName,
   mergeHerbalistUser,
   normalizeHerbalistUser,
 } from "@features/herbalist/services/herbalistProfile";
@@ -86,7 +85,7 @@ function HerbalistDashboard() {
         if (isMounted) {
           setOrdersCount(items.length);
         }
-      } catch (_error) {
+      } catch {
         if (isMounted) {
           setOrdersCount(null);
         }

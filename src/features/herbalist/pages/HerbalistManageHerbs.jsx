@@ -61,7 +61,9 @@ const saveLocallyStoredHerbIds = (herbalistId, ids) => {
       `my_created_herbs_${herbalistId}`,
       JSON.stringify(ids),
     );
-  } catch {}
+  } catch {
+    console.error("Failed to save locally stored herb IDs");
+  }
 };
 
 const extractHerbsArray = (responseData) => {

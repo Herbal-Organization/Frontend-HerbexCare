@@ -58,10 +58,9 @@ export const cancelOrder = async (orderId) => {
   return data;
 };
 
-export const simulatePayment = async (orderId, payload) => {
+export const simulatePayment = async (orderId) => {
   const { data } = await httpClient.put(
     `/api/Orders/${orderId}/simulate-payment`,
-    payload,
   );
   return data;
 };
@@ -76,8 +75,6 @@ export const getFavoriteOrders = async () => {
   return data;
 };
 
-// NOTE: no matching route in swagger.json — returns 404 until the backend
-// exposes an admin pending-unapproved orders endpoint.
 export const getPendingUnapprovedOrders = async (params = {}) => {
   const { data } = await httpClient.get("/api/Orders/pending-unapproved", {
     params,
@@ -85,8 +82,6 @@ export const getPendingUnapprovedOrders = async (params = {}) => {
   return data;
 };
 
-// NOTE: no matching route in swagger.json — returns 404 until the backend
-// exposes an admin all-orders endpoint.
 export const getAdminAllOrders = async (params = {}) => {
   const { data } = await httpClient.get("/api/Orders/admin/all-orders", {
     params,

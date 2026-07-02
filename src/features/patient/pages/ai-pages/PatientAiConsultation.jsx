@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { FaBrain, FaUserEdit, FaExclamationTriangle } from "react-icons/fa";
 import { toast } from "react-hot-toast";

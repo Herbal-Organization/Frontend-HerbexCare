@@ -42,10 +42,10 @@ const ChatBubble = ({ message }) => {
           className={`flex min-w-0 flex-1 flex-col ${isUser ? "items-end" : "items-start"}`}
         >
           <div
-            className={`w-full max-w-full ${
+            className={`w-full max-w-full overflow-hidden ${
               isUser
                 ? "rounded-2xl rounded-br-md bg-emerald-600 px-4 py-3 text-white shadow-md shadow-emerald-600/20 sm:px-5 sm:py-3.5"
-                : "overflow-hidden rounded-2xl rounded-bl-md border border-slate-200/80 bg-white text-slate-800 shadow-sm dark:border-slate-700 dark:bg-slate-900"
+                : "rounded-2xl rounded-bl-md border border-slate-200/80 bg-white text-slate-800 shadow-sm dark:border-slate-700 dark:bg-slate-900"
             }`}
           >
             {message.content ? (

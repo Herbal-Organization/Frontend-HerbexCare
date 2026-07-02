@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { getMySubOrders, approveSubOrder, rejectSubOrder } from "@api/subOrders";
+import { getMySubOrders, approveSubOrder, rejectSubOrder, updateSubOrderStatus } from "@api/subOrders";
 import { SUB_ORDER_ACCEPT, SUB_ORDER_REJECT } from "../constants/subOrderStatus";
 import { normalizeOrders } from "../services/orders";
 
@@ -146,6 +146,20 @@ const useHerbalistOrders = ({
     }
   }, []);
 
+  const updateStatus = useCallback(async (orderId, status) => {
+    setUpdatingId(orderId);
+    try {
+      await updateSubOrderStatus(orderId, status);
+      setOrders((prev) =>
+        prev.map((order) =>
+          order.id === orderId ? { ...order, status } : order,
+        ),
+      );
+    } finally {
+      setUpdatingId(null);
+    }
+  }, []);
+
   return {
     orders,
     isLoading,
@@ -157,6 +171,7 @@ const useHerbalistOrders = ({
     fetchOrders,
     approve,
     reject,
+    updateStatus,
   };
 };
 

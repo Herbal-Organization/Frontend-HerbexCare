@@ -1,5 +1,4 @@
 import React from "react";
-import { motion, AnimatePresence } from "motion/react";
 import { FaLeaf, FaPlus } from "react-icons/fa";
 
 export default function RecipesList({

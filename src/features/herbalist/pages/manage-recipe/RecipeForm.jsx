@@ -1,5 +1,4 @@
-import React, { useMemo, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import React from "react";
 import {
   FaEdit,
   FaPlus,
@@ -24,10 +23,8 @@ export default function RecipeForm({
   selectedHerbs,
   selectedDiseaseIds,
   herbs,
-  diseases,
   error,
   isSaving,
-  isDeleting,
   addHerbRow,
   removeHerbRow,
   updateHerbRow,

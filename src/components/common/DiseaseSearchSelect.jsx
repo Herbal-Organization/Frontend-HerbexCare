@@ -35,7 +35,7 @@ export default function DiseaseSearchSelect({
               : [];
 
         const normalized = diseaseList
-          .map((disease, index) => {
+          .map((disease) => {
             const diseaseName =
               disease.diseaseName ?? disease.name ?? disease.label ?? "";
             const diseaseId =

@@ -50,6 +50,12 @@ function DashboardSidebar({
   const isAdmin = role === "admin";
   const currentPath = `${location.pathname}${location.hash || ""}`;
 
+  const roleLabelMap = {
+    Patient: t("patientSidebar.patient", "Patient"),
+    Herbalist: t("herbalistSidebar.member", "Herbalist"),
+    SuperAdmin: t("adminSidebar.member", "Administrator"),
+  };
+
   return (
     <>
       {/* Mobile backdrop overlay */}
@@ -220,7 +226,7 @@ function DashboardSidebar({
                 {displayName}
               </p>
               <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                {user?.role || t(`${role}Sidebar.member`, "Member")}
+                {roleLabelMap[user?.role] || t(`${role}Sidebar.member`, "Member")}
               </p>
             </div>
           </div>

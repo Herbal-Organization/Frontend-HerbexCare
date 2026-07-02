@@ -2,9 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import {
+  FaBan,
   FaClock,
+  FaEdit,
   FaEye,
   FaPlus,
+  FaSave,
   FaSearch,
   FaSyncAlt,
   FaTimes,
@@ -18,7 +21,11 @@ import {
   approveRecipe,
   adminDeleteRecipe,
   getAllRecipes,
+  adminCreateRecipe,
+  adminUpdateRecipe,
 } from "@api/recipes";
+import { getAllHerbs } from "@api/herbs";
+import DiseaseSearchSelect from "@components/common/DiseaseSearchSelect";
 
 const PAGE_SIZE = 10;
 
@@ -113,6 +120,265 @@ function RecipeDetailsModal({ isOpen, recipe, onClose }) {
   );
 }
 
+const EMPTY_HERB_ROW = { herbId: "", quantity: "" };
+
+function RecipeFormModal({ isOpen, recipe, onClose, onSubmit, isSaving, formError }) {
+  const [description, setDescription] = useState("");
+  const [instructions, setInstructions] = useState("");
+  const [dosage, setDosage] = useState("");
+  const [warnings, setWarnings] = useState("");
+  const [selectedHerbs, setSelectedHerbs] = useState([{ ...EMPTY_HERB_ROW }]);
+  const [selectedDiseaseIds, setSelectedDiseaseIds] = useState([]);
+  const [herbsList, setHerbsList] = useState([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      if (recipe) {
+        setDescription(recipe.description || "");
+        setInstructions(recipe.instructions || recipe.preparation || "");
+        setDosage(recipe.dosage || "");
+        setWarnings(recipe.warnings || recipe.sideEffects || "");
+        setSelectedHerbs(
+          recipe.herbs?.length > 0
+            ? recipe.herbs.map((h) => ({
+                herbId: String(h.herbId || h.id || ""),
+                quantity: String(h.quantity || h.amount || 1),
+              }))
+            : [{ ...EMPTY_HERB_ROW }],
+        );
+        setSelectedDiseaseIds(
+          recipe.diseases?.map((d) => String(d.diseaseId ?? d.id ?? "")) || [],
+        );
+      } else {
+        setDescription("");
+        setInstructions("");
+        setDosage("");
+        setWarnings("");
+        setSelectedHerbs([{ ...EMPTY_HERB_ROW }]);
+        setSelectedDiseaseIds([]);
+      }
+    }
+  }, [isOpen, recipe]);
+
+  useEffect(() => {
+    if (isOpen) {
+      getAllHerbs(1, 1000)
+        .then((res) => {
+          setHerbsList(Array.isArray(res?.items) ? res.items : Array.isArray(res) ? res : []);
+        })
+        .catch(() => {});
+    }
+  }, [isOpen]);
+
+  const addHerbRow = () => setSelectedHerbs((prev) => [...prev, { ...EMPTY_HERB_ROW }]);
+  const removeHerbRow = (index) => {
+    setSelectedHerbs((prev) =>
+      prev.length === 1 ? [{ ...EMPTY_HERB_ROW }] : prev.filter((_, i) => i !== index),
+    );
+  };
+  const updateHerbRow = (index, field, value) => {
+    setSelectedHerbs((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, [field]: value } : item)),
+    );
+  };
+  const toggleDisease = (diseaseId) => {
+    const id = String(diseaseId);
+    setSelectedDiseaseIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!description.trim()) return;
+    if (!instructions.trim()) return;
+    const normalizedHerbs = selectedHerbs.filter((h) => h.herbId && h.quantity);
+    if (!normalizedHerbs.length) return;
+    onSubmit({
+      description: description.trim(),
+      instructions: instructions.trim(),
+      dosage: dosage.trim(),
+      warnings: warnings.trim(),
+      herbs: normalizedHerbs.map((h) => ({
+        herbId: Number(h.herbId),
+        quantity: Number(h.quantity),
+      })),
+      diseaseIds: selectedDiseaseIds.map(Number).filter((id) => !Number.isNaN(id)),
+    });
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/45 p-4 backdrop-blur-sm sm:items-center">
+      <div className="w-full max-w-2xl overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-xl max-h-[90vh] flex flex-col">
+        <div className="flex items-start justify-between gap-4 border-b border-slate-100 bg-slate-50 px-6 py-5 shrink-0">
+          <div className="min-w-0">
+            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-emerald-700">
+              {recipe ? "Edit Recipe" : "New Recipe"}
+            </p>
+            <h2 className="mt-2 text-xl font-black text-slate-900">
+              {recipe ? `Update "${recipe.recipeName || recipe.name}"` : "Add New Recipe"}
+            </h2>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={isSaving}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 transition-colors hover:border-rose-200 hover:text-rose-700 shrink-0 disabled:opacity-50"
+          >
+            <FaTimes />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="overflow-y-auto flex-1 p-6 space-y-4">
+          {formError && (
+            <div className="rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
+              {formError}
+            </div>
+          )}
+
+          <div>
+            <label className="mb-1.5 block text-xs font-bold uppercase tracking-[0.15em] text-slate-500">
+              Description *
+            </label>
+            <input
+              type="text"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+              className="block w-full rounded-2xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm font-medium text-slate-900 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-xs font-bold uppercase tracking-[0.15em] text-slate-500">
+              Instructions *
+            </label>
+            <textarea
+              rows={4}
+              value={instructions}
+              onChange={(e) => setInstructions(e.target.value)}
+              required
+              className="block w-full rounded-2xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm font-medium text-slate-900 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 resize-none"
+            />
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label className="mb-1.5 block text-xs font-bold uppercase tracking-[0.15em] text-slate-500">
+                Dosage
+              </label>
+              <input
+                type="text"
+                value={dosage}
+                onChange={(e) => setDosage(e.target.value)}
+                className="block w-full rounded-2xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm font-medium text-slate-900 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-xs font-bold uppercase tracking-[0.15em] text-slate-500">
+                Warnings
+              </label>
+              <input
+                type="text"
+                value={warnings}
+                onChange={(e) => setWarnings(e.target.value)}
+                className="block w-full rounded-2xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm font-medium text-slate-900 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-xs font-bold uppercase tracking-[0.15em] text-slate-500">
+                Herb Ingredients *
+              </label>
+              <button
+                type="button"
+                onClick={addHerbRow}
+                className="inline-flex items-center gap-1 rounded-xl bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700 transition-colors hover:bg-emerald-100"
+              >
+                <FaPlus className="text-[9px]" />
+                Add herb
+              </button>
+            </div>
+            <div className="space-y-2">
+              {selectedHerbs.map((row, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <select
+                    value={row.herbId}
+                    onChange={(e) => updateHerbRow(index, "herbId", e.target.value)}
+                    className="block flex-1 rounded-2xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm font-medium text-slate-900 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                  >
+                    <option value="">Select herb...</option>
+                    {herbsList.map((herb) => (
+                      <option key={herb.herbId ?? herb.id} value={herb.herbId ?? herb.id}>
+                        {herb.herbName}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    value={row.quantity}
+                    onChange={(e) => updateHerbRow(index, "quantity", e.target.value)}
+                    placeholder="Qty"
+                    className="w-24 rounded-2xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm font-medium text-slate-900 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeHerbRow(index)}
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-rose-200 text-rose-600 transition-colors hover:bg-rose-50"
+                  >
+                    <FaTimes className="text-xs" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-xs font-bold uppercase tracking-[0.15em] text-slate-500">
+              Target Diseases
+            </label>
+            <DiseaseSearchSelect
+              selectedDiseaseIds={selectedDiseaseIds}
+              onSelectionChange={toggleDisease}
+              disabled={isSaving}
+            />
+          </div>
+
+          <div className="flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={isSaving}
+              className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-600 transition-colors hover:border-slate-300 disabled:opacity-50"
+            >
+              <FaBan className="text-xs" />
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSaving}
+              className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSaving ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              ) : (
+                <FaSave className="text-xs" />
+              )}
+              {recipe ? "Save Changes" : "Create Recipe"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 function AdminRecipesPage() {
   const { t } = useTranslation();
   const [allRecipes, setAllRecipes] = useState([]);
@@ -125,6 +391,10 @@ function AdminRecipesPage() {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [processingIds, setProcessingIds] = useState([]);
+  const [showFormModal, setShowFormModal] = useState(false);
+  const [editingRecipe, setEditingRecipe] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [formError, setFormError] = useState("");
 
   const loadData = async (page = 1) => {
     setIsLoading(true);
@@ -229,6 +499,51 @@ function AdminRecipesPage() {
     }
   };
 
+  const handleFormSubmit = async (payload) => {
+    setIsSaving(true);
+    setFormError("");
+    try {
+      if (editingRecipe) {
+        const id = editingRecipe.recipeId ?? editingRecipe.id;
+        await adminUpdateRecipe(id, payload);
+        toast.success(`"${editingRecipe.recipeName || editingRecipe.name}" updated.`);
+      } else {
+        await adminCreateRecipe(payload);
+        toast.success("Recipe created.");
+      }
+      setShowFormModal(false);
+      setEditingRecipe(null);
+      await loadData(currentPage);
+    } catch (err) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.title ||
+        "Failed to save recipe.";
+      setFormError(msg);
+      toast.error(msg);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const openCreateModal = () => {
+    setEditingRecipe(null);
+    setFormError("");
+    setShowFormModal(true);
+  };
+
+  const openEditModal = (recipe) => {
+    setEditingRecipe(recipe);
+    setFormError("");
+    setShowFormModal(true);
+  };
+
+  const closeFormModal = () => {
+    setShowFormModal(false);
+    setEditingRecipe(null);
+    setFormError("");
+  };
+
   const stats = useMemo(
     () => ({
       total: allRecipes.length,
@@ -257,14 +572,24 @@ function AdminRecipesPage() {
               )}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => loadData(currentPage)}
-            className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/15"
-          >
-            <FaSyncAlt className="text-sm" />
-            Refresh
-          </button>
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={openCreateModal}
+              className="inline-flex items-center gap-2 rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-emerald-600 shadow-lg shadow-emerald-500/25"
+            >
+              <FaPlus className="text-xs" />
+              Add Recipe
+            </button>
+            <button
+              type="button"
+              onClick={() => loadData(currentPage)}
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/15"
+            >
+              <FaSyncAlt className="text-sm" />
+              Refresh
+            </button>
+          </div>
         </div>
       </section>
 
@@ -480,18 +805,31 @@ function AdminRecipesPage() {
                             </span>
                           </td>
                           <td className="px-5 py-4 text-right">
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDelete(recipe);
-                              }}
-                              disabled={isProcessing(id)}
-                              className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 dark:border-rose-800 px-3 py-2 text-xs font-bold text-rose-700 dark:text-rose-400 transition-colors hover:bg-rose-50 dark:hover:bg-rose-900/30 disabled:cursor-not-allowed disabled:opacity-60"
-                            >
-                              <FaTrash className="text-[10px]" />
-                              Delete
-                            </button>
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openEditModal(recipe);
+                                }}
+                                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2 text-xs font-bold text-slate-600 dark:text-slate-400 transition-colors hover:border-emerald-300 hover:text-emerald-700"
+                              >
+                                <FaEdit className="text-[10px]" />
+                                Edit
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDelete(recipe);
+                                }}
+                                disabled={isProcessing(id)}
+                                className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 dark:border-rose-800 px-3 py-2 text-xs font-bold text-rose-700 dark:text-rose-400 transition-colors hover:bg-rose-50 dark:hover:bg-rose-900/30 disabled:cursor-not-allowed disabled:opacity-60"
+                              >
+                                <FaTrash className="text-[10px]" />
+                                Delete
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       );
@@ -535,6 +873,14 @@ function AdminRecipesPage() {
           setIsDetailsOpen(false);
           setSelectedRecipe(null);
         }}
+      />
+      <RecipeFormModal
+        isOpen={showFormModal}
+        recipe={editingRecipe}
+        formError={formError}
+        isSaving={isSaving}
+        onClose={closeFormModal}
+        onSubmit={handleFormSubmit}
       />
     </div>
   );

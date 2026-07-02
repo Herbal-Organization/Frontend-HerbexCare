@@ -16,7 +16,6 @@ function AiConsultationWizard({
   selectedSymptoms,
   currentStep,
   onChange,
-  onCheckboxChange,
   onSymptomToggle,
   onNextStep,
   onPreviousStep,

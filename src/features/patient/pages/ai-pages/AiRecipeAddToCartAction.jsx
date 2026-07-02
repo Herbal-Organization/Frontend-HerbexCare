@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
-import { FaCartPlus, FaTimes } from "react-icons/fa";
+import { FaCartPlus, FaExclamationTriangle, FaTimes } from "react-icons/fa";
 import { useCart } from "@context/CartContext";
 
 const getAiRecipeId = (recipe) => {
@@ -54,9 +54,15 @@ function AiRecipeAddToCartAction({
     [selectedProviderId, sortedProviders],
   );
 
+  const hasProviders = sortedProviders.length > 0;
+
   const openModal = () => {
     if (!aiRecipeId) {
       toast.error("Invalid AI recipe id.");
+      return;
+    }
+    if (!hasProviders) {
+      toast.error("No herbalist is currently providing this recipe.");
       return;
     }
     setIsModalOpen(true);
@@ -107,16 +113,27 @@ function AiRecipeAddToCartAction({
 
   return (
     <>
-      <button
-        type="button"
-        onClick={openModal}
-        className={
-          buttonClassName ||
-          "inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-500"
-        }
-      >
-        <FaCartPlus /> Add to Cart
-      </button>
+      <div>
+        <button
+          type="button"
+          onClick={openModal}
+          disabled={!hasProviders}
+          className={
+            hasProviders
+              ? (buttonClassName ||
+                  "inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-500")
+              : "inline-flex items-center gap-2 rounded-2xl bg-slate-300 px-5 py-3 text-sm font-bold text-slate-500 cursor-not-allowed"
+          }
+        >
+          <FaCartPlus /> Add to Cart
+        </button>
+        {!hasProviders && (
+          <p className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-amber-600">
+            <FaExclamationTriangle />
+            No herbalist is currently providing this recipe.
+          </p>
+        )}
+      </div>
 
       {isModalOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">

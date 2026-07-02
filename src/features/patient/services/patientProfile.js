@@ -1,5 +1,5 @@
 import { getMyProfile, updateMyProfile } from "@api/patients";
-import { getUserById, updateUsersAddress, getMyUserDetails } from "@api/users";
+import { updateUsersAddress, getMyUserDetails } from "@api/users";
 import {
   getMyMedicalHistory,
   saveMyMedicalHistory,
@@ -252,7 +252,7 @@ export const getProfileCompletionPercentage = () => {
     }, 0);
 
     return Math.round((filled / total) * 100);
-  } catch (err) {
+  } catch {
     return 0;
   }
 };

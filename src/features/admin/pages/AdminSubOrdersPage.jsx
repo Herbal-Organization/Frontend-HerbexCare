@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import {
@@ -167,7 +167,12 @@ function AdminSubOrdersPage() {
 
       const rejection = [ordersRes, statsRes].find((r) => r.status === "rejected");
       if (rejection) {
-        const msg = rejection.reason?.response?.data?.message || "Unable to load sub-orders.";
+        const statusCode = rejection.reason?.response?.status;
+        const msg =
+          statusCode === 404
+            ? "Admin sub-orders API is not available on the backend yet."
+            : rejection.reason?.response?.data?.message ||
+              "Unable to load sub-orders.";
         setError(msg);
       }
     } catch (err) {

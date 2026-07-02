@@ -188,7 +188,7 @@ function AdminUsersPage() {
             const history = await getPatientMedicalHistory(patientId);
             setDetailMedicalHistory(history || null);
             break;
-          } catch (medicalHistoryError) {
+          } catch {
             // Try the next possible patient identifier.
           }
         }
