@@ -1,23 +1,26 @@
+import { lazy, Suspense } from "react";
 import { Navigate, Routes, Route } from "react-router-dom";
-import AuthPage from "@features/auth/pages/AuthPage";
-import ConfirmEmailPage from "@features/auth/pages/ConfirmEmailPage";
-import { ForgetPassword, ProtectedRoute } from "@features/auth/components";
-import ResetPasswordPage from "@features/auth/pages/ResetPasswordPage";
-import PatientDashboard from "@features/patient/pages/PatientDashboard";
-import HerbalistDashboard from "@features/herbalist/pages/HerbalistDashboard";
-import AdminDashboard from "@features/admin/pages/AdminDashboard";
-
-import PatientHome from "@features/patient/pages/PatientHome";
-import RecipesPage from "@features/browse/pages/RecipesPage";
-import HerbsPage from "@features/browse/pages/HerbsPage";
-import RecipeDetailsPage from "@features/browse/pages/RecipeDetailsPage";
-import HerbDetailsPage from "@features/browse/pages/HerbDetailsPage";
-import HerbalistsPage from "@features/browse/pages/HerbalistsPage";
-import LandingPage from "@features/landing/pages/LandingPage";
-import NotFoundPage from "@features/landing/pages/NotFoundPage";
+import { ProtectedRoute } from "@features/auth/components";
 import { isAuthenticated } from "@utils/auth";
-
 import { Toaster } from "react-hot-toast";
+
+const AuthPage = lazy(() => import("@features/auth/pages/AuthPage"));
+const ConfirmEmailPage = lazy(() => import("@features/auth/pages/ConfirmEmailPage"));
+const ForgetPassword = lazy(() => import("@features/auth/components").then(m => ({ default: m.ForgetPassword })));
+const ResetPasswordPage = lazy(() => import("@features/auth/pages/ResetPasswordPage"));
+
+const PatientDashboard = lazy(() => import("@features/patient/pages/PatientDashboard"));
+const HerbalistDashboard = lazy(() => import("@features/herbalist/pages/HerbalistDashboard"));
+const AdminDashboard = lazy(() => import("@features/admin/pages/AdminDashboard"));
+
+const PatientHome = lazy(() => import("@features/patient/pages/PatientHome"));
+const RecipesPage = lazy(() => import("@features/browse/pages/RecipesPage"));
+const HerbsPage = lazy(() => import("@features/browse/pages/HerbsPage"));
+const RecipeDetailsPage = lazy(() => import("@features/browse/pages/RecipeDetailsPage"));
+const HerbDetailsPage = lazy(() => import("@features/browse/pages/HerbDetailsPage"));
+const HerbalistsPage = lazy(() => import("@features/browse/pages/HerbalistsPage"));
+const LandingPage = lazy(() => import("@features/landing/pages/LandingPage"));
+const NotFoundPage = lazy(() => import("@features/landing/pages/NotFoundPage"));
 
 function App() {
   return (
@@ -26,17 +29,17 @@ function App() {
 
       {/* Landing and Auth Routes */}
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/auth/login" element={<AuthPage />} />
-        <Route path="/auth/register" element={<AuthPage />} />
-        <Route path="/confirm-email" element={<ConfirmEmailPage />} />
+        <Route path="/" element={<Suspense><LandingPage /></Suspense>} />
+        <Route path="/auth/login" element={<Suspense><AuthPage /></Suspense>} />
+        <Route path="/auth/register" element={<Suspense><AuthPage /></Suspense>} />
+        <Route path="/confirm-email" element={<Suspense><ConfirmEmailPage /></Suspense>} />
         <Route
           path="/forget-password"
           element={
             isAuthenticated() ? (
               <Navigate to="/change-password" replace />
             ) : (
-              <ForgetPassword />
+              <Suspense><ForgetPassword /></Suspense>
             )
           }
         />
@@ -44,7 +47,7 @@ function App() {
           path="/change-password"
           element={
             isAuthenticated() ? (
-              <ResetPasswordPage />
+              <Suspense><ResetPasswordPage /></Suspense>
             ) : (
               <Navigate to="/forget-password" replace />
             )
@@ -53,34 +56,34 @@ function App() {
 
         {/* Patient Routes */}
         <Route element={<ProtectedRoute allowedRoles={["Patient"]} />}>
-          <Route path="/patient/home" element={<PatientHome />} />
-          <Route path="/patient/home/herbs" element={<HerbsPage />} />
+          <Route path="/patient/home" element={<Suspense><PatientHome /></Suspense>} />
+          <Route path="/patient/home/herbs" element={<Suspense><HerbsPage /></Suspense>} />
           <Route
             path="/patient/home/herbs/:herbId"
-            element={<HerbDetailsPage />}
+            element={<Suspense><HerbDetailsPage /></Suspense>}
           />
-          <Route path="/patient/home/recipes" element={<RecipesPage />} />
-          <Route path="/patient/home/herbalists" element={<HerbalistsPage />} />
+          <Route path="/patient/home/recipes" element={<Suspense><RecipesPage /></Suspense>} />
+          <Route path="/patient/home/herbalists" element={<Suspense><HerbalistsPage /></Suspense>} />
           <Route
             path="/patient/home/recipes/:recipeId"
-            element={<RecipeDetailsPage />}
+            element={<Suspense><RecipeDetailsPage /></Suspense>}
           />
-          <Route path="/patient/dashboard/*" element={<PatientDashboard />} />
+          <Route path="/patient/dashboard/*" element={<Suspense><PatientDashboard /></Suspense>} />
         </Route>
 
         {/* Hebalist Routes */}
         <Route element={<ProtectedRoute allowedRoles={["Herbalist"]} />}>
           <Route
             path="/herbalist/dashboard/*"
-            element={<HerbalistDashboard />}
+            element={<Suspense><HerbalistDashboard /></Suspense>}
           />
         </Route>
 
         {/* Super Admin Routes */}
         <Route element={<ProtectedRoute allowedRoles={["SuperAdmin"]} />}>
-          <Route path="/admin/dashboard/*" element={<AdminDashboard />} />
+          <Route path="/admin/dashboard/*" element={<Suspense><AdminDashboard /></Suspense>} />
         </Route>
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path="*" element={<Suspense><NotFoundPage /></Suspense>} />
       </Routes>
     </div>
   );

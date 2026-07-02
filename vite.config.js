@@ -8,6 +8,29 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  build: {
+    chunkSizeWarningLimit: 500,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "react-vendor": ["react", "react-dom", "react-router-dom"],
+          motion: ["motion"],
+          i18n: ["i18next", "react-i18next", "i18next-browser-languagedetector"],
+          "ui-vendor": [
+            "react-hook-form",
+            "zod",
+            "axios",
+            "react-hot-toast",
+            "react-icons",
+            "react-loading-skeleton",
+            "clsx",
+            "tailwind-merge",
+            "@radix-ui/react-slot",
+          ],
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
