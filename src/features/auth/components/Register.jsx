@@ -13,44 +13,44 @@ import SocialAuthButtons from "./SocialAuthButtons";
 import { IoIosMail } from "react-icons/io";
 import { FaLock, FaUser, FaPhone, FaUserPlus } from "react-icons/fa";
 
-// Map backend field names to friendly field names
-const FIELD_ERROR_MAP = {
-  phone: "Phone Number",
-  email: "Email Address",
-  password: "Password",
-  userName: "Username",
-  fullName: "Full Name",
-  confirmPassword: "Confirm Password",
-  role: "Role",
-};
-
-// Parse backend validation errors and convert to readable messages
-const parseBackendErrors = (errorResponse) => {
-  const errors = errorResponse?.response?.data?.errors;
-  if (!errors || typeof errors !== "object") {
-    return null;
-  }
-
-  const messages = [];
-  Object.entries(errors).forEach(([field, fieldErrors]) => {
-    const fieldName = FIELD_ERROR_MAP[field] || field;
-    if (Array.isArray(fieldErrors)) {
-      fieldErrors.forEach((error) => {
-        messages.push(`${fieldName}: ${error}`);
-      });
-    } else if (typeof fieldErrors === "string") {
-      messages.push(`${fieldName}: ${fieldErrors}`);
-    }
-  });
-
-  return messages.length > 0 ? messages.join(" | ") : null;
-};
-
 function Register({ setSuccessMsg }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [role, setRole] = useState("Patient");
   const [generalError, setGeneralError] = useState("");
+
+  // Map backend field names to friendly field names using translations
+  const FIELD_ERROR_MAP = {
+    phone: t("auth.register.phone"),
+    email: t("auth.register.email"),
+    password: t("auth.register.password"),
+    userName: t("auth.register.username"),
+    fullName: t("auth.register.fullName"),
+    confirmPassword: t("auth.register.confirmPassword"),
+    role: t("auth.register.accountRole"),
+  };
+
+  // Parse backend validation errors and convert to readable messages
+  const parseBackendErrors = (errorResponse) => {
+    const errors = errorResponse?.response?.data?.errors;
+    if (!errors || typeof errors !== "object") {
+      return null;
+    }
+
+    const messages = [];
+    Object.entries(errors).forEach(([field, fieldErrors]) => {
+      const fieldName = FIELD_ERROR_MAP[field] || field;
+      if (Array.isArray(fieldErrors)) {
+        fieldErrors.forEach((error) => {
+          messages.push(`${fieldName}: ${error}`);
+        });
+      } else if (typeof fieldErrors === "string") {
+        messages.push(`${fieldName}: ${fieldErrors}`);
+      }
+    });
+
+    return messages.length > 0 ? messages.join(" | ") : null;
+  };
   const {
     register,
     handleSubmit,
@@ -106,8 +106,7 @@ function Register({ setSuccessMsg }) {
 
       await submitRegistration(payload);
 
-      const successMessage =
-        "✓ Registration successful! Please check your email to confirm your account before logging in.";
+      const successMessage = t("auth.register.successMessage");
 
       reset();
       setRole("Patient");
@@ -134,82 +133,82 @@ function Register({ setSuccessMsg }) {
       <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-2 gap-4">
           <AuthInput
-            label="Full Name"
+            label={t("auth.register.fullName")}
             type="text"
-            placeholder="John Doe"
+            placeholder={t("auth.register.fullNamePlaceholder")}
             autoComplete="name"
             icon={<FaUser />}
             error={errors.fullName?.message}
             {...register("fullName", {
-              required: "Full name is required",
+              required: t("auth.register.fullNameRequired"),
               minLength: {
                 value: 3,
-                message: "Full name must be at least 3 characters",
+                message: t("auth.register.fullNameMinLength"),
               },
             })}
           />
           <AuthInput
-            label="Username"
+            label={t("auth.register.username")}
             type="text"
-            placeholder="johndoe"
+            placeholder={t("auth.register.usernamePlaceholder")}
             autoComplete="username"
             icon={<FaUser />}
             error={errors.userName?.message}
             {...register("userName", {
-              required: "Username is required",
+              required: t("auth.register.usernameRequired"),
               minLength: {
                 value: 3,
-                message: "Username must be at least 3 characters",
+                message: t("auth.register.usernameMinLength"),
               },
             })}
           />
         </div>
 
         <AuthInput
-          label="Email Address"
+          label={t("auth.register.email")}
           type="email"
-          placeholder="name@example.com"
+          placeholder={t("auth.register.emailPlaceholder")}
           autoComplete="email"
           icon={<IoIosMail />}
           error={errors.email?.message}
           {...register("email", {
-            required: "Email is required",
+            required: t("auth.register.emailRequired"),
             pattern: {
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: "Enter a valid email address",
+              message: t("auth.register.emailInvalid"),
             },
           })}
         />
 
         <AuthInput
-          label="Phone Number"
+          label={t("auth.register.phone")}
           type="tel"
-          placeholder="01203564652"
+          placeholder={t("auth.register.phonePlaceholder")}
           autoComplete="tel"
           icon={<FaPhone />}
           error={errors.phone?.message}
           {...register("phone", {
-            required: "Phone number is required",
+            required: t("auth.register.phoneRequired"),
             minLength: {
               value: 8,
-              message: "Phone number must be at least 8 digits",
+              message: t("auth.register.phoneMinLength"),
             },
             maxLength: {
               value: 15,
-              message: "Phone number must not exceed 15 digits",
+              message: t("auth.register.phoneMaxLength"),
             },
             pattern: {
               value: /^[0-9+\-\s()]*$/,
-              message: "Phone number contains invalid characters",
+              message: t("auth.register.phoneInvalid"),
             },
             validate: (value) => {
               if (!value) return true;
               const digitsOnly = value.replace(/\D/g, "");
               if (digitsOnly.length < 8) {
-                return "Phone number must contain at least 8 digits";
+                return t("auth.register.phoneMinLength");
               }
               if (digitsOnly.length > 15) {
-                return "Phone number must not exceed 15 digits";
+                return t("auth.register.phoneMaxLength");
               }
               return true;
             },
@@ -218,7 +217,7 @@ function Register({ setSuccessMsg }) {
 
         <div>
           <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
-            Account Role
+            {t("auth.register.accountRole")}
           </label>
           <div className="grid grid-cols-2 gap-3">
             <label
@@ -250,7 +249,7 @@ function Register({ setSuccessMsg }) {
                     : "text-slate-600 dark:text-slate-400"
                 }`}
               >
-                Patient
+                {t("auth.register.patient")}
               </span>
             </label>
             <label
@@ -282,7 +281,7 @@ function Register({ setSuccessMsg }) {
                     : "text-slate-600 dark:text-slate-400"
                 }`}
               >
-                Herbalist
+                {t("auth.register.herbalist")}
               </span>
             </label>
           </div>
@@ -290,42 +289,42 @@ function Register({ setSuccessMsg }) {
 
         <div className="grid grid-cols-2 gap-4">
           <AuthInput
-            label="Password"
+            label={t("auth.register.password")}
             type="password"
-            placeholder="••••••••"
+            placeholder={t("auth.register.passwordPlaceholder")}
             autoComplete="new-password"
             inputClassName="font-sans"
             isPassword={true}
             icon={<FaLock />}
             error={errors.password?.message}
             {...register("password", {
-              required: "Password is required",
+              required: t("auth.register.passwordRequired"),
               minLength: {
                 value: 8,
-                message: "Password must be at least 8 characters",
+                message: t("auth.register.passwordMinLength"),
               },
               validate: (value) => {
                 if (!value) return true;
-                if (!/[A-Z]/.test(value)) return "Must contain uppercase";
-                if (!/[a-z]/.test(value)) return "Must contain lowercase";
-                if (!/[0-9]/.test(value)) return "Must contain a number";
+                if (!/[A-Z]/.test(value)) return t("auth.register.passwordUppercase");
+                if (!/[a-z]/.test(value)) return t("auth.register.passwordLowercase");
+                if (!/[0-9]/.test(value)) return t("auth.register.passwordNumber");
                 return true;
               },
             })}
           />
           <AuthInput
-            label="Confirm Password"
+            label={t("auth.register.confirmPassword")}
             type="password"
-            placeholder="••••••••"
+            placeholder={t("auth.register.confirmPasswordPlaceholder")}
             autoComplete="new-password"
             inputClassName="font-sans"
             isPassword={true}
             icon={<FaLock />}
             error={errors.confirmPassword?.message}
             {...register("confirmPassword", {
-              required: "Please confirm your password",
+              required: t("auth.register.confirmPasswordRequired"),
               validate: (value) =>
-                value === password || "Passwords do not match",
+                value === password || t("auth.register.passwordsMismatch"),
             })}
           />
         </div>
@@ -339,12 +338,12 @@ function Register({ setSuccessMsg }) {
             {isLoading ? (
               <>
                 <HiRefresh className="animate-spin text-xl" />
-                <span>Creating account...</span>
+                <span>{t("auth.register.loading")}</span>
               </>
             ) : (
               <>
                 <FaUserPlus />
-                <span>Sign Up</span>
+                <span>{t("auth.register.submit")}</span>
               </>
             )}
           </button>
@@ -355,12 +354,12 @@ function Register({ setSuccessMsg }) {
 
       <div className="pt-8 text-center">
         <p className="text-sm font-medium text-slate-500 dark:text-slate-500">
-          Already have an account?{" "}
+          {t("auth.register.alreadyHaveAccount")}{" "}
           <Link
             to="/auth/login"
             className="text-primary dark:text-emerald-400 font-bold hover:underline"
           >
-            Log In
+            {t("auth.register.logIn")}
           </Link>
         </p>
       </div>

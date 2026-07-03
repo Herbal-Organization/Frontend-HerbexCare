@@ -62,6 +62,92 @@ const canContinuePayment = (order) => {
   );
 };
 
+// Derive overall order status from sub-orders. The top-level order.status can
+// lag behind when herbalists update individual sub-orders (e.g. to Shipped or
+// Delivered). We walk through sub-orders and return the most advanced status
+// that reflects the real state of the order.
+const STATUS_PRIORITY = [
+  "cancelled",
+  "canceled",
+  "partiallycancelled",
+  "delivered",
+  "partiallydelivered",
+  "shipped",
+  "partiallyshipped",
+  "processing",
+  "preparing",
+  "awaitingpayment",
+  "pending",
+];
+
+function getSubOrderStatusRank(status) {
+  const normalized = normalizeStatus(status);
+  const index = STATUS_PRIORITY.indexOf(normalized);
+  return index === -1 ? STATUS_PRIORITY.length : index;
+}
+
+function getEffectiveOrderStatus(order) {
+  const topLevelStatus = order?.status;
+  const subOrders = order?.subOrders || order?.suborders || [];
+
+  if (!subOrders.length) {
+    return topLevelStatus || "Pending";
+  }
+
+  // Collect all sub-order statuses
+  const subStatuses = subOrders.map((so) => normalizeStatus(so.status));
+
+  // If all sub-orders share the same status, use that
+  if (subStatuses.every((s) => s === subStatuses[0])) {
+    return subStatuses[0];
+  }
+
+  // Check for cancellation states
+  const allCancelled = subStatuses.every(
+    (s) => s === "cancelled" || s === "canceled"
+  );
+  if (allCancelled) return "Cancelled";
+
+  const someCancelled = subStatuses.some(
+    (s) => s === "cancelled" || s === "canceled"
+  );
+  if (someCancelled) return "PartiallyCancelled";
+
+  // Check for delivered states
+  const allDelivered = subStatuses.every(
+    (s) => s === "delivered" || s === "partiallydelivered"
+  );
+  if (allDelivered && subStatuses.some((s) => s === "delivered")) {
+    return subStatuses.every((s) => s === "delivered")
+      ? "Delivered"
+      : "PartiallyDelivered";
+  }
+
+  // Check for shipped states
+  const allShipped = subStatuses.every(
+    (s) =>
+      s === "shipped" ||
+      s === "partiallyshipped" ||
+      s === "delivered" ||
+      s === "partiallydelivered"
+  );
+  if (allShipped && subStatuses.some((s) => s === "shipped")) {
+    return subStatuses.every(
+      (s) => s === "shipped" || s === "delivered" || s === "partiallydelivered"
+    )
+      ? "Shipped"
+      : "PartiallyShipped";
+  }
+
+  // Default: return the most advanced status from sub-orders
+  const best = subStatuses.reduce((best, s) =>
+    getSubOrderStatusRank(s) < getSubOrderStatusRank(best) ? s : best
+  );
+
+  // Capitalize first letter for display
+  return best.charAt(0).toUpperCase() + best.slice(1);
+}
+
 const ACCENTS = {
   emerald: {
     chip: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300",
@@ -589,7 +675,7 @@ function PatientOrderDetails() {
     );
   }
 
-  const status = order.status || "Pending";
+  const status = getEffectiveOrderStatus(order) || order.status || "Pending";
   const isCanceled = isCanceledStatus(status);
   const isPaid = isPaidStatus(status);
   const orderDate = order.orderDate || order.createdAt;

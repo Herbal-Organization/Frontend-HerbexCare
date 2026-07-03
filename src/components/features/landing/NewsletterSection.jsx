@@ -15,7 +15,7 @@ function NewsletterSection() {
       dir={isRTL ? "rtl" : "ltr"}
     >
       <MotionDiv
-        className="bg-primary rounded-[2.5rem] p-10 md:p-16 text-center relative overflow-hidden shadow-2xl shadow-primary/20"
+        className="bg-primary rounded-[2.5rem] p-6 sm:p-10 md:p-16 text-center relative overflow-hidden shadow-2xl shadow-primary/20"
         initial={{ opacity: 0, y: 22 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.4 }}

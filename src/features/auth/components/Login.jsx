@@ -61,11 +61,9 @@ function Login({ setSuccessMsg }) {
     execute: submitResendEmail,
     clearError: clearResendError,
   } = useAsyncAction(resendConfirmationEmail, {
-    defaultErrorMessage: "Failed to resend email. Please try again.",
+    defaultErrorMessage: t("auth.login.resendError"),
     onSuccess: () => {
-      setResendSuccess(
-        "Confirmation email sent! Please check your inbox and spam folder.",
-      );
+      setResendSuccess(t("auth.login.resendSuccess"));
       setTimeout(() => setResendSuccess(""), 5000);
     },
   });
@@ -123,32 +121,32 @@ function Login({ setSuccessMsg }) {
 
       <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
         <AuthInput
-          label="Email"
+          label={t("auth.login.emailLabel")}
           type="email"
-          placeholder="Enter your email"
+          placeholder={t("auth.login.emailPlaceholder")}
           autoComplete="email"
           icon={<IoIosMail />}
           error={errors.email?.message}
           {...register("email", {
-            required: "Email is required",
+            required: t("auth.login.emailRequired"),
             pattern: {
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: "Enter a valid email address",
+              message: t("auth.login.emailInvalid"),
             },
           })}
         />
 
         <AuthInput
-          label="Password"
+          label={t("auth.login.passwordLabel")}
           type="password"
-          placeholder="Enter your password"
+          placeholder={t("auth.login.passwordPlaceholder")}
           autoComplete="current-password"
           inputClassName="font-sans"
           isPassword={true}
           icon={<FaLock />}
           error={errors.password?.message}
           {...register("password", {
-            required: "Password is required",
+            required: t("auth.login.passwordRequired"),
           })}
         />
 
@@ -160,14 +158,14 @@ function Login({ setSuccessMsg }) {
               {...register("rememberMe")}
             />
             <span className="text-sm font-medium text-slate-700 dark:text-slate-400">
-              Remember Me
+              {t("auth.login.rememberMe")}
             </span>
           </label>
           <Link
             to="/forget-password"
             className="text-sm font-medium text-primary dark:text-emerald-400 hover:text-primary-hover transition-colors"
           >
-            Forgot Password?
+            {t("auth.login.forgotPassword")}
           </Link>
         </div>
 
@@ -179,12 +177,12 @@ function Login({ setSuccessMsg }) {
           {isLoading ? (
             <>
               <HiRefresh className="animate-spin text-xl" />
-              <span>{t("auth.login.loading", "Logging in...")}</span>
+              <span>{t("auth.login.loading")}</span>
             </>
           ) : (
             <>
               <FaSignInAlt />
-              <span>Log In</span>
+              <span>{t("auth.login.submit")}</span>
             </>
           )}
         </button>
@@ -194,12 +192,12 @@ function Login({ setSuccessMsg }) {
 
       <div className="pt-8 text-center">
         <p className="text-sm font-medium text-slate-500 dark:text-slate-500">
-          Don't have an account?{" "}
+          {t("auth.login.dontHaveAccount")}{" "}
           <Link
             to="/auth/register"
             className="text-primary dark:text-emerald-400 font-bold hover:underline"
           >
-            Sign Up
+            {t("auth.login.signUp")}
           </Link>
         </p>
       </div>

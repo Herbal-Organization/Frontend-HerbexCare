@@ -61,17 +61,18 @@ function DashboardSidebar({
       {/* Mobile backdrop overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm lg:hidden"
           onClick={onClose}
         />
       )}
 
       <aside
         className={`
-          fixed top-0 inset-s-0 z-50 h-full w-72 bg-white dark:bg-slate-900 border-e border-slate-200 dark:border-slate-800 flex flex-col
+          fixed top-0 start-0 z-[70] h-full w-72 bg-white dark:bg-slate-900 border-e border-slate-200 dark:border-slate-800 flex flex-col
           transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
-          lg:translate-x-0
+          rtl:translate-x-full rtl:start-auto rtl:right-0
+          lg:translate-x-0 lg:rtl:translate-x-0
         `}
       >
         {/* Branding Area */}

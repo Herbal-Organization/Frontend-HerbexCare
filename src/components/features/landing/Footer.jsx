@@ -18,7 +18,7 @@ function Footer() {
     >
       <div className="mx-auto max-w-7xl">
         <MotionDiv
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16"
+          className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16"
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}

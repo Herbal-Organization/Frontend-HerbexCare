@@ -6,10 +6,12 @@ import {
   FaTimes,
   FaSearch,
   FaCheckCircle,
+  FaStar,
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "motion/react";
 import RecipeForm from "./manage-recipe/RecipeForm";
+import RecipeReviewsSection from "./manage-recipe/RecipeReviewsSection";
 import { getAllHerbs } from "@api/herbs";
 import { getAllDiseaseNames } from "@api/diseases";
 import {
@@ -100,6 +102,7 @@ function HerbalistManageRecipes({ user, dashboardData }) {
   const [error, setError] = useState("");
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedRecipeForReviews, setSelectedRecipeForReviews] = useState(null);
 
   const herbalistId = useMemo(() => {
     return dashboardData?.herbalistProfile?.id || user?.id;
@@ -521,11 +524,20 @@ function HerbalistManageRecipes({ user, dashboardData }) {
                         </div>
                       </div>
 
-                      <div className="bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-sm border-t border-slate-100 dark:border-slate-700 p-6 flex gap-3 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                      <div className="bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-sm border-t border-slate-100 dark:border-slate-700 p-6 flex gap-2 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedRecipeForReviews(recipe)}
+                          className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-xs font-bold text-amber-600 shadow-sm hover:border-amber-400 hover:text-amber-500 transition-all active:scale-95"
+                          title="View patient reviews"
+                        >
+                          <FaStar className="text-[10px]" />
+                          <span>Reviews</span>
+                        </button>
                         <button
                           type="button"
                           onClick={() => populateFormForEdit(recipe)}
-                          className="flex-1 inline-flex justify-center items-center gap-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-3 text-xs font-black text-slate-700 dark:text-slate-300 shadow-sm hover:border-primary hover:text-primary transition-all active:scale-95"
+                          className="flex-1 inline-flex justify-center items-center gap-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-xs font-black text-slate-700 dark:text-slate-300 shadow-sm hover:border-primary hover:text-primary transition-all active:scale-95"
                         >
                           <FaEdit className="text-sm" /> Edit
                         </button>
@@ -533,7 +545,7 @@ function HerbalistManageRecipes({ user, dashboardData }) {
                           type="button"
                           onClick={() => handleDeactivateRecipe(recipe)}
                           disabled={isDeleting}
-                          className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-black text-sm transition-colors disabled:opacity-50 ${
+                          className={`inline-flex items-center gap-2 px-3 py-2 rounded-full font-black text-xs transition-colors disabled:opacity-50 ${
                             recipe.isActive === false
                               ? "border border-emerald-100 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/50"
                               : "border border-rose-100 dark:border-rose-800 bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/50"
@@ -565,6 +577,50 @@ function HerbalistManageRecipes({ user, dashboardData }) {
           </div>
         )}
       </motion.div>
+
+      {/* Reviews Modal */}
+      <AnimatePresence>
+        {selectedRecipeForReviews ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-md"
+            onClick={() => setSelectedRecipeForReviews(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.96, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.96, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-lg overflow-hidden rounded-[2.5rem] bg-white dark:bg-slate-800 shadow-2xl"
+            >
+              <div className="flex items-start justify-between gap-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-6 py-5">
+                <div className="min-w-0">
+                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-amber-600">
+                    Patient Feedback
+                  </p>
+                  <h3 className="mt-1 truncate text-lg font-black text-slate-900 dark:text-slate-100">
+                    {selectedRecipeForReviews.description}
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedRecipeForReviews(null)}
+                  className="rounded-full bg-white dark:bg-slate-700 p-2 text-slate-400 shadow-sm hover:bg-slate-100 dark:hover:bg-slate-600 hover:text-slate-700 dark:text-slate-300 shrink-0"
+                >
+                  <FaTimes />
+                </button>
+              </div>
+              <div className="max-h-[80vh] overflow-y-auto p-6">
+                <RecipeReviewsSection
+                  recipeId={selectedRecipeForReviews.recipeId}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 }

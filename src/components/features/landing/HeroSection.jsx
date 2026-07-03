@@ -41,7 +41,7 @@ function HeroSection() {
           <MotionH1
             variants={fadeInUp}
             transition={{ duration: 0.5, delay: 0.05 }}
-            className="text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 leading-[1.1]"
+            className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 leading-[1.1]"
           >
             {t("hero.title")}
           </MotionH1>
@@ -73,7 +73,7 @@ function HeroSection() {
           <MotionDiv
             variants={fadeInUp}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="grid grid-cols-3 gap-4 pt-2"
+            className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 pt-2"
           >
             {[
               { labelKey: "hero.stats.guidedPlans", value: "1K+" },
@@ -96,7 +96,7 @@ function HeroSection() {
         </MotionDiv>
 
         <MotionDiv
-          className="relative w-full h-full min-h-[400px]"
+          className="relative w-full h-full min-h-[250px] sm:min-h-[350px] md:min-h-[400px]"
           initial={{ opacity: 0, scale: 0.95, y: 12 }}
           whileInView={{ opacity: 1, scale: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -110,7 +110,7 @@ function HeroSection() {
             />
           </div>
           <MotionDiv
-            className="absolute -start-5 top-8 rounded-2xl bg-white/90 dark:bg-slate-800/90 px-4 py-3 shadow-xl backdrop-blur"
+            className="hidden sm:block absolute -start-5 top-8 rounded-2xl bg-white/90 dark:bg-slate-800/90 px-4 py-3 shadow-xl backdrop-blur"
             animate={{ y: [0, -6, 0] }}
             transition={{
               duration: 3.2,
@@ -126,7 +126,7 @@ function HeroSection() {
             </p>
           </MotionDiv>
           <MotionDiv
-            className="absolute -end-5 bottom-8 rounded-2xl bg-white/90 dark:bg-slate-800/90 px-4 py-3 shadow-xl backdrop-blur"
+            className="hidden sm:block absolute -end-5 bottom-8 rounded-2xl bg-white/90 dark:bg-slate-800/90 px-4 py-3 shadow-xl backdrop-blur"
             animate={{ y: [0, 7, 0] }}
             transition={{
               duration: 3.6,

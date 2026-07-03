@@ -54,8 +54,8 @@ function LandingPage() {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className={`fixed bottom-8 ${
-            isRTL ? "left-8" : "right-8"
+          className={`fixed bottom-4 sm:bottom-8 ${
+            isRTL ? "left-4 sm:left-8" : "right-4 sm:right-8"
           } z-50 p-3 bg-emerald-600 text-white rounded-full shadow-lg hover:bg-emerald-700 hover:scale-110 hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-950`}
           aria-label="Scroll to top"
         >
@@ -67,8 +67,8 @@ function LandingPage() {
         href="https://wa.me/201556223681"
         target="_blank"
         rel="noopener noreferrer"
-        className={`fixed bottom-8 ${
-          isRTL ? "right-8" : "left-8"
+        className={`fixed bottom-4 sm:bottom-8 ${
+          isRTL ? "right-4 sm:right-8" : "left-4 sm:left-8"
         } z-50 p-3 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 hover:scale-110 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center`}
         aria-label="Contact us on WhatsApp"
       >

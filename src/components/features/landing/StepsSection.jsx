@@ -30,7 +30,7 @@ function StepsSection() {
   return (
     <section
       id="how-it-works"
-      className="bg-slate-100 dark:bg-slate-900 py-20 px-4 sm:px-6 lg:px-8"
+      className="bg-slate-100 dark:bg-slate-900 py-12 md:py-20 px-4 sm:px-6 lg:px-8"
       dir={isRTL ? "rtl" : "ltr"}
     >
       <div className="mx-auto max-w-7xl">
@@ -51,7 +51,7 @@ function StepsSection() {
           {steps.map((step, idx) => (
             <MotionDiv
               key={idx}
-              className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm dark:shadow-slate-900/50 flex flex-col items-center text-center transition-transform hover:-translate-y-1"
+              className="bg-white dark:bg-slate-800 rounded-3xl p-5 sm:p-8 shadow-sm dark:shadow-slate-900/50 flex flex-col items-center text-center transition-transform hover:-translate-y-1"
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
