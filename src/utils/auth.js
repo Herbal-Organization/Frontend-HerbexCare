@@ -98,8 +98,10 @@ export const clearStoredRole = () => {
 };
 
 export const getUserRole = () => {
+  const stored = localStorage.getItem(USER_ROLE_KEY);
+  if (stored) return stored;
   const user = getUserFromToken();
-  return user?.role || localStorage.getItem(USER_ROLE_KEY) || null;
+  return user?.role || null;
 };
 
 export const isAuthenticated = () => {

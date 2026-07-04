@@ -88,3 +88,20 @@ export const getAdminAllOrders = async (params = {}) => {
   });
   return data;
 };
+
+export const approveOrder = async (orderId) => {
+  const { data } = await httpClient.put(
+    `/api/Orders/${orderId}/simulate-payment`,
+  );
+  return data;
+};
+
+export const rejectOrder = async (orderId) => {
+  const { data } = await httpClient.put(`/api/Orders/${orderId}/cancel`);
+  return data;
+};
+
+export const deleteOrder = async (orderId) => {
+  const { data } = await httpClient.delete(`/api/Orders/${orderId}`);
+  return data;
+};

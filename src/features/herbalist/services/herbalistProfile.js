@@ -2,6 +2,7 @@ import {
   getMyHerbalistProfile,
   updateMyHerbalistProfile,
 } from "@api/herbalists";
+import { getMyUserDetails } from "@api/users";
 
 const HERBALIST_PROFILE_STORAGE_KEY = "herbalist_profile_info";
 
@@ -163,7 +164,13 @@ export const normalizeHerbalistProfile = (profile = {}) => {
 };
 
 export const getHerbalistDashboardData = async (authUser = {}) => {
-  const herbalistProfile = await getMyHerbalistProfile().catch(() => null);
+  const userId = authUser?.userId || authUser?.id;
+  const [herbalistProfile, userDetails] = await Promise.all([
+    getMyHerbalistProfile().catch(() => null),
+    userId
+      ? getMyUserDetails(userId).catch(() => null)
+      : Promise.resolve(null),
+  ]);
   const normalizedProfile = normalizeHerbalistProfile(herbalistProfile || {});
 
   if (herbalistProfile) {
@@ -171,7 +178,7 @@ export const getHerbalistDashboardData = async (authUser = {}) => {
   }
 
   return {
-    userDetails: normalizeHerbalistUser(authUser || {}),
+    userDetails: normalizeHerbalistUser(userDetails || authUser || {}),
     herbalistProfile: normalizedProfile,
   };
 };

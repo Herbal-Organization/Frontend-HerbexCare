@@ -46,6 +46,16 @@ const normalizeDisease = (raw = {}) => ({
   isSupportedByAi: toBoolean(
     pick(raw.isSupportedByAi, raw.isSupportedByAI, raw.aiSupported, false),
   ),
+  proposedBy:
+    pick(
+      raw.proposedBy,
+      raw.proposedByName,
+      raw.herbalistName,
+      raw.herbalist?.fullName,
+      raw.herbalist?.name,
+      raw.userName,
+    ) || "",
+  proposedById: pick(raw.proposedById, raw.herbalistId, raw.userId) || null,
 });
 
 const normalizeDiseaseList = (payload) =>
@@ -226,6 +236,9 @@ function AdminDiseasesPage() {
     const diseaseId = String(disease?.diseaseId ?? disease?.id ?? "");
     if (!diseaseId) return;
 
+    const isApproval = action === approveDisease;
+    const herbalistName = disease?.proposedBy || "the herbalist";
+
     setProcessingDiseaseIds((current) => [...current, diseaseId]);
 
     try {
@@ -234,6 +247,11 @@ function AdminDiseasesPage() {
         setIsDetailsOpen(false);
         setSelectedDisease(null);
       }
+      toast.success(
+        isApproval
+          ? `Disease "${disease.diseaseName}" approved. ${herbalistName} has been notified.`
+          : `Disease "${disease.diseaseName}" rejected. ${herbalistName} has been notified.`,
+      );
       await loadDiseases();
     } catch (err) {
       const message =
@@ -368,6 +386,14 @@ function AdminDiseasesPage() {
                       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                         {disease.diseaseType || "No disease type provided"}
                       </p>
+                      {disease.proposedBy && (
+                        <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
+                          Proposed by:{" "}
+                          <span className="font-semibold text-slate-600 dark:text-slate-300">
+                            {disease.proposedBy}
+                          </span>
+                        </p>
+                      )}
                     </div>
 
                     <button

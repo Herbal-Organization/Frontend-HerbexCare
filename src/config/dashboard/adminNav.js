@@ -15,6 +15,7 @@ import {
   MdLocalShipping,
   MdNature,
   MdPsychology,
+  MdPending,
 } from "react-icons/md";
 
 export const getAdminNavConfig = (t) => [
@@ -29,19 +30,20 @@ export const getAdminNavConfig = (t) => [
     icon: MdPeople,
   },
   {
-    name: t("adminSidebar.patients", "Patients"),
-    href: "/admin/dashboard/patients",
-    icon: MdHealing,
-  },
-  {
-    name: t("adminSidebar.herbalists", "Herbalists"),
-    href: "/admin/dashboard/herbalists",
-    icon: MdLocalFlorist,
-  },
-  {
     name: t("adminSidebar.herbs", "Herbs"),
-    href: "/admin/dashboard/herbs",
     icon: MdLocalFlorist,
+    children: [
+      {
+        name: t("adminSidebar.allHerbs", "All Herbs"),
+        href: "/admin/dashboard/herbs",
+        icon: MdLocalFlorist,
+      },
+      {
+        name: t("adminSidebar.pendingHerbs", "Pending Approvals"),
+        href: "/admin/dashboard/herbs/pending",
+        icon: MdPending,
+      },
+    ],
   },
   {
     name: t("adminSidebar.recipes", "Recipes"),

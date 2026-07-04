@@ -8,6 +8,7 @@ const AuthPage = lazy(() => import("@features/auth/pages/AuthPage"));
 const ConfirmEmailPage = lazy(() => import("@features/auth/pages/ConfirmEmailPage"));
 const ForgetPassword = lazy(() => import("@features/auth/components").then(m => ({ default: m.ForgetPassword })));
 const ResetPasswordPage = lazy(() => import("@features/auth/pages/ResetPasswordPage"));
+const ResetPasswordViaEmailPage = lazy(() => import("@features/auth/pages/ResetPasswordViaEmailPage"));
 
 const PatientDashboard = lazy(() => import("@features/patient/pages/PatientDashboard"));
 const HerbalistDashboard = lazy(() => import("@features/herbalist/pages/HerbalistDashboard"));
@@ -52,6 +53,10 @@ function App() {
               <Navigate to="/forget-password" replace />
             )
           }
+        />
+        <Route
+          path="/reset-password"
+          element={<Suspense><ResetPasswordViaEmailPage /></Suspense>}
         />
 
         {/* Patient Routes */}

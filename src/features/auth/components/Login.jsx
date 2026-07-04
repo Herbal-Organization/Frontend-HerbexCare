@@ -17,6 +17,7 @@ function Login({ setSuccessMsg }) {
   const navigate = useNavigate();
   const [pendingEmail, setPendingEmail] = useState("");
   const [resendSuccess, setResendSuccess] = useState("");
+  const [emailNotConfirmedError, setEmailNotConfirmedError] = useState("");
   const {
     register,
     handleSubmit,
@@ -40,12 +41,22 @@ function Login({ setSuccessMsg }) {
   } = useAsyncAction(loginAccount, {
     defaultErrorMessage: t("auth.login.error"),
     onSuccess: (data) => {
-      handlePostLogin(data, navigate, {
+      setEmailNotConfirmedError("");
+      const result = handlePostLogin(data, navigate, {
         delay: 1000,
         onBeforeNavigate: () => setSuccessMsg(t("auth.login.success")),
+        onEmailNotConfirmed: () => {
+          setPendingEmail(emailValue?.trim().toLowerCase());
+          setEmailNotConfirmedError(t("auth.login.emailNotConfirmed"));
+        },
       });
+      if (result?.emailConfirmed === false) {
+        setPendingEmail(emailValue?.trim().toLowerCase());
+        setEmailNotConfirmedError(t("auth.login.emailNotConfirmed"));
+      }
     },
     onError: (err, message) => {
+      setEmailNotConfirmedError("");
       if (
         message?.includes("confirm") ||
         message?.includes("confirmation") ||
@@ -92,7 +103,7 @@ function Login({ setSuccessMsg }) {
 
   return (
     <div className="w-full">
-      <AuthAlert message={error} type="error" />
+      <AuthAlert message={error || emailNotConfirmedError} type="error" />
       {resendSuccess && (
         <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700">
           {resendSuccess}

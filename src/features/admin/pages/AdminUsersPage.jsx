@@ -1,9 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { FiDatabase } from "react-icons/fi";
-import { registerAccount } from "@api/accounts";
 import { getPatientMedicalHistory } from "@api/medicalHistories";
-import { deleteUser, getAllUsers, getUserById, updateUser } from "@api/users";
+import {
+  createUser,
+  deleteUser,
+  getAllUsers,
+  getUserById,
+  updateUser,
+} from "@api/users";
 import AdminUsersHeader from "@features/admin/components/users/AdminUsersHeader";
 import AdminUsersHero from "@features/admin/components/users/AdminUsersHero";
 import AdminUsersStats from "@features/admin/components/users/AdminUsersStats";
@@ -213,7 +218,7 @@ function AdminUsersPage() {
         await updateUser(modalUser.id, payload);
         toast.success("User updated successfully.");
       } else {
-        await registerAccount(payload);
+        await createUser(payload);
         toast.success("User created successfully.");
       }
 

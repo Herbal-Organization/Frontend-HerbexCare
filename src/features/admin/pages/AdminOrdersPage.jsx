@@ -1,29 +1,31 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import {
+  FaCheck,
   FaChevronLeft,
   FaChevronRight,
-  FaFilter,
-  FaSearch,
+  FaClock,
+  FaDownload,
+  FaShoppingCart,
   FaSyncAlt,
   FaTimes,
-  FaShoppingCart,
-  FaClock,
+  FaDollarSign,
+  FaCalendarCheck,
+  FaBan,
 } from "react-icons/fa";
-import { getAdminAllOrders, getPendingUnapprovedOrders } from "@api/orders";
+import {
+  getAdminAllOrders,
+  getPendingUnapprovedOrders,
+  cancelOrder,
+} from "@api/orders";
+import OrderStatsCard from "@features/admin/components/orders/OrderStatsCard";
+import OrderDetailsModal from "@features/admin/components/orders/OrderDetailsModal";
+import OrderFilters from "@features/admin/components/orders/OrderFilters";
+import OrderBulkActions from "@features/admin/components/orders/OrderBulkActions";
+import AdminPagination from "@features/admin/components/users/AdminPagination";
 
 const DEFAULT_PAGE_SIZE = 10;
-const PAGE_SIZE_OPTIONS = [10, 20, 50];
-
-const STATUS_OPTIONS = [
-  { value: "", label: "All" },
-  { value: "Pending", label: "Pending" },
-  { value: "Approved", label: "Approved" },
-  { value: "Rejected", label: "Rejected" },
-  { value: "Completed", label: "Completed" },
-  { value: "Cancelled", label: "Cancelled" },
-];
 
 const statusColor = (status) => {
   const s = String(status || "").toLowerCase();
@@ -38,144 +40,65 @@ const statusColor = (status) => {
   return "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300";
 };
 
-function OrderDetailsModal({ isOpen, order, onClose, t: _t }) {
-  if (!isOpen || !order) return null;
+function exportToCSV(orders, filename = "orders") {
+  if (!orders.length) {
+    toast.error("No orders to export.");
+    return;
+  }
 
-  const subOrders = Array.isArray(order.subOrders) ? order.subOrders : [];
+  const headers = ["Order ID", "Patient", "Status", "Total Cost", "Date", "Sub-Orders"];
+  const rows = orders.map((o) => [
+    o.orderId ?? o.id,
+    o.patientName || o.patientUserName || "",
+    o.status || o.orderStatus || "",
+    o.totalCost != null ? Number(o.totalCost).toFixed(2) : "",
+    o.createdAt || o.orderDate
+      ? new Date(o.createdAt || o.orderDate).toLocaleDateString()
+      : "",
+    Array.isArray(o.subOrders) ? o.subOrders.length : 0,
+  ]);
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/45 p-4 backdrop-blur-sm sm:items-center">
-      <div className="w-full max-w-3xl overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-xl max-h-[90vh] flex flex-col">
-        <div className="flex items-start justify-between gap-4 border-b border-slate-100 bg-slate-50 px-6 py-5 shrink-0">
-          <div className="min-w-0">
-            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-emerald-700">
-              Order Details
-            </p>
-            <h2 className="mt-2 truncate text-xl font-black text-slate-900">
-              Order #{order.orderId ?? order.id}
-            </h2>
-            <div className="mt-1 flex flex-wrap gap-2 text-sm text-slate-500">
-              <span
-                className={`inline-flex rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide ${statusColor(order.status || order.orderStatus)}`}
-              >
-                {order.status || order.orderStatus || "Unknown"}
-              </span>
-              {order.totalCost != null && (
-                <span className="font-semibold">
-                  Total: ${Number(order.totalCost).toFixed(2)}
-                </span>
-              )}
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 transition-colors hover:border-rose-200 hover:text-rose-700 shrink-0"
-          >
-            <FaTimes />
-          </button>
-        </div>
-
-        <div className="overflow-y-auto flex-1 p-6 space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-2xl bg-slate-50 px-4 py-3">
-              <p className="text-xs font-bold text-slate-600">Patient</p>
-              <p className="mt-1 text-sm text-slate-700">
-                {order.patientName || order.patientUserName || "N/A"}
-              </p>
-            </div>
-            <div className="rounded-2xl bg-slate-50 px-4 py-3">
-              <p className="text-xs font-bold text-slate-600">Date</p>
-              <p className="mt-1 text-sm text-slate-700">
-                {order.createdAt || order.orderDate
-                  ? new Date(
-                      order.createdAt || order.orderDate,
-                    ).toLocaleDateString()
-                  : "N/A"}
-              </p>
-            </div>
-          </div>
-
-          {order.shippingAddress && (
-            <div className="rounded-2xl bg-slate-50 px-4 py-3">
-              <p className="text-xs font-bold text-slate-600">
-                Shipping Address
-              </p>
-              <p className="mt-1 text-sm text-slate-700">
-                {order.shippingAddress}
-              </p>
-            </div>
-          )}
-
-          {subOrders.length > 0 && (
-            <div className="rounded-2xl border border-slate-200 p-4">
-              <p className="text-xs font-bold text-slate-600 mb-3">
-                Sub-Orders ({subOrders.length})
-              </p>
-              <div className="space-y-3">
-                {subOrders.map((sub, i) => (
-                  <div
-                    key={sub.subOrderId || i}
-                    className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
-                  >
-                    <div>
-                      <p className="text-sm font-semibold text-slate-800">
-                        {sub.herbalistName ||
-                          sub.herbalistUserName ||
-                          `Sub-order #${sub.subOrderId || i + 1}`}
-                      </p>
-                      <span
-                        className={`inline-flex mt-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${statusColor(sub.status || sub.subOrderStatus)}`}
-                      >
-                        {sub.status || sub.subOrderStatus || "—"}
-                      </span>
-                    </div>
-                    {sub.totalPrice != null && (
-                      <p className="text-sm font-bold text-slate-700">
-                        ${Number(sub.totalPrice).toFixed(2)}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+  const csv = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `${filename}_${new Date().toISOString().slice(0, 10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+  toast.success("CSV exported successfully.");
 }
 
 function AdminOrdersPage() {
   const { t } = useTranslation();
   const [orders, setOrders] = useState([]);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
-  const [totalPages, setTotalPages] = useState(1);
+  const [pendingOrders, setPendingOrders] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [pendingLoading, setPendingLoading] = useState(false);
+  const [error, setError] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
-  const [pendingOrders, setPendingOrders] = useState([]);
-  const [pendingLoading, setPendingLoading] = useState(false);
 
-  const loadOrders = async ({
-    nextPage = pageNumber,
-    nextSize = pageSize,
-  } = {}) => {
+  const loadOrders = async (page = 1, size = pageSize) => {
     setIsLoading(true);
     setError("");
 
     try {
-      const params = {
-        PageNumber: nextPage,
-        PageSize: nextSize,
-      };
+      const params = { PageNumber: page, PageSize: size };
       if (searchValue.trim()) params.SearchValue = searchValue.trim();
       if (statusFilter) params.Status = statusFilter;
+      if (dateFrom) params.DateFrom = dateFrom;
+      if (dateTo) params.DateTo = dateTo;
 
       const response = await getAdminAllOrders(params);
       const items = Array.isArray(response?.items)
@@ -184,8 +107,9 @@ function AdminOrdersPage() {
           ? response
           : [];
       setOrders(items);
-      setPageNumber(response?.pageNumber ?? nextPage);
       setTotalPages(Math.max(1, response?.totalPages ?? 1));
+      setTotalItems(response?.totalCount ?? items.length);
+      setCurrentPage(response?.pageNumber ?? page);
     } catch (err) {
       const message =
         err?.response?.data?.message ||
@@ -201,7 +125,10 @@ function AdminOrdersPage() {
   const loadPendingOrders = async () => {
     setPendingLoading(true);
     try {
-      const response = await getPendingUnapprovedOrders({ PageNumber: 1, PageSize: 50 });
+      const response = await getPendingUnapprovedOrders({
+        PageNumber: 1,
+        PageSize: 50,
+      });
       const items = Array.isArray(response?.items)
         ? response.items
         : Array.isArray(response)
@@ -220,22 +147,97 @@ function AdminOrdersPage() {
   };
 
   useEffect(() => {
+    loadOrders(1, pageSize);
+  }, []);
+
+  useEffect(() => {
     if (activeTab === "pending") {
       loadPendingOrders();
     }
   }, [activeTab]);
 
   useEffect(() => {
-    loadOrders({ nextPage: 1, nextSize: pageSize });
-  }, [pageSize, statusFilter]);
+    setSelectedIds([]);
+  }, [statusFilter, searchValue, dateFrom, dateTo]);
 
-  useEffect(() => {
-    loadOrders({ nextPage: pageNumber, nextSize: pageSize });
-  }, [pageNumber]);
+  const stats = useMemo(() => {
+    const allItems = activeTab === "all" ? orders : pendingOrders;
+    const total = allItems.length;
+    const pending = allItems.filter(
+      (o) => (o.status || o.orderStatus || "").toLowerCase() === "pending",
+    ).length;
+    const completed = allItems.filter(
+      (o) => (o.status || o.orderStatus || "").toLowerCase() === "completed",
+    ).length;
+    const revenue = allItems
+      .filter(
+        (o) => (o.status || o.orderStatus || "").toLowerCase() === "completed",
+      )
+      .reduce((sum, o) => sum + (Number(o.totalCost) || 0), 0);
+    return { total, pending, completed, revenue };
+  }, [orders, pendingOrders, activeTab]);
 
   const formatDate = (dateString) => {
-    if (!dateString) return "—";
+    if (!dateString) return "\u2014";
     return new Date(dateString).toLocaleDateString();
+  };
+
+  const isAllSelected =
+    orders.length > 0 && selectedIds.length === orders.length;
+  const isIndeterminate =
+    selectedIds.length > 0 && selectedIds.length < orders.length;
+
+  const toggleSelectAll = () => {
+    if (isAllSelected) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(orders.map((o) => String(o.orderId ?? o.id)));
+    }
+  };
+
+  const toggleSelect = (id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id)
+        ? prev.filter((x) => x !== id)
+        : [...prev, id],
+    );
+  };
+
+  const handleBulkReject = async () => {
+    if (!selectedIds.length) return;
+    if (
+      !window.confirm(
+        `Cancel ${selectedIds.length} order(s)? This action cannot be undone.`,
+      )
+    )
+      return;
+
+    setIsProcessing(true);
+    try {
+      await Promise.allSettled(selectedIds.map((id) => cancelOrder(id)));
+      toast.success(`${selectedIds.length} order(s) cancelled.`);
+      setSelectedIds([]);
+      await loadOrders(currentPage);
+    } catch {
+      toast.error("Failed to cancel some orders.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleExportAll = () => {
+    exportToCSV(orders, "admin_orders");
+  };
+
+  const handleExportSelected = () => {
+    const selected = orders.filter((o) =>
+      selectedIds.includes(String(o.orderId ?? o.id)),
+    );
+    exportToCSV(selected, "admin_orders_selected");
+  };
+
+  const handleExportPending = () => {
+    exportToCSV(pendingOrders, "admin_orders_pending");
   };
 
   return (
@@ -246,28 +248,70 @@ function AdminOrdersPage() {
           <div className="max-w-7xl">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-emerald-200">
               <FaShoppingCart className="text-sm" />
-              Orders
+              {t("adminSidebar.orders", "Orders")}
             </span>
             <h1 className="mt-4 text-3xl font-black tracking-tight md:text-5xl">
-              {t("adminOrders.title", "All Orders")}
+              {t("adminOrders.title", "Manage Orders")}
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-200 md:text-base">
               {t(
                 "adminOrders.subtitle",
-                "View and manage all patient orders across the platform.",
+                "View, filter, and manage all patient orders across the platform.",
               )}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => loadOrders({ nextPage: pageNumber, nextSize: pageSize })}
-            className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/15"
-          >
-            <FaSyncAlt className="text-sm" />
-            Refresh
-          </button>
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={handleExportAll}
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/15"
+            >
+              <FaDownload className="text-sm" />
+              Export CSV
+            </button>
+            <button
+              type="button"
+              onClick={() => loadOrders(currentPage)}
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/15"
+            >
+              <FaSyncAlt className="text-sm" />
+              Refresh
+            </button>
+          </div>
         </div>
       </section>
+
+      {/* Stats */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <OrderStatsCard
+          label="Total Orders"
+          value={stats.total}
+          hint="Orders in current view."
+          icon={<FaShoppingCart className="text-2xl" />}
+          tone="emerald"
+        />
+        <OrderStatsCard
+          label="Pending"
+          value={stats.pending}
+          hint="Awaiting processing."
+          icon={<FaClock className="text-2xl" />}
+          tone="amber"
+        />
+        <OrderStatsCard
+          label="Completed"
+          value={stats.completed}
+          hint="Successfully delivered."
+          icon={<FaCalendarCheck className="text-2xl" />}
+          tone="blue"
+        />
+        <OrderStatsCard
+          label="Revenue"
+          value={`$${stats.revenue.toFixed(2)}`}
+          hint="From completed orders."
+          icon={<FaDollarSign className="text-2xl" />}
+          tone="emerald"
+        />
+      </div>
 
       {error && (
         <div className="rounded-3xl border border-rose-100 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/40 px-4 py-3 text-sm font-medium text-rose-700 dark:text-rose-400">
@@ -308,6 +352,20 @@ function AdminOrdersPage() {
         </button>
       </div>
 
+      {/* Bulk Actions */}
+      {activeTab === "all" && (
+        <OrderBulkActions
+          selectedCount={selectedIds.length}
+          onApprove={() => toast.info("Bulk approve coming soon.")}
+          onReject={handleBulkReject}
+          onDelete={() => toast.info("Bulk delete coming soon.")}
+          onExportSelected={handleExportSelected}
+          onClearSelection={() => setSelectedIds([])}
+          isProcessing={isProcessing}
+        />
+      )}
+
+      {/* Pending Tab */}
       {activeTab === "pending" ? (
         <section className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
           <div className="flex flex-col gap-4 border-b border-slate-100 dark:border-slate-700 pb-4 lg:flex-row lg:items-end lg:justify-between">
@@ -316,18 +374,28 @@ function AdminOrdersPage() {
                 Pending Unapproved Orders
               </h2>
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                Orders waiting for approval.
+                Orders waiting for admin review.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={loadPendingOrders}
-              disabled={pendingLoading}
-              className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/70 px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50"
-            >
-              <FaSyncAlt className="text-sm" />
-              Refresh
-            </button>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleExportPending}
+                className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/70 px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                <FaDownload className="text-sm" />
+                Export
+              </button>
+              <button
+                type="button"
+                onClick={loadPendingOrders}
+                disabled={pendingLoading}
+                className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/70 px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50"
+              >
+                <FaSyncAlt className="text-sm" />
+                Refresh
+              </button>
+            </div>
           </div>
 
           {pendingLoading ? (
@@ -335,8 +403,16 @@ function AdminOrdersPage() {
               <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-emerald-500" />
             </div>
           ) : pendingOrders.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-12 text-center text-sm text-slate-500 dark:text-slate-400">
-              No pending unapproved orders.
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
+                <FaCalendarCheck className="text-2xl" />
+              </div>
+              <h3 className="mt-4 text-lg font-bold text-slate-900 dark:text-slate-100">
+                All caught up!
+              </h3>
+              <p className="mt-1 max-w-sm text-sm text-slate-500 dark:text-slate-400">
+                No orders are waiting for approval.
+              </p>
             </div>
           ) : (
             <div className="pt-5">
@@ -380,15 +456,21 @@ function AdminOrdersPage() {
                               </p>
                             </td>
                             <td className="px-5 py-4 text-sm text-slate-700 dark:text-slate-300">
-                              {order.patientName || order.patientUserName || "—"}
+                              {order.patientName ||
+                                order.patientUserName ||
+                                "\u2014"}
                             </td>
                             <td className="px-5 py-4">
-                              <span className={`inline-flex rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide ${statusColor(order.status || order.orderStatus)}`}>
-                                {order.status || order.orderStatus || "—"}
+                              <span
+                                className={`inline-flex rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide ${statusColor(order.status || order.orderStatus)}`}
+                              >
+                                {order.status || order.orderStatus || "\u2014"}
                               </span>
                             </td>
                             <td className="px-5 py-4 text-sm font-semibold text-slate-800 dark:text-slate-200">
-                              {order.totalCost != null ? `$${Number(order.totalCost).toFixed(2)}` : "—"}
+                              {order.totalCost != null
+                                ? `$${Number(order.totalCost).toFixed(2)}`
+                                : "\u2014"}
                             </td>
                             <td className="px-5 py-4 text-sm text-slate-500 dark:text-slate-400">
                               {formatDate(order.createdAt || order.orderDate)}
@@ -400,58 +482,24 @@ function AdminOrdersPage() {
                   </table>
                 </div>
               </div>
-              <p className="mt-4 text-sm text-slate-500 dark:text-slate-400 text-center">
-                Showing {pendingOrders.length} order{pendingOrders.length !== 1 ? "s" : ""} pending approval.
+              <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
+                Showing {pendingOrders.length} order
+                {pendingOrders.length !== 1 ? "s" : ""} pending approval.
               </p>
             </div>
           )}
         </section>
       ) : (
-      <section className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
-        <div className="flex flex-col gap-4 border-b border-slate-100 dark:border-slate-700 pb-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-              Orders list
-            </h2>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              Page {pageNumber} of {totalPages}.
-            </p>
-          </div>
-
-          <div className="flex w-full flex-col gap-3 lg:w-auto lg:flex-row lg:items-center">
-            <div className="relative w-full lg:w-72">
-              <div className="pointer-events-none absolute inset-y-0 inset-s-0 flex items-center ps-4 text-slate-400">
-                <FaSearch className="text-sm" />
-              </div>
-              <input
-                type="text"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter")
-                    loadOrders({ nextPage: 1, nextSize: pageSize });
-                }}
-                placeholder="Search orders..."
-                className="block w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/70 py-3 ps-11 pe-4 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/10"
-              />
-            </div>
-
-            <div className="flex items-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/70 px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
-              <FaFilter className="text-slate-400" />
-              <select
-                value={statusFilter}
-                onChange={(e) => {
-                  setStatusFilter(e.target.value);
-                  setPageNumber(1);
-                }}
-                className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-1 text-sm font-bold text-slate-800 dark:text-slate-200 outline-none"
-              >
-                {STATUS_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+        /* All Orders Tab */
+        <section className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+          <div className="flex flex-col gap-4 border-b border-slate-100 dark:border-slate-700 pb-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                Orders List
+              </h2>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                {totalItems} orders total. Page {currentPage} of {totalPages}.
+              </p>
             </div>
 
             <div className="flex items-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/70 px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
@@ -460,11 +508,12 @@ function AdminOrdersPage() {
                 value={pageSize}
                 onChange={(e) => {
                   setPageSize(Number(e.target.value) || DEFAULT_PAGE_SIZE);
-                  setPageNumber(1);
+                  setCurrentPage(1);
+                  loadOrders(1, Number(e.target.value) || DEFAULT_PAGE_SIZE);
                 }}
                 className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-1 text-sm font-bold text-slate-800 dark:text-slate-200 outline-none"
               >
-                {PAGE_SIZE_OPTIONS.map((opt) => (
+                {[10, 20, 50].map((opt) => (
                   <option key={opt} value={opt}>
                     {opt}
                   </option>
@@ -472,121 +521,231 @@ function AdminOrdersPage() {
               </select>
             </div>
           </div>
-        </div>
 
-        {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-emerald-500" />
+          <div className="mt-4">
+            <OrderFilters
+              searchValue={searchValue}
+              onSearchChange={setSearchValue}
+              onSearchEnter={() => {
+                setCurrentPage(1);
+                loadOrders(1);
+              }}
+              statusFilter={statusFilter}
+              onStatusChange={(val) => {
+                setStatusFilter(val);
+                setCurrentPage(1);
+                loadOrders(1);
+              }}
+              dateFrom={dateFrom}
+              onDateFromChange={(val) => {
+                setDateFrom(val);
+                setCurrentPage(1);
+                loadOrders(1);
+              }}
+              dateTo={dateTo}
+              onDateToChange={(val) => {
+                setDateTo(val);
+                setCurrentPage(1);
+                loadOrders(1);
+              }}
+            />
           </div>
-        ) : orders.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-12 text-center text-sm text-slate-500 dark:text-slate-400">
-            No orders found.
-          </div>
-        ) : (
-          <div className="pt-5">
-            <div className="overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-700">
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-                  <thead className="bg-slate-50">
-                    <tr>
-                      <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
-                        Order ID
-                      </th>
-                      <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
-                        Patient
-                      </th>
-                      <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
-                        Status
-                      </th>
-                      <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
-                        Total
-                      </th>
-                      <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
-                        Date
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-700 bg-white dark:bg-slate-800">
-                    {orders.map((order) => {
-                      const id = order.orderId ?? order.id;
-                      return (
-                        <tr
-                          key={id}
-                          onClick={() => {
-                            setSelectedOrder(order);
-                            setIsDetailsOpen(true);
-                          }}
-                          className="cursor-pointer transition-colors hover:bg-emerald-50/40 dark:hover:bg-emerald-900/20"
-                        >
-                          <td className="px-5 py-4">
-                            <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                              #{id}
-                            </p>
-                          </td>
-                          <td className="px-5 py-4 text-sm text-slate-700 dark:text-slate-300">
-                            {order.patientName ||
-                              order.patientUserName ||
-                              "—"}
-                          </td>
-                          <td className="px-5 py-4">
-                            <span
-                              className={`inline-flex rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide ${statusColor(order.status || order.orderStatus)}`}
+
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-emerald-500" />
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400">
+                <FaBan className="text-2xl" />
+              </div>
+              <h3 className="mt-4 text-lg font-bold text-slate-900 dark:text-slate-100">
+                No orders found
+              </h3>
+              <p className="mt-1 max-w-sm text-sm text-slate-500 dark:text-slate-400">
+                {searchValue || statusFilter || dateFrom || dateTo
+                  ? "Try adjusting your filters."
+                  : "No orders have been placed yet."}
+              </p>
+            </div>
+          ) : (
+            <div className="pt-5">
+              <div className="overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-700">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                    <thead className="bg-slate-50">
+                      <tr>
+                        <th className="px-5 py-3 text-left">
+                          <input
+                            type="checkbox"
+                            checked={isAllSelected}
+                            ref={(el) => {
+                              if (el) el.indeterminate = isIndeterminate;
+                            }}
+                            onChange={toggleSelectAll}
+                            className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                          />
+                        </th>
+                        <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                          Order ID
+                        </th>
+                        <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                          Patient
+                        </th>
+                        <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                          Status
+                        </th>
+                        <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                          Total
+                        </th>
+                        <th className="px-5 py-3 text-left text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                          Date
+                        </th>
+                        <th className="px-5 py-3 text-right text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-700 bg-white dark:bg-slate-800">
+                      {orders.map((order) => {
+                        const id = String(order.orderId ?? order.id);
+                        const isSelected = selectedIds.includes(id);
+                        return (
+                          <tr
+                            key={id}
+                            className={`cursor-pointer transition-colors ${
+                              isSelected
+                                ? "bg-emerald-50/60 dark:bg-emerald-900/20"
+                                : "hover:bg-emerald-50/40 dark:hover:bg-emerald-900/20"
+                            }`}
+                          >
+                            <td className="px-5 py-4">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                onChange={() => toggleSelect(id)}
+                                className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                              />
+                            </td>
+                            <td
+                              className="px-5 py-4"
+                              onClick={() => {
+                                setSelectedOrder(order);
+                                setIsDetailsOpen(true);
+                              }}
                             >
-                              {order.status || order.orderStatus || "—"}
-                            </span>
-                          </td>
-                          <td className="px-5 py-4 text-sm font-semibold text-slate-800 dark:text-slate-200">
-                            {order.totalCost != null
-                              ? `$${Number(order.totalCost).toFixed(2)}`
-                              : "—"}
-                          </td>
-                          <td className="px-5 py-4 text-sm text-slate-500 dark:text-slate-400">
-                            {formatDate(
-                              order.createdAt || order.orderDate,
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                              <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                                #{id}
+                              </p>
+                            </td>
+                            <td
+                              className="px-5 py-4 text-sm text-slate-700 dark:text-slate-300"
+                              onClick={() => {
+                                setSelectedOrder(order);
+                                setIsDetailsOpen(true);
+                              }}
+                            >
+                              {order.patientName ||
+                                order.patientUserName ||
+                                "\u2014"}
+                            </td>
+                            <td
+                              className="px-5 py-4"
+                              onClick={() => {
+                                setSelectedOrder(order);
+                                setIsDetailsOpen(true);
+                              }}
+                            >
+                              <span
+                                className={`inline-flex rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide ${statusColor(order.status || order.orderStatus)}`}
+                              >
+                                {order.status || order.orderStatus || "\u2014"}
+                              </span>
+                            </td>
+                            <td
+                              className="px-5 py-4 text-sm font-semibold text-slate-800 dark:text-slate-200"
+                              onClick={() => {
+                                setSelectedOrder(order);
+                                setIsDetailsOpen(true);
+                              }}
+                            >
+                              {order.totalCost != null
+                                ? `$${Number(order.totalCost).toFixed(2)}`
+                                : "\u2014"}
+                            </td>
+                            <td
+                              className="px-5 py-4 text-sm text-slate-500 dark:text-slate-400"
+                              onClick={() => {
+                                setSelectedOrder(order);
+                                setIsDetailsOpen(true);
+                              }}
+                            >
+                              {formatDate(order.createdAt || order.orderDate)}
+                            </td>
+                            <td className="px-5 py-4 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toast.info("Approve coming soon.");
+                                  }}
+                                  className="inline-flex items-center gap-1 rounded-xl border border-emerald-200 px-3 py-2 text-xs font-bold text-emerald-700 transition-colors hover:bg-emerald-50"
+                                >
+                                  <FaCheck className="text-[10px]" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
+                                    if (
+                                      !window.confirm(
+                                        `Cancel order #${id}?`,
+                                      )
+                                    )
+                                      return;
+                                    try {
+                                      await cancelOrder(id);
+                                      toast.success(`Order #${id} cancelled.`);
+                                      await loadOrders(currentPage);
+                                    } catch {
+                                      toast.error("Failed to cancel order.");
+                                    }
+                                  }}
+                                  className="inline-flex items-center gap-1 rounded-xl border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700 transition-colors hover:bg-rose-50"
+                                >
+                                  <FaTimes className="text-[10px]" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div className="mt-5">
+                <AdminPagination
+                  totalItems={totalItems}
+                  itemsPerPage={pageSize}
+                  currentPage={currentPage}
+                  onPageChange={(page) => {
+                    setCurrentPage(page);
+                    loadOrders(page);
+                  }}
+                />
               </div>
             </div>
-
-            {totalPages > 1 && (
-              <div className="mt-5 flex items-center justify-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setPageNumber((p) => Math.max(1, p - 1))}
-                  disabled={pageNumber <= 1 || isLoading}
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-600 transition-colors hover:border-emerald-300 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  <FaChevronLeft />
-                </button>
-                <span className="px-3 text-sm font-bold text-slate-700 dark:text-slate-300">
-                  {pageNumber} / {totalPages}
-                </span>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setPageNumber((p) => Math.min(totalPages, p + 1))
-                  }
-                  disabled={pageNumber >= totalPages || isLoading}
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-600 transition-colors hover:border-emerald-300 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  <FaChevronRight />
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-      </section>
+          )}
+        </section>
       )}
 
       <OrderDetailsModal
         isOpen={isDetailsOpen}
         order={selectedOrder}
-        t={t}
         onClose={() => {
           setIsDetailsOpen(false);
           setSelectedOrder(null);

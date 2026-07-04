@@ -1,6 +1,6 @@
 import axios from "axios";
 import { API_BASE_URL } from "@api/config";
-import { getUserRole, setStoredRole } from "@utils/auth";
+import { getUserRole, setStoredRole, normalizeUserRole, decodeJWT } from "@utils/auth";
 
 const ACCESS_TOKEN_KEY = "accessToken";
 const REFRESH_TOKEN_KEY = "refreshToken";
@@ -72,6 +72,30 @@ export const endAuthSession = async () => {
   }
 };
 
+/**
+ * Check if the email is confirmed from JWT claims.
+ * Handles common .NET Identity claim names.
+ */
+export const isEmailConfirmed = (accessToken) => {
+  if (!accessToken) return false;
+
+  const decoded = decodeJWT(accessToken);
+  if (!decoded) return true; // If we can't decode, assume confirmed to avoid false positives
+
+  // Check common email confirmation claim names
+  const confirmed =
+    decoded.email_confirmed ??
+    decoded.EmailConfirmed ??
+    decoded.email_verified ??
+    decoded.EmailVerified ??
+    decoded.emailconfirmed;
+
+  // If no claim found, assume confirmed (backend may not include this claim)
+  if (confirmed === undefined || confirmed === null) return true;
+
+  return confirmed === true || confirmed === "true" || confirmed === 1;
+};
+
 export const getPostLoginRoute = (role) => {
   if (role === "Patient") {
     return "/patient/dashboard";
@@ -102,9 +126,9 @@ export const getPostLoginRoute = (role) => {
 export const handlePostLogin = (
   data,
   navigate,
-  { delay = 1000, onBeforeNavigate } = {},
+  { delay = 1000, onBeforeNavigate, onEmailNotConfirmed } = {},
 ) => {
-  if (!data) return;
+  if (!data) return { emailConfirmed: true };
 
   // Unwrap nested response (handles both flat and wrapped { data: {...} } formats)
   const payload = data.data ?? data;
@@ -123,12 +147,16 @@ export const handlePostLogin = (
   };
   storeAuthTokens(normalized);
 
-  // Detect and store role
+  // Check if email is confirmed from JWT claims
+  if (!isEmailConfirmed(normalized.accessToken)) {
+    clearAuthTokens();
+    onEmailNotConfirmed?.();
+    return { emailConfirmed: false };
+  }
+
+  // Detect and store role (normalize to handle variant casings like "superadmin", "admin", etc.)
   const detectedRole = payload.role ?? payload.Role ?? getUserRole();
-  const validRoles = ["Patient", "Herbalist", "SuperAdmin"];
-  const finalRole = validRoles.includes(detectedRole)
-    ? detectedRole
-    : "Patient";
+  const finalRole = normalizeUserRole(detectedRole) || "Patient";
   setStoredRole(finalRole);
 
   onBeforeNavigate?.();
@@ -136,4 +164,6 @@ export const handlePostLogin = (
   window.setTimeout(() => {
     navigate(getPostLoginRoute(finalRole));
   }, delay);
+
+  return { emailConfirmed: true };
 };

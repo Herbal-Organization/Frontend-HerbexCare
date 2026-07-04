@@ -34,11 +34,11 @@ function ForgetPassword() {
     defaultErrorMessage: t("auth.forgotPassword.error"),
     onSuccess: () => {
       setSuccessMessage(
-        "Password reset successful. You can now sign in using your new password.",
+        "Check your email for a password reset link.",
       );
       reset();
       window.setTimeout(() => {
-        navigate("/auth");
+        navigate("/auth/login");
       }, 1500);
     },
   });

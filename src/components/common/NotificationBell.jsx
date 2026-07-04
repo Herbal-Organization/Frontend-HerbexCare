@@ -14,35 +14,64 @@ function NotificationBell() {
   const [notifications, setNotifications] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [hasAccessError, setHasAccessError] = useState(false);
+  const [fetchError, setFetchError] = useState(null);
   const dropdownRef = useRef(null);
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   const fetchNotifications = useCallback(async () => {
+    if (hasAccessError) return;
     try {
       const response = await getMyNotifications();
-      const items = Array.isArray(response)
-        ? response
-        : Array.isArray(response?.items)
-          ? response.items
-          : [];
+      console.log("[Notifications] API response:", response);
+
+      let items = [];
+      if (Array.isArray(response)) {
+        items = response;
+      } else if (Array.isArray(response?.items)) {
+        items = response.items;
+      } else if (Array.isArray(response?.data)) {
+        items = response.data;
+      } else if (Array.isArray(response?.result)) {
+        items = response.result;
+      } else if (Array.isArray(response?.data?.items)) {
+        items = response.data.items;
+      }
+
       setNotifications(items);
-    } catch {
-      // Silently fail for background polling
+      setHasAccessError(false);
+      setFetchError(null);
+    } catch (err) {
+      console.error("[Notifications] Fetch error:", err);
+      if (err?.response?.status === 403) {
+        setHasAccessError(true);
+      } else {
+        setFetchError(
+          err?.response?.data?.message ||
+            err?.message ||
+            "Failed to load notifications",
+        );
+      }
+    } finally {
+      setIsInitialLoading(false);
     }
-  }, []);
+  }, [hasAccessError]);
 
   useEffect(() => {
+    if (hasAccessError) return;
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 60000);
     return () => clearInterval(interval);
-  }, [fetchNotifications]);
+  }, [fetchNotifications, hasAccessError]);
 
   useEffect(() => {
+    if (hasAccessError) return;
     const handleFocus = () => fetchNotifications();
     window.addEventListener("focus", handleFocus);
     return () => window.removeEventListener("focus", handleFocus);
-  }, [fetchNotifications]);
+  }, [fetchNotifications, hasAccessError]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -125,7 +154,7 @@ function NotificationBell() {
         aria-label={t("notifications.title", "Notifications")}
       >
         <FaBell className="w-5 h-5" />
-        {unreadCount > 0 && (
+        {!hasAccessError && unreadCount > 0 && (
           <span className="absolute -top-0.5 -end-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
@@ -137,14 +166,14 @@ function NotificationBell() {
           <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 px-4 py-3">
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
               {t("notifications.title", "Notifications")}
-              {unreadCount > 0 && (
+              {!hasAccessError && unreadCount > 0 && (
                 <span className="ms-2 inline-flex items-center rounded-full bg-red-50 dark:bg-red-900/30 px-2 py-0.5 text-[10px] font-bold text-red-600 dark:text-red-400">
                   {unreadCount}{" "}
                   {t("notifications.unread", "unread")}
                 </span>
               )}
             </h3>
-            {unreadCount > 0 && (
+            {!hasAccessError && unreadCount > 0 && (
               <button
                 type="button"
                 onClick={handleMarkAllAsRead}
@@ -158,7 +187,39 @@ function NotificationBell() {
           </div>
 
           <div className="max-h-80 overflow-y-auto">
-            {notifications.length === 0 ? (
+            {hasAccessError ? (
+              <div className="px-4 py-10 text-center">
+                <FaBell className="mx-auto mb-3 text-2xl text-slate-300 dark:text-slate-600" />
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  {t(
+                    "notifications.noAccess",
+                    "You don't have permission to view notifications",
+                  )}
+                </p>
+              </div>
+            ) : fetchError ? (
+              <div className="px-4 py-10 text-center">
+                <FaBell className="mx-auto mb-3 text-2xl text-red-300 dark:text-red-600" />
+                <p className="text-sm text-red-500 dark:text-red-400">
+                  {fetchError}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFetchError(null);
+                    setIsInitialLoading(true);
+                    fetchNotifications();
+                  }}
+                  className="mt-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+                >
+                  {t("notifications.retry", "Retry")}
+                </button>
+              </div>
+            ) : isInitialLoading ? (
+              <div className="px-4 py-10 text-center">
+                <span className="h-6 w-6 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent inline-block" />
+              </div>
+            ) : notifications.length === 0 ? (
               <div className="px-4 py-10 text-center">
                 <FaBell className="mx-auto mb-3 text-2xl text-slate-300 dark:text-slate-600" />
                 <p className="text-sm text-slate-500 dark:text-slate-400">

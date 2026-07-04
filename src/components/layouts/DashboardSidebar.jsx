@@ -113,12 +113,14 @@ function DashboardSidebar({
           {navigation.map((item) => {
             const hasChildren = item.children && item.children.length > 0;
             const isExpanded = expandedItems[item.name];
-            const isCurrent = item.href.includes("#")
-              ? currentPath === item.href
-              : item.href === `/${role}/dashboard`
-                ? location.pathname === `/${role}/dashboard` ||
-                  location.pathname === `/${role}/dashboard/`
-                : location.pathname.startsWith(item.href);
+            const isCurrent = hasChildren
+              ? item.children.some((child) => location.pathname === child.href)
+              : item.href?.includes("#")
+                ? currentPath === item.href
+                : item.href === `/${role}/dashboard`
+                  ? location.pathname === `/${role}/dashboard` ||
+                    location.pathname === `/${role}/dashboard/`
+                  : location.pathname.startsWith(item.href);
 
             const Icon = item.icon;
 

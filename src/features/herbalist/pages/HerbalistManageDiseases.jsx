@@ -164,7 +164,7 @@ function HerbalistManageDiseases() {
       setDiseases((prev) => [newDisease, ...prev]);
       setShowCreateForm(false);
       toast.success(
-        `Disease "${newDisease.diseaseName}" created successfully!`,
+        `Disease "${newDisease.diseaseName}" submitted for admin review.`,
       );
 
       // Reset search

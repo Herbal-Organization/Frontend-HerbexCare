@@ -16,18 +16,18 @@ import AdminDiseasesPage from "./AdminDiseasesPage";
 import AdminAiChatConsultationsPage from "./AdminAiChatConsultationsPage";
 import AdminInventoryAiChatPage from "./AdminInventoryAiChatPage";
 import AdminNotificationsPage from "./AdminNotificationsPage";
-import AdminHerbsPage from "./AdminHerbsPage";
+import AdminHerbsAllPage from "./AdminHerbsAllPage";
+import AdminHerbsPendingPage from "./AdminHerbsPendingPage";
 import AdminRecipesPage from "./AdminRecipesPage";
 import AdminOrdersPage from "./AdminOrdersPage";
 import AdminSubOrdersPage from "./AdminSubOrdersPage";
-import AdminHerbalistsPage from "./AdminHerbalistsPage";
-import AdminPatientsPage from "./AdminPatientsPage";
 import AdminFeedbacksPage from "./AdminFeedbacksPage";
 import AdminReviewsPage from "./AdminReviewsPage";
 import AdminInventoryHerbsPage from "./AdminInventoryHerbsPage";
 import AdminInventoryRecipesPage from "./AdminInventoryRecipesPage";
 import AdminInventoryAIRecipesPage from "./AdminInventoryAIRecipesPage";
 import AdminAiConsultationsPage from "./AdminAiConsultationsPage";
+import AdminSettings from "./AdminSettings";
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -93,18 +93,18 @@ function AdminDashboard() {
           element={<AdminInventoryAiChatPage />}
         />
         <Route path="/notifications" element={<AdminNotificationsPage />} />
-        <Route path="/herbs" element={<AdminHerbsPage />} />
+        <Route path="/herbs" element={<AdminHerbsAllPage />} />
+        <Route path="/herbs/pending" element={<AdminHerbsPendingPage />} />
         <Route path="/recipes" element={<AdminRecipesPage />} />
         <Route path="/orders" element={<AdminOrdersPage />} />
         <Route path="/sub-orders" element={<AdminSubOrdersPage />} />
-        <Route path="/herbalists" element={<AdminHerbalistsPage />} />
-        <Route path="/patients" element={<AdminPatientsPage />} />
         <Route path="/feedbacks" element={<AdminFeedbacksPage />} />
         <Route path="/reviews" element={<AdminReviewsPage />} />
         <Route path="/inventory-herbs" element={<AdminInventoryHerbsPage />} />
         <Route path="/inventory-recipes" element={<AdminInventoryRecipesPage />} />
         <Route path="/inventory-ai-recipes" element={<AdminInventoryAIRecipesPage />} />
         <Route path="/ai-consultations" element={<AdminAiConsultationsPage />} />
+        <Route path="/settings" element={<AdminSettings user={displayUser} />} />
         <Route path="*" element={<Navigate to="/admin/dashboard/overview" replace />} />
       </Routes>
     </DashboardLayout>

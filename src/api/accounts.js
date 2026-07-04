@@ -46,6 +46,21 @@ export const googleLoginAccount = async (payload) => {
   return data;
 };
 
+export const validateResetToken = async (email, token) => {
+  const { data } = await httpClient.get("/api/Accounts/reset-password", {
+    params: { email, token },
+  });
+  return data;
+};
+
+export const resetPasswordViaEmail = async (payload) => {
+  const { data } = await httpClient.post(
+    "/api/Accounts/reset-password",
+    payload,
+  );
+  return data;
+};
+
 export const deleteAccount = async (userId) => {
   const { data } = await httpClient.delete(`/api/Users/delete/${userId}`);
   return data;

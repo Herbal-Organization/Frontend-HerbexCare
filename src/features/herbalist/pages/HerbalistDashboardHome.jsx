@@ -29,6 +29,20 @@ const extractInventoryArray = (responseData) => {
   return [];
 };
 
+const extractHerbsArray = (responseData) => {
+  if (Array.isArray(responseData)) return responseData;
+  if (Array.isArray(responseData?.items)) return responseData.items;
+  if (Array.isArray(responseData?.data)) return responseData.data;
+  return [];
+};
+
+const extractRecipesArray = (responseData) => {
+  if (Array.isArray(responseData)) return responseData;
+  if (Array.isArray(responseData?.items)) return responseData.items;
+  if (Array.isArray(responseData?.data)) return responseData.data;
+  return [];
+};
+
 const formatCurrency = (value) => {
   if (!Number.isFinite(value)) return "—";
   return `${value.toFixed(2)} EGP`;
@@ -190,8 +204,8 @@ function HerbalistDashboardHome({
 
     const [herbsResult, recipesResult, inventoryResult] =
       await Promise.allSettled([
-        getAllHerbs(),
-        getRecipesByHerbalist(herbalistId),
+        getAllHerbs(1, 1000),
+        getRecipesByHerbalist(herbalistId, 1, 1000),
         getMyInventory(),
       ]);
 
@@ -207,22 +221,18 @@ function HerbalistDashboardHome({
     const herbsRaw =
       herbsResult.status === "fulfilled" ? herbsResult.value : [];
     const recipesRaw =
-      recipesResult.status === "fulfilled" && Array.isArray(recipesResult.value)
-        ? recipesResult.value
-        : [];
+      recipesResult.status === "fulfilled" ? recipesResult.value : [];
     const inventoryRaw =
       inventoryResult.status === "fulfilled"
         ? extractInventoryArray(inventoryResult.value)
         : [];
 
-    const normalizedHerbs = Array.isArray(herbsRaw)
-      ? herbsRaw.map(normalizeHerb)
-      : [];
+    const normalizedHerbs = extractHerbsArray(herbsRaw).map(normalizeHerb);
     const myHerbs = normalizedHerbs.filter(
       (herb) => Number(herb.herbalistId) === Number(herbalistId),
     );
 
-    const normalizedRecipes = recipesRaw.map(normalizeRecipe);
+    const normalizedRecipes = extractRecipesArray(recipesRaw).map(normalizeRecipe);
     const inventoryItems = normalizeInventoryList(inventoryRaw);
     const activeInventoryItems = inventoryItems.filter((item) => item.isActive);
     const pricedItems = inventoryItems

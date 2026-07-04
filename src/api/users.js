@@ -1,14 +1,14 @@
 import httpClient from "./httpClient";
 
 export const getAllUsers = async (params = {}) => {
-  const { data } = await httpClient.get("/api/admin/users", {
+  const { data } = await httpClient.get("/api/Users/get-all", {
     params,
   });
   return data;
 };
 
 export const getUserById = async (id) => {
-  const { data } = await httpClient.get(`/api/admin/users/${id}`);
+  const { data } = await httpClient.get(`/api/Users/get/${id}`);
   return data;
 };
 
@@ -47,6 +47,11 @@ export const updateMyUserName = async (payload) => {
     `/api/Users/update-my-username`,
     payload,
   );
+  return data;
+};
+
+export const createUser = async (payload) => {
+  const { data } = await httpClient.post("/api/admin/users/add", payload);
   return data;
 };
 

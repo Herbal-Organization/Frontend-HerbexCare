@@ -74,6 +74,8 @@ function AdminUserModal({
       if (!form.password.trim()) return "Password is required.";
       if (form.password.length < 8)
         return "Password must be at least 8 characters.";
+      if (!/[a-zA-Z]/.test(form.password) || !/[0-9]/.test(form.password))
+        return "Password must contain at least one letter and one number.";
       if (form.password !== form.confirmPassword)
         return "Passwords do not match.";
     }

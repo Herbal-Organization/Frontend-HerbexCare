@@ -342,6 +342,7 @@
     "refresh": "Refresh",
     "loading": "Loading statistics",
     "loadError": "Unable to load overview statistics.",
+    "lastUpdated": "Last updated: {{time}}",
     "apiDocs": "Open Swagger docs",
     "directLogin": "Direct login account",
     "directLoginHint": "This admin account is pre-provisioned and does not use public registration.",
@@ -350,6 +351,12 @@
       "platformDescription": "Registered users and catalogue size across the system.",
       "aiConsultations": "AI Chat",
       "aiConsultationsDescription": "Chat activity from the AI chat service.",
+      "aiOverview": "AI Overview",
+      "aiOverviewDescription": "Chat activity and consultation metrics.",
+      "catalogue": "Catalogue",
+      "catalogueDescription": "Registered content across the platform.",
+      "favoritesAndTop": "Favorites & Top Items",
+      "favoritesAndTopDescription": "Most popular content and engagement metrics.",
       "users": "User Registry",
       "patients": "Patient Registry",
       "herbalists": "Herbalist Registry",
@@ -377,9 +384,15 @@
       "topCategoryHint": "Most requested herb category"
     },
     "quickActions": {
-      "title": "Manage AI chats",
-      "subtitle": "Open the full list to review recipes, match scores, and alternatives.",
-      "viewConsultations": "View all AI chats"
+      "title": "Quick Actions",
+      "subtitle": "Jump to the most common admin tasks.",
+      "viewConsultations": "View all AI chats",
+      "manageUsers": "Manage Users",
+      "manageUsersDesc": "View, create, and edit user accounts.",
+      "manageHerbs": "Manage Herbs",
+      "manageHerbsDesc": "Browse and update the herb catalogue.",
+      "viewAiChats": "AI Consultations",
+      "viewAiChatsDesc": "Review chat activity and recommendations."
     },
     "summary": {
       "activeShare": "Active share",
@@ -397,6 +410,29 @@
       "users": "No users were returned by the API.",
       "patients": "No patient records were returned by the API.",
       "herbalists": "No herbalist records were returned by the API."
+    },
+    "favorites": {
+      "total": "Total Favorites",
+      "herbs": "Herbs",
+      "recipes": "Recipes",
+      "aiRecipes": "AI Recipes",
+      "aiChat": "AI Chat",
+      "herbalists": "Herbalists"
+    },
+    "topItems": {
+      "herb": "Top Herb",
+      "recipe": "Top Recipe",
+      "herbalist": "Top Herbalist",
+      "favoritedCount": "{{count}} times"
+    },
+    "aiOverview": {
+      "activeRatio": "Active vs Blocked",
+      "totalChats": "Total Chats",
+      "activeChats": "Active",
+      "blockedChats": "Blocked",
+      "avgConfidence": "Avg Confidence",
+      "mostDiagnosed": "Most Diagnosed",
+      "topCategory": "Top Category"
     }
   },
   "adminAiConsultations": {
@@ -920,6 +956,7 @@
       "signUp": "Sign Up",
       "confirmationRequired": "Email Confirmation Required",
       "confirmationSubtitle": "Please confirm your email address to proceed. A confirmation link has been sent to your email.",
+      "emailNotConfirmed": "Please confirm your email before logging in.",
       "resendConfirmation": "Resend Confirmation Email",
       "resendError": "Failed to resend email. Please try again.",
       "resendSuccess": "Confirmation email sent! Please check your inbox and spam folder.",
@@ -1081,5 +1118,22 @@
       "history": "History",
       "favorites": "Favorites"
     }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "unread": "unread",
+    "empty": "No notifications yet",
+    "noAccess": "You don't have permission to view notifications",
+    "markAllRead": "Mark all read",
+    "markRead": "Mark as read",
+    "allMarkedRead": "All notifications marked as read",
+    "markReadError": "Failed to mark as read",
+    "markAllReadError": "Failed to mark all as read",
+    "delete": "Delete",
+    "deleteError": "Failed to delete notification",
+    "justNow": "Just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago"
   }
 }

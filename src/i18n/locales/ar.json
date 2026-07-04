@@ -360,6 +360,7 @@
     "refresh": "تحديث",
     "loading": "جاري تحميل الإحصائيات",
     "loadError": "تعذر تحميل إحصائيات النظرة العامة.",
+    "lastUpdated": "آخر تحديث: {{time}}",
     "apiDocs": "فتح Swagger",
     "directLogin": "حساب دخول مباشر",
     "directLoginHint": "هذا الحساب الإداري مُنشأ مسبقاً ولا يستخدم التسجيل العام.",
@@ -368,6 +369,12 @@
       "platformDescription": "المستخدمون المسجلون وحجم الكتالوج في النظام.",
       "aiConsultations": "دردشة الذكاء الاصطناعي",
       "aiConsultationsDescription": "نشاط الدردشة من خدمة دردشة الذكاء الاصطناعي.",
+      "aiOverview": "نظرة عامة على الذكاء الاصطناعي",
+      "aiOverviewDescription": "نشاط الدردشة ومقاييس الاستشارات.",
+      "catalogue": "الكتالوج",
+      "catalogueDescription": "المحتوى المسجل عبر المنصة.",
+      "favoritesAndTop": "المفضلة والعناصر الأعلى",
+      "favoritesAndTopDescription": "المحتوى الأكثر شعبية ومقاييس التفاعل.",
       "users": "سجل المستخدمين",
       "patients": "سجل المرضى",
       "herbalists": "سجل الأعشبيين",
@@ -395,9 +402,15 @@
       "topCategoryHint": "أكثر فئة أعشاب طلباً"
     },
     "quickActions": {
-      "title": "إدارة محادثات الذكاء الاصطناعي",
-      "subtitle": "افتح القائمة الكاملة لمراجعة الوصفات ونسب التطابق والبدائل.",
-      "viewConsultations": "عرض كل محادثات الذكاء الاصطناعي"
+      "title": "إجراءات سريعة",
+      "subtitle": "انتقل إلى أكثر المهام الإدارية استخداماً.",
+      "viewConsultations": "عرض كل محادثات الذكاء الاصطناعي",
+      "manageUsers": "إدارة المستخدمين",
+      "manageUsersDesc": "عرض وإنشاء وتعديل حسابات المستخدمين.",
+      "manageHerbs": "إدارة الأعشاب",
+      "manageHerbsDesc": "تصفح وتحديث كتالوج الأعشاب.",
+      "viewAiChats": "استشارات الذكاء الاصطناعي",
+      "viewAiChatsDesc": "مراجعة نشاط الدردشة والتوصيات."
     },
     "summary": {
       "activeShare": "نسبة النشطة",
@@ -415,6 +428,29 @@
       "users": "لم يُرجع الـ API أي مستخدمين.",
       "patients": "لم يُرجع الـ API أي سجلات مرضى.",
       "herbalists": "لم يُرجع الـ API أي سجلات أعشابيين."
+    },
+    "favorites": {
+      "total": "إجمالي المفضلات",
+      "herbs": "الأعشاب",
+      "recipes": "الوصفات",
+      "aiRecipes": "وصفات الذكاء الاصطناعي",
+      "aiChat": "دردشة الذكاء الاصطناعي",
+      "herbalists": "الأعشابيون"
+    },
+    "topItems": {
+      "herb": "أفضل عشبة",
+      "recipe": "أفضل وصفة",
+      "herbalist": "أفضل أعشابي",
+      "favoritedCount": "{{count}} مرة"
+    },
+    "aiOverview": {
+      "activeRatio": "النشطة مقابل المحظورة",
+      "totalChats": "إجمالي المحادثات",
+      "activeChats": "نشطة",
+      "blockedChats": "محظورة",
+      "avgConfidence": "متوسط الثقة",
+      "mostDiagnosed": "الأكثر تشخيصاً",
+      "topCategory": "أفضل فئة"
     }
   },
   "adminAiConsultations": {
@@ -919,6 +955,7 @@
       "signUp": "سجل الآن",
       "confirmationRequired": "تأكيد البريد الإلكتروني مطلوب",
       "confirmationSubtitle": "يرجى تأكيد عنوان بريدك الإلكتروني للمتابعة. تم إرسال رابط تأكيد إلى بريدك الإلكتروني.",
+      "emailNotConfirmed": "يرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول.",
       "resendConfirmation": "إعادة إرسال بريد التأكيد",
       "resendError": "فشل إعادة إرسال البريد الإلكتروني. يرجى المحاولة مرة أخرى.",
       "resendSuccess": "تم إرسال بريد التأكيد! يرجى التحقق من صندوق الوارد والبريد المزعج.",
@@ -1080,5 +1117,22 @@
       "history": "السجل",
       "favorites": "المفضلة"
     }
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "unread": "غير مقروءة",
+    "empty": "لا توجد إشعارات بعد",
+    "noAccess": "ليس لديك صلاحية لعرض الإشعارات",
+    "markAllRead": "تحديد الكل كمقروء",
+    "markRead": "تحديد كمقروء",
+    "allMarkedRead": "تم تحديد جميع الإشعارات كمقروءة",
+    "markReadError": "فشل في التحديد كمقروء",
+    "markAllReadError": "فشل في تحديد الكل كمقروء",
+    "delete": "حذف",
+    "deleteError": "فشل في حذف الإشعار",
+    "justNow": "الآن",
+    "minutesAgo": "منذ {{count}} دقيقة",
+    "hoursAgo": "منذ {{count}} ساعة",
+    "daysAgo": "منذ {{count}} يوم"
   }
 }
