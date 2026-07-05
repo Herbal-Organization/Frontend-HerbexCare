@@ -33,6 +33,13 @@ const extractHerbsArray = (responseData) => {
   return [];
 };
 
+const extractRecipesArray = (responseData) => {
+  if (Array.isArray(responseData)) return responseData;
+  if (Array.isArray(responseData?.items)) return responseData.items;
+  if (Array.isArray(responseData?.data)) return responseData.data;
+  return [];
+};
+
 const extractDiseasesArray = (responseData) => {
   if (Array.isArray(responseData)) return responseData;
   if (Array.isArray(responseData?.items)) return responseData.items;
@@ -128,9 +135,7 @@ function HerbalistManageRecipes({ user, dashboardData }) {
         ]);
 
         setHerbs(extractHerbsArray(herbsResponse));
-        setExistingRecipes(
-          Array.isArray(recipesResponse) ? recipesResponse : [],
-        );
+        setExistingRecipes(extractRecipesArray(recipesResponse));
       } catch (err) {
         const message =
           err.response?.data?.message ||
@@ -180,12 +185,11 @@ function HerbalistManageRecipes({ user, dashboardData }) {
     );
   };
 
-  const toggleDisease = (diseaseId) => {
-    const normalizedDiseaseId = String(diseaseId);
-    setSelectedDiseaseIds((current) =>
-      current.includes(normalizedDiseaseId)
-        ? current.filter((id) => id !== normalizedDiseaseId)
-        : [...current, normalizedDiseaseId],
+  const toggleDisease = (newIds) => {
+    setSelectedDiseaseIds(
+      Array.isArray(newIds)
+        ? newIds.map(String)
+        : [String(newIds)],
     );
   };
 
@@ -283,11 +287,9 @@ function HerbalistManageRecipes({ user, dashboardData }) {
           "",
           "",
           "",
-          null,
+          true,
         );
-        setExistingRecipes(
-          Array.isArray(recipesResponse) ? recipesResponse : [],
-        );
+        setExistingRecipes(extractRecipesArray(recipesResponse));
       }
       resetForm();
     } catch (err) {
@@ -325,10 +327,16 @@ function HerbalistManageRecipes({ user, dashboardData }) {
 
       // Refresh the recipe list for current herbalist
       if (herbalistId) {
-        const recipesResponse = await getRecipesByHerbalist(herbalistId);
-        setExistingRecipes(
-          Array.isArray(recipesResponse) ? recipesResponse : [],
+        const recipesResponse = await getRecipesByHerbalist(
+          herbalistId,
+          1,
+          1000,
+          "",
+          "",
+          "",
+          true,
         );
+        setExistingRecipes(extractRecipesArray(recipesResponse));
       } else {
         // Fallback: optimistically toggle local state
         setExistingRecipes((current) =>

@@ -22,6 +22,7 @@ const STEPS = [
 
 const STATUS_TO_STEP = {
   pending: 0,
+  preparing: 1,
   processing: 1,
   shipped: 2,
   partiallyshipped: 2,

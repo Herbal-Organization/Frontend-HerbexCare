@@ -12,7 +12,8 @@ import { Spinner } from "@components/common";
 import { getAdminNavConfig } from "@config/dashboard/adminNav";
 import AdminOverviewPage from "./AdminOverviewPage";
 import AdminUsersPage from "./AdminUsersPage";
-import AdminDiseasesPage from "./AdminDiseasesPage";
+import AdminDiseasesAllPage from "./AdminDiseasesAllPage";
+import AdminDiseasesPendingPage from "./AdminDiseasesPendingPage";
 import AdminAiChatConsultationsPage from "./AdminAiChatConsultationsPage";
 import AdminInventoryAiChatPage from "./AdminInventoryAiChatPage";
 import AdminNotificationsPage from "./AdminNotificationsPage";
@@ -24,7 +25,6 @@ import AdminSubOrdersPage from "./AdminSubOrdersPage";
 import AdminFeedbacksPage from "./AdminFeedbacksPage";
 import AdminReviewsPage from "./AdminReviewsPage";
 import AdminInventoryHerbsPage from "./AdminInventoryHerbsPage";
-import AdminInventoryRecipesPage from "./AdminInventoryRecipesPage";
 import AdminInventoryAIRecipesPage from "./AdminInventoryAIRecipesPage";
 import AdminAiConsultationsPage from "./AdminAiConsultationsPage";
 import AdminSettings from "./AdminSettings";
@@ -83,7 +83,8 @@ function AdminDashboard() {
         <Route path="/" element={<Navigate to="/admin/dashboard/overview" replace />} />
         <Route path="/overview" element={<AdminOverviewPage />} />
         <Route path="/users" element={<AdminUsersPage />} />
-        <Route path="/diseases" element={<AdminDiseasesPage />} />
+        <Route path="/diseases" element={<AdminDiseasesAllPage />} />
+        <Route path="/diseases/pending" element={<AdminDiseasesPendingPage />} />
         <Route
           path="/ai-chat"
           element={<AdminAiChatConsultationsPage />}
@@ -101,7 +102,6 @@ function AdminDashboard() {
         <Route path="/feedbacks" element={<AdminFeedbacksPage />} />
         <Route path="/reviews" element={<AdminReviewsPage />} />
         <Route path="/inventory-herbs" element={<AdminInventoryHerbsPage />} />
-        <Route path="/inventory-recipes" element={<AdminInventoryRecipesPage />} />
         <Route path="/inventory-ai-recipes" element={<AdminInventoryAIRecipesPage />} />
         <Route path="/ai-consultations" element={<AdminAiConsultationsPage />} />
         <Route path="/settings" element={<AdminSettings user={displayUser} />} />

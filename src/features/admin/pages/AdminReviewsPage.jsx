@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import {
@@ -9,8 +9,6 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import {
-  getAdminRecipeReviews,
-  deleteAdminRecipeReview,
   getAdminAiRecipeReviews,
   deleteAdminAiRecipeReview,
   getAdminAiChatRecipeReviews,
@@ -21,20 +19,18 @@ const DEFAULT_PAGE_SIZE = 10;
 const PAGE_SIZE_OPTIONS = [10, 20, 50];
 
 const TABS = [
-  { key: "recipe", label: "Recipe Reviews" },
   { key: "ai-recipe", label: "AI Recipe Reviews" },
   { key: "ai-chat-recipe", label: "AI Chat Recipe Reviews" },
 ];
 
 const API_MAP = {
-  recipe: { fetch: getAdminRecipeReviews, remove: deleteAdminRecipeReview },
   "ai-recipe": { fetch: getAdminAiRecipeReviews, remove: deleteAdminAiRecipeReview },
   "ai-chat-recipe": { fetch: getAdminAiChatRecipeReviews, remove: deleteAdminAiChatRecipeReview },
 };
 
 function AdminReviewsPage() {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState("recipe");
+  const [activeTab, setActiveTab] = useState("ai-recipe");
   const [reviews, setReviews] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
@@ -43,7 +39,7 @@ function AdminReviewsPage() {
   const [error, setError] = useState("");
   const [deletingIds, setDeletingIds] = useState([]);
 
-  const loadData = async ({ nextPage = pageNumber, nextSize = pageSize, tab = activeTab } = {}) => {
+  const loadData = useCallback(async (nextPage, nextSize, tab) => {
     setIsLoading(true);
     setError("");
     try {
@@ -58,7 +54,6 @@ function AdminReviewsPage() {
           : [];
       setReviews(items);
       setTotalPages(Math.max(1, response?.totalPages ?? 1));
-      setPageNumber(response?.pageNumber ?? nextPage);
     } catch (err) {
       const msg = err?.response?.data?.message || "Unable to load reviews.";
       setError(msg);
@@ -66,16 +61,26 @@ function AdminReviewsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     setPageNumber(1);
-    loadData({ nextPage: 1, nextSize: pageSize, tab: activeTab });
-  }, [activeTab, pageSize]);
+    loadData(1, pageSize, activeTab);
+  }, [activeTab, pageSize, loadData]);
 
   useEffect(() => {
-    loadData({ nextPage: pageNumber, nextSize: pageSize, tab: activeTab });
-  }, [pageNumber]);
+    loadData(pageNumber, pageSize, activeTab);
+  }, [pageNumber, activeTab, pageSize, loadData]);
+
+  const handleTabChange = useCallback((tab) => {
+    setActiveTab(tab);
+    setPageNumber(1);
+  }, []);
+
+  const handlePageSizeChange = useCallback((newSize) => {
+    setPageSize(newSize);
+    setPageNumber(1);
+  }, []);
 
   const handleDelete = async (review) => {
     const id = String(review.reviewId ?? review.id);
@@ -86,7 +91,7 @@ function AdminReviewsPage() {
     try {
       await API_MAP[activeTab].remove(id);
       toast.success("Review deleted.");
-      await loadData({ nextPage: pageNumber, nextSize: pageSize, tab: activeTab });
+      await loadData(pageNumber, pageSize, activeTab);
     } catch (err) {
       toast.error(err?.response?.data?.message || "Failed to delete review.");
     } finally {
@@ -118,10 +123,10 @@ function AdminReviewsPage() {
               {t("adminReviews.title", "All Reviews")}
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-200 md:text-base">
-              {t("adminReviews.subtitle", "Moderate reviews across recipe, AI recipe, and AI chat recipe types.")}
+              {t("adminReviews.subtitle", "Moderate reviews across AI recipe and AI chat recipe types.")}
             </p>
           </div>
-          <button type="button" onClick={() => loadData({ nextPage: pageNumber, nextSize: pageSize, tab: activeTab })} className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/15">
+          <button type="button" onClick={() => loadData(pageNumber, pageSize, activeTab)} className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/15">
             <FaSyncAlt className="text-sm" />
             Refresh
           </button>
@@ -134,7 +139,7 @@ function AdminReviewsPage() {
           <button
             key={tab.key}
             type="button"
-            onClick={() => setActiveTab(tab.key)}
+            onClick={() => handleTabChange(tab.key)}
             className={`rounded-2xl px-4 py-3 text-sm font-bold transition-colors ${
               activeTab === tab.key
                 ? "bg-emerald-600 text-white"
@@ -158,7 +163,7 @@ function AdminReviewsPage() {
           </div>
           <div className="flex items-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/70 px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
             <span className="text-slate-500">Size</span>
-            <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value) || DEFAULT_PAGE_SIZE); setPageNumber(1); }} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-1 text-sm font-bold text-slate-800 dark:text-slate-200 outline-none">
+            <select value={pageSize} onChange={(e) => handlePageSizeChange(Number(e.target.value) || DEFAULT_PAGE_SIZE)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-1 text-sm font-bold text-slate-800 dark:text-slate-200 outline-none">
               {PAGE_SIZE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
             </select>
           </div>
@@ -190,10 +195,10 @@ function AdminReviewsPage() {
                       const deleting = deletingIds.includes(String(id));
                       return (
                         <tr key={id} className="transition-colors hover:bg-emerald-50/40 dark:hover:bg-emerald-900/20">
-                          <td className="px-5 py-4 text-sm font-bold text-slate-900 dark:text-slate-100">{review.userName || review.patientName || "—"}</td>
-                          <td className="px-5 py-4 text-sm text-slate-700 dark:text-slate-300">{review.recipeName || review.recipeTitle || "—"}</td>
-                          <td className="px-5 py-4">{renderStars(review.rating)}</td>
-                          <td className="px-5 py-4 text-sm text-slate-500 dark:text-slate-400 max-w-xs truncate">{review.comment || review.reviewText || "—"}</td>
+                          <td className="px-5 py-4 text-sm font-bold text-slate-900 dark:text-slate-100">{review.reviewerName || review.patientName || "—"}</td>
+                          <td className="px-5 py-4 text-sm text-slate-700 dark:text-slate-300">{review.recipeName || "—"}</td>
+                          <td className="px-5 py-4">{renderStars(review.ratingValue)}</td>
+                          <td className="px-5 py-4 text-sm text-slate-500 dark:text-slate-400 max-w-xs truncate">{review.comment || "—"}</td>
                           <td className="px-5 py-4 text-right">
                             <button type="button" onClick={() => handleDelete(review)} disabled={deleting} className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 dark:border-rose-800 px-3 py-2 text-xs font-bold text-rose-700 dark:text-rose-400 transition-colors hover:bg-rose-50 dark:hover:bg-rose-900/30 disabled:cursor-not-allowed disabled:opacity-60">
                               {deleting ? <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" /> : <FaTrash className="text-[10px]" />}

@@ -10,7 +10,6 @@ import HerbalistManageHerbs from "./HerbalistManageHerbs";
 import HerbalistManageRecipes from "./HerbalistManageRecipes";
 import HerbalistManageAIRecipes from "./HerbalistManageAIRecipes";
 import HerbalistManageAIChatRecipes from "./HerbalistManageAIChatRecipes";
-import HerbalistManageInventoryRecipes from "./HerbalistManageInventoryRecipes";
 import HerbalistManageDiseases from "./HerbalistManageDiseases";
 import HerbalistDashboardHome from "./HerbalistDashboardHome";
 import HerbalistProfile from "./HerbalistProfile";
@@ -202,10 +201,6 @@ function HerbalistDashboard() {
           <Route
             path="/ai-chat-recipes"
             element={<HerbalistManageAIChatRecipes />}
-          />
-          <Route
-            path="/inventory-recipes"
-            element={<HerbalistManageInventoryRecipes />}
           />
           <Route path="/diseases" element={<HerbalistManageDiseases />} />
           <Route

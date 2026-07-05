@@ -8,6 +8,9 @@ function HerbalistFinancials() {
   const { t } = useTranslation();
   const { data, isLoading, error, reload } = useHerbalistFinancials();
 
+  // TODO: remove after verifying API response shape
+  console.log("[Earnings] raw data:", data);
+
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">

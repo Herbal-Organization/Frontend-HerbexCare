@@ -14,7 +14,17 @@ export const getSubOrderById = async (id) => {
   return data;
 };
 
+export const cancelSubOrder = async (subOrderId) => {
+  const { data } = await httpClient.put(
+    `/api/SubOrders/sub-orders/${subOrderId}/cancel`,
+  );
+  return data;
+};
+
 export const updateSubOrderStatus = async (id, status) => {
+  if (status === SUB_ORDER_REJECT) {
+    return cancelSubOrder(id);
+  }
   const { data } = await httpClient.put(`/api/SubOrders/${id}/status`, {
     status,
   });
@@ -25,17 +35,10 @@ export const approveSubOrder = async (id) =>
   updateSubOrderStatus(id, SUB_ORDER_ACCEPT);
 
 export const rejectSubOrder = async (id) =>
-  updateSubOrderStatus(id, SUB_ORDER_REJECT);
+  cancelSubOrder(id);
 
 export const getMyFinancials = async () => {
   const { data } = await httpClient.get("/api/SubOrders/my-financials");
-  return data;
-};
-
-export const cancelSubOrder = async (subOrderId) => {
-  const { data } = await httpClient.put(
-    `/api/SubOrders/sub-orders/${subOrderId}/cancel`,
-  );
   return data;
 };
 

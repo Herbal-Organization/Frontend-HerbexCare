@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { motion } from "motion/react";
 import { FaCheckCircle } from "react-icons/fa";
 
 function OrderSuccessPage() {

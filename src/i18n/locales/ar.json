@@ -346,7 +346,6 @@
     "aiConsultationsList": "استشارات الذكاء الاصطناعي",
     "apiDocs": "وثائق API",
     "inventoryHerbs": "جرد الأعشاب",
-    "inventoryRecipes": "جرد الوصفات",
     "inventoryAIRecipes": "جرد وصفات الذكاء الاصطناعي",
     "settings": "الإعدادات",
     "signOut": "تسجيل الخروج",
@@ -739,7 +738,17 @@
         "medicalHistory": "الخلفية الصحية"
       },
       "labels": {
-        "select": "اختر"
+        "select": "اختر",
+        "age": "العمر",
+        "gender": "الجنس",
+        "weightKg": "الوزن",
+        "heightCm": "الطول",
+        "systolicBp": "الضغط الانقباضي",
+        "diastolicBp": "الضغط الانبساطي",
+        "heartRateBpm": "نبض القلب",
+        "temperatureCelsius": "درجة الحرارة",
+        "severityScore": "مستوى الألم",
+        "symptomDurationDays": "مدة الأعراض"
       },
       "fields": {
         "age": "العمر",

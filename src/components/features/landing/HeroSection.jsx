@@ -58,7 +58,7 @@ function HeroSection() {
             className="flex flex-wrap items-center gap-4 pt-2"
           >
             <Link
-              to="/auth"
+              to="/auth/register"
               className="rounded-full bg-primary px-7 py-3.5 text-sm font-bold text-white shadow-xl shadow-primary/30 transition-transform hover:scale-105"
             >
               {t("hero.startJourney")}

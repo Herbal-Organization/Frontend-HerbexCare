@@ -124,13 +124,41 @@ function AiChatHistoryPage() {
                             <span className="text-[10px] font-black text-slate-400 group-hover:text-emerald-500 uppercase tracking-[0.2em] mb-1 transition-colors">
                               Score
                             </span>
-                            <div className="flex items-baseline gap-1">
-                              <span className="text-2xl font-black text-emerald-600 tabular-nums">
-                                {item.matchPercentage}
-                              </span>
-                              <span className="text-xs font-black text-emerald-400">
-                                %
-                              </span>
+                            <div className="relative inline-flex items-center justify-center">
+                              <svg className="h-14 w-14 transform -rotate-90">
+                                <circle
+                                  className="text-slate-100"
+                                  strokeWidth="5"
+                                  stroke="currentColor"
+                                  fill="transparent"
+                                  r="28"
+                                  cx="28"
+                                  cy="28"
+                                />
+                                <circle
+                                  className="text-emerald-500 transition-all duration-1000 ease-out"
+                                  strokeWidth="5"
+                                  strokeDasharray={175.93}
+                                  strokeDashoffset={
+                                    175.93 -
+                                    (175.93 * (item.matchPercentage || 0)) / 100
+                                  }
+                                  strokeLinecap="round"
+                                  stroke="currentColor"
+                                  fill="transparent"
+                                  r="28"
+                                  cx="28"
+                                  cy="28"
+                                />
+                              </svg>
+                              <div className="absolute flex items-baseline gap-0.5">
+                                <span className="text-xs font-black text-slate-900 tabular-nums">
+                                  {item.matchPercentage}
+                                </span>
+                                <span className="text-[8px] font-black text-slate-400">
+                                  %
+                                </span>
+                              </div>
                             </div>
                           </div>
                         )}

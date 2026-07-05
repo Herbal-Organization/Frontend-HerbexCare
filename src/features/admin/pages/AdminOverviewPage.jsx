@@ -268,36 +268,37 @@ function AdminOverviewPage() {
         const topStats = { ...favTopStatsResult.value };
         const fetches = [];
 
-        if (topStats.mostFavoritedHerbId) {
+        if (topStats.mostFavoritedHerbId && !topStats.mostFavoritedHerbName) {
           fetches.push(
             getHerbById(topStats.mostFavoritedHerbId)
               .then((herb) => {
-                topStats.mostFavoritedHerbName = herb.herbName;
+                if (herb?.herbName) topStats.mostFavoritedHerbName = herb.herbName;
               })
               .catch(() => {}),
           );
         }
 
-        if (topStats.mostFavoritedRecipeId) {
+        if (topStats.mostFavoritedRecipeId && !topStats.mostFavoritedRecipeName) {
           fetches.push(
             getRecipeById(topStats.mostFavoritedRecipeId)
               .then((recipe) => {
-                topStats.mostFavoritedRecipeName =
-                  recipe.title ||
-                  recipe.recipeName ||
-                  recipe.recommendedRecipeName ||
-                  recipe.name;
+                const name =
+                  recipe?.title ||
+                  recipe?.recipeName ||
+                  recipe?.recommendedRecipeName ||
+                  recipe?.name;
+                if (name) topStats.mostFavoritedRecipeName = name;
               })
               .catch(() => {}),
           );
         }
 
-        if (topStats.mostFavoritedHerbalistId) {
+        if (topStats.mostFavoritedHerbalistId && !topStats.mostFavoritedHerbalistName) {
           fetches.push(
             getUserById(topStats.mostFavoritedHerbalistId)
               .then((user) => {
-                topStats.mostFavoritedHerbalistName =
-                  user.fullName || user.userName || user.name;
+                const name = user?.fullName || user?.userName || user?.name;
+                if (name) topStats.mostFavoritedHerbalistName = name;
               })
               .catch(() => {}),
           );

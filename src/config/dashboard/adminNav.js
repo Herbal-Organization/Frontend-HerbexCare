@@ -52,8 +52,19 @@ export const getAdminNavConfig = (t) => [
   },
   {
     name: t("adminSidebar.diseases", "Diseases"),
-    href: "/admin/dashboard/diseases",
     icon: MdLocalHospital,
+    children: [
+      {
+        name: t("adminSidebar.allDiseases", "All Diseases"),
+        href: "/admin/dashboard/diseases",
+        icon: MdLocalHospital,
+      },
+      {
+        name: t("adminSidebar.pendingDiseases", "Pending Approvals"),
+        href: "/admin/dashboard/diseases/pending",
+        icon: MdPending,
+      },
+    ],
   },
   {
     name: t("adminSidebar.orders", "Orders"),
@@ -79,11 +90,6 @@ export const getAdminNavConfig = (t) => [
     name: t("adminSidebar.inventoryHerbs", "Inventory Herbs"),
     href: "/admin/dashboard/inventory-herbs",
     icon: MdNature,
-  },
-  {
-    name: t("adminSidebar.inventoryRecipes", "Inventory Recipes"),
-    href: "/admin/dashboard/inventory-recipes",
-    icon: MdMenuBook,
   },
   {
     name: t("adminSidebar.inventoryAIRecipes", "Inventory AI Recipes"),

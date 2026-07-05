@@ -35,3 +35,9 @@ passwords
 *.map
 coverage
 *.tgz
+
+# Ignore all files in .claude directory
+.claude/*
+.opencode/*
+swagger.json
+

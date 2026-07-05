@@ -10,8 +10,17 @@ export function useHerbalistFinancials() {
     setIsLoading(true);
     setError("");
     try {
-      const response = await getMyFinancials();
-      setData(response);
+      const raw = await getMyFinancials();
+      const list = Array.isArray(raw)
+        ? raw
+        : Array.isArray(raw?.items)
+          ? raw.items
+          : Array.isArray(raw?.data)
+            ? raw.data
+            : Array.isArray(raw?.transactions)
+              ? raw.transactions
+              : [];
+      setData(list);
     } catch (err) {
       setError(
         err.response?.data?.message ||

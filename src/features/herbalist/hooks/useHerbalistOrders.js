@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { getMySubOrders, approveSubOrder, rejectSubOrder, updateSubOrderStatus } from "@api/subOrders";
 import { SUB_ORDER_ACCEPT, SUB_ORDER_REJECT } from "../constants/subOrderStatus";
 import { normalizeOrders } from "../services/orders";
@@ -59,7 +59,23 @@ const useHerbalistOrders = ({
   const [error, setError] = useState(null);
   const [updatingId, setUpdatingId] = useState(null);
   const [totalItems, setTotalItems] = useState(0);
+  const [allOrdersCount, setAllOrdersCount] = useState(null);
+  const allOrdersCountRef = useRef(null);
   const [totalPages, setTotalPages] = useState(1);
+
+  const fetchTotalCount = useCallback(async () => {
+    try {
+      const response = await getMySubOrders();
+      const meta = extractPaginatedResponse(response, 1, 999999);
+      setAllOrdersCount(meta.totalItems);
+    } catch {
+      setAllOrdersCount(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    allOrdersCountRef.current = allOrdersCount;
+  }, [allOrdersCount]);
 
   const fetchOrders = useCallback(async () => {
     setIsLoading(true);
@@ -96,9 +112,20 @@ const useHerbalistOrders = ({
         setTotalItems(normalized.length);
         setTotalPages(pages);
       } else {
+        if (statusFilter !== "all") {
+          normalized = normalized.filter(
+            (order) =>
+              String(order.status || "").toLowerCase() ===
+              statusFilter.toLowerCase(),
+          );
+        }
         setOrders(normalized);
-        setTotalItems(meta.totalItems);
-        setTotalPages(meta.totalPages);
+        const hasActiveFilter = statusFilter !== "all" || searchValue.trim();
+        const accurateTotal = hasActiveFilter
+          ? normalized.length
+          : (allOrdersCountRef.current ?? meta.totalItems);
+        setTotalItems(accurateTotal);
+        setTotalPages(Math.max(1, Math.ceil(accurateTotal / pageSize)));
       }
     } catch (err) {
       setError(err);
@@ -113,6 +140,10 @@ const useHerbalistOrders = ({
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
+
+  useEffect(() => {
+    fetchTotalCount();
+  }, [fetchTotalCount]);
 
   const approve = useCallback(async (orderId) => {
     setUpdatingId(orderId);
@@ -166,6 +197,7 @@ const useHerbalistOrders = ({
     error,
     updatingId,
     totalItems,
+    allOrdersCount,
     totalPages,
     pageSize,
     fetchOrders,

@@ -324,11 +324,12 @@
     "patients": "Patients",
     "herbalists": "Herbalists",
     "diseases": "Diseases",
+    "allDiseases": "All Diseases",
+    "pendingDiseases": "Pending Approvals",
     "aiConsultations": "AI Chat",
     "aiConsultationsList": "AI Consultations",
     "apiDocs": "API Docs",
     "inventoryHerbs": "Inventory Herbs",
-    "inventoryRecipes": "Inventory Recipes",
     "inventoryAIRecipes": "Inventory AI Recipes",
     "settings": "Settings",
     "signOut": "Sign Out",
@@ -434,6 +435,56 @@
       "mostDiagnosed": "Most Diagnosed",
       "topCategory": "Top Category"
     }
+  },
+  "adminDiseases": {
+    "badge": "Disease Registry",
+    "title": "Manage Diseases",
+    "subtitle": "Review pending disease proposals, approve entries, and add new diseases directly into the admin registry.",
+    "refresh": "Refresh",
+    "addDisease": "Add Disease",
+    "stats": {
+      "registered": "Registered diseases",
+      "registeredHint": "Total diseases in the live registry",
+      "pending": "Pending approvals",
+      "pendingHint": "Items waiting for admin review",
+      "aiSupported": "AI supported",
+      "aiSupportedHint": "Diseases marked as AI-enabled"
+    },
+    "pending": {
+      "title": "Pending approvals",
+      "description": "Approve or reject diseases waiting for moderation.",
+      "awaitingReview": "{{count}} awaiting review",
+      "empty": "No diseases are waiting for approval.",
+      "proposedBy": "Proposed by: {{name}}"
+    },
+    "registry": {
+      "title": "Disease registry",
+      "description": "Search and review the complete disease catalogue.",
+      "searchPlaceholder": "Search by name, type, description, or symptoms...",
+      "showing": "Showing {{from}}-{{to}} of {{total}} diseases",
+      "pendingCount": "{{count}} pending",
+      "empty": "No diseases match your search.",
+      "emptyTitle": "No diseases yet",
+      "emptyDescription": "Start by adding your first disease entry to the system."
+    },
+    "status": {
+      "pendingReview": "Pending review",
+      "aiEnabled": "AI enabled",
+      "notSupported": "Not supported"
+    },
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "view": "View"
+    },
+    "toast": {
+      "createSuccess": "Disease \"{{name}}\" created successfully.",
+      "createError": "Unable to create disease.",
+      "approveSuccess": "Disease \"{{name}}\" approved. {{herbalist}} has been notified.",
+      "rejectSuccess": "Disease \"{{name}}\" rejected. {{herbalist}} has been notified.",
+      "actionError": "Unable to update disease."
+    },
+    "error": "Unable to load diseases."
   },
   "adminAiConsultations": {
     "subtitle": "Review AI recommendations and block or activate recipes so they are excluded or included in future patient consultations.",
@@ -740,7 +791,17 @@
         "medicalHistory": "Health Background"
       },
       "labels": {
-        "select": "Select"
+        "select": "Select",
+        "age": "Age",
+        "gender": "Gender",
+        "weightKg": "Weight",
+        "heightCm": "Height",
+        "systolicBp": "Systolic BP",
+        "diastolicBp": "Diastolic BP",
+        "temperatureCelsius": "Temperature",
+        "heartRateBpm": "Heart Rate",
+        "symptomDurationDays": "Symptom Duration",
+        "severityScore": "Severity Score"
       },
       "fields": {
         "age": "Age",

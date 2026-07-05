@@ -31,7 +31,7 @@ function FacetFilters({
       ?.label ?? "All";
 
   return (
-    <div ref={panelRef} className="mb-8">
+    <div ref={panelRef} className="relative z-20 mb-8">
       <div className="rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 p-4 shadow-sm backdrop-blur-sm sm:rounded-3xl sm:p-5">
         <div className="mb-4 flex items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-700 pb-3">
           <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">

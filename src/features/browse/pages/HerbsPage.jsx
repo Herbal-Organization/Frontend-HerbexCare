@@ -15,7 +15,7 @@ function HerbsPage() {
   const { herbs, isLoading, error, reload } = useHerbs();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBenefits, setSelectedBenefits] = useState([]);
-  const [approvalFilter, setApprovalFilter] = useState("all");
+  const [approvalFilter, setApprovalFilter] = useState("approved");
   const [currentPage, setCurrentPage] = useState(1);
   const [favoriteHerbIds, setFavoriteHerbIds] = useState(new Set());
   const [favoriteUpdatingHerbIds, setFavoriteUpdatingHerbIds] = useState(

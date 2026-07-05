@@ -63,7 +63,7 @@ function HerbalistSubOrders() {
     return () => clearTimeout(handle);
   }, [searchInput]);
 
-  const { orders, isLoading, error, updatingId, totalItems, totalPages, approve, reject, updateStatus, fetchOrders } =
+  const { orders, isLoading, error, updatingId, totalItems, allOrdersCount, totalPages, approve, reject, updateStatus, fetchOrders } =
     useHerbalistOrders({
       pageNumber: currentPage,
       pageSize: ORDERS_PER_PAGE,
@@ -116,9 +116,9 @@ function HerbalistSubOrders() {
             </p>
           </div>
         </div>
-        {!isLoading && totalItems > 0 ? (
+        {!isLoading && allOrdersCount > 0 ? (
           <div className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-            {t("herbalistOrders.total", { count: totalItems })}
+            {t("herbalistOrders.total", { count: allOrdersCount })}
           </div>
         ) : null}
       </header>

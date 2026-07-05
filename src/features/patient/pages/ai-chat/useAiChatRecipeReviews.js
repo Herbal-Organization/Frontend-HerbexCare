@@ -1,10 +1,17 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  deleteMyAiChatRecipeReview,
+  getAiChatRecipeFeedbacks,
+  getMyAiChatRecipeFeedback,
+  submitAiChatRecipeFeedback,
+  deleteMyAiChatRecipeFeedback,
+} from "@api/feedbacks";
+import {
   getAllAiChatRecipeReviews,
   getMyAiChatRecipeReview,
   submitAiChatRecipeReview,
+  deleteMyAiChatRecipeReview,
 } from "@api/aiChatRecipeReviews";
+import { getUserRole } from "@utils/auth";
 
 const resolveReviewerName = (review) =>
   review?.herbalistName ||
@@ -73,6 +80,26 @@ function useAiChatRecipeReviews(recipeId) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState("");
 
+  const isHerbalist = useMemo(() => getUserRole() === "Herbalist", []);
+
+  const api = useMemo(
+    () =>
+      isHerbalist
+        ? {
+            getAll: getAllAiChatRecipeReviews,
+            getMy: getMyAiChatRecipeReview,
+            submit: submitAiChatRecipeReview,
+            delete: deleteMyAiChatRecipeReview,
+          }
+        : {
+            getAll: getAiChatRecipeFeedbacks,
+            getMy: getMyAiChatRecipeFeedback,
+            submit: submitAiChatRecipeFeedback,
+            delete: deleteMyAiChatRecipeFeedback,
+          },
+    [isHerbalist],
+  );
+
   const loadReviews = useCallback(async () => {
     const id = Number(recipeId);
     if (!id) {
@@ -87,8 +114,8 @@ function useAiChatRecipeReviews(recipeId) {
 
     try {
       const [allReviewsRaw, currentUserReview] = await Promise.all([
-        getAllAiChatRecipeReviews(id).catch(() => []),
-        getMyAiChatRecipeReview(id).catch(() => null),
+        api.getAll(id).catch(() => []),
+        api.getMy(id).catch(() => null),
       ]);
 
       const allReviews = extractReviewList(allReviewsRaw);
@@ -127,7 +154,7 @@ function useAiChatRecipeReviews(recipeId) {
       setError("");
 
       try {
-        await submitAiChatRecipeReview(id, {
+        await api.submit(id, {
           ratingValue: Number(payload?.ratingValue ?? payload?.rating ?? 0),
           comment: String(payload?.comment ?? "").trim(),
         });
@@ -154,8 +181,8 @@ function useAiChatRecipeReviews(recipeId) {
     setIsDeleting(true);
     setError("");
 
-    try {
-      await deleteMyAiChatRecipeReview(id);
+      try {
+        await api.delete(id);
       await loadReviews();
       return true;
     } catch (err) {

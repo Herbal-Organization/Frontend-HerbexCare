@@ -55,12 +55,16 @@ export const getRecipesByHerbalist = async (
 };
 
 export const createRecipe = async (payload) => {
-  const { data } = await httpClient.post("/api/Recipes/add", payload);
+  const { data } = await httpClient.post("/api/Recipes/add", payload, {
+    headers: RECIPES_LANG_HEADERS,
+  });
   return data;
 };
 
 export const updateRecipe = async (id, payload) => {
-  const { data } = await httpClient.put(`/api/Recipes/${id}/update`, payload);
+  const { data } = await httpClient.put(`/api/Recipes/${id}/update`, payload, {
+    headers: RECIPES_LANG_HEADERS,
+  });
   return data;
 };
 
@@ -85,32 +89,7 @@ export const getRecipeWithHerbalist = async (id) => {
   return data;
 };
 
-export const getPendingRecipes = async (params = {}) => {
-  const { data } = await httpClient.get("/api/admin/recipes/pending", {
-    params,
-  });
-  return data;
-};
-
-export const approveRecipe = async (id) => {
-  const { data } = await httpClient.patch(`/api/admin/recipes/${id}/approve`);
-  return data;
-};
-
-export const adminCreateRecipe = async (payload) => {
-  const { data } = await httpClient.post("/api/admin/recipes/add", payload);
-  return data;
-};
-
-export const adminUpdateRecipe = async (id, payload) => {
-  const { data } = await httpClient.put(
-    `/api/admin/recipes/${id}`,
-    payload,
-  );
-  return data;
-};
-
 export const adminDeleteRecipe = async (id) => {
-  const { data } = await httpClient.delete(`/api/admin/recipes/${id}`);
+  const { data } = await httpClient.delete(`/api/admin/delete/${id}`);
   return data;
 };
